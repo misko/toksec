@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "correctness",
+  "change": "Ran four bounded unit tests copying the incumbent's first-header scanner and timeout predicate.",
+  "evidence": "Scanner tests passed for all fragment boundaries, limit boundaries, and malformed/oversize data following a completed request. The timeout-predicate test showed a 1500 ms incomplete header is not expired while writing with a 2000 ms write limit and 1000 ms header limit.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Pipelined header framing is isolated, but a buffered incomplete subsequent request can exceed its header deadline while a previous response is stalled.",
+  "last": "cce1dd9a9967480b94884a116edab111",
+  "next_action": "Document the deadline limitation, high-load failures, unpromoted fixes, and validated coverage in the final report.",
+  "recorded_unix": 1794499500.1731522,
+  "verdict": "Scanner isolation confirmed at unit level. Overlapping deadline defect demonstrated in extracted predicate, not an end-to-end full-server reproduction; retained build is unchanged."
+}

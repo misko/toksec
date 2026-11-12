@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "performance",
+  "change": "Submitted event-driven challenger, including headerless parsing fix and nonblocking sendfile; ran three fresh-start suites and a paired full benchmark.",
+  "evidence": "All public checks and three restarts passed. Challenger had zero reported failures and median 73,259/34,036/45,521/35,498 requests/s, versus incumbent 40,216/23,757/0/16,980 across four workloads. Every workload was generator-ineligible; several incumbent rounds failed heavily.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "A single epoll loop with sendfile will reduce per-connection overhead and avoid thread-creation pressure under 4096-client load.",
+  "last": "98fcfd487e97434aac6d82036fc52426",
+  "next_action": "Investigate bounded thread resources of the retained implementation with a focused sandbox experiment; retain epoll challenger only as an unpromoted snapshot.",
+  "recorded_unix": 1794497146.7263806,
+  "verdict": "Inconclusive comparison; candidate not promoted and figures are not a validated speedup."
+}

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "timeout": false,
+  "seconds": 0.3195349769666791,
+  "diagnostics": "warning: calls to `std::str::from_utf8` with an invalid literal always return an error\n  --> /src/main.rs:12:87\n   |\n12 | #[test] fn obs_text(){let x=b\"GET /hello.txt HTTP/1.1\\r\\nX: \\xff\\x80\\r\\n\\r\\n\";assert!(std::str::from_utf8(x).is_err());assert_eq!(hd...\n   |                             -------------------------------------------------         ^^^^^^^^^^^^^^^^^^^^^^\n   |                             |\n   |                             the literal was valid UTF-8 up to the 28 bytes\n   |\n   = note: `#[warn(invalid_from_utf8)]` on by default\n\nwarning: 1 warning emitted\n\n",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "test": true
+}

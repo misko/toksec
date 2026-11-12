@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "In snapshot a1b47b37, close immediately on read EOF while reading a header. No other behavior changed.",
+  "evidence": "A two-case TCP regression reproduces the retained branch returning true repeatedly after an incomplete request and confirms the replacement returns false. The snapshot passed all 16 checks and three complete fresh-start suites; the incumbent separately passed three fresh-start suites. Both had empty server diagnostics.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "On incomplete requests, EOF with buffered bytes causes repeated RDHUP wakeups until the absolute header timeout.",
+  "last": "a1b47b3705094a5ca5cc2e95c753ee96",
+  "next_action": "Review another bounded conformance edge case and keep incumbent's limitations explicit.",
+  "recorded_unix": 1794499200.0283797,
+  "verdict": "Demonstrated bounded EOF fix in an unpromoted snapshot; retained incumbent still has the issue. No full paired benchmark was run for this snapshot."
+}

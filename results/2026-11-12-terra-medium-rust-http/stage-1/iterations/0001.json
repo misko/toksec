@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "performance",
+  "change": "Initial bounded threaded server with descriptor-relative no-follow traversal.",
+  "evidence": "All 11 public acceptance checks passed once; performance not yet measured.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "A blocking thread per connection incurs scheduling and virtual-memory overhead under thousands of clients.",
+  "last": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "next_action": "Run complete benchmark before designing a focused nonblocking connection implementation.",
+  "recorded_unix": 1794496093.3309321,
+  "verdict": "Acceptance established; benchmark required."
+}

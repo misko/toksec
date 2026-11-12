@@ -17,6 +17,7 @@ def main():
     prepare = commands.add_parser('prepare', help='Prepare an independent level. No API call.')
     prepare.add_argument('--campaign', type=Path, required=True)
     prepare.add_argument('--level', type=int, choices=range(1, 6), required=True)
+    prepare.add_argument('--model', choices=['gpt-6-luna', 'gpt-6.1-terra'], default='gpt-6-luna')
     prepare.add_argument('--wall-seconds', type=int, default=1800)
     for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test'):
         cmd = commands.add_parser(name)
@@ -37,7 +38,7 @@ def main():
         elif args.command == 'upgrade':
             result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
-            result = controller.prepare(args.campaign, args.level, args.wall_seconds)
+            result = controller.prepare(args.campaign, args.level, args.wall_seconds, args.model)
         elif args.command == 'preflight':
             result = runner.preflight(args.run)
         elif args.command == 'run':

@@ -1,0 +1,3 @@
+use std::sync::{Arc,atomic::{AtomicBool,Ordering}};use std::thread;use std::time::Duration;
+fn vm()->usize{let s=std::fs::read_to_string("/proc/self/status").unwrap();s.lines().find(|s|s.starts_with("VmSize:")).unwrap().split_whitespace().nth(1).unwrap().parse().unwrap()}
+#[test] fn sample_virtual_memory_for_slow_threads(){let base=vm();let done=Arc::new(AtomicBool::new(false));let mut hs=Vec::new();for _ in 0..16{let d=done.clone();hs.push(thread::Builder::new().stack_size(131072).spawn(move||{while !d.load(Ordering::Relaxed){thread::sleep(Duration::from_millis(10));}}).unwrap())}let current=vm();done.store(true,Ordering::Relaxed);for h in hs{h.join().unwrap();}assert!(false,"baseline_kib={base}, 16_threads_kib={current}");}

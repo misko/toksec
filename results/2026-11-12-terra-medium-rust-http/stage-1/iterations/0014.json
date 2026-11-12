@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Submitted f6c5927a56944d0eb4e04cf374e066ea with a focused CRLF-splitting fix and no architectural change.",
+  "evidence": "A bounded parser regression confirmed that the retained splitting rejects headerless requests while the proposed splitting accepts both versions. The candidate passed the complete public suite and three fresh-start public revalidations with no diagnostics.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained parser rejects valid headerless HTTP/1.0 and 1.1 requests by stripping the request line's CR before parsing.",
+  "last": "f6c5927a56944d0eb4e04cf374e066ea",
+  "next_action": "Investigate whether limiting allocator arena proliferation can improve the retained thread-per-connection server's resource exhaustion behavior, then compare under the full matrix if time permits.",
+  "recorded_unix": 1794497321.4743838,
+  "verdict": "Demonstrated parser fix is archived but not promoted; the retained server still has the defect."
+}

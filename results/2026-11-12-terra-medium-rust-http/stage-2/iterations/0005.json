@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "performance",
+  "change": "Applied TCP_NODELAY to accepted sockets only; ran a full paired benchmark.",
+  "evidence": "Small persistent 256-client p99 was 5.1ms versus 44.5ms and median was 171996 versus 5954 rps, but all workloads were generator-ineligible; large persistent throughput fell, and the challenger had 921 failures at 4096 clients. Neither performance nor reliability promotion gates were met.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "TCP_NODELAY prevents the small persistent response delayed-ACK stall.",
+  "last": "13febd6c58a54b309156e374ed86105e",
+  "next_action": "With insufficient time for another full matrix, investigate a bounded disconnect-handling defect and revalidate the retained server.",
+  "recorded_unix": 1794499097.7785819,
+  "verdict": "Unpromoted; result is inconclusive, not a general speedup."
+}

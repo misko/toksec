@@ -126,7 +126,9 @@ def run_loop(run, client):
                         reason = 'capacity exhausted or campaign blocked'
                         break
                     history.append({'role': 'user', 'content': 'Controller capacity ' + json.dumps(capacity)})
-                    request = {'model': metering.MODEL, 'input': history, 'tools': TOOLS}
+                    model = manifest.get('model', metering.MODEL)
+                    request = {'model': model, 'input': history, 'tools': TOOLS}
+                    options = campaign.profile(model)['prompt_cache_options']
                     timeout = min(120, capacity['seconds_remaining'] - 30)
                     count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
                     if count >= context.ROLLOVER_INPUT:
@@ -136,8 +138,11 @@ def run_loop(run, client):
                     if controller.capacity(run)['seconds_remaining'] <= 30:
                         reason = 'finalization reserve reached'
                         break
-                    identity = campaign.reserve(directory, run.name, count)
-                    response = client.post('responses', dict(request, max_output_tokens=metering.MAX_OUTPUT,
+                    identity = campaign.reserve(directory, run.name, count, model)
+                    generation = dict(request, reasoning={'effort': 'medium'})
+                    if options is not None:
+                        generation['prompt_cache_options'] = options
+                    response = client.post('responses', dict(generation, max_output_tokens=metering.MAX_OUTPUT,
                                            service_tier='default', store=False, parallel_tool_calls=False,
                                            include=['reasoning.encrypted_content']),
                                            min(120, controller.capacity(run)['seconds_remaining'] - 20))

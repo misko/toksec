@@ -1,0 +1,142 @@
+{
+  "acceptance": {
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "warning: unused import: `std::os::unix::fs::FileTypeExt`\n --> /src/main.rs:7:5\n  |\n7 | use std::os::unix::fs::FileTypeExt;\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+      "passed": true,
+      "seconds": 0.36629529763013124,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": null,
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 0,
+      "dollar_limit": "5.00",
+      "full_acceptance": false,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 0,
+      "reason": null,
+      "remaining": 8774361,
+      "remaining_usd": "4.88127716",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 1759.789143562317,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.11872284",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 1225639,
+      "work_phase": "conformance"
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0023657558485865593
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.00703719537705183
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.008934877812862396
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.0070189544931054115
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0010230569168925285
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.007103705778717995
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.004940792918205261
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.0005711400881409645
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2012264737859368
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0014685019850730896
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.04654855187982321
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    },
+    "id": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "source_sha256": "d04a3a2e1ce2d9e86109f384b8e50af0a8008309bd831e06069ae41d2b2c1846"
+  },
+  "artifact": "/home/mouse9911/gits/toksec/.runs/http-campaign/runs/level-1-cb48d5a3f9b9/candidates/20ef0414aaf14ae5a88d2a8e9379383f",
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "capacity": {
+    "best_candidate": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "can_finish": true,
+    "can_start_model_call": false,
+    "context_rollovers": 3,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6.1-terra",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "2.745",
+    "optimization_attempts": 4,
+    "reason": null,
+    "remaining": 6601099,
+    "remaining_usd": "4.42063646",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 95.82661175727844,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.57936354",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 3398901,
+    "work_phase": "stabilize"
+  },
+  "full_acceptance": true,
+  "state": {
+    "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "context_rollovers": 3,
+    "ended_unix": 1794497749.3468025,
+    "finished": true,
+    "full_acceptance": true,
+    "invalidated": [],
+    "journal_entries": 20,
+    "last": "02ec1b9e28124e6db987942b71a33ed1",
+    "optimization_attempts": 4,
+    "stop_reason": "finished"
+  },
+  "warning": null
+}

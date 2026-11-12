@@ -26,11 +26,11 @@ def validate(run):
     return manifest
 
 
-def prepare(directory, level, wall_seconds=1800):
+def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna'):
     specification(level)
     if not 120 <= wall_seconds <= 7200:
         raise ValueError('wall_seconds must be between 120 and 7200')
-    if not campaign.status(directory)['can_start_model_call']:
+    if not campaign.status(directory, model)['can_start_model_call']:
         raise ValueError('campaign is unavailable')
     run = Path(directory).resolve() / 'runs' / f'level-{level}-{uuid.uuid4().hex[:12]}'
     (run / 'candidates').mkdir(parents=True)
@@ -41,7 +41,7 @@ def prepare(directory, level, wall_seconds=1800):
         shutil.copyfile(ROOT / 'toksec' / name, run / 'public-suite' / 'toksec' / name)
     (run / 'launch-packet.md').write_text(packet(level))
     atomic_json(run / 'specification.json', specification(level))
-    atomic_json(run / 'manifest.json', {'level': level, 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'toolchain': str(sandbox.toolchain()),
@@ -55,7 +55,7 @@ def prepare(directory, level, wall_seconds=1800):
 
 def capacity(run):
     manifest = validate(run)
-    result = campaign.status(manifest['campaign'])
+    result = campaign.status(manifest['campaign'], manifest.get('model', 'gpt-6-luna'))
     started = manifest['started_unix']
     remaining = max(0, manifest['wall_seconds'] - (time.time() - started)) if started else manifest['wall_seconds']
     result.update(seconds_remaining=remaining, best_candidate=read(run)['best'],

@@ -89,3 +89,25 @@ The current implementation prepares this artifact handoff. It does not yet execu
 ## Upgrading the measured campaign
 
 Run `python3 -m toksec upgrade --campaign DIRECTORY` after changing the framework. Upgrade requires no active runner or unresolved API charge. It records the previous/new source fingerprints and current balance without clearing requests, resetting limits or granting a new budget. Prepare fresh runs afterward. The v2 results and launch packets stay frozen; v3 adds sustained improvement and context rollover. No old experiment is silently continued under a different policy.
+
+## Terra medium reruns
+
+`prepare --model gpt-6.1-terra` records an independent model profile in each
+manifest. Generation explicitly requests medium reasoning, standard service tier,
+and implicit cache writes with a 30-minute TTL. Prices verified 2026-11-12:
+input $1, cached input $0.05, cache writes $1.25, output $5 per million tokens.
+See https://developers.openai.com/api/docs/models/gpt-6.1-terra and the
+Responses API `prompt_cache_options` documentation. Luna's historical rates and
+settled charges remain unchanged. Every new reservation carries its own profile.
+
+Terra reserves $2.745 before each call: the full 1,050,000-token context at
+long-context cache-write rates plus 16,000 output tokens at long-context output
+rates. This deliberately overestimates the 64,000-token working context and
+can stop a run with considerable unspent balance. Missing cache-write details
+are charged at the selected write rate. The same shared $5 ledger and 10-million
+token ceiling apply across both models; preparation outside this runner is not
+metered by that ledger. No new budget is created by selecting another model.
+
+Run the two stages sequentially with separate prepared directories to avoid
+benchmark interference. Each starts without the other stage's code or context;
+compilation and every server evaluation use fresh Bubblewrap sandboxes.

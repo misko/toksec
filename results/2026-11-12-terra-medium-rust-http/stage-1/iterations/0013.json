@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Verify headerless parser behavior using a bounded independent Rust regression, then submit only a parser correction on the retained implementation.",
+  "evidence": "The parser slices off four bytes and then requires the request line to end in CR. When the header section has no fields, that CR was removed.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained parser truncates both CRLFs before splitting, so a valid headerless HTTP/1.0 or HTTP/1.1 request is rejected.",
+  "last": "98fcfd487e97434aac6d82036fc52426",
+  "next_action": "Run parser regression and submit minimal correction.",
+  "recorded_unix": 1794497261.6563423,
+  "verdict": "Actionable correctness hypothesis; resource pressure remains unresolved for the retained artifact."
+}

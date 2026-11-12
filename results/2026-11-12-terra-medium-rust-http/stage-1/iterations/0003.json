@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "performance",
+  "change": "Tested an epoll/sendfile challenger against the threaded incumbent in alternating rounds.",
+  "evidence": "Challenger had zero reported failures across all four workloads, whereas incumbent had 4, 54, 1,233,185 and 451,309 respectively. All rounds were marked ineligible; controller declined promotion for generator/environment inconclusiveness.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The event loop should remove thread exhaustion failures at high concurrency.",
+  "last": "7792dc23c0f14689854afd92db6fa4c3",
+  "next_action": "Investigate parser and confinement regressions and revalidate retained artifact.",
+  "recorded_unix": 1794496491.0398633,
+  "verdict": "Reliability signal is suggestive, not an eligible performance promotion; retained artifact remains threaded incumbent."
+}

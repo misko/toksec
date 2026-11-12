@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "correctness",
+  "change": "Submitted 02ec1b9e28124e6db987942b71a33ed1 with request-line suffix handling corrected; removed an unused import only.",
+  "evidence": "All public checks passed; three fresh starts passed with empty diagnostics. Three isolated tests copied the changed parser and reader validation, covering headerless HTTP/1.0 and 1.1, malformed lines, normal headers, and framing. They passed.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "A headerless request can be accepted without relaxing CRLF checks, since the socket reader validates framing before parsing and the final delimiter strips the request-line CR.",
+  "last": "02ec1b9e28124e6db987942b71a33ed1",
+  "next_action": "Exercise retained openat confinement and descriptor ownership under repeated failures and symlinks with a standalone bounded test.",
+  "recorded_unix": 1794497718.2429411,
+  "verdict": "Fix is demonstrated in an unpromoted candidate; retained 20ef still has the defect. No paired performance promotion was attempted because the full matrix no longer fits safely."
+}

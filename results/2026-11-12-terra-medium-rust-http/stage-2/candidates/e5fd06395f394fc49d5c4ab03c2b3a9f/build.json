@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "timeout": false,
+  "seconds": 0.22400775272399187,
+  "diagnostics": "warning: unused import: `IntoRawFd`\n --> /src/main.rs:6:39\n  |\n6 | use std::os::fd::{AsRawFd, FromRawFd, IntoRawFd, RawFd};\n  |                                       ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0308]: mismatched types\n  --> /src/main.rs:79:101\n   |\n79 | ...now; if !c.buf.is_empty(){process(c,cfg,now)} if !c.writing {break}\n   |         ---------------------^^^^^^^^^^^^^^^^^^-\n   |         |                    |\n   |         |                    expected `()`, found `bool`\n   |         `if` expressions without `else` arms expect their inner expression to be `()`\n   |\nhelp: consider using a semicolon here\n   |\n79 |  c.file=None; if c.close_after{return false} c.writing=false;c.idle_start=now; if !c.buf.is_empty(){process(c,cfg,now);} if !c.writing {break}\n   |                                                                                                                       +\nhelp: you might have meant to return this value\n   |\n79 |  c.file=None; if c.close_after{return false} c.writing=false;c.idle_start=now; if !c.buf.is_empty(){return process(c,cfg,now);} if !c.writing {break}\n   |                                                                                                     ++++++                   +\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "test": false
+}

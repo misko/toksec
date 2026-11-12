@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "Construct a bounded TCP socket regression test for the retained EOF branch before modifying the server.",
+  "evidence": "Source inspection: the Ok(0) branch returns false only for an empty buffer and otherwise breaks out, after which drive returns true.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "An incomplete request followed by TCP write-half-close leaves a nonempty input buffer on EOF. The retained read branch returns keep-alive, so level-triggered RDHUP can repeatedly wake the event loop until the header deadline.",
+  "last": "13febd6c58a54b309156e374ed86105e",
+  "next_action": "Execute a minimal socket test of the branch, then test a one-line EOF handling fix and revalidate.",
+  "recorded_unix": 1794499103.3985171,
+  "verdict": "Unverified functional defect hypothesis; no change to incumbent."
+}

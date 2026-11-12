@@ -1,0 +1,136 @@
+{
+  "benchmarks": [
+    {
+      "clients": 256,
+      "gzip": false,
+      "id": "fresh-4096-256",
+      "path": "/data/4096",
+      "persistent": false,
+      "rounds": 5,
+      "seconds": 3.0,
+      "size": 4096,
+      "timeout_seconds": 2.0,
+      "tls": false,
+      "warmup_seconds": 1.0
+    },
+    {
+      "clients": 256,
+      "gzip": false,
+      "id": "fresh-65536-256",
+      "path": "/data/65536",
+      "persistent": false,
+      "rounds": 5,
+      "seconds": 3.0,
+      "size": 65536,
+      "timeout_seconds": 2.0,
+      "tls": false,
+      "warmup_seconds": 1.0
+    },
+    {
+      "clients": 4096,
+      "gzip": false,
+      "id": "fresh-4096-4096",
+      "path": "/data/4096",
+      "persistent": false,
+      "rounds": 5,
+      "seconds": 3.0,
+      "size": 4096,
+      "timeout_seconds": 2.0,
+      "tls": false,
+      "warmup_seconds": 1.0
+    },
+    {
+      "clients": 4096,
+      "gzip": false,
+      "id": "fresh-65536-4096",
+      "path": "/data/65536",
+      "persistent": false,
+      "rounds": 5,
+      "seconds": 3.0,
+      "size": 65536,
+      "timeout_seconds": 2.0,
+      "tls": false,
+      "warmup_seconds": 1.0
+    }
+  ],
+  "build": {
+    "approved_libraries": [
+      "libc"
+    ],
+    "compiler": "rustc",
+    "edition": "2021",
+    "optimization": 3,
+    "source": "main.rs"
+  },
+  "cases": [
+    {
+      "description": "A working server serves an ordinary file, empty file and a missing-file error.",
+      "id": "bootstrap"
+    },
+    {
+      "description": "Exact ordinary, empty, binary and 2 MiB files; missing file returns 404.",
+      "id": "files"
+    },
+    {
+      "description": "Query does not select a different file; strict one-pass percent decoding.",
+      "id": "query-and-decoding"
+    },
+    {
+      "description": "Traversal and symlinks are forbidden; nonregular objects and trailing file slash are not served.",
+      "id": "confinement"
+    },
+    {
+      "description": "A request split at each byte remains valid.",
+      "id": "fragmentation"
+    },
+    {
+      "description": "Malformed request/header/version, folded headers and unsupported methods have explicit errors.",
+      "id": "syntax"
+    },
+    {
+      "description": "Local request bodies, ambiguous lengths and transfer coding are rejected; decimal zero is valid.",
+      "id": "request-framing"
+    },
+    {
+      "description": "Header section exactly 8192 bytes is accepted; 8193 bytes returns 431.",
+      "id": "header-limit"
+    },
+    {
+      "description": "Slow fragments cannot extend the one-second absolute header deadline.",
+      "id": "absolute-header-deadline"
+    },
+    {
+      "description": "Incomplete and abandoned clients do not prevent later valid service.",
+      "id": "disconnect-recovery"
+    },
+    {
+      "description": "Invalid, duplicate, missing and unknown config values exit nonzero before serving.",
+      "id": "configuration"
+    }
+  ],
+  "configuration": {
+    "header_bytes": "8192",
+    "header_timeout_ms": "1000",
+    "idle_timeout_ms": "2000",
+    "listen": "127.0.0.1:8080",
+    "max_connections": "8192",
+    "max_requests": "100",
+    "pipeline_depth": "16",
+    "root": "/www",
+    "write_timeout_ms": "2000"
+  },
+  "level": 1,
+  "requirements": [
+    "Implement GET over HTTP/1.0 and HTTP/1.1 origin-form requests. Respond once and close with Connection: close.\nA valid unknown method returns 405. Missing Host is permitted in this restricted profile. Versions other than 1.0 and 1.1 return 400.\nRead fragmented requests and require CRLF. Reject bare LF, NUL, invalid header names, folded headers, malformed request lines and malformed headers with 400.\nReject Transfer-Encoding, duplicate Content-Length, invalid lengths and nonzero Content-Length with 400. A single decimal zero, including leading zeroes, is accepted.\nEnforce header_bytes including the final CRLFCRLF; excess returns 431. header_timeout_ms is an absolute deadline from accept, even if bytes keep arriving. Close at deadline; 408 is optional.\nStrip the query, decode path percent escapes once as UTF-8, reject malformed escapes, fragments, absolute-form, NUL and backslash with 400.\nReturn 403 for decoded '..' components, symlinks in any component, directories and nonregular files. Missing files return 404. Trailing slash on a regular file returns 403 or 404.\nServe immutable regular files only beneath root. Preserve exact bytes for empty, binary and large files. Explicit Content-Length is mandatory and must match body bytes. No Transfer-Encoding in local responses.\nError bodies may be empty. Successful local responses may use application/octet-stream. Disconnects and malformed clients must not stop later valid service.\nConcurrency is optional, but the public benchmark measures service at both 256 and 4096 active clients. Bound every buffer and open descriptor."
+  ],
+  "resources": {
+    "compile_address_space_mib": 4096,
+    "compile_cpu_seconds": 60,
+    "compile_wall_seconds": 120,
+    "server_address_space_mib": 512,
+    "server_cpu_cores": 1,
+    "server_open_files": 16384
+  },
+  "title": "Static files",
+  "version": "rust-http-v3"
+}

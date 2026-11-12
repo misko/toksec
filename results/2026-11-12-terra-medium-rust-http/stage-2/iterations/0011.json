@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "Build a bounded TCP and epoll regression comparing write-mode registrations with and without EPOLLRDHUP after the send buffer fills.",
+  "evidence": "Source inspection shows all connections retain RDHUP in both read and write epoll interests; the write path cannot act on RDHUP and returns on WouldBlock.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "While writing to a stalled peer that has half-closed its send side, retaining level-triggered EPOLLRDHUP makes epoll wake repeatedly even when the socket is not writable.",
+  "last": "e8f90e59dac741bb8b87aeec90b52330",
+  "next_action": "Run a local socket regression before considering a single-change snapshot.",
+  "recorded_unix": 1794499346.8318837,
+  "verdict": "Unverified event-loop fairness risk; no retained behavior changed."
+}

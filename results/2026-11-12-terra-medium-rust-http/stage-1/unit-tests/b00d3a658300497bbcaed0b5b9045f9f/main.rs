@@ -1,0 +1,3 @@
+fn old(buf:&[u8])->bool { let mut lines=buf[..buf.len()-4].split(|&b|b==b'\n'); lines.next().and_then(|l| l.strip_suffix(b"\r")).is_some() }
+fn fixed(buf:&[u8])->bool { let mut lines=buf[..buf.len()-2].split(|&b|b==b'\n'); let l=lines.next().unwrap(); if l.strip_suffix(b"\r").is_none(){return false} for line in lines {if line.is_empty(){break} if line.strip_suffix(b"\r").is_none(){return false}} true }
+#[test] fn headerless(){for b in [b"GET / HTTP/1.0\r\n\r\n".as_slice(), b"GET / HTTP/1.1\r\n\r\n".as_slice()] {assert!(!old(b));assert!(fixed(b));} assert!(fixed(b"GET / HTTP/1.1\r\nHost: a\r\n\r\n"));}

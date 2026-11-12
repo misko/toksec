@@ -17,6 +17,22 @@ RESERVED_USD = (Decimal(metering.MODEL_CONTEXT_LIMIT) * Decimal(metering.RATES['
                 + Decimal(metering.MAX_OUTPUT) * Decimal(metering.RATES['output']) * Decimal('1.5')) / 1_000_000
 
 
+TERRA = 'gpt-6.1-terra'
+TERRA_RATES = {'input': '1.00', 'cached': '0.05', 'write_upper': '1.25', 'output': '5.00'}
+
+
+def profile(model=metering.MODEL):
+    if model not in (metering.MODEL, TERRA):
+        raise ValueError('unsupported metered model')
+    rates = TERRA_RATES if model == TERRA else metering.RATES
+    reserve_usd = (Decimal(metering.MODEL_CONTEXT_LIMIT) * Decimal(rates['write_upper']) * 2
+                   + Decimal(metering.MAX_OUTPUT) * Decimal(rates['output']) * Decimal('1.5')) / 1_000_000
+    return {'model': model, 'rates': rates, 'reservation_usd': str(reserve_usd),
+            'price_source': 'https://developers.openai.com/api/docs/models/' + model,
+            'price_verified_date': metering.PRICE_DATE,
+            'prompt_cache_options': {'mode': 'implicit', 'ttl': '30m'} if model == TERRA else None}
+
+
 def read(directory):
     return json.loads((Path(directory) / 'ledger.json').read_text())
 
@@ -46,15 +62,17 @@ def initialize(directory):
     return status(directory)
 
 
-def status(directory):
+def status(directory, model=metering.MODEL):
+    selected = profile(model)
+    reservation = Decimal(selected['reservation_usd'])
     ledger = read(directory)
     balance = metering.totals(ledger)
     pending = any(r['state'] == 'reserved' for r in ledger['requests'])
     eligible = (ledger['state'] == 'active' and not pending and ledger['fingerprint'] == fingerprint()
-                and balance['remaining'] >= RESERVED_TOKENS and Decimal(balance['remaining_usd']) >= RESERVED_USD)
-    return {**balance, 'model': ledger['model'], 'service_tier': ledger['service_tier'],
+                and balance['remaining'] >= RESERVED_TOKENS and Decimal(balance['remaining_usd']) >= reservation)
+    return {**balance, 'model': model, 'service_tier': ledger['service_tier'],
             'state': ledger['state'], 'reason': ledger['reason'], 'can_start_model_call': eligible,
-            'next_call_reservation_tokens': RESERVED_TOKENS, 'next_call_reservation_usd': str(RESERVED_USD),
+            'next_call_reservation_tokens': RESERVED_TOKENS, 'next_call_reservation_usd': str(reservation),
             'dollar_limit': ledger['dollar_limit'], 'token_limit': ledger['token_limit'], 'scope': ledger['scope']}
 
 
@@ -72,17 +90,18 @@ def upgrade(directory):
     return status(directory)
 
 
-def reserve(directory, run_id, counted_input):
+def reserve(directory, run_id, counted_input, model=metering.MODEL):
+    selected = profile(model)
     if type(counted_input) is not int or not 0 <= counted_input <= metering.MAX_INPUT:
         raise ValueError('counted input exceeds the supported 64000-token context budget')
     with locked(directory):
-        if not status(directory)['can_start_model_call']:
+        if not status(directory, model)['can_start_model_call']:
             raise ValueError('campaign cannot admit another request; inspect status')
         ledger = read(directory)
         identity = uuid.uuid4().hex
         ledger['requests'].append({'id': identity, 'run': run_id, 'state': 'reserved',
                                    'counted_input': counted_input, 'reserved_tokens': RESERVED_TOKENS,
-                                   'reserved_usd': str(RESERVED_USD), 'reserved_unix': time.time()})
+                                   'profile': selected, 'reserved_usd': selected['reservation_usd'], 'reserved_unix': time.time()})
         atomic_json(Path(directory) / 'ledger.json', ledger)
         return identity
 
@@ -92,12 +111,13 @@ def settle(directory, identity, response):
         ledger = read(directory)
         entry = next(r for r in ledger['requests'] if r['id'] == identity)
         try:
-            usage = metering.usage_record(response['usage'])
+            selected = entry.get('profile', profile())
+            usage = metering.usage_record(response['usage'], selected['rates'])
             if entry['state'] == 'settled':
                 if entry['response_id'] == response['id'] and entry['usage'] == usage:
                     return usage
                 raise ValueError('conflicting settlement')
-            if response['model'] != metering.MODEL or response['service_tier'] != 'default':
+            if response['model'] != selected['model'] or response['service_tier'] != 'default':
                 raise ValueError('unexpected model or service tier')
             if any(r.get('response_id') == response['id'] for r in ledger['requests']):
                 raise ValueError('response already settled')

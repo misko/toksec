@@ -48,3 +48,13 @@ The subsequent real Stage 1/2 runs are archived under results/2026-11-12-luna-ru
 The revised full test run passed 62 tests in 39.526 seconds. Additional tests cover refusing early finish despite acceptance and 99 recorded optimization attempts, refusing a plain final-message shortcut, accepting an honest partial report in the finalization window, context rollover before paid dispatch, preserved code/notes/spending, invalidation after restart failure, repair after invalidation, and campaign upgrades without forgiving charges. All five v3 launch packets pass local preflight and remain unstarted.
 
 No live API run validates v3 improvement quality yet. The simulated API tests establish control-flow and accounting behavior, not that Luna will discover useful optimizations or security fixes. Security promotion remains subject to the existing evidence gates.
+
+## Terra medium implementation reruns, 2026-11-12
+
+Stage 1 and Stage 2 ran independently with standard-tier Terra medium in the Rust
+sandbox harness. Both retained candidates passed their public suites (11 and 16
+checks), continued beyond initial acceptance and completed four and two paired
+comparisons respectively. All comparisons were environment/generator-ineligible.
+The combined API cost upper bound is $0.92943995; cumulative campaign spend is
+$1.00649019. See `results/2026-11-12-terra-medium-rust-http/README.md` for sources,
+known defects, unpromoted repairs and the controller promotion limitation.

@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "Snapshot cce1dd9 changes only the writing interest to EPOLLOUT; read mode still watches EPOLLRDHUP.",
+  "evidence": "Public suite passed and all three independent complete restarts passed without diagnostics. Earlier executable TCP/epoll test confirmed repeated RDHUP wakeups under a full send buffer.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Disabling redundant EPOLLRDHUP notification during write backpressure avoids an event-loop spin on half-closed peers.",
+  "last": "cce1dd9a9967480b94884a116edab111",
+  "next_action": "Revalidate incumbent, then use remaining time for bounded tests of HTTP edge cases; full paired benchmark no longer fits.",
+  "recorded_unix": 1794499440.2409077,
+  "verdict": "Functionally validated but unbenchmarked and unpromoted; retained incumbent still has the observed potential spin."
+}

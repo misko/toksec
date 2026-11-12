@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Executed targeted traversal tests against a copied retained open_path, including regular files, directory symlink, final symlink, FIFO, missing path and 10,000 rename-race attempts.",
+  "evidence": "All assertions passed, including no observed outside content and equal /proc/self/fd counts before and after. This finite run is not a security proof.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "No-follow descriptor-relative opens should reject symlinks and avoid descriptor leaks during concurrent final-component replacement.",
+  "last": "7a678ae104244ccbb14a1752f1e3f58d",
+  "next_action": "Benchmark the parser-boundary challenger once, then investigate other specific resource and framing risks.",
+  "recorded_unix": 1794496621.6694355,
+  "verdict": "No confinement regression observed in this bounded test."
+}

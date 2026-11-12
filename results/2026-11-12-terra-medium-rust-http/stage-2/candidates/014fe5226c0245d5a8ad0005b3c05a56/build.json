@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "timeout": false,
+  "seconds": 0.624888620339334,
+  "diagnostics": "",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "test": false
+}

@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Run a bounded regression using the retained parsing function, including percent-encoded traversal and integer-length boundaries.",
+  "evidence": "The retained candidate passed three fresh-start public suites with empty server diagnostics; its headerless request defect remains separately demonstrated and unfixed in the retained artifact.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Parser edge cases around encoded path separators, UTF-8 and all-zero Content-Length could expose traversal or framing inconsistencies not covered by the finite public suite.",
+  "last": "3fbcc7adb3e847d4a0268cacf48baf12",
+  "next_action": "Execute focused parser regression and record exact outcomes.",
+  "recorded_unix": 1794497621.3973444,
+  "verdict": "Confinement and framing require additional direct edge-case evidence."
+}

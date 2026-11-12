@@ -25,7 +25,8 @@ def tokens(value):
     return value
 
 
-def usage_record(usage):
+def usage_record(usage, rates=None):
+    rates = RATES if rates is None else rates
     input_count = tokens(usage["input_tokens"])
     output_count = tokens(usage["output_tokens"])
     details = usage.get("input_tokens_details") or {}
@@ -37,13 +38,13 @@ def usage_record(usage):
     total = input_count + output_count
     if tokens(usage["total_tokens"]) != total:
         raise ValueError("inconsistent total token usage")
-    ordinary_rate = RATES["input"] if "cache_write_tokens" in details else RATES["write_upper"]
+    ordinary_rate = rates["input"] if "cache_write_tokens" in details else rates["write_upper"]
     input_multiplier = Decimal(2 if input_count > 272_000 else 1)
     output_multiplier = Decimal("1.5" if input_count > 272_000 else "1")
     cost = ((Decimal(input_count - cached - written) * Decimal(ordinary_rate)
-            + Decimal(cached) * Decimal(RATES["cached"])
-            + Decimal(written) * Decimal(RATES["write_upper"])) * input_multiplier
-            + Decimal(output_count) * Decimal(RATES["output"]) * output_multiplier) / 1_000_000
+            + Decimal(cached) * Decimal(rates["cached"])
+            + Decimal(written) * Decimal(rates["write_upper"])) * input_multiplier
+            + Decimal(output_count) * Decimal(rates["output"]) * output_multiplier) / 1_000_000
     return {"input": input_count, "cached_input": cached, "cache_write": written,
             "output": output_count, "reasoning": reasoning, "total": total,
             "cost_usd_upper_bound": str(cost)}
