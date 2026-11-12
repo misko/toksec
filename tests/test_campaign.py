@@ -128,6 +128,10 @@ class CampaignTests(unittest.TestCase):
                     source = PARTIAL if len(requests) == 1 else 'broken rust'
                     result['output'] = [{'type': 'function_call', 'call_id': str(len(requests)), 'name': 'submit_candidate',
                                          'arguments': json.dumps({'source': source})}]
+                if len(requests) == 3:
+                    manifest = controller.read(run, 'manifest.json')
+                    manifest['started_unix'] = time.time() - 1700
+                    atomic_json(run / 'manifest.json', manifest)
                 return result
         result = runner.run_loop(run, Client())
         self.assertIsNotNone(result['artifact'])

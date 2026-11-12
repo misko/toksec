@@ -40,3 +40,11 @@ No independent agent review was run. The available native delegation interface e
 The local campaign is `.runs/http-campaign`. Its `prepared.json` lists all five generated run paths. It contains only the imported pilot charges, with $4.98708787 remaining and no pending request. The key file was checked for format without displaying its content. Preflight does not claim remote account or model-access validation.
 
 The experiment's final result must distinguish API acceptance, performance coverage and security findings. Passing public checks is not a security certification. The current namespace/per-process sandbox is not an aggregate cgroup or VM boundary; see the walkthrough for that resource-isolation limitation.
+
+## V3 sustained-improvement revision
+
+The subsequent real Stage 1/2 runs are archived under results/2026-11-12-luna-rust-http. Their failures motivated v3. Stage 1 stopped on context capacity and later exhibited restart failures. Stage 2 stopped after two inconclusive comparisons with about ten minutes left.
+
+The revised full test run passed 62 tests in 39.526 seconds. Additional tests cover refusing early finish despite acceptance and 99 recorded optimization attempts, refusing a plain final-message shortcut, accepting an honest partial report in the finalization window, context rollover before paid dispatch, preserved code/notes/spending, invalidation after restart failure, repair after invalidation, and campaign upgrades without forgiving charges. All five v3 launch packets pass local preflight and remain unstarted.
+
+No live API run validates v3 improvement quality yet. The simulated API tests establish control-flow and accounting behavior, not that Luna will discover useful optimizations or security fixes. Security promotion remains subject to the existing evidence gates.

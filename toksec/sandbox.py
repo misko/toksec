@@ -152,8 +152,13 @@ def invoke_driver(artifact, level, mode='check', **options):
         try:
             output, errors = process.communicate(timeout=1800)
             if process.returncode:
-                raise RuntimeError('trusted driver failed: ' + errors[-2000:])
-            return json.loads(output)
+                raise RuntimeError('trusted driver failed: ' + errors[-2000:] + '\nServer diagnostics: ' +
+                                   (runtime['fixtures'] / 'server.log').read_text(errors='replace')[-4000:])
+            result = json.loads(output)
+            if mode == 'check':
+                result['server_diagnostics'] = (runtime['fixtures'] / 'server.log').read_text(errors='replace')[-4000:]
+                result['server_exit_code'] = runtime['process'].poll()
+            return result
         finally:
             kill(process)
 

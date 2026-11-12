@@ -58,6 +58,20 @@ def status(directory):
             'dollar_limit': ledger['dollar_limit'], 'token_limit': ledger['token_limit'], 'scope': ledger['scope']}
 
 
+def upgrade(directory):
+    with locked(directory, owner=True), locked(directory):
+        ledger = read(directory)
+        if ledger['state'] != 'active' or any(r['state'] == 'reserved' for r in ledger['requests']):
+            raise ValueError('reconcile campaign state and pending usage before a framework upgrade')
+        current = fingerprint()
+        if ledger['fingerprint'] != current:
+            ledger.setdefault('framework_upgrades', []).append({'previous': ledger['fingerprint'],
+                         'next': current, 'unix': time.time(), 'balance': metering.totals(ledger)})
+            ledger['fingerprint'] = current
+            atomic_json(Path(directory) / 'ledger.json', ledger)
+    return status(directory)
+
+
 def reserve(directory, run_id, counted_input):
     if type(counted_input) is not int or not 0 <= counted_input <= metering.MAX_INPUT:
         raise ValueError('counted input exceeds the supported 64000-token context budget')

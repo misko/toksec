@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'rust-http-v2'
+VERSION = 'rust-http-v3'
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'TLS and operational features'}
 DESIGN = {
@@ -60,7 +60,7 @@ Reject ambiguous or malformed upstream framing with 502. Apply upstream_timeout_
 Keep downstream request/response order. Upstream failures and disconnected downstream clients must not leak unbounded connections or poison subsequent requests.''',
     5: '''Serve the same API over HTTP and TLS on tls_listen, using the supplied PEM certificate and key and a maintained TLS library. Support TLS 1.2 or newer. SNI alpha.test and beta.test select the same certificate; Host still selects routing. Do not implement cryptography yourself.
 Cache successful proxy GET responses with explicit Cache-Control: public,max-age=N, capped by cache_ttl_ms. Cache key includes scheme, host, path and query. Honor Vary: Accept-Encoding. Vary:* and any other Vary field bypass cache. Requests with Authorization and responses with Set-Cookie, private or no-store bypass cache.
-Keep total cached body bytes within cache_bytes and evict entries when necessary. HEAD may use an existing GET entry but must not create an empty GET entry. Expired entries are fetched again; conditional cache revalidation is outside this level's v2 profile.
+Keep total cached body bytes within cache_bytes and evict entries when necessary. HEAD may use an existing GET entry but must not create an empty GET entry. Expired entries are fetched again; conditional cache revalidation is outside this level's profile.
 If gzip=true and Accept-Encoding permits gzip with nonzero quality, gzip local text representations at least 1024 bytes. Include Content-Encoding: gzip and Vary: Accept-Encoding; Content-Length is the compressed size. HEAD uses the same representation headers. Range responses remain uncompressed. Use zlib or an equivalent approved compression library.
 When rate_per_second > 0, enforce a global token bucket shared by HTTP and TLS, refilled by monotonic time up to rate_burst. Rejected requests receive 429 and Retry-After. Benchmarks disable this limiter.
 On SIGHUP reread the entire configuration atomically. An invalid reload retains the previous configuration. A valid reload changes roots, routing, cache and limiter settings for subsequent requests; flush cache. Listener addresses and TLS paths are immutable across reload and changes to them invalidate reload.
@@ -139,18 +139,19 @@ def packet(level):
                   'Each workload uses 256 or 4096 active clients, one request outstanding per client, split over four trusted load-generator workers. Five rounds, each with one second of warmup and three seconds of measurement. Per-request deadline is two seconds. Fresh-connection latency includes connect; persistent latency includes reconnect when needed. TLS latency includes handshake when connecting. Failures and timeouts are counted, never retried invisibly. Responses must have the expected status and exact bytes after decompression.',
                   '', 'Report valid requests/s, payload bytes/s, p50/p95/p99 successful request latency, failures, timeouts, per-round spread, server CPU and peak RSS, client CPU and event-loop lag. Closed-loop results are conditional on the workload; they are not an open-loop arrival-rate guarantee. Excess generator lag or CPU saturation marks the result inconclusive for optimization. Throughput counts completions inside the measurement window; latency and error totals also include the bounded drain of requests started inside it.',
                   '', 'All public checks must pass for full acceptance. A working partial must retain every previously passed check. Optimize throughput without increasing failures, exceeding resource limits, or worsening p99 by more than 5% in any workload. Compare incumbent/challenger in alternating rounds. Require separation of throughput ranges and at least a 5% gain in geometric-mean goodput. If evidence is noisy, keep the incumbent. A partial benchmark never qualifies for promotion.', '',
-                  'A build can finish after full acceptance and at least one evaluated optimization attempt, or when time/capacity is exhausted. The controller always exports the best accepted candidate. Report unsupported capabilities explicitly.', '', '| Workload | Clients | Bytes | Connection | Transport |', '|---|---:|---:|---|---|'])
+                  'Acceptance starts sustained improvement. The controller permits finish only in its finalization window or when model admission capacity is exhausted. It exports the retained candidate with any failed revalidation warning. Report unsupported capabilities explicitly.', '', '| Workload | Clients | Bytes | Connection | Transport |', '|---|---:|---:|---|---|'])
     lines.extend(f'| {w.id} | {w.clients} | {w.size} | {"persistent" if w.persistent else "fresh"} | {"TLS" if w.tls else "HTTP"} |' for w in workloads(level))
     lines.extend(['', '## Test suggestions', '', 'Start with a runnable file-serving path. Exercise arbitrary TCP fragmentation, path confinement, malformed messages, timeout boundaries, slow senders/readers, disconnect recovery and exact response framing. For applicable features test HEAD body suppression, pipelining order, host separation, proxy retries, cache isolation, TLS, invalid reload and graceful drain. Use small executable increments. Ask budget_status before substantial work. Never weaken required behavior for performance.', ''])
     lines.extend(['## Implementation guidance', '', DESIGN[level], '',
                   'Use the first small fraction of the wall budget to submit a runnable bootstrap. Spend the next work on failed public checks. Once all pass, measure a baseline, make one focused optimization, and compare. These are suggestions, not hidden acceptance rules. Every submission is archived. Failed compiles, lost checks and inconclusive performance leave the incumbent intact. There is no supplied server implementation and no guarantee of success before the first working submission.', '',
-                  'The run has 30 minutes by default, independent of the shared dollar cap. A complete paired benchmark needs time proportional to this level’s workload matrix; budget_status reports the remaining time. Finish may skip optimization when a complete comparison no longer fits. Report this as unoptimized or unmeasured, never maximal performance.', ''])
+                  'The run has 30 minutes by default, independent of the shared dollar cap. A complete paired benchmark needs time proportional to this level’s workload matrix. When it no longer fits, continue with bounded security tests and restart validation until the finalization window. Report unmeasured changes honestly.', '', (ROOT / 'prompts/improve.md').read_text()])
     return '\n'.join(lines)
 
 
 def fingerprint():
     paths = sorted((ROOT / 'toksec').glob('*.py'))
     paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'metering.py', 'runner.py')]
+    paths.append(ROOT / 'prompts/improve.md')
     return hashlib.sha256(b''.join(p.name.encode() + p.read_bytes() for p in paths)).hexdigest()
 
 

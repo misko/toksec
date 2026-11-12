@@ -42,7 +42,7 @@ Subsequent candidates must pass the entire suite. A complete benchmark compares 
 
 This deliberately conservative rule may reject useful tradeoffs. It preserves an incumbent when the evidence is noisy. The controller does not claim that the retained implementation has globally maximal performance. Equal functional coverage among partial implementations also keeps the incumbent.
 
-`finish` asks for a report. While capacity remains it requires full acceptance and an evaluated optimization attempt. It permits stopping when time cannot accommodate a full comparison. A deadline can interrupt a compile or benchmark; cleanup runs and the prior accepted pointer remains usable. Before the first bootstrap pass, the honest result can still be “no working artifact.” Providing a hand-written fallback would change the from-scratch experiment.
+`finish` asks for a report and is rejected while more than 120 seconds and model admission capacity remain. Acceptance and any fixed number of attempts are not stopping criteria. When a complete benchmark no longer fits, the shared improvement prompt redirects work to bounded security tests and restart validation. A plain final assistant message also cannot bypass this rule. A deadline can interrupt a compile or benchmark; cleanup runs and the prior accepted pointer remains usable. Before the first bootstrap pass, the honest result can still be “no working artifact.” Providing a hand-written fallback would change the from-scratch experiment.
 
 ## 5. Measure service at both concurrency settings
 
@@ -66,7 +66,11 @@ The pinned standard pricing and model context ceiling are documented by [OpenAI]
 
 A reservation is capacity held aside, not money claimed spent. At low balance, the runner may stop with unused dollars. API charges, token usage, wall time and local compilation/benchmark resources are separate quantities. Unmetered framework work in this chat is excluded and cannot be reconstructed as part of a $5 all-inclusive research cost.
 
-`budget_status` returns remaining dollars, used/reserved/remaining tokens, the next-call reservation, wall time, retained candidate and acceptance state. The runner also inserts a snapshot before every model request. The API key stays in the trusted controller. Standard processing is explicit. No native Codex subagent is used as a substitute for a metered API run.
+`record_iteration` persists model-authored hypotheses, changes, evidence, verdicts and next actions. `revalidate_candidate` runs the complete public suite in three fresh sandboxes. A failure preserves the snapshot but invalidates full acceptance, warns on export and allows a repaired candidate to replace it without requiring a strict superset of the old, unreliable passing checks. These tools do not certify security or allow model claims to override promotion gates.
+
+At 48,000 counted input tokens, the runner replaces stale history with the unchanged initial contract/public suite and a controller-built checkpoint of retained/latest code, reports, recent benchmark summaries and model notes. It recounts before admission. Prior usage remains charged. A checkpoint that still exceeds 64,000 tokens is refused safely. Full tool records and earlier notes remain archived.
+
+`budget_status` returns remaining dollars, used/reserved/remaining tokens, the next-call reservation, wall time, retained candidate, acceptance state, work phase, rollover count and can_finish. The runner also inserts a snapshot before every model request. The API key stays in the trusted controller. Standard processing is explicit. No native Codex subagent is used as a substitute for a metered API run.
 
 ## 7. Run and inspect
 
@@ -81,3 +85,7 @@ Inspect `result.json`, each candidate's `report.json`, optional `benchmark.json`
 Freeze the accepted source hash, binary, build recipe, exact API/suite version, resource environment and build-cost ledger. Give the attacker an independently metered budget. Report exploit cost conditional on functional acceptance and workload coverage. A cheap exploit against a nonworking server should not be compared with an exploit against a fully accepted server without that distinction.
 
 The current implementation prepares this artifact handoff. It does not yet execute, validate or cost attacker campaigns.
+
+## Upgrading the measured campaign
+
+Run `python3 -m toksec upgrade --campaign DIRECTORY` after changing the framework. Upgrade requires no active runner or unresolved API charge. It records the previous/new source fingerprints and current balance without clearing requests, resetting limits or granting a new budget. Prepare fresh runs afterward. The v2 results and launch packets stay frozen; v3 adds sustained improvement and context rollover. No old experiment is silently continued under a different policy.

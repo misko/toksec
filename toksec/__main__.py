@@ -10,8 +10,8 @@ def main():
     parser = argparse.ArgumentParser(description='Public, independent Rust HTTP experiments with a shared $5 campaign cap.')
     commands = parser.add_subparsers(dest='command', required=True)
     pub = commands.add_parser('publish', help='Generate all five complete contracts. No API call.')
-    pub.add_argument('--output', type=Path, default=Path('tasks/v2'))
-    for name in ('init', 'status'):
+    pub.add_argument('--output', type=Path, default=Path('tasks/v3'))
+    for name in ('init', 'status', 'upgrade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)
     prepare = commands.add_parser('prepare', help='Prepare an independent level. No API call.')
@@ -34,6 +34,8 @@ def main():
             result = campaign.initialize(args.campaign)
         elif args.command == 'status':
             result = campaign.status(args.campaign)
+        elif args.command == 'upgrade':
+            result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
             result = controller.prepare(args.campaign, args.level, args.wall_seconds)
         elif args.command == 'preflight':

@@ -6,11 +6,11 @@ The current system prepares five **independent Rust HTTP tasks**. Each starts fr
 
 | Level | Complete target | Performance workloads |
 |---|---|---|
-| [1](tasks/v2/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
-| [2](tasks/v2/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
-| [3](tasks/v2/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
-| [4](tasks/v2/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
-| [5](tasks/v2/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
+| [1](tasks/v3/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
+| [2](tasks/v3/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
+| [3](tasks/v3/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
+| [4](tasks/v3/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
+| [5](tasks/v3/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
 
 Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**. Five rounds report goodput, p50/p95/p99 latency, failures, timeouts, CPU, RSS and load-generator saturation. This is a defined nginx-inspired subset, not a quantitative claim of half of nginx.
 
@@ -19,7 +19,7 @@ Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**.
 Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, OpenSSL, system zlib, five available CPUs and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
 
 ```sh
-python3 -m toksec publish --output tasks/v2
+python3 -m toksec publish --output tasks/v3
 python3 -m toksec init --campaign .runs/http-campaign
 python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 python3 -m toksec prepare --campaign .runs/http-campaign --level 2
@@ -44,7 +44,22 @@ python3 -m toksec run --run RUN_PATH --key-file ~/.codexapi
 
 Luna uses `service_tier="default"`. The campaign admits at most $5 of conservatively priced API usage and 10 million input-plus-output tokens, including the prior pilot. All measured prompts, tool feedback, reasoning and model reporting count. Framework preparation in this chat was not metered and is outside that accounting scope. Compilation and benchmark compute are separate.
 
-The controller reserves before dispatch and settles actual API usage. Unknown usage retains the reservation and blocks the campaign. Runs have a 30-minute deadline by default and cannot resume automatically. A time, context or budget limit may stop work before the whole dollar balance is spent.
+The controller reserves before dispatch and settles actual API usage. Unknown usage retains the reservation and blocks the campaign. Runs have a 30-minute deadline by default and cannot resume automatically. A time or budget limit may stop work before the whole dollar balance is spent. Context rolls over into a same-run checkpoint before the 64,000-token request ceiling; a checkpoint that itself exceeds that ceiling still stops safely.
+
+## Continue beyond acceptance
+
+The shared [improvement prompt](prompts/improve.md) starts a repeated performance, stability and security loop after API acceptance. `finish` is rejected until the final 120 seconds or exhausted admission capacity. If a full benchmark no longer fits, the agent continues with bounded tests and restart checks. Notes and retained/latest source survive context rollover without resetting spending.
+
+For an existing campaign after a framework revision, preserve its ledger and prepare fresh runs:
+
+```sh
+python3 -m toksec upgrade --campaign .runs/http-campaign
+python3 -m toksec prepare --campaign .runs/http-campaign --level 1
+```
+
+Upgrade records old/new framework fingerprints and retains all charges. It refuses unresolved usage. Old runs stay frozen and are not resumed under changed prompts.
+
+The [first Rust results](results/2026-11-12-luna-rust-http/README.md) motivated this policy. Stage 1 passed its initial checks but later had restart failures. Stage 2 passed its checks but had substantial load failures and finished early. Neither result establishes reliable high-concurrency service or security.
 
 ## Inspect and verify
 

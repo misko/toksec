@@ -48,8 +48,8 @@ class SpecificationTests(unittest.TestCase):
 
     def test_published_contracts_match_executable_suite(self):
         for level in range(1, 6):
-            self.assertEqual((ROOT / f'tasks/v2/level-{level}.md').read_text(), packet(level))
-            self.assertEqual(json.loads((ROOT / f'tasks/v2/level-{level}.json').read_text()), specification(level))
+            self.assertEqual((ROOT / f'tasks/v3/level-{level}.md').read_text(), packet(level))
+            self.assertEqual(json.loads((ROOT / f'tasks/v3/level-{level}.json').read_text()), specification(level))
 
 
 class RustSandboxTests(unittest.TestCase):

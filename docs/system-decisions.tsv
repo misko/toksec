@@ -8,3 +8,8 @@ measurement	Keep functional acceptance separate from load results	256/4096 clien
 budget	Reserve conservatively in one durable ledger	Historical count mismatch and reservation/settlement tests	Uncertain usage blocks further inference
 publication	Prepare all five runs without launching paid calls	CLI preflight and empty-workspace checks	Campaign retains imported pilot balance only
 review	Use direct tests without claiming independent agent review	Native launcher has no service-tier selector	Standard-speed constraint preserved
+v2-live-runs	Preserve failures alongside initial acceptance	Stage 1 restart panic and Stage 2 inconclusive load results	Results archived before changing framework
+continued-work	Reject early finish and plain-final shortcuts	62-test suite includes both paths	Acceptance starts improvement rather than ending work
+context-rollover	Checkpoint same-run source and notes at 48000 counted input tokens	Overflow test verifies reduced request admitted and usage retained	No budget or level reset
+restart-validation	Run three fresh public-suite evaluations and retain stderr	Failure invalidation and repair regression test	Unreliable acceptance is explicitly marked
+version-upgrade	Carry ledger into v3 without clearing requests	CLI upgrade retains $0.07705024 spent	No additional paid calls

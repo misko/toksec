@@ -1,0 +1,445 @@
+{
+  "version": "rust-http-v3",
+  "level": 5,
+  "title": "TLS and operational features",
+  "configuration": {
+    "listen": "127.0.0.1:8080",
+    "root": "/www",
+    "max_connections": "8192",
+    "header_bytes": "8192",
+    "header_timeout_ms": "1000",
+    "idle_timeout_ms": "2000",
+    "write_timeout_ms": "2000",
+    "max_requests": "100",
+    "pipeline_depth": "16",
+    "default_host": "alpha.test",
+    "host_root": "beta.test:/www/beta",
+    "alias": "/assets/:/www/assets/",
+    "redirect": "/old:/hello.txt",
+    "index": "index.html",
+    "proxy_prefix": "/proxy/",
+    "upstreams": "127.0.0.1:8081,127.0.0.1:8082",
+    "upstream_timeout_ms": "500",
+    "body_bytes": "1048576",
+    "tls_listen": "127.0.0.1:8443",
+    "tls_cert": "/fixtures/cert.pem",
+    "tls_key": "/fixtures/key.pem",
+    "cache_ttl_ms": "1000",
+    "cache_bytes": "4194304",
+    "gzip": "true",
+    "rate_per_second": "0",
+    "rate_burst": "2",
+    "drain_timeout_ms": "2000"
+  },
+  "requirements": [
+    "Implement GET over HTTP/1.0 and HTTP/1.1 origin-form requests. Respond once and close with Connection: close.\nA valid unknown method returns 405. Missing Host is permitted in this restricted profile. Versions other than 1.0 and 1.1 return 400.\nRead fragmented requests and require CRLF. Reject bare LF, NUL, invalid header names, folded headers, malformed request lines and malformed headers with 400.\nReject Transfer-Encoding, duplicate Content-Length, invalid lengths and nonzero Content-Length with 400. A single decimal zero, including leading zeroes, is accepted.\nEnforce header_bytes including the final CRLFCRLF; excess returns 431. header_timeout_ms is an absolute deadline from accept, even if bytes keep arriving. Close at deadline; 408 is optional.\nStrip the query, decode path percent escapes once as UTF-8, reject malformed escapes, fragments, absolute-form, NUL and backslash with 400.\nReturn 403 for decoded '..' components, symlinks in any component, directories and nonregular files. Missing files return 404. Trailing slash on a regular file returns 403 or 404.\nServe immutable regular files only beneath root. Preserve exact bytes for empty, binary and large files. Explicit Content-Length is mandatory and must match body bytes. No Transfer-Encoding in local responses.\nError bodies may be empty. Successful local responses may use application/octet-stream. Disconnects and malformed clients must not stop later valid service.\nConcurrency is optional, but the public benchmark measures service at both 256 and 4096 active clients. Bound every buffer and open descriptor.",
+    "Support GET and HEAD. For HEAD return the same status and representation headers as GET, including the GET Content-Length, with no body.\nHTTP/1.1 persists by default; Connection: close overrides it. HTTP/1.0 closes by default and need not support keep-alive. Include Connection: keep-alive or close explicitly.\nParse Connection tokens case-insensitively. Handle sequential requests and up to pipeline_depth pipelined requests in order. A response body must never be confused with the next header.\nClose after max_requests responses, advertising close on the final response. Close idle connections after idle_timeout_ms. An incomplete request has its own absolute header deadline from its first byte; idle waiting uses the idle deadline.\nMalformed requests return their error then close. GET and HEAD bodies remain forbidden. Backpressure must bound queued requests and response data; pause reads rather than grow queues beyond pipeline_depth.\nServe concurrent clients independently. Slow input or output on one connection must not block ordinary clients. Enforce max_connections and write_timeout_ms. Refuse or close excess connections without crashing.\nLevel 1 always-close and GET-only rules are replaced by these rules; all other local file and parsing requirements are included in this package.",
+    "Require exactly one valid Host on HTTP/1.1 requests; missing, duplicate or unknown hosts return 400. HTTP/1.0 without Host uses default_host.\nMatch Host case-insensitively after removing an optional decimal port. default_host uses root; host_root maps beta.test to its own root.\nMatch the exact redirect path before file routing and return 302 with Location. alias maps its path prefix to the configured filesystem prefix; enforce confinement within that prefix.\nFor a directory with a trailing slash serve index if it is a regular file. A directory without a trailing slash returns 301 to its slash form, preserving the query. A directory without index returns 403.\nMap .html to text/html, .txt to text/plain, and other files to application/octet-stream.\nEmit a stable quoted ETag on local 200 responses. Matching If-None-Match or '*' returns 304 with no body, Content-Length: 0 and the ETag. Conditional matching precedes Range.\nSupport one bytes range on GET/HEAD: N-M, N-, and -N. Clamp M to EOF. Satisfiable ranges return 206, exact bytes and Content-Range: bytes N-M/SIZE. Unsatisfiable ranges return 416 and Content-Range: bytes */SIZE. Malformed or multiple ranges return 400.\nRange and conditional behavior applies to the selected host, alias and index representation. A HEAD response has no body even for a range or error.",
+    "For paths beneath proxy_prefix, strip the prefix and send an origin-form '/' plus the remainder to the upstream, preserving the query. Local routes retain their Level 3 semantics.\nProxy GET, HEAD and POST. Permit a single valid Content-Length body or Transfer-Encoding: chunked, but never both. Reject duplicate lengths, unsupported transfer codings and invalid chunk syntax with 400. Decoded bodies above body_bytes return 413. Decode chunks and optional bounded trailers; do not forward trailers.\nUse round-robin upstream selection for consecutive healthy requests. Reuse healthy HTTP/1.1 upstream connections. Strip hop-by-hop headers and every header named by Connection in both directions. Rewrite Host to the selected upstream authority.\nForward end-to-end headers, status and exact decoded body. Upstream Content-Length and chunked bodies are supported. Emit a known Content-Length downstream; bound response bodies to body_bytes, returning 502 if exceeded. HEAD has no downstream body.\nReject ambiguous or malformed upstream framing with 502. Apply upstream_timeout_ms to connection and response completion. A GET/HEAD may retry once on the next upstream only before a downstream response begins. Never retry POST. Final transport/malformed failures return 502; final deadline expiry returns 504.\nKeep downstream request/response order. Upstream failures and disconnected downstream clients must not leak unbounded connections or poison subsequent requests.",
+    "Serve the same API over HTTP and TLS on tls_listen, using the supplied PEM certificate and key and a maintained TLS library. Support TLS 1.2 or newer. SNI alpha.test and beta.test select the same certificate; Host still selects routing. Do not implement cryptography yourself.\nCache successful proxy GET responses with explicit Cache-Control: public,max-age=N, capped by cache_ttl_ms. Cache key includes scheme, host, path and query. Honor Vary: Accept-Encoding. Vary:* and any other Vary field bypass cache. Requests with Authorization and responses with Set-Cookie, private or no-store bypass cache.\nKeep total cached body bytes within cache_bytes and evict entries when necessary. HEAD may use an existing GET entry but must not create an empty GET entry. Expired entries are fetched again; conditional cache revalidation is outside this level's profile.\nIf gzip=true and Accept-Encoding permits gzip with nonzero quality, gzip local text representations at least 1024 bytes. Include Content-Encoding: gzip and Vary: Accept-Encoding; Content-Length is the compressed size. HEAD uses the same representation headers. Range responses remain uncompressed. Use zlib or an equivalent approved compression library.\nWhen rate_per_second > 0, enforce a global token bucket shared by HTTP and TLS, refilled by monotonic time up to rate_burst. Rejected requests receive 429 and Retry-After. Benchmarks disable this limiter.\nOn SIGHUP reread the entire configuration atomically. An invalid reload retains the previous configuration. A valid reload changes roots, routing, cache and limiter settings for subsequent requests; flush cache. Listener addresses and TLS paths are immutable across reload and changes to them invalidate reload.\nOn SIGTERM stop accepting new connections, finish in-flight responses up to drain_timeout_ms, then exit. TLS and plain listeners both drain. Rate limiting, caching and reload must not break path confinement or HTTP framing."
+  ],
+  "cases": [
+    {
+      "id": "bootstrap",
+      "description": "A working server serves an ordinary file, empty file and a missing-file error."
+    },
+    {
+      "id": "files",
+      "description": "Exact ordinary, empty, binary and 2 MiB files; missing file returns 404."
+    },
+    {
+      "id": "query-and-decoding",
+      "description": "Query does not select a different file; strict one-pass percent decoding."
+    },
+    {
+      "id": "confinement",
+      "description": "Traversal and symlinks are forbidden; nonregular objects and trailing file slash are not served."
+    },
+    {
+      "id": "fragmentation",
+      "description": "A request split at each byte remains valid."
+    },
+    {
+      "id": "syntax",
+      "description": "Malformed request/header/version, folded headers and unsupported methods have explicit errors."
+    },
+    {
+      "id": "request-framing",
+      "description": "Local request bodies, ambiguous lengths and transfer coding are rejected; decimal zero is valid."
+    },
+    {
+      "id": "header-limit",
+      "description": "Header section exactly 8192 bytes is accepted; 8193 bytes returns 431."
+    },
+    {
+      "id": "absolute-header-deadline",
+      "description": "Slow fragments cannot extend the one-second absolute header deadline."
+    },
+    {
+      "id": "disconnect-recovery",
+      "description": "Incomplete and abandoned clients do not prevent later valid service."
+    },
+    {
+      "id": "head",
+      "description": "HEAD has GET headers and length with no body, including missing files."
+    },
+    {
+      "id": "persistent-pipeline",
+      "description": "Persistent and pipelined responses retain order and exact framing."
+    },
+    {
+      "id": "connection-semantics",
+      "description": "HTTP/1.0 defaults to close; mixed-case Connection tokens override HTTP/1.1 persistence."
+    },
+    {
+      "id": "connection-limits",
+      "description": "Close after 100 requests; close idle persistent connections after two seconds."
+    },
+    {
+      "id": "slow-client-fairness",
+      "description": "A slow sender and a stalled large-file reader do not block ordinary requests."
+    },
+    {
+      "id": "hosts",
+      "description": "Host routing is case-insensitive; absent, duplicate and unknown HTTP/1.1 hosts fail."
+    },
+    {
+      "id": "routes-index-mime",
+      "description": "Exact redirects, prefix aliases, directory indexes and MIME types work."
+    },
+    {
+      "id": "etag",
+      "description": "Stable ETags and matching conditional requests return an empty 304."
+    },
+    {
+      "id": "ranges",
+      "description": "Closed, open and suffix byte ranges plus HEAD, invalid and unsatisfiable ranges."
+    },
+    {
+      "id": "proxy-get-and-post",
+      "description": "Proxy exact bytes and query; relay Content-Length and chunked POST bodies."
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "description": "Reject ambiguous uploads; strip hop-by-hop headers in both directions."
+    },
+    {
+      "id": "proxy-pool-and-errors",
+      "description": "Round robin, upstream reuse, malformed upstream rejection and timeout response."
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "description": "An upstream disconnect after receiving POST must not replay the operation."
+    },
+    {
+      "id": "tls",
+      "description": "TLS >= 1.2 serves exact file bytes and Host routing with SNI."
+    },
+    {
+      "id": "gzip",
+      "description": "Negotiated gzip has correct bytes and Vary; q=0 and ranges remain uncompressed."
+    },
+    {
+      "id": "cache",
+      "description": "Cache hit, expiry, host/query isolation, no-store and authorization bypass."
+    },
+    {
+      "id": "cache-byte-limit",
+      "description": "Cache eviction keeps retained response body bytes within the configured capacity."
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "description": "Valid reload changes roots atomically; invalid reload retains config; token bucket rejects excess."
+    },
+    {
+      "id": "graceful-stop",
+      "description": "SIGTERM finishes an in-flight response, closes listeners and exits within drain deadline."
+    },
+    {
+      "id": "configuration",
+      "description": "Invalid, duplicate, missing and unknown config values exit nonzero before serving."
+    }
+  ],
+  "benchmarks": [
+    {
+      "id": "fresh-4096-256",
+      "clients": 256,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": false,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "fresh-65536-256",
+      "clients": 256,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": false,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "persistent-4096-256",
+      "clients": 256,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "persistent-65536-256",
+      "clients": 256,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "proxy-4096-256",
+      "clients": 256,
+      "path": "/proxy/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "proxy-65536-256",
+      "clients": 256,
+      "path": "/proxy/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "tls-4096-256",
+      "clients": 256,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": true,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "tls-65536-256",
+      "clients": 256,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": true,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "gzip-4096-256",
+      "clients": 256,
+      "path": "/text/4096.txt",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": true,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "gzip-65536-256",
+      "clients": 256,
+      "path": "/text/65536.txt",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": true,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "fresh-4096-4096",
+      "clients": 4096,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": false,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "fresh-65536-4096",
+      "clients": 4096,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": false,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "persistent-4096-4096",
+      "clients": 4096,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "persistent-65536-4096",
+      "clients": 4096,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "proxy-4096-4096",
+      "clients": 4096,
+      "path": "/proxy/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "proxy-65536-4096",
+      "clients": 4096,
+      "path": "/proxy/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "tls-4096-4096",
+      "clients": 4096,
+      "path": "/data/4096",
+      "size": 4096,
+      "persistent": true,
+      "tls": true,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "tls-65536-4096",
+      "clients": 4096,
+      "path": "/data/65536",
+      "size": 65536,
+      "persistent": true,
+      "tls": true,
+      "gzip": false,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "gzip-4096-4096",
+      "clients": 4096,
+      "path": "/text/4096.txt",
+      "size": 4096,
+      "persistent": true,
+      "tls": false,
+      "gzip": true,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    },
+    {
+      "id": "gzip-65536-4096",
+      "clients": 4096,
+      "path": "/text/65536.txt",
+      "size": 65536,
+      "persistent": true,
+      "tls": false,
+      "gzip": true,
+      "rounds": 5,
+      "warmup_seconds": 1.0,
+      "seconds": 3.0,
+      "timeout_seconds": 2.0
+    }
+  ],
+  "build": {
+    "compiler": "rustc",
+    "edition": "2021",
+    "optimization": 3,
+    "source": "main.rs",
+    "approved_libraries": [
+      "libc",
+      "libssl.so.3",
+      "libcrypto.so.3",
+      "libz.so.1"
+    ]
+  },
+  "resources": {
+    "server_cpu_cores": 1,
+    "server_address_space_mib": 512,
+    "server_open_files": 16384,
+    "compile_address_space_mib": 4096,
+    "compile_cpu_seconds": 60,
+    "compile_wall_seconds": 120
+  }
+}

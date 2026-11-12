@@ -11,8 +11,7 @@ from pathlib import Path
 import metering
 from controller import atomic_json
 from runner import Responses
-from toksec import campaign, controller
-from toksec.specification import workloads
+from toksec import campaign, controller, context
 
 
 def tool(name, description, properties=None):
@@ -25,7 +24,10 @@ TOOLS = [tool('budget_status', 'Read remaining shared campaign dollars, tokens, 
          tool('submit_candidate', 'Compile complete main.rs in a sandbox and run every public acceptance check. Retain improvements automatically.', {'source': {'type': 'string'}}),
          tool('run_tests', 'Compile and execute a complete Rust unit-test source with rustc --test inside the sandbox.', {'source': {'type': 'string'}}),
          tool('benchmark_candidate', 'Run the complete workload matrix; compare the last fully accepted candidate with the incumbent in alternating rounds.'),
-         tool('finish', 'Finish after acceptance and an evaluated optimization attempt, or exhausted capacity. Export retained artifact.', {'report': {'type': 'string'}})]
+         tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and full public suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
+         tool('record_iteration', 'Persist concise experiment notes across context rollover. These notes are model claims, not promotion authority.',
+              {key: {'type': 'string'} for key in ('category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action')}),
+         tool('finish', 'Export and report only when budget_status.can_finish is true. Acceptance alone never ends improvement.', {'report': {'type': 'string'}})]
 
 
 class CampaignDeadline(BaseException):
@@ -70,7 +72,8 @@ def dispatch(run, name, args):
     if not isinstance(args, dict):
         raise ValueError('tool arguments must be an object')
     expected = {'submit_candidate': {'source'}, 'run_tests': {'source'}, 'finish': {'report'},
-                'budget_status': set(), 'benchmark_candidate': set()}
+                'budget_status': set(), 'benchmark_candidate': set(), 'revalidate_candidate': {'target'},
+                'record_iteration': {'category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action'}}
     if name not in expected or set(args) != expected[name]:
         raise ValueError('unknown tool or arguments')
     if name == 'budget_status':
@@ -79,21 +82,19 @@ def dispatch(run, name, args):
         return controller.submit(run, args['source'])
     if name == 'run_tests':
         return controller.test_source(run, args['source'])
+    if name == 'record_iteration':
+        return controller.record_iteration(run, args)
+    if name == 'revalidate_candidate':
+        return controller.revalidate(run, args['target'])
     if name == 'benchmark_candidate':
         result = controller.measure(run)
         return {**result, 'summaries': {key: {w: {k: v for k, v in metrics.items() if k != 'rounds'}
                                             for w, metrics in values.items()} for key, values in result['summaries'].items()}}
-    state = controller.read(run)
     capacity = controller.capacity(run)
     if not isinstance(args['report'], str) or len(args['report']) > 16000:
         raise ValueError('report must be text of at most 16000 characters')
-    if capacity['can_start_model_call'] and capacity['seconds_remaining'] > 150:
-        if not state['full_acceptance']:
-            raise ValueError('Complete public acceptance before finishing while capacity remains.')
-        pair_seconds = sum(w.rounds * (w.warmup_seconds + w.seconds + w.timeout_seconds + 1)
-                           for w in workloads(controller.validate(run)['level'])) * 2 + 30
-        if not state['optimization_attempts'] and capacity['seconds_remaining'] >= pair_seconds:
-            raise ValueError('Submit and benchmark an optimization attempt before finishing while capacity remains.')
+    if not capacity['can_finish']:
+        raise ValueError('Capacity remains. Continue one hypothesis/change/test iteration. If a full benchmark does not fit or is inconclusive, run bounded security tests or revalidate restarts. Finish is allowed only in the final 120 seconds or when model admission capacity is exhausted.')
     (Path(run) / 'model-report.md').write_text(args['report'])
     return {'finished': True}
 
@@ -128,6 +129,10 @@ def run_loop(run, client):
                     request = {'model': metering.MODEL, 'input': history, 'tools': TOOLS}
                     timeout = min(120, capacity['seconds_remaining'] - 30)
                     count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
+                    if count >= context.ROLLOVER_INPUT:
+                        history = context.checkpoint(run, text)
+                        request['input'] = history
+                        count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
                     if controller.capacity(run)['seconds_remaining'] <= 30:
                         reason = 'finalization reserve reached'
                         break
@@ -143,9 +148,16 @@ def run_loop(run, client):
                         break
                     history.extend(response['output'])
                     calls = [item for item in response['output'] if item['type'] == 'function_call']
+                    if not calls:
+                        if controller.capacity(run)['can_finish']:
+                            final_text = '\n'.join(part.get('text', '') for item in response['output']
+                                                   for part in item.get('content', []) if part.get('type') == 'output_text')
+                            (run / 'model-report.md').write_text(final_text)
+                            break
+                        history.append({'role': 'user', 'content': 'Capacity remains. A final message does not end this run. Continue the improvement/security loop using a tool; inspect budget_status if needed.'})
+                        continue
                     if len(calls) != 1:
-                        reason = 'model ended without one sequential tool call'
-                        break
+                        raise ValueError('backend violated sequential tool-call requirement')
                     call = calls[0]
                     try:
                         result = dispatch(run, call['name'], json.loads(call['arguments']))
