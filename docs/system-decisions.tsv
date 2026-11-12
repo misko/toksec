@@ -1,0 +1,10 @@
+checkpoint	decision	evidence	result
+scope	Use five independent Rust contracts and one campaign ledger	Latest user constraints	No implementation or model context passes between levels
+public-acceptance	Supply executable acceptance and benchmark code in the initial input	Latest user instruction supersedes suggestion-only final testing	No hidden final suite
+sandbox	Compile as well as execute generated code in namespaces	Real include_str credential probe and runtime assertions	Host credential access rejected
+linker	Select /usr/bin/gcc inside the compile sandbox	Default cc alias failed without host alternatives path	Real Rust compilation and unit tests pass
+retention	Require passed-check supersets before full acceptance	Broken-tail and deadline integration tests	Prior working artifact retained
+measurement	Keep functional acceptance separate from load results	256/4096 client tests and deliberately incorrect response test	Failures never count as valid goodput
+budget	Reserve conservatively in one durable ledger	Historical count mismatch and reservation/settlement tests	Uncertain usage blocks further inference
+publication	Prepare all five runs without launching paid calls	CLI preflight and empty-workspace checks	Campaign retains imported pilot balance only
+review	Use direct tests without claiming independent agent review	Native launcher has no service-tier selector	Standard-speed constraint preserved
