@@ -1,4 +1,4 @@
-"""Controller-owned capacity snapshots for the offline pilot."""
+"""Controller-owned capacity snapshots for offline and metered runs."""
 
 import json
 import math
@@ -46,7 +46,7 @@ def budget_status(run, *, now=None):
         limit = Decimal(config["budget_usd"])
         if not limit.is_finite() or limit < 0:
             raise ValueError("invalid dollar budget")
-        return {
+        result = {
             "schema_version": 1,
             "observed_unix": observed,
             "run_id": config["run_id"],
@@ -76,6 +76,24 @@ def budget_status(run, *, now=None):
             "recommended_action": "do_not_start",
             "reason": "No metered model adapter is connected. Capacity reporting does not enforce spending.",
         }
+        if (run / "ledger.json").exists():
+            from metering import read_ledger, totals
+            ledger = read_ledger(run)
+            balance = totals(ledger)
+            eligible = (ledger["state"] == "active" and balance["reserved"] == 0
+                        and balance["remaining"] > 0 and Decimal(balance["remaining_usd"]) > 0
+                        and remaining is not None and remaining > config["reserve_seconds"])
+            result.update(accounting_status=ledger["state"], can_start_model_call=eligible,
+                          recommended_action="continue" if eligible else "stop",
+                          reason="Next request requires reservation" if eligible else (ledger["reason"] or "capacity unavailable"))
+            result["tokens"] = {"limit": ledger["token_limit"], "used": balance["used"],
+                                "reserved": balance["reserved"], "remaining": balance["remaining"]}
+            result["dollars"] = {"limit": ledger["dollar_limit"],
+                                 "spent_upper_bound": balance["spent_usd_upper_bound"],
+                                 "reserved": balance["reserved_usd"], "remaining": balance["remaining_usd"],
+                                 "accounting_basis": "published API rates, cache writes charged at upper rate"}
+            result["usage_complete"] = balance["reserved"] == 0 and ledger["state"] != "uncertain"
+        return result
 
 
 def bind_budget_status(run):

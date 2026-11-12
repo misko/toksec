@@ -9,8 +9,9 @@
   "builder_count": 1,
   "language": "python3",
   "native_budget_enforcement": false,
-  "backend": null,
-  "launch_status": "blocked_budget_enforcement",
+  "backend": "responses_api",
+  "launch_status": "requires_preflight",
   "setup_cost_included": false,
-  "sealed_final_suite": false
+  "sealed_final_suite": false,
+  "token_limit": 10000000
 }
