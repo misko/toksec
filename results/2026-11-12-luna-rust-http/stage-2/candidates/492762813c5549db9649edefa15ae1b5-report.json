@@ -1,0 +1,119 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "warning: field `pipeline` is never read\n  --> /src/main.rs:13:164\n   |\n13 | ...ct Config { listen: SocketAddr, root: PathBuf, max_conn: usize, header_bytes: usize, header_ms:u64, idle_ms:u64, write_ms:u64, max_req:usize, pipeline:us...\n   |       ------ field in this struct                                                                                                                ^^^^^^^^\n   |\n   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+    "passed": true,
+    "seconds": 0.5166275389492512,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": "d999a81459854a48871770ca7dba85a6",
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 8997437,
+    "remaining_usd": "4.92986954",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1454.3382308483124,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.07013046",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 1002563
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.002038092352449894
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.004334753379225731
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.003691490739583969
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.0033117812126874924
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.00042932014912366867
+      },
+      {
+        "id": "syntax",
+        "passed": true,
+        "seconds": 0.003748195245862007
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.00088526401668787
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 0.000716247595846653
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.2008139891549945
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.0012283511459827423
+      },
+      {
+        "id": "head",
+        "passed": true,
+        "seconds": 0.0016057835891842842
+      },
+      {
+        "id": "persistent-pipeline",
+        "passed": true,
+        "seconds": 0.00034041237086057663
+      },
+      {
+        "id": "connection-semantics",
+        "passed": true,
+        "seconds": 0.0008657583966851234
+      },
+      {
+        "id": "connection-limits",
+        "passed": true,
+        "seconds": 2.0662735933437943
+      },
+      {
+        "id": "slow-client-fairness",
+        "passed": true,
+        "seconds": 0.007972702383995056
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.05040462967008352
+      }
+    ],
+    "passed": true
+  },
+  "id": "492762813c5549db9649edefa15ae1b5",
+  "source_sha256": "11600215424e134996dbc174db6f1fd118bcdb2e31dee72d53defe087206213c"
+}

@@ -1,0 +1,134 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "warning: field `pipeline` is never read\n  --> /src/main.rs:11:164\n   |\n11 | ...ct Config { listen: SocketAddr, root: PathBuf, max_conn: usize, header_bytes: usize, header_ms:u64, idle_ms:u64, write_ms:u64, max_req:usize, pipeline:us...\n   |       ------ field in this struct                                                                                                                ^^^^^^^^\n   |\n   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+    "passed": true,
+    "seconds": 0.46657966170459986,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": "d999a81459854a48871770ca7dba85a6",
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9036278,
+    "remaining_usd": "4.93319449",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1481.455510854721,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.06680551",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 963722
+  },
+  "checks": {
+    "cases": [
+      {
+        "error": "ConnectionResetError: [Errno 104] Connection reset by peer",
+        "id": "bootstrap",
+        "passed": false,
+        "seconds": 0.07653284631669521
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "files",
+        "passed": false,
+        "seconds": 7.92965292930603e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "query-and-decoding",
+        "passed": false,
+        "seconds": 1.9659288227558136e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "confinement",
+        "passed": false,
+        "seconds": 1.4146789908409119e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "fragmentation",
+        "passed": false,
+        "seconds": 8.83452594280243e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "syntax",
+        "passed": false,
+        "seconds": 9.18656587600708e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "request-framing",
+        "passed": false,
+        "seconds": 8.56257975101471e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "header-limit",
+        "passed": false,
+        "seconds": 1.1323951184749603e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "absolute-header-deadline",
+        "passed": false,
+        "seconds": 9.041279554367065e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "disconnect-recovery",
+        "passed": false,
+        "seconds": 7.100403308868408e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "head",
+        "passed": false,
+        "seconds": 6.799586117267609e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "persistent-pipeline",
+        "passed": false,
+        "seconds": 7.309950888156891e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "connection-semantics",
+        "passed": false,
+        "seconds": 9.76957380771637e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "connection-limits",
+        "passed": false,
+        "seconds": 7.010996341705322e-06
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "slow-client-fairness",
+        "passed": false,
+        "seconds": 7.210299372673035e-06
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.05818644538521767
+      }
+    ],
+    "passed": false
+  },
+  "id": "4102683706bb4392a7ae4aca713df6fb",
+  "source_sha256": "090e7c51fbf1c2d12ae894b25fb237de3a92aeec3c003f1a4f7abccd671f1aea"
+}

@@ -1,0 +1,39 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.6727395011112094,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": "2ccf0cd3e2cd4b7e802814cdb152df58",
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9534711,
+    "remaining_usd": "4.96055844",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1605.5662219524384,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.03944156",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 465289
+  },
+  "checks": {
+    "cases": [],
+    "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+    "passed": false
+  },
+  "id": "10a8fe9a93034e0c87cf668555462016",
+  "source_sha256": "f0d976a0f4b649570485f486079973d92193e06f2d0c6fd82ab4e413e0fca4b9"
+}

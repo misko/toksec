@@ -1,0 +1,9 @@
+{
+  "best": "2ccf0cd3e2cd4b7e802814cdb152df58",
+  "ended_unix": 1794493514.176043,
+  "finished": true,
+  "full_acceptance": true,
+  "last": "40b5a9c8cb914304963a0465ae770e07",
+  "optimization_attempts": 0,
+  "stop_reason": "ValueError: counted input exceeds the supported 64000-token context budget"
+}

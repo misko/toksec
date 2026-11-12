@@ -1,0 +1,131 @@
+{
+  "acceptance": {
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "",
+      "passed": true,
+      "seconds": 0.5208346135914326,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": "40740d0709574a33bfeefae5d0cb426f",
+      "can_start_model_call": true,
+      "dollar_limit": "5.00",
+      "full_acceptance": false,
+      "model": "gpt-6-luna",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "0.537",
+      "optimization_attempts": 0,
+      "reason": null,
+      "remaining": 9633269,
+      "remaining_usd": "4.96416627",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 1632.8901805877686,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.03583373",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 366731
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.000772794708609581
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.004413538612425327
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.000721481628715992
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.0007951529696583748
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0003749970346689224
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.0005839141085743904
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00039185117930173874
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.00031629763543605804
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2011908432468772
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0005937721580266953
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.1200391473248601
+        }
+      ],
+      "passed": true
+    },
+    "id": "2ccf0cd3e2cd4b7e802814cdb152df58",
+    "source_sha256": "e636df4fea04b92c627726e50bb4d49c646546c8086fbc8da09ebb94629a24e8"
+  },
+  "artifact": "/home/mouse9911/gits/toksec/.runs/http-campaign/runs/level-1-1228222dcdeb/candidates/2ccf0cd3e2cd4b7e802814cdb152df58",
+  "best": "2ccf0cd3e2cd4b7e802814cdb152df58",
+  "capacity": {
+    "best_candidate": "2ccf0cd3e2cd4b7e802814cdb152df58",
+    "can_start_model_call": false,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9170805,
+    "remaining_usd": "4.94735040",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1468.6081578731537,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.05264960",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 829195
+  },
+  "full_acceptance": true,
+  "state": {
+    "best": "2ccf0cd3e2cd4b7e802814cdb152df58",
+    "ended_unix": 1794493514.176043,
+    "finished": true,
+    "full_acceptance": true,
+    "last": "40b5a9c8cb914304963a0465ae770e07",
+    "optimization_attempts": 0,
+    "stop_reason": "ValueError: counted input exceeds the supported 64000-token context budget"
+  },
+  "warning": null
+}

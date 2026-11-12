@@ -1,0 +1,58 @@
+{
+  "campaign_balance": {
+    "used": 1182609,
+    "reserved": 0,
+    "remaining": 8817391,
+    "spent_usd_upper_bound": "0.07705024",
+    "reserved_usd": "0",
+    "remaining_usd": "4.92294976",
+    "model": "gpt-6-luna",
+    "service_tier": "default",
+    "state": "active",
+    "reason": null,
+    "can_start_model_call": true,
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "dollar_limit": "5.00",
+    "token_limit": 10000000,
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation"
+  },
+  "stages": [
+    {
+      "level": 1,
+      "run": "level-1-1228222dcdeb",
+      "accepted_candidate": "2ccf0cd3e2cd4b7e802814cdb152df58",
+      "accepted_source_sha256": "e636df4fea04b92c627726e50bb4d49c646546c8086fbc8da09ebb94629a24e8",
+      "binary_sha256": "6bfac92ad57f7bf131bf3a9679dc04668472a4ec23c899dce4aa79cd18569037",
+      "public_checks_passed": 11,
+      "public_checks_total": 11,
+      "calls": 15,
+      "tokens": 696214,
+      "input_tokens": 660454,
+      "output_tokens": 35760,
+      "cached_input_tokens": 596872,
+      "cost_usd_upper_bound": "0.03973747",
+      "run_wall_seconds": 331.3864195346832,
+      "stop_reason": "ValueError: counted input exceeds the supported 64000-token context budget",
+      "completed_optimization_comparisons": 0
+    },
+    {
+      "level": 2,
+      "run": "level-2-e6e9b133fc69",
+      "accepted_candidate": "d999a81459854a48871770ca7dba85a6",
+      "accepted_source_sha256": "4d5e9d83b66559535188b04e5e38c42ddaa99126b205a3edf1cb79171565c16f",
+      "binary_sha256": "20cce06c7ad9a917b6a7238e58d1e8ce0afc2ec8c8e162d85afd74485a0f0f17",
+      "public_checks_passed": 16,
+      "public_checks_total": 16,
+      "calls": 10,
+      "tokens": 353414,
+      "input_tokens": 334274,
+      "output_tokens": 19140,
+      "cached_input_tokens": 286389,
+      "cost_usd_upper_bound": "0.02440064",
+      "run_wall_seconds": 1211.5809171199799,
+      "stop_reason": "finished",
+      "completed_optimization_comparisons": 2
+    }
+  ]
+}

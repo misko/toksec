@@ -1,0 +1,38 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "error[E0308]: mismatched types\n  --> /src/main.rs:12:887\n   |\n12 | ...(j.stream,cc.clone(),j.accepted);aa.fetch_sub(1,Ordering::Relaxed)});}for x in l.incoming(){if let Ok(s)=x{if active.fetch_add(1,...\n   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `()`, found `usize`\n   |\nhelp: consider using a semicolon here\n   |\n12 | fn main(){let a:Vec<String>=env::args().collect();let mut path=None;let mut i=1;while i<a.len(){if a[i]==\"--config\"&&i+1<a.len(){path=Some(a[i+1].clone());i+=2}else{eprintln!(\"invalid args\");std::process::exit(2)}}let c=match parse_config(path.as_deref().unwrap_or(\"/fixtures/server.conf\")){Ok(x)=>x,Err(e)=>{eprintln!(\"{e}\");std::process::exit(2)}};let l=match TcpListener::bind(c.listen){Ok(x)=>x,Err(e)=>{eprintln!(\"{e}\");std::process::exit(1)}};let c=Arc::new(c);let q:Shared=Arc::new((Mutex::new(VecDeque::new()),Condvar::new()));let active=Arc::new(AtomicUsize::new(0));for _ in 0..128.min(c.max_connections){let(qc,cc,aa)=(q.clone(),c.clone(),active.clone());let _=thread::Builder::new().stack_size(1024*1024).spawn(move||loop{let j={let(m,v)=&*qc;let mut g=m.lock().unwrap();while g.is_empty(){g=v.wait(g).unwrap()}g.pop_front().unwrap()};handle(j.stream,cc.clone(),j.accepted);aa.fetch_sub(1,Ordering::Relaxed);});}for x in l.incoming(){if let Ok(s)=x{if active.fetch_add(1,Ordering::Relaxed)>=c.max_connections{active.fetch_sub(1,Ordering::Relaxed);drop(s);continue}let j=Job{stream:s,accepted:Instant::now()};let(m,v)=&*q;m.lock().unwrap().push_back(j);v.notify_one()}}}\n   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        +\nhelp: you might have meant to break the loop with this value\n   |\n12 | fn main(){let a:Vec<String>=env::args().collect();let mut path=None;let mut i=1;while i<a.len(){if a[i]==\"--config\"&&i+1<a.len(){path=Some(a[i+1].clone());i+=2}else{eprintln!(\"invalid args\");std::process::exit(2)}}let c=match parse_config(path.as_deref().unwrap_or(\"/fixtures/server.conf\")){Ok(x)=>x,Err(e)=>{eprintln!(\"{e}\");std::process::exit(2)}};let l=match TcpListener::bind(c.listen){Ok(x)=>x,Err(e)=>{eprintln!(\"{e}\");std::process::exit(1)}};let c=Arc::new(c);let q:Shared=Arc::new((Mutex::new(VecDeque::new()),Condvar::new()));let active=Arc::new(AtomicUsize::new(0));for _ in 0..128.min(c.max_connections){let(qc,cc,aa)=(q.clone(),c.clone(),active.clone());let _=thread::Builder::new().stack_size(1024*1024).spawn(move||loop{let j={let(m,v)=&*qc;let mut g=m.lock().unwrap();while g.is_empty(){g=v.wait(g).unwrap()}g.pop_front().unwrap()};handle(j.stream,cc.clone(),j.accepted);break aa.fetch_sub(1,Ordering::Relaxed);});}for x in l.incoming(){if let Ok(s)=x{if active.fetch_add(1,Ordering::Relaxed)>=c.max_connections{active.fetch_sub(1,Ordering::Relaxed);drop(s);continue}let j=Job{stream:s,accepted:Instant::now()};let(m,v)=&*q;m.lock().unwrap().push_back(j);v.notify_one()}}}\n   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       +++++                                  +\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+    "passed": false,
+    "seconds": 0.16711061354726553,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": null,
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": false,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9760395,
+    "remaining_usd": "4.97310500",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1702.9795501232147,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.02689500",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 239605
+  },
+  "checks": {
+    "cases": [],
+    "passed": false
+  },
+  "id": "fdae1e2c74c84830ae3107b5066c00b0",
+  "source_sha256": "c4ccbf296d280bd367adc021eeb9498585884a193f003abe8a6df6815b0d78d6"
+}
