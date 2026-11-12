@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "task": "http-level-1-v1",
+  "model": "gpt-6-luna",
+  "service_tier": "default",
+  "budget_usd": "5.00",
+  "wall_seconds": 900,
+  "reserve_seconds": 60,
+  "builder_count": 1,
+  "language": "python3",
+  "native_budget_enforcement": false,
+  "backend": null,
+  "launch_status": "blocked_budget_enforcement",
+  "setup_cost_included": false,
+  "sealed_final_suite": false
+}
