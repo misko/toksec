@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "correctness",
+  "change": "Submit a focused fix to request-line stripping, without changing socket processing or response behavior.",
+  "evidence": "Earlier isolated regression demonstrated the retained headerless request defect; the public suite does not require a successful headerless request.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained parser drops the entire final CRLFCRLF before parsing and requires a trailing CR on the request line, so a valid request with no headers incorrectly returns 400. Allow the already-validated last line to lack that stripped CR.",
+  "last": "3fbcc7adb3e847d4a0268cacf48baf12",
+  "next_action": "Submit fix, run public acceptance and fresh-start validation; exercise headerless, malformed and normal header cases.",
+  "recorded_unix": 1794497648.2523615,
+  "verdict": "Unfixed in retained candidate; focused correction to be evaluated."
+}

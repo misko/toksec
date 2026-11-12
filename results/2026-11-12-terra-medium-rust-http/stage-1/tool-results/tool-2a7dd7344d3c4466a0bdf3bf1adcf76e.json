@@ -1,0 +1,104 @@
+{
+  "name": "submit_candidate",
+  "result": {
+    "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "warning: unused import: `c_void`\n  --> /src/main.rs:10:33\n   |\n10 | use std::os::raw::{c_char,c_int,c_void};\n   |                                 ^^^^^^\n   |\n   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+      "passed": true,
+      "seconds": 0.41624395828694105,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": "20ef0414aaf14ae5a88d2a8e9379383f",
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 1,
+      "dollar_limit": "5.00",
+      "full_acceptance": true,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 2,
+      "reason": null,
+      "remaining": 8010202,
+      "remaining_usd": "4.70377666",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 931.7059261798859,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.29622334",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 1989798,
+      "work_phase": "improve"
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.001996760256588459
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.006057035177946091
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.007965070195496082
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.005020376294851303
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0008980575948953629
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.003874516114592552
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.005092303268611431
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.0008887900039553642
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2008015159517527
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0012699086219072342
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.043545317836105824
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    },
+    "id": "98fcfd487e97434aac6d82036fc52426",
+    "retained": false,
+    "source_sha256": "2cffcb02b2951c7675d71af3c8f9cd94586bd12313f9a1f1445b8951eb105c15"
+  }
+}

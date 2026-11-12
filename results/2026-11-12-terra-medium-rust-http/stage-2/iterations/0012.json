@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "Filled a nonblocking TCP send buffer, half-closed the peer write side, then compared epoll interest masks.",
+  "evidence": "Executable socket test observed RDHUP on three repeated waits with OUT|RDHUP, and no events over a 20ms wait after changing to OUT alone. This reproduces the event-loop mechanism, not a full-server load measurement.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "A write-stalled connection with read-side half-close can spin on repeated level-triggered RDHUP notifications.",
+  "last": "e8f90e59dac741bb8b87aeec90b52330",
+  "next_action": "Submit one-change write-interest snapshot and run public suite and fresh-start validation.",
+  "recorded_unix": 1794499361.922099,
+  "verdict": "Risk confirmed in bounded test; write-mode interest can omit RDHUP without suppressing OUT."
+}

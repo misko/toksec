@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Recreated the incumbent's accept, active-count, 128 KiB worker and absolute read-deadline pattern with 128 incomplete TCP clients, followed by a complete request.",
+  "evidence": "The initial simplified test returned immediately after one read and did not model slow clients; a corrected loop held at least 100 clients open and passed the subsequent-response assertion.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Large virtual-address consumption during simultaneous allocations might also arise during real incomplete-connection handling, but sequential accept and worker startup may behave differently.",
+  "last": "98fcfd487e97434aac6d82036fc52426",
+  "next_action": "Increase the bounded TCP stress to 2048 stalled clients with a longer configured read deadline, and test recovery.",
+  "recorded_unix": 1794497226.8466933,
+  "verdict": "No failure at this moderate concurrency; the synthetic allocator abort does not establish an actual server crash."
+}

@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "correctness",
+  "change": "Submitted byte-oriented header-field parser in snapshot e8f90e59; only the parser changed from the retained server.",
+  "evidence": "Three focused parser tests passed, including obs-text and malformed framing. The snapshot passed all 16 public checks and three independent complete restart suites with empty diagnostics.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Parsing field values as bytes avoids rejecting valid HTTP obs-text while preserving framing and strict name checks.",
+  "last": "e8f90e59dac741bb8b87aeec90b52330",
+  "next_action": "Review bounded request resource limits and exercise an additional functional regression.",
+  "recorded_unix": 1794499337.5988243,
+  "verdict": "Demonstrated in bounded parser tests and acceptance; unpromoted and unbenchmarked, so retained server still rejects non-UTF-8 field values."
+}

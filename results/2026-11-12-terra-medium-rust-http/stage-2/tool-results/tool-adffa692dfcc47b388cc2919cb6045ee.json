@@ -1,0 +1,15 @@
+{
+  "name": "run_tests",
+  "result": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.5707740429788828,
+    "test": true,
+    "tests": {
+      "output": "\nrunning 2 tests\ntest corrected_eof_closes_connection ... ok\ntest retained_eof_keeps_connection_alive ... ok\n\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "passed": true
+    },
+    "timeout": false
+  }
+}

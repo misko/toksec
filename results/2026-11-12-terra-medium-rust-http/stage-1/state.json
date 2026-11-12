@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "context_rollovers": 3,
+  "ended_unix": 1794497749.3468025,
+  "finished": true,
+  "full_acceptance": true,
+  "invalidated": [],
+  "journal_entries": 20,
+  "last": "02ec1b9e28124e6db987942b71a33ed1",
+  "optimization_attempts": 4,
+  "stop_reason": "finished"
+}

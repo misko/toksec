@@ -1,0 +1,156 @@
+{
+  "acceptance": {
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "warning: field `pipeline` is never read\n  --> /src/main.rs:11:164\n   |\n11 | ...ct Config { listen: SocketAddr, root: PathBuf, max_conn: usize, header_bytes: usize, header_ms:u64, idle_ms:u64, write_ms:u64, max_req:usize, pipeline:us...\n   |       ------ field in this struct                                                                                                                ^^^^^^^^\n   |\n   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+      "passed": true,
+      "seconds": 0.5679830256849527,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": null,
+      "can_start_model_call": true,
+      "dollar_limit": "5.00",
+      "full_acceptance": false,
+      "model": "gpt-6-luna",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "0.537",
+      "optimization_attempts": 0,
+      "reason": null,
+      "remaining": 9099521,
+      "remaining_usd": "4.93689165",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 1725.9417984485626,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.06310835",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 900479
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0020765289664268494
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.007001896388828754
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.00897589884698391
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.007014255039393902
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0009788265451788902
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.006979580037295818
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00503916572779417
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.0019972464069724083
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2010237909853458
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0011209500953555107
+        },
+        {
+          "id": "head",
+          "passed": true,
+          "seconds": 0.002802059054374695
+        },
+        {
+          "id": "persistent-pipeline",
+          "passed": true,
+          "seconds": 0.0021466324105858803
+        },
+        {
+          "id": "connection-semantics",
+          "passed": true,
+          "seconds": 0.001913006417453289
+        },
+        {
+          "id": "connection-limits",
+          "passed": true,
+          "seconds": 2.07803713157773
+        },
+        {
+          "id": "slow-client-fairness",
+          "passed": true,
+          "seconds": 0.007976096123456955
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.061173150315880775
+        }
+      ],
+      "passed": true
+    },
+    "id": "d999a81459854a48871770ca7dba85a6",
+    "source_sha256": "4d5e9d83b66559535188b04e5e38c42ddaa99126b205a3edf1cb79171565c16f"
+  },
+  "artifact": "/home/mouse9911/gits/toksec/.runs/http-campaign/runs/level-2-e6e9b133fc69/candidates/d999a81459854a48871770ca7dba85a6",
+  "best": "d999a81459854a48871770ca7dba85a6",
+  "capacity": {
+    "best_candidate": "d999a81459854a48871770ca7dba85a6",
+    "can_start_model_call": false,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 2,
+    "reason": null,
+    "remaining": 8817391,
+    "remaining_usd": "4.92294976",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 588.4096975326538,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.07705024",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 1182609
+  },
+  "full_acceptance": true,
+  "state": {
+    "best": "d999a81459854a48871770ca7dba85a6",
+    "ended_unix": 1794494725.7740254,
+    "finished": true,
+    "full_acceptance": true,
+    "last": "f3e26df868754297911032cafa666507",
+    "optimization_attempts": 2,
+    "stop_reason": "finished"
+  },
+  "warning": null
+}

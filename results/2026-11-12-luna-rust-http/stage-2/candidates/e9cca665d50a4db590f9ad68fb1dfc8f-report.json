@@ -1,0 +1,38 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "warning: unused variable: `body`\n  --> /src/main.rs:37:75\n   |\n37 | ...:bool)->io::Result<()>{ let body: &[u8]=b\"\"; write!(stream,\"HTTP/1.1 {} {}\\r\\nContent-Length: 0\\r\\nConnection: close\\r\\n\\r\\n\",s,s...\n   |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_body`\n   |\n   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0502]: cannot borrow `buf` as immutable because it is also borrowed as mutable\n  --> /src/main.rs:66:112\n   |\n66 | ...t>0 {let n=file.read(&mut buf[..std::cmp::min(buf.len(),left as usize)])?;if n==0{break} st.write_all(&buf[..n])?;left-=n as u64;} }\n   |                              --------------------^^^----------------------\n   |                              |  |                |\n   |                              |  |                immutable borrow occurs here\n   |                              |  mutable borrow later used here\n   |                              mutable borrow occurs here\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0502`.\n",
+    "passed": false,
+    "seconds": 0.16925149504095316,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": null,
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": false,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9127769,
+    "remaining_usd": "4.94013353",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1753.8600182533264,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.05986647",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 872231
+  },
+  "checks": {
+    "cases": [],
+    "passed": false
+  },
+  "id": "e9cca665d50a4db590f9ad68fb1dfc8f",
+  "source_sha256": "9282ced7e0fa037f22314ab9e172467bdbc8fdbd710d8512dbc538c5410fc847"
+}

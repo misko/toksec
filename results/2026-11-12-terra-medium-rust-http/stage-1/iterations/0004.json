@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Ran unit regressions against the retained parser, including both HTTP versions, framing and one-pass escapes.",
+  "evidence": "The executable test reproduced Err(400) for both valid GET /hello.txt HTTP/1.0 and HTTP/1.1 with no header fields; requests with a field parse successfully. Framing and escape cases passed.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Removing the entire CRLFCRLF before parsing causes requests with no header fields to lose the request-line terminator and be rejected.",
+  "last": "7792dc23c0f14689854afd92db6fa4c3",
+  "next_action": "Submit a single parser-boundary fix based on the incumbent, and test it without claiming promotion.",
+  "recorded_unix": 1794496514.5373244,
+  "verdict": "Confirmed contract defect outside the finite public checks."
+}

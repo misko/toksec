@@ -1,0 +1,15 @@
+{
+  "name": "run_tests",
+  "result": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.3280009860172868,
+    "test": true,
+    "tests": {
+      "output": "\nrunning 4 tests\ntest fragmentation_and_header_boundary ... ok\ntest only_the_first_header_counts_for_size ... ok\ntest overlapping_write_and_header_deadline_is_not_checked ... ok\ntest pipelined_errors_are_scanned_in_order ... ok\n\ntest result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "passed": true
+    },
+    "timeout": false
+  }
+}

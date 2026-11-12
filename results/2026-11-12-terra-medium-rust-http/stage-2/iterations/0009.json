@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "correctness",
+  "change": "Exercised byte-oriented header field parsing against a valid obs-text field, rejected controls and non-token names, duplicate and nonzero lengths, transfer coding, and mixed-case connection tokens.",
+  "evidence": "Three executable parser tests passed. The same valid obs-text header fails the retained parser's unconditional whole-block UTF-8 conversion. These tests are isolated, not end-to-end server evidence.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Byte-valued HTTP field values should not need to be UTF-8; only the decoded path is constrained to UTF-8.",
+  "last": "a1b47b3705094a5ca5cc2e95c753ee96",
+  "next_action": "Submit byte-oriented header parsing and run all public checks and fresh-start validation.",
+  "recorded_unix": 1794499268.975411,
+  "verdict": "Parser compatibility defect demonstrated at unit level; prepare a single-change snapshot."
+}

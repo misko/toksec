@@ -1,0 +1,271 @@
+{
+  "name": "revalidate_candidate",
+  "result": {
+    "candidate": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+    "complete": true,
+    "passed": true,
+    "restarts": [
+      {
+        "cases": [
+          {
+            "id": "bootstrap",
+            "passed": true,
+            "seconds": 0.002822871319949627
+          },
+          {
+            "id": "files",
+            "passed": true,
+            "seconds": 0.009150169789791107
+          },
+          {
+            "id": "query-and-decoding",
+            "passed": true,
+            "seconds": 0.003308353014290333
+          },
+          {
+            "id": "confinement",
+            "passed": true,
+            "seconds": 0.00030927546322345734
+          },
+          {
+            "id": "fragmentation",
+            "passed": true,
+            "seconds": 0.00023728515952825546
+          },
+          {
+            "id": "syntax",
+            "passed": true,
+            "seconds": 0.0003314875066280365
+          },
+          {
+            "id": "request-framing",
+            "passed": true,
+            "seconds": 0.00027644354850053787
+          },
+          {
+            "id": "header-limit",
+            "passed": true,
+            "seconds": 0.00018890760838985443
+          },
+          {
+            "id": "absolute-header-deadline",
+            "passed": true,
+            "seconds": 1.201058161444962
+          },
+          {
+            "id": "disconnect-recovery",
+            "passed": true,
+            "seconds": 0.000910487025976181
+          },
+          {
+            "id": "head",
+            "passed": true,
+            "seconds": 0.00110719446092844
+          },
+          {
+            "id": "persistent-pipeline",
+            "passed": true,
+            "seconds": 0.00030958931893110275
+          },
+          {
+            "id": "connection-semantics",
+            "passed": true,
+            "seconds": 0.00011715292930603027
+          },
+          {
+            "id": "connection-limits",
+            "passed": true,
+            "seconds": 2.0498508093878627
+          },
+          {
+            "id": "slow-client-fairness",
+            "passed": true,
+            "seconds": 0.0017953421920537949
+          },
+          {
+            "id": "configuration",
+            "passed": true,
+            "seconds": 0.10341867618262768
+          }
+        ],
+        "passed": true,
+        "server_diagnostics": "",
+        "server_exit_code": null
+      },
+      {
+        "cases": [
+          {
+            "id": "bootstrap",
+            "passed": true,
+            "seconds": 0.0005777571350336075
+          },
+          {
+            "id": "files",
+            "passed": true,
+            "seconds": 0.0057098474353551865
+          },
+          {
+            "id": "query-and-decoding",
+            "passed": true,
+            "seconds": 0.0006650099530816078
+          },
+          {
+            "id": "confinement",
+            "passed": true,
+            "seconds": 0.00035625137388706207
+          },
+          {
+            "id": "fragmentation",
+            "passed": true,
+            "seconds": 0.00014236290007829666
+          },
+          {
+            "id": "syntax",
+            "passed": true,
+            "seconds": 0.0004277704283595085
+          },
+          {
+            "id": "request-framing",
+            "passed": true,
+            "seconds": 0.00020104646682739258
+          },
+          {
+            "id": "header-limit",
+            "passed": true,
+            "seconds": 9.931810200214386e-05
+          },
+          {
+            "id": "absolute-header-deadline",
+            "passed": true,
+            "seconds": 1.201128757558763
+          },
+          {
+            "id": "disconnect-recovery",
+            "passed": true,
+            "seconds": 0.0005640164017677307
+          },
+          {
+            "id": "head",
+            "passed": true,
+            "seconds": 0.0001865718513727188
+          },
+          {
+            "id": "persistent-pipeline",
+            "passed": true,
+            "seconds": 0.0001927381381392479
+          },
+          {
+            "id": "connection-semantics",
+            "passed": true,
+            "seconds": 0.00011333171278238297
+          },
+          {
+            "id": "connection-limits",
+            "passed": true,
+            "seconds": 2.0524657433852553
+          },
+          {
+            "id": "slow-client-fairness",
+            "passed": true,
+            "seconds": 0.0020046839490532875
+          },
+          {
+            "id": "configuration",
+            "passed": true,
+            "seconds": 0.10608231741935015
+          }
+        ],
+        "passed": true,
+        "server_diagnostics": "",
+        "server_exit_code": null
+      },
+      {
+        "cases": [
+          {
+            "id": "bootstrap",
+            "passed": true,
+            "seconds": 0.0018719099462032318
+          },
+          {
+            "id": "files",
+            "passed": true,
+            "seconds": 0.005381962284445763
+          },
+          {
+            "id": "query-and-decoding",
+            "passed": true,
+            "seconds": 0.00046758633106946945
+          },
+          {
+            "id": "confinement",
+            "passed": true,
+            "seconds": 0.0002706944942474365
+          },
+          {
+            "id": "fragmentation",
+            "passed": true,
+            "seconds": 0.00027941539883613586
+          },
+          {
+            "id": "syntax",
+            "passed": true,
+            "seconds": 0.0002693161368370056
+          },
+          {
+            "id": "request-framing",
+            "passed": true,
+            "seconds": 0.00019557122141122818
+          },
+          {
+            "id": "header-limit",
+            "passed": true,
+            "seconds": 0.00011976342648267746
+          },
+          {
+            "id": "absolute-header-deadline",
+            "passed": true,
+            "seconds": 1.2014143662527204
+          },
+          {
+            "id": "disconnect-recovery",
+            "passed": true,
+            "seconds": 0.0010328823700547218
+          },
+          {
+            "id": "head",
+            "passed": true,
+            "seconds": 0.001200561411678791
+          },
+          {
+            "id": "persistent-pipeline",
+            "passed": true,
+            "seconds": 0.001239091157913208
+          },
+          {
+            "id": "connection-semantics",
+            "passed": true,
+            "seconds": 0.00029914267361164093
+          },
+          {
+            "id": "connection-limits",
+            "passed": true,
+            "seconds": 2.0509626660495996
+          },
+          {
+            "id": "slow-client-fairness",
+            "passed": true,
+            "seconds": 0.002762816846370697
+          },
+          {
+            "id": "configuration",
+            "passed": true,
+            "seconds": 0.08604541420936584
+          }
+        ],
+        "passed": true,
+        "server_diagnostics": "",
+        "server_exit_code": null
+      }
+    ]
+  }
+}

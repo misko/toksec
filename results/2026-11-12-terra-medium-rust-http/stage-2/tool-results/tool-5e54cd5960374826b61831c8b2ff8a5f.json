@@ -1,0 +1,46 @@
+{
+  "name": "submit_candidate",
+  "result": {
+    "best": null,
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "warning: unused import: `IntoRawFd`\n --> /src/main.rs:6:39\n  |\n6 | use std::os::fd::{AsRawFd, FromRawFd, IntoRawFd, RawFd};\n  |                                       ^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0308]: mismatched types\n  --> /src/main.rs:79:101\n   |\n79 | ...now; if !c.buf.is_empty(){process(c,cfg,now)} if !c.writing {break}\n   |         ---------------------^^^^^^^^^^^^^^^^^^-\n   |         |                    |\n   |         |                    expected `()`, found `bool`\n   |         `if` expressions without `else` arms expect their inner expression to be `()`\n   |\nhelp: consider using a semicolon here\n   |\n79 |  c.file=None; if c.close_after{return false} c.writing=false;c.idle_start=now; if !c.buf.is_empty(){process(c,cfg,now);} if !c.writing {break}\n   |                                                                                                                       +\nhelp: you might have meant to return this value\n   |\n79 |  c.file=None; if c.close_after{return false} c.writing=false;c.idle_start=now; if !c.buf.is_empty(){return process(c,cfg,now);} if !c.writing {break}\n   |                                                                                                     ++++++                   +\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+      "passed": false,
+      "seconds": 0.22400775272399187,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": null,
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 0,
+      "dollar_limit": "5.00",
+      "full_acceptance": false,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 0,
+      "reason": null,
+      "remaining": 6555588,
+      "remaining_usd": "4.37084796",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 1743.374722480774,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.62915204",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 3444412,
+      "work_phase": "conformance"
+    },
+    "checks": {
+      "cases": [],
+      "passed": false
+    },
+    "id": "e5fd06395f394fc49d5c4ab03c2b3a9f",
+    "retained": false,
+    "source_sha256": "cf2637c01173eec1cd58462645fb9017e02cb200d0374f18b89d52968ac98361"
+  }
+}

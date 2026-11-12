@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "stability",
+  "change": "Ran three full public acceptance suites on fresh incumbent sandbox starts.",
+  "evidence": "All 16 checks passed in each of three restarts; server diagnostics were empty and the process remained running.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained build remains reproducible across fresh sandbox instances, independently of the recent write-interest experiment.",
+  "last": "cce1dd9a9967480b94884a116edab111",
+  "next_action": "Check incremental pipeline boundary handling and timeout behavior with a bounded executable regression.",
+  "recorded_unix": 1794499466.460831,
+  "verdict": "Retained candidate revalidated; this does not prove high-load reliability."
+}

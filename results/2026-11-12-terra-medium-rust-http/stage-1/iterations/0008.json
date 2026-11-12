@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "performance",
+  "change": "Develop one event-driven challenger using descriptor-relative confinement and the corrected parser. Keep all socket buffers bounded and time out stalled reads and writes.",
+  "evidence": "The parser-only paired benchmark was inconclusive: all workloads ineligible, with both candidates exhibiting failures and some zero-throughput rounds. No speedup or promotion can be inferred.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Thread creation per connection and a small listen backlog can consume CPU and fail under 4096 concurrent clients; a bounded nonblocking epoll loop with sendfile and larger backlog should improve reliability and reduce copying.",
+  "last": "7a678ae104244ccbb14a1752f1e3f58d",
+  "next_action": "Submit the event-driven challenger, run public checks, then compare with the incumbent if it is fully accepted.",
+  "recorded_unix": 1794496871.919019,
+  "verdict": "Parser fix remains unpromoted. Investigate service architecture rather than repeat the unchanged comparison."
+}

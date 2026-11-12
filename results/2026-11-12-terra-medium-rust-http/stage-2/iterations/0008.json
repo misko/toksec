@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "correctness",
+  "change": "First build a bounded parser regression contrasting the current conversion with a parser that treats header values as bytes while decoding the request line and path separately.",
+  "evidence": "Source inspection: parse begins with std::str::from_utf8(raw), before separating the request line from header fields.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained parser converts the whole request header block to UTF-8, so otherwise valid header field values containing non-UTF-8 obs-text are rejected, even though only the decoded path must be UTF-8.",
+  "last": "a1b47b3705094a5ca5cc2e95c753ee96",
+  "next_action": "Run executable parser cases for byte-valued fields, control characters, framing and paths.",
+  "recorded_unix": 1794499249.119795,
+  "verdict": "Unverified interoperability defect; no retained behavior changed."
+}

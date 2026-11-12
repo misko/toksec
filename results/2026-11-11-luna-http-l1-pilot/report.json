@@ -1,0 +1,234 @@
+{
+  "accounting_ledger_present": true,
+  "candidate": "8db8cf43de66-5854e342",
+  "cases": [
+    {
+      "group": "bootstrap",
+      "name": "ordinary",
+      "passed": true
+    },
+    {
+      "group": "bootstrap",
+      "name": "empty",
+      "passed": true
+    },
+    {
+      "group": "bootstrap",
+      "name": "missing",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "binary",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "large",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "query",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "escaped-space",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "nested",
+      "passed": true
+    },
+    {
+      "group": "files",
+      "name": "http10",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "directory",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "root",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "traversal",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "encoded-traversal",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "symlink",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "inside-symlink",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "trailing-slash",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "nul",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "bad-escape",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "bad-utf8",
+      "passed": true
+    },
+    {
+      "group": "paths",
+      "name": "backslash",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "fragmented",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "pipelined-closes",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "post",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "zero-body",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "unknown-header",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "bad-version",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "absolute-target",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "fragment-target",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "bad-header",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "folded-header",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "nul-header",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "bad-header-name",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "bare-lf",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "transfer-encoding",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "duplicate-length",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "body-not-supported",
+      "passed": true
+    },
+    {
+      "group": "framing",
+      "name": "invalid-length",
+      "passed": true
+    },
+    {
+      "group": "limits",
+      "name": "oversized-header",
+      "passed": true
+    },
+    {
+      "group": "limits",
+      "name": "incomplete-deadline",
+      "passed": true
+    },
+    {
+      "group": "recovery",
+      "name": "client-disconnect",
+      "passed": true
+    },
+    {
+      "group": "recovery",
+      "name": "valid-after-errors",
+      "passed": true
+    }
+  ],
+  "conformant": true,
+  "evaluated_unix": 1794457804.6705027,
+  "groups": {
+    "bootstrap": true,
+    "files": true,
+    "framing": true,
+    "limits": true,
+    "paths": true,
+    "recovery": true
+  },
+  "performance": {
+    "file_bytes": 4096,
+    "median": 18978.274795846115,
+    "metric": "valid_requests_per_second",
+    "requests_per_round": 100,
+    "rounds": [
+      18978.274795846115,
+      19764.692507822183,
+      16272.822081194234
+    ]
+  },
+  "schema_version": 1,
+  "source_sha256": "8db8cf43de66e1ee4c72ac1f72612db2ccd21a7921c4b72ed6ec2414ac890403"
+}

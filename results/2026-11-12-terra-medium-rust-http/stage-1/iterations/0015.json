@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Run an isolated sandbox test with mallopt(M_ARENA_MAX,1) and 200 allocating sleeping 128 KiB-stack threads.",
+  "evidence": "The bounded isolated test succeeded and kept virtual memory below 200,000 KiB with 200 live workers. Earlier unconstrained allocation stress showed far greater virtual size and aborted, although tests do not replicate all server behavior.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Capping glibc malloc arenas at process startup reduces address-space amplification under many threads and may prevent allocator-induced aborts; it may not address OS thread limits.",
+  "last": "f6c5927a56944d0eb4e04cf374e066ea",
+  "next_action": "Submit the single arena-cap change against retained candidate, run full public checks and paired benchmark.",
+  "recorded_unix": 1794497339.279514,
+  "verdict": "Promising but not proof of actual server reliability or a throughput improvement."
+}

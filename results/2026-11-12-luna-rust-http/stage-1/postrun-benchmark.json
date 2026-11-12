@@ -1,0 +1,950 @@
+{
+  "candidate": "2ccf0cd3e2cd4b7e802814cdb152df58",
+  "complete": true,
+  "ended_unix": 1794494907.4999564,
+  "phase": "operator post-run validation; no model calls",
+  "preceding_attempt": "Benchmark aborted because the server did not bind within two seconds. Separate sandbox reproduction exited 101 with failed-to-spawn-thread EAGAIN. No source or limit was changed.",
+  "started_unix": 1794494819.3933,
+  "workloads": {
+    "fresh-4096-256": {
+      "completed_rounds": [
+        {
+          "attempts": 63143,
+          "bytes_per_second": 85861717.33333333,
+          "clients_started": 256,
+          "completed_in_window": 62887,
+          "cpu_seconds": 8.517276713,
+          "eligible": false,
+          "failures": 3,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 147.84290734678507,
+          "generator_saturated": true,
+          "load_average": [
+            40.15771484375,
+            57.89306640625,
+            49.93359375
+          ],
+          "p50_ms": 5.7,
+          "p95_ms": 16.6,
+          "p99_ms": 64.3,
+          "payload_bytes": 257585152,
+          "rss_kib": 77812,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1392,
+          "successes": 63140,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 3,
+          "valid_rps": 20962.333333333332
+        },
+        {
+          "attempts": 70445,
+          "bytes_per_second": 95787690.66666667,
+          "clients_started": 256,
+          "completed_in_window": 70157,
+          "cpu_seconds": 8.998843547,
+          "eligible": false,
+          "failures": 32,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 25.599253363907337,
+          "generator_saturated": false,
+          "load_average": [
+            42.3876953125,
+            58.06103515625,
+            50.03076171875
+          ],
+          "p50_ms": 5.2,
+          "p95_ms": 11.4,
+          "p99_ms": 21.7,
+          "payload_bytes": 287363072,
+          "rss_kib": 77432,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1392,
+          "successes": 70413,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 32,
+          "valid_rps": 23385.666666666668
+        },
+        {
+          "attempts": 56536,
+          "bytes_per_second": 76840960.0,
+          "clients_started": 256,
+          "completed_in_window": 56280,
+          "cpu_seconds": 7.8943280179999995,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 255.37403672933578,
+          "generator_saturated": true,
+          "load_average": [
+            43.07763671875,
+            57.943359375,
+            50.0361328125
+          ],
+          "p50_ms": 6.3,
+          "p95_ms": 14.1,
+          "p99_ms": 43.7,
+          "payload_bytes": 230522880,
+          "rss_kib": 77372,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1392,
+          "successes": 56536,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "valid_rps": 18760.0
+        },
+        {
+          "attempts": 55162,
+          "bytes_per_second": 74966357.33333333,
+          "clients_started": 256,
+          "completed_in_window": 54907,
+          "cpu_seconds": 7.248421079,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 283.6603904142976,
+          "generator_saturated": true,
+          "load_average": [
+            43.31201171875,
+            57.74462890625,
+            50.01416015625
+          ],
+          "p50_ms": 6.5,
+          "p95_ms": 18.2,
+          "p99_ms": 79.9,
+          "payload_bytes": 224899072,
+          "rss_kib": 78008,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1384,
+          "successes": 55162,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "valid_rps": 18302.333333333332
+        }
+      ],
+      "failed_rounds": [
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 1
+        }
+      ],
+      "full_five_round_result": false,
+      "summary": {
+        "eligible": false,
+        "failures": 35,
+        "max_rps": 23385.666666666668,
+        "median_rps": 19861.166666666664,
+        "min_rps": 18302.333333333332,
+        "rounds": [
+          {
+            "attempts": 63143,
+            "bytes_per_second": 85861717.33333333,
+            "clients_started": 256,
+            "completed_in_window": 62887,
+            "cpu_seconds": 8.517276713,
+            "eligible": false,
+            "failures": 3,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 147.84290734678507,
+            "generator_saturated": true,
+            "load_average": [
+              40.15771484375,
+              57.89306640625,
+              49.93359375
+            ],
+            "p50_ms": 5.7,
+            "p95_ms": 16.6,
+            "p99_ms": 64.3,
+            "payload_bytes": 257585152,
+            "rss_kib": 77812,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1392,
+            "successes": 63140,
+            "sum_worker_peak_inflight": 256,
+            "timeouts": 3,
+            "valid_rps": 20962.333333333332
+          },
+          {
+            "attempts": 70445,
+            "bytes_per_second": 95787690.66666667,
+            "clients_started": 256,
+            "completed_in_window": 70157,
+            "cpu_seconds": 8.998843547,
+            "eligible": false,
+            "failures": 32,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 25.599253363907337,
+            "generator_saturated": false,
+            "load_average": [
+              42.3876953125,
+              58.06103515625,
+              50.03076171875
+            ],
+            "p50_ms": 5.2,
+            "p95_ms": 11.4,
+            "p99_ms": 21.7,
+            "payload_bytes": 287363072,
+            "rss_kib": 77432,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1392,
+            "successes": 70413,
+            "sum_worker_peak_inflight": 256,
+            "timeouts": 32,
+            "valid_rps": 23385.666666666668
+          },
+          {
+            "attempts": 56536,
+            "bytes_per_second": 76840960.0,
+            "clients_started": 256,
+            "completed_in_window": 56280,
+            "cpu_seconds": 7.8943280179999995,
+            "eligible": false,
+            "failures": 0,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 255.37403672933578,
+            "generator_saturated": true,
+            "load_average": [
+              43.07763671875,
+              57.943359375,
+              50.0361328125
+            ],
+            "p50_ms": 6.3,
+            "p95_ms": 14.1,
+            "p99_ms": 43.7,
+            "payload_bytes": 230522880,
+            "rss_kib": 77372,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1392,
+            "successes": 56536,
+            "sum_worker_peak_inflight": 256,
+            "timeouts": 0,
+            "valid_rps": 18760.0
+          },
+          {
+            "attempts": 55162,
+            "bytes_per_second": 74966357.33333333,
+            "clients_started": 256,
+            "completed_in_window": 54907,
+            "cpu_seconds": 7.248421079,
+            "eligible": false,
+            "failures": 0,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 283.6603904142976,
+            "generator_saturated": true,
+            "load_average": [
+              43.31201171875,
+              57.74462890625,
+              50.01416015625
+            ],
+            "p50_ms": 6.5,
+            "p95_ms": 18.2,
+            "p99_ms": 79.9,
+            "payload_bytes": 224899072,
+            "rss_kib": 78008,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1384,
+            "successes": 55162,
+            "sum_worker_peak_inflight": 256,
+            "timeouts": 0,
+            "valid_rps": 18302.333333333332
+          }
+        ],
+        "worst_p99_ms": 79.9
+      }
+    },
+    "fresh-4096-4096": {
+      "completed_rounds": [
+        {
+          "attempts": 27913,
+          "bytes_per_second": 32519509.333333332,
+          "clients_started": 4096,
+          "completed_in_window": 23818,
+          "cpu_seconds": 7.4390037499999995,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 343.39187294244766,
+          "generator_saturated": true,
+          "load_average": [
+            41.205078125,
+            56.3203125,
+            49.708984375
+          ],
+          "p50_ms": 362.9,
+          "p95_ms": 706.4,
+          "p99_ms": 1474.4,
+          "payload_bytes": 97558528,
+          "rss_kib": 127720,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1392,
+          "successes": 27913,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 0,
+          "valid_rps": 7939.333333333333
+        },
+        {
+          "attempts": 26528,
+          "bytes_per_second": 30404608.0,
+          "clients_started": 4096,
+          "completed_in_window": 22269,
+          "cpu_seconds": 7.332624965,
+          "eligible": false,
+          "failures": 168,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 606.1362130567431,
+          "generator_saturated": true,
+          "load_average": [
+            40.10986328125,
+            55.58544921875,
+            49.54052734375
+          ],
+          "p50_ms": 331.8,
+          "p95_ms": 1289.7,
+          "p99_ms": 1673.5,
+          "payload_bytes": 91213824,
+          "rss_kib": 125756,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1392,
+          "successes": 26360,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 168,
+          "valid_rps": 7423.0
+        },
+        {
+          "attempts": 32118,
+          "bytes_per_second": 38259370.666666664,
+          "clients_started": 4096,
+          "completed_in_window": 28022,
+          "cpu_seconds": 7.458676254,
+          "eligible": false,
+          "failures": 125,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 306.9127993658185,
+          "generator_saturated": true,
+          "load_average": [
+            42.74365234375,
+            55.875,
+            49.6669921875
+          ],
+          "p50_ms": 278.9,
+          "p95_ms": 1287.7,
+          "p99_ms": 1517.1,
+          "payload_bytes": 114778112,
+          "rss_kib": 126064,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1396,
+          "successes": 31993,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 125,
+          "valid_rps": 9340.666666666666
+        },
+        {
+          "attempts": 35698,
+          "bytes_per_second": 43115861.333333336,
+          "clients_started": 4096,
+          "completed_in_window": 31579,
+          "cpu_seconds": 8.587383051,
+          "eligible": false,
+          "failures": 584,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 512.6969236880541,
+          "generator_saturated": true,
+          "load_average": [
+            41.69384765625,
+            55.2197265625,
+            49.52001953125
+          ],
+          "p50_ms": 274.7,
+          "p95_ms": 1263.5,
+          "p99_ms": 1922.2,
+          "payload_bytes": 129347584,
+          "rss_kib": 126136,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1388,
+          "successes": 35114,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 584,
+          "valid_rps": 10526.333333333334
+        }
+      ],
+      "failed_rounds": [
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 3
+        }
+      ],
+      "full_five_round_result": false,
+      "summary": {
+        "eligible": false,
+        "failures": 877,
+        "max_rps": 10526.333333333334,
+        "median_rps": 8640.0,
+        "min_rps": 7423.0,
+        "rounds": [
+          {
+            "attempts": 27913,
+            "bytes_per_second": 32519509.333333332,
+            "clients_started": 4096,
+            "completed_in_window": 23818,
+            "cpu_seconds": 7.4390037499999995,
+            "eligible": false,
+            "failures": 0,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 343.39187294244766,
+            "generator_saturated": true,
+            "load_average": [
+              41.205078125,
+              56.3203125,
+              49.708984375
+            ],
+            "p50_ms": 362.9,
+            "p95_ms": 706.4,
+            "p99_ms": 1474.4,
+            "payload_bytes": 97558528,
+            "rss_kib": 127720,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1392,
+            "successes": 27913,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 0,
+            "valid_rps": 7939.333333333333
+          },
+          {
+            "attempts": 26528,
+            "bytes_per_second": 30404608.0,
+            "clients_started": 4096,
+            "completed_in_window": 22269,
+            "cpu_seconds": 7.332624965,
+            "eligible": false,
+            "failures": 168,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 606.1362130567431,
+            "generator_saturated": true,
+            "load_average": [
+              40.10986328125,
+              55.58544921875,
+              49.54052734375
+            ],
+            "p50_ms": 331.8,
+            "p95_ms": 1289.7,
+            "p99_ms": 1673.5,
+            "payload_bytes": 91213824,
+            "rss_kib": 125756,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1392,
+            "successes": 26360,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 168,
+            "valid_rps": 7423.0
+          },
+          {
+            "attempts": 32118,
+            "bytes_per_second": 38259370.666666664,
+            "clients_started": 4096,
+            "completed_in_window": 28022,
+            "cpu_seconds": 7.458676254,
+            "eligible": false,
+            "failures": 125,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 306.9127993658185,
+            "generator_saturated": true,
+            "load_average": [
+              42.74365234375,
+              55.875,
+              49.6669921875
+            ],
+            "p50_ms": 278.9,
+            "p95_ms": 1287.7,
+            "p99_ms": 1517.1,
+            "payload_bytes": 114778112,
+            "rss_kib": 126064,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1396,
+            "successes": 31993,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 125,
+            "valid_rps": 9340.666666666666
+          },
+          {
+            "attempts": 35698,
+            "bytes_per_second": 43115861.333333336,
+            "clients_started": 4096,
+            "completed_in_window": 31579,
+            "cpu_seconds": 8.587383051,
+            "eligible": false,
+            "failures": 584,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 512.6969236880541,
+            "generator_saturated": true,
+            "load_average": [
+              41.69384765625,
+              55.2197265625,
+              49.52001953125
+            ],
+            "p50_ms": 274.7,
+            "p95_ms": 1263.5,
+            "p99_ms": 1922.2,
+            "payload_bytes": 129347584,
+            "rss_kib": 126136,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1388,
+            "successes": 35114,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 584,
+            "valid_rps": 10526.333333333334
+          }
+        ],
+        "worst_p99_ms": 1922.2
+      }
+    },
+    "fresh-65536-256": {
+      "completed_rounds": [
+        {
+          "attempts": 23996,
+          "bytes_per_second": 518608213.3333333,
+          "clients_started": 256,
+          "completed_in_window": 23740,
+          "cpu_seconds": 5.201527684,
+          "eligible": false,
+          "failures": 60,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 2392.91569031775,
+          "generator_saturated": true,
+          "load_average": [
+            41.31005859375,
+            56.59619140625,
+            49.76171875
+          ],
+          "p50_ms": 13.2,
+          "p95_ms": 33.6,
+          "p99_ms": 758.2,
+          "payload_bytes": 1555824640,
+          "rss_kib": 88664,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1396,
+          "successes": 23936,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 60,
+          "valid_rps": 7913.333333333333
+        }
+      ],
+      "failed_rounds": [
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 1
+        },
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 2
+        },
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 3
+        },
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 5
+        }
+      ],
+      "full_five_round_result": false,
+      "summary": {
+        "eligible": false,
+        "failures": 60,
+        "max_rps": 7913.333333333333,
+        "median_rps": 7913.333333333333,
+        "min_rps": 7913.333333333333,
+        "rounds": [
+          {
+            "attempts": 23996,
+            "bytes_per_second": 518608213.3333333,
+            "clients_started": 256,
+            "completed_in_window": 23740,
+            "cpu_seconds": 5.201527684,
+            "eligible": false,
+            "failures": 60,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 2392.91569031775,
+            "generator_saturated": true,
+            "load_average": [
+              41.31005859375,
+              56.59619140625,
+              49.76171875
+            ],
+            "p50_ms": 13.2,
+            "p95_ms": 33.6,
+            "p99_ms": 758.2,
+            "payload_bytes": 1555824640,
+            "rss_kib": 88664,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1396,
+            "successes": 23936,
+            "sum_worker_peak_inflight": 256,
+            "timeouts": 60,
+            "valid_rps": 7913.333333333333
+          }
+        ],
+        "worst_p99_ms": 758.2
+      }
+    },
+    "fresh-65536-4096": {
+      "completed_rounds": [
+        {
+          "attempts": 37621,
+          "bytes_per_second": 693261653.3333334,
+          "clients_started": 4096,
+          "completed_in_window": 31735,
+          "cpu_seconds": 7.74062772,
+          "eligible": false,
+          "failures": 3299,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 180.07268570363522,
+          "generator_saturated": true,
+          "load_average": [
+            41.423828125,
+            54.73095703125,
+            49.42333984375
+          ],
+          "p50_ms": 73.5,
+          "p95_ms": 1304.2,
+          "p99_ms": 1984.7,
+          "payload_bytes": 2079784960,
+          "rss_kib": 175556,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1388,
+          "successes": 34322,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 3299,
+          "valid_rps": 10578.333333333334
+        },
+        {
+          "attempts": 32149,
+          "bytes_per_second": 602559829.3333334,
+          "clients_started": 4096,
+          "completed_in_window": 27583,
+          "cpu_seconds": 8.147508063,
+          "eligible": false,
+          "failures": 1617,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 498.236914165318,
+          "generator_saturated": true,
+          "load_average": [
+            43.63232421875,
+            54.96826171875,
+            49.52880859375
+          ],
+          "p50_ms": 69.0,
+          "p95_ms": 1293.5,
+          "p99_ms": 1404.2,
+          "payload_bytes": 1807679488,
+          "rss_kib": 171756,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1396,
+          "successes": 30532,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 1617,
+          "valid_rps": 9194.333333333334
+        },
+        {
+          "attempts": 32071,
+          "bytes_per_second": 585476778.6666666,
+          "clients_started": 4096,
+          "completed_in_window": 26801,
+          "cpu_seconds": 7.5509889779999995,
+          "eligible": false,
+          "failures": 2642,
+          "generator_cpus": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "generator_lag_max_ms": 135.87559014558792,
+          "generator_saturated": true,
+          "load_average": [
+            43.10107421875,
+            54.669921875,
+            49.46142578125
+          ],
+          "p50_ms": 53.1,
+          "p95_ms": 1131.9,
+          "p99_ms": 1304.4,
+          "payload_bytes": 1756430336,
+          "rss_kib": 166684,
+          "server_child_processes": 1,
+          "server_cpu": 0,
+          "server_cpu_seconds": 0,
+          "server_peak_rss_kib": 1388,
+          "successes": 29429,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 2642,
+          "valid_rps": 8933.666666666666
+        }
+      ],
+      "failed_rounds": [
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 1
+        },
+        {
+          "error": "trusted driver failed: Traceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 44, in main\n    with socket.create_connection(('127.0.0.1', 8080), 0.1):\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 69, in <module>\n    main()\n    ~~~~^^\n  File \"/home/mouse9911/gits/toksec/toksec/driver.py\", line 48, in main\n    raise TimeoutError('server did not bind within two seconds')\nTimeoutError: server did not bind within two seconds\n",
+          "round": 2
+        }
+      ],
+      "full_five_round_result": false,
+      "summary": {
+        "eligible": false,
+        "failures": 7558,
+        "max_rps": 10578.333333333334,
+        "median_rps": 9194.333333333334,
+        "min_rps": 8933.666666666666,
+        "rounds": [
+          {
+            "attempts": 37621,
+            "bytes_per_second": 693261653.3333334,
+            "clients_started": 4096,
+            "completed_in_window": 31735,
+            "cpu_seconds": 7.74062772,
+            "eligible": false,
+            "failures": 3299,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 180.07268570363522,
+            "generator_saturated": true,
+            "load_average": [
+              41.423828125,
+              54.73095703125,
+              49.42333984375
+            ],
+            "p50_ms": 73.5,
+            "p95_ms": 1304.2,
+            "p99_ms": 1984.7,
+            "payload_bytes": 2079784960,
+            "rss_kib": 175556,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1388,
+            "successes": 34322,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 3299,
+            "valid_rps": 10578.333333333334
+          },
+          {
+            "attempts": 32149,
+            "bytes_per_second": 602559829.3333334,
+            "clients_started": 4096,
+            "completed_in_window": 27583,
+            "cpu_seconds": 8.147508063,
+            "eligible": false,
+            "failures": 1617,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 498.236914165318,
+            "generator_saturated": true,
+            "load_average": [
+              43.63232421875,
+              54.96826171875,
+              49.52880859375
+            ],
+            "p50_ms": 69.0,
+            "p95_ms": 1293.5,
+            "p99_ms": 1404.2,
+            "payload_bytes": 1807679488,
+            "rss_kib": 171756,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1396,
+            "successes": 30532,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 1617,
+            "valid_rps": 9194.333333333334
+          },
+          {
+            "attempts": 32071,
+            "bytes_per_second": 585476778.6666666,
+            "clients_started": 4096,
+            "completed_in_window": 26801,
+            "cpu_seconds": 7.5509889779999995,
+            "eligible": false,
+            "failures": 2642,
+            "generator_cpus": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "generator_lag_max_ms": 135.87559014558792,
+            "generator_saturated": true,
+            "load_average": [
+              43.10107421875,
+              54.669921875,
+              49.46142578125
+            ],
+            "p50_ms": 53.1,
+            "p95_ms": 1131.9,
+            "p99_ms": 1304.4,
+            "payload_bytes": 1756430336,
+            "rss_kib": 166684,
+            "server_child_processes": 1,
+            "server_cpu": 0,
+            "server_cpu_seconds": 0,
+            "server_peak_rss_kib": 1388,
+            "successes": 29429,
+            "sum_worker_peak_inflight": 4096,
+            "timeouts": 2642,
+            "valid_rps": 8933.666666666666
+          }
+        ],
+        "worst_p99_ms": 1984.7
+      }
+    }
+  }
+}

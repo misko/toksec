@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Submitted 3fbcc7adb3e847d4a0268cacf48baf12, differing from retained implementation by one startup mallopt call.",
+  "evidence": "All public checks passed. Full paired benchmark was ineligible from generator/environment saturation and did not promote. The challenger still had 7,885 and 6,790 failures across the 4096-client workload rounds, though the incumbent had substantially more failures in those runs; the small-client workload p99 also worsened in one case. The evidence does not qualify as a performance win.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Reducing glibc arena count could mitigate virtual-address exhaustion during high thread concurrency.",
+  "last": "3fbcc7adb3e847d4a0268cacf48baf12",
+  "next_action": "Revalidate the incumbent; continue bounded parser and confinement tests while a further full paired matrix cannot safely fit.",
+  "recorded_unix": 1794497601.0130146,
+  "verdict": "Unpromoted experiment; arena tuning does not reliably solve the workload failures, and the retained implementation remains unchanged."
+}

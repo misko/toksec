@@ -1,0 +1,81 @@
+{
+  "name": "benchmark_candidate",
+  "result": {
+    "candidate": "3fbcc7adb3e847d4a0268cacf48baf12",
+    "decision": {
+      "promote": false,
+      "reason": "generator or environment inconclusive"
+    },
+    "incumbent": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "summaries": {
+      "20ef0414aaf14ae5a88d2a8e9379383f": {
+        "fresh-4096-256": {
+          "eligible": false,
+          "failures": 36,
+          "max_rps": 41419.666666666664,
+          "median_rps": 38049.333333333336,
+          "min_rps": 36288.0,
+          "worst_p99_ms": 8.1
+        },
+        "fresh-4096-4096": {
+          "eligible": false,
+          "failures": 634808,
+          "max_rps": 33531.0,
+          "median_rps": 363.6666666666667,
+          "min_rps": 0.0,
+          "worst_p99_ms": null
+        },
+        "fresh-65536-256": {
+          "eligible": false,
+          "failures": 23,
+          "max_rps": 22349.666666666668,
+          "median_rps": 16962.333333333332,
+          "min_rps": 15602.666666666666,
+          "worst_p99_ms": 91.8
+        },
+        "fresh-65536-4096": {
+          "eligible": false,
+          "failures": 771248,
+          "max_rps": 3822.6666666666665,
+          "median_rps": 75.0,
+          "min_rps": 0.0,
+          "worst_p99_ms": null
+        }
+      },
+      "3fbcc7adb3e847d4a0268cacf48baf12": {
+        "fresh-4096-256": {
+          "eligible": false,
+          "failures": 12,
+          "max_rps": 42166.333333333336,
+          "median_rps": 41211.333333333336,
+          "min_rps": 31066.666666666668,
+          "worst_p99_ms": 17.9
+        },
+        "fresh-4096-4096": {
+          "eligible": false,
+          "failures": 7885,
+          "max_rps": 27325.333333333332,
+          "median_rps": 22355.333333333332,
+          "min_rps": 11414.333333333334,
+          "worst_p99_ms": 1347.0
+        },
+        "fresh-65536-256": {
+          "eligible": false,
+          "failures": 42,
+          "max_rps": 23746.666666666668,
+          "median_rps": 21350.0,
+          "min_rps": 17819.0,
+          "worst_p99_ms": 77.7
+        },
+        "fresh-65536-4096": {
+          "eligible": false,
+          "failures": 6790,
+          "max_rps": 10020.333333333334,
+          "median_rps": 7623.666666666667,
+          "min_rps": 2610.0,
+          "worst_p99_ms": 1909.4
+        }
+      }
+    }
+  }
+}

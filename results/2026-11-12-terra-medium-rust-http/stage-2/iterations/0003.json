@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "performance",
+  "change": "Backlog-only challenger calls listen with backlog 8192.",
+  "evidence": "All 16 checks passed. Alternating full benchmark showed 0 vs 1304 and 1772 incumbent failures in the two fresh-4096 workloads and much lower worst p99, but every workload was generator-ineligible. Challenger not promoted.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The standard accept backlog is too small for a 4096-client connection surge.",
+  "last": "014fe5226c0245d5a8ad0005b3c05a56",
+  "next_action": "Investigate the persistent 4096-byte 40 ms delay with TCP_NODELAY; benchmark separately from incumbent.",
+  "recorded_unix": 1794498576.761186,
+  "verdict": "Promising reliability signal, but environment inconclusive; incumbent unchanged."
+}

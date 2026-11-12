@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Repeated the bounded thread stress at 1024 and instrumented a 16-thread sample under the same 512 MiB test limit.",
+  "evidence": "The 1024-thread attempt aborted with a glibc TLS allocation error; the 16-thread sample reported VmSize growing from 71,396 KiB to 466,876 KiB. The latter deliberately fails an assertion to expose its measurements.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "glibc per-thread allocator arenas can consume substantially more virtual memory than the nominal 128 KiB stack, increasing resource-exhaustion risk.",
+  "last": "98fcfd487e97434aac6d82036fc52426",
+  "next_action": "Exercise the retained server's accept/spawn/read pattern with incomplete sockets under the same sandbox limit.",
+  "recorded_unix": 1794497187.8900826,
+  "verdict": "The simplified stress test suggests a severe resource-pressure mechanism, not yet a complete end-to-end server reproduction."
+}

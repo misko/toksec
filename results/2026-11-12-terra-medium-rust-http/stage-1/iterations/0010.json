@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Copied the incumbent's 128 KiB thread-spawn strategy into a sandboxed bounded test creating up to 4096 sleeping threads and attempting to join and recover.",
+  "evidence": "The test process aborted with 'memory allocation of 41 bytes failed' before it could join or print the count under the 512 MiB address-space limit. This is a stress reproduction in the simplified test, not a demonstrated server crash.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Thread-per-connection service can run out of address space before reaching the configured 8192-connection bound, and allocator failure may terminate the process rather than simply refusing excess connections.",
+  "last": "98fcfd487e97434aac6d82036fc52426",
+  "next_action": "Measure virtual-memory and successful thread count at a smaller bounded limit, then review implications and alternatives.",
+  "recorded_unix": 1794497166.8052769,
+  "verdict": "Concerning resource-exhaustion behavior needs a smaller instrumented test and is unresolved for the retained server."
+}

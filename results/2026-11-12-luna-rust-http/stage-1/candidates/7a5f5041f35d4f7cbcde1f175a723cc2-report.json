@@ -1,0 +1,38 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "warning: unused import: `Path`\n --> /src/main.rs:6:17\n  |\n6 | use std::path::{Path, PathBuf};\n  |                 ^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0277]: `?` couldn't convert the error to `u16`\n  --> /src/main.rs:65:98\n   |\n59 | ...ode_path(target:&str)->Result<String,u16>{\n   |                           ------------------ expected `u16` because of this\n...\n65 | ...  if bytes[i]==b'%' { if i+2>=bytes.len(){return Err(400)} let a=hex(bytes[i+1]).ok_or(400)?;let b=hex(bytes[i+2]).ok_or(400)?;ou...\n   |                                                                                     ----------^ the trait `From<i32>` is not implemented for `u16`\n   |                                                                                     |\n   |                                                                                     this can't be annotated with `?` because it has type `Result<_, i32>`\n   |\n   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait\nhelp: `u16` implements trait `From<T>`\n  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ascii/ascii_char.rs:1168:12\n   |\n   = note: `From<std::ascii::Char>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ascii/ascii_char.rs:1178:0\n   |\n   = note: in this macro invocation\n  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:37:8\n   |\n   = note: `From<bool>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:58:0\n   |\n   = note: in this macro invocation\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:66:8\n   |\n   = note: `From<u8>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:79:0\n   |\n   = note: in this macro invocation\n   = note: this error originates in the macro `into_int_impl` which comes from the expansion of the macro `impl_from` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror[E0277]: `?` couldn't convert the error to `u16`\n  --> /src/main.rs:65:132\n   |\n59 | ...get:&str)->Result<String,u16>{\n   |               ------------------ expected `u16` because of this\n...\n65 | ...]==b'%' { if i+2>=bytes.len(){return Err(400)} let a=hex(bytes[i+1]).ok_or(400)?;let b=hex(bytes[i+2]).ok_or(400)?;out.push((a<<4...\n   |                                                                                                           ----------^ the trait `From<i32>` is not implemented for `u16`\n   |                                                                                                           |\n   |                                                                                                           this can't be annotated with `?` because it has type `Result<_, i32>`\n   |\n   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait\nhelp: `u16` implements trait `From<T>`\n  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ascii/ascii_char.rs:1168:12\n   |\n   = note: `From<std::ascii::Char>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ascii/ascii_char.rs:1178:0\n   |\n   = note: in this macro invocation\n  --> /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:37:8\n   |\n   = note: `From<bool>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:58:0\n   |\n   = note: in this macro invocation\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:66:8\n   |\n   = note: `From<u8>`\n  ::: /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/convert/num.rs:79:0\n   |\n   = note: in this macro invocation\n   = note: this error originates in the macro `into_int_impl` which comes from the expansion of the macro `impl_from` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+    "passed": false,
+    "seconds": 0.6730656800791621,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": null,
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": false,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9823160,
+    "remaining_usd": "4.97938613",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1752.0504240989685,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.02061387",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 176840
+  },
+  "checks": {
+    "cases": [],
+    "passed": false
+  },
+  "id": "7a5f5041f35d4f7cbcde1f175a723cc2",
+  "source_sha256": "9e0ea512fcd99d11e6637cd1c1369d963d073c68d866e5ad18873ef90482a026"
+}

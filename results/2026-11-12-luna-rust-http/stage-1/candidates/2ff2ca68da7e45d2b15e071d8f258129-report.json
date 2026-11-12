@@ -1,0 +1,94 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.8717850763350725,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": "2ccf0cd3e2cd4b7e802814cdb152df58",
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": true,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9362200,
+    "remaining_usd": "4.95313641",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1533.6122710704803,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.04686359",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 637800
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.0007369210943579674
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.009970457293093204
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.017769460566341877
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.0012526102364063263
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.0003975043073296547
+      },
+      {
+        "id": "syntax",
+        "passed": true,
+        "seconds": 0.000526895746588707
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.000541972927749157
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 0.00020944979041814804
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.2014696011319757
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.0007262313738465309
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.09416762553155422
+      }
+    ],
+    "passed": true
+  },
+  "id": "2ff2ca68da7e45d2b15e071d8f258129",
+  "source_sha256": "fb8742c4d2a0675225595d0e2ca2da0b32c05a77bae93c6831297bfd8c0f1034"
+}

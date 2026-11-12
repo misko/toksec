@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Executed a standalone Rust test containing the retained open_path function and constructing regular files, intermediate and final symlinks, a FIFO and missing files.",
+  "evidence": "Across 1,000 iterations, all expected path classifications and exact regular-file bytes passed; /proc/self/fd count was unchanged. The test also checked embedded NUL and trailing slash handling.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The retained openat confinement walk should not follow symlinks or leak file descriptors when repeated valid, missing and nonregular paths are processed.",
+  "last": "02ec1b9e28124e6db987942b71a33ed1",
+  "next_action": "Export the retained candidate with explicit headerless-request and high-concurrency reliability limitations; the tested fix remains unpromoted.",
+  "recorded_unix": 1794497735.521376,
+  "verdict": "No descriptor leak or symlink bypass in these bounded cases; this is not a proof against races or all filesystem behavior."
+}

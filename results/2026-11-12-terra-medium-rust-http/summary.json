@@ -1,0 +1,201 @@
+[
+  {
+    "level": 1,
+    "run": "level-1-cb48d5a3f9b9",
+    "model": "gpt-6.1-terra",
+    "reasoning": "medium",
+    "service_tier": "default",
+    "state": {
+      "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+      "context_rollovers": 3,
+      "ended_unix": 1794497749.3468025,
+      "finished": true,
+      "full_acceptance": true,
+      "invalidated": [],
+      "journal_entries": 20,
+      "last": "02ec1b9e28124e6db987942b71a33ed1",
+      "optimization_attempts": 4,
+      "stop_reason": "finished"
+    },
+    "calls": 60,
+    "settled_calls": 60,
+    "tokens": 2216292,
+    "cost_usd_upper_bound": "0.50231330",
+    "source_sha256": "d04a3a2e1ce2d9e86109f384b8e50af0a8008309bd831e06069ae41d2b2c1846",
+    "binary_sha256": "232beb51c06548a60a47f12c160969a65fa949405c2f47594dc6c4ee82e38583",
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0023657558485865593
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.00703719537705183
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.008934877812862396
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.0070189544931054115
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0010230569168925285
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.007103705778717995
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.004940792918205261
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.0005711400881409645
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2012264737859368
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0014685019850730896
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.04654855187982321
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    }
+  },
+  {
+    "level": 2,
+    "run": "level-2-eb5500755faf",
+    "model": "gpt-6.1-terra",
+    "reasoning": "medium",
+    "service_tier": "default",
+    "state": {
+      "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+      "context_rollovers": 3,
+      "ended_unix": 1794499523.6958458,
+      "finished": true,
+      "full_acceptance": true,
+      "invalidated": [],
+      "journal_entries": 16,
+      "last": "cce1dd9a9967480b94884a116edab111",
+      "optimization_attempts": 2,
+      "stop_reason": "finished"
+    },
+    "calls": 43,
+    "settled_calls": 43,
+    "tokens": 1646673,
+    "cost_usd_upper_bound": "0.42712665",
+    "source_sha256": "6f42aad18c9416179224bfce1e40075226fe8adc8cf32d9e86c3b8c448750e1a",
+    "binary_sha256": "3bed5da52ec209bccbad11cc6f363940e95535730c8485c84df221b40d631a5d",
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0033446159213781357
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.00627712719142437
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.00041315890848636627
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.00026249419897794724
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0002820175141096115
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.00023502297699451447
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00017460808157920837
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.00011358316987752914
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.201096385717392
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.003037862479686737
+        },
+        {
+          "id": "head",
+          "passed": true,
+          "seconds": 0.00035326555371284485
+        },
+        {
+          "id": "persistent-pipeline",
+          "passed": true,
+          "seconds": 0.00410494115203619
+        },
+        {
+          "id": "connection-semantics",
+          "passed": true,
+          "seconds": 0.00015836209058761597
+        },
+        {
+          "id": "connection-limits",
+          "passed": true,
+          "seconds": 2.0449237739667296
+        },
+        {
+          "id": "slow-client-fairness",
+          "passed": true,
+          "seconds": 0.004370478913187981
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.12504882644861937
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    }
+  }
+]

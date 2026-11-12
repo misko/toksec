@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "correctness",
+  "change": "Exercise the retained scanner and timeout predicate on synthetic byte boundaries and timestamps.",
+  "evidence": "Source inspection: scan stops at the first CRLFCRLF; timeout sweep chooses either write deadline or header deadline, not both.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The framing scanner must stop at the first complete request so malformed or oversized pipelined bytes cannot contaminate the preceding response; the timeout sweep may overlook an incomplete pipelined header while writing the preceding response.",
+  "last": "cce1dd9a9967480b94884a116edab111",
+  "next_action": "Run focused test for scanner boundaries and overlapping write/header deadlines.",
+  "recorded_unix": 1794499482.919997,
+  "verdict": "Hypotheses awaiting executable bounded tests."
+}

@@ -1,4 +1,4 @@
-"""Offline task preparation and checkpoint controller. Does not launch model calls."""
+"""Task preparation, checkpoint selection, and launch preflight."""
 
 import argparse
 import contextlib
@@ -41,7 +41,7 @@ def atomic_json(path, value):
 
 
 def fingerprints():
-    paths = [ROOT / "controller.py", ROOT / "evaluator.py", ROOT / "probe.py",
+    paths = [ROOT / "controller.py", ROOT / "capacity.py", ROOT / "metering.py", ROOT / "runner.py", ROOT / "evaluator.py", ROOT / "probe.py",
              ROOT / "tasks/http/level-1.md", ROOT / "experiments/luna-http-l1.json"]
     paths.extend(sorted((ROOT / "prompts").glob("*.md")))
     return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
@@ -129,7 +129,7 @@ def submit(run):
         (snapshot / "server.py").chmod(0o444)
         report = evaluate(snapshot)
         report.update(candidate=identity, source_sha256=digest, evaluated_unix=time.time(),
-                      measured_model_run=False)
+                      accounting_ledger_present=(run / "ledger.json").exists())
         atomic_json(snapshot / "report.json", report)
         (snapshot / "report.json").chmod(0o444)
         snapshot.chmod(0o555)
@@ -160,21 +160,18 @@ def export(run):
 
 
 def preflight(run):
-    manifest = json.loads((Path(run) / "manifest.json").read_text())
-    return {"launch_allowed": False, "model": manifest["configuration"]["model"],
-            "budget_usd": manifest["configuration"]["budget_usd"], "service_tier": "default",
-            "reason": "Native launcher has no enforceable dollar cap. A metered model adapter is not configured.",
-            "api_key_present": bool(os.environ.get("OPENAI_API_KEY")),
-            "sandbox_tools": {name: shutil.which(name) is not None for name in ("bwrap", "nsenter")},
-            "model_calls": 0}
+    from runner import preflight as runner_preflight
+    return runner_preflight(run)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "preflight", "evaluate", "status", "export"))
+    parser.add_argument("command", choices=("prepare", "preflight", "evaluate", "status", "budget-status", "export"))
     parser.add_argument("--run", required=True, type=Path)
     args = parser.parse_args()
+    from capacity import budget_status
     commands = {"prepare": prepare, "preflight": preflight, "evaluate": submit, "export": export,
+                "budget-status": budget_status,
                 "status": lambda p: json.loads((p / "state.json").read_text())}
     try:
         result = commands[args.command](args.run)

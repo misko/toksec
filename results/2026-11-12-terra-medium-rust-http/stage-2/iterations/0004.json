@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "performance",
+  "change": "Enable TCP_NODELAY on accepted sockets, without the previous unpromoted backlog change.",
+  "evidence": "Challenger 13febd6c passes all public checks; incumbent p99 for persistent 4096-byte responses at 256 clients was 46.2ms in the previous paired run.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Persistent small responses suffer delayed ACK/Nagle interaction because headers and file bytes are sent separately. TCP_NODELAY should reduce the 40ms latency while preserving framing.",
+  "last": "13febd6c58a54b309156e374ed86105e",
+  "next_action": "Run full alternating benchmark and assess failures, tail latency and generator eligibility.",
+  "recorded_unix": 1794498634.0928817,
+  "verdict": "Awaiting paired full workload measurement; baseline generator was ineligible."
+}

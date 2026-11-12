@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "performance",
+  "change": "Replace per-connection threads and blocking I/O with a single nonblocking epoll loop and sendfile.",
+  "evidence": "Baseline: 256-client medians 40,477 and 18,015 requests/s with failures; 4096-client rounds included zero throughput and hundreds of thousands of failures. All workloads ineligible; no speedup claim possible.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Thread-per-connection creation and virtual address space cause severe failures and stalls under the 4096-client workloads; an event loop with bounded per-connection state should avoid those limits.",
+  "last": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "next_action": "Submit nonblocking design, run acceptance and complete paired measurement.",
+  "recorded_unix": 1794496226.8025963,
+  "verdict": "Reliability issue takes precedence over throughput."
+}

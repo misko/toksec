@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "performance",
+  "change": "Call listen again on the bound socket with backlog 8192, subject to kernel cap.",
+  "evidence": "Baseline full matrix was generator-ineligible in all workloads; fresh 4096 workloads recorded 4606 and 4575 failures across five rounds. Three independent restart suites passed.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The standard listener's small default accept backlog causes connection errors and >1 s tail latency when 4096 fresh clients connect together. Enlarging the listen backlog should reduce fresh-client failures.",
+  "last": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "next_action": "Submit backlog-only challenger and compare the complete matrix.",
+  "recorded_unix": 1794498123.458436,
+  "verdict": "Hypothesis, not yet tested; baseline performance inconclusive."
+}

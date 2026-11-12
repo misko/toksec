@@ -21,4 +21,8 @@ Do not modify the contract, evaluator, accounting, or accepted artifacts. Do not
 
 Controller time, budget, and evaluation reports are authoritative. Do not estimate dollars from your own token guesses. Stop when the controller refuses further work. Report missing capabilities explicitly.
 
+Call `budget_status` with `{}` before the first work order, before substantial changes, and after candidate evaluation. Read remaining dollars, run tokens, time, validation reserve, and accepted checkpoints. Run-token budget and context-window space are different limits. A null field means unknown, not unlimited.
+
+If `can_start_model_call` is false, stop and report the controller's reason. Never turn an unknown balance into an assumed allowance. If the controller recommends stabilization, finish only work that fits the remaining work allowance and preserve the accepted artifact. A status read does not reserve money or authorize future work.
+
 Do not spawn subagents, browse the web, install packages, or request premium processing. This run uses one builder and standard processing only.

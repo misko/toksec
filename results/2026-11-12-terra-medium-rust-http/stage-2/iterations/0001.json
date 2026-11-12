@@ -1,0 +1,12 @@
+{
+  "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "category": "performance",
+  "change": "Initial implementation uses descriptor-relative opens, persistent framing and timeouts.",
+  "evidence": "All 16 public checks passed; no benchmark or restart validation yet.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Single-threaded nonblocking epoll and sendfile can serve workloads without slow clients blocking service.",
+  "last": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+  "next_action": "Run complete benchmark and fresh-start revalidation.",
+  "recorded_unix": 1794497891.1784823,
+  "verdict": "Accepted baseline; performance unmeasured."
+}

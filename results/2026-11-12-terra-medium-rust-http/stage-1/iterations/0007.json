@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Benchmark the already accepted, revalidated parser-boundary challenger against the retained thread-per-connection incumbent.",
+  "evidence": "The challenger passes the public suite and three fresh starts; copied-parser regressions confirm formerly rejected headerless requests now succeed. Prior benchmark was generator-ineligible.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "The corrected no-header parser preserves valid request compatibility without a performance penalty; paired benchmarks may assess failures and latency, subject to generator eligibility.",
+  "last": "7a678ae104244ccbb14a1752f1e3f58d",
+  "next_action": "Run the complete alternating workload matrix and interpret eligibility and failures.",
+  "recorded_unix": 1794496632.7461624,
+  "verdict": "Pending paired benchmark; correctness fix remains unpromoted until controller gates allow it."
+}

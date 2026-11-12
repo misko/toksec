@@ -1,0 +1,9 @@
+#[derive(Debug,PartialEq,Eq)] enum Scan { Incomplete, Complete(usize), Malformed, TooLarge }
+// This follows the incumbent's process scanner and size check.
+fn scan(b:&[u8], limit:usize)->Scan { let mut end=None; for i in 0..b.len(){if b[i]==0 || b[i]==b'\n'&&(i==0||b[i-1]!=b'\r') || b[i]==b'\r'&&i+1<b.len()&&b[i+1]!=b'\n' {return Scan::Malformed} if i>=3&& &b[i-3..=i]==b"\r\n\r\n" {end=Some(i+1);break}} if let Some(n)=end {if n>limit {Scan::TooLarge} else {Scan::Complete(n)}} else if b.len()>limit {Scan::TooLarge} else {Scan::Incomplete} }
+#[test] fn pipelined_errors_are_scanned_in_order(){let first=b"GET / HTTP/1.1\r\n\r\n";let mut b=first.to_vec();b.extend_from_slice(b"GET / HTTP/1.1\n\n");assert_eq!(scan(&b,8192),Scan::Complete(first.len()));assert_eq!(scan(&b[first.len()..],8192),Scan::Malformed);}
+#[test] fn fragmentation_and_header_boundary(){let first=b"GET / HTTP/1.1\r\nX: test\r\n\r\n";for i in 0..first.len(){assert_eq!(scan(&first[..i],8192),Scan::Incomplete);}assert_eq!(scan(first,first.len()),Scan::Complete(first.len()));assert_eq!(scan(first,first.len()-1),Scan::TooLarge);}
+#[test] fn only_the_first_header_counts_for_size(){let first=b"GET / HTTP/1.1\r\n\r\n";let mut b=first.to_vec();b.extend(std::iter::repeat(b'x').take(9000));assert_eq!(scan(&b,first.len()),Scan::Complete(first.len()));}
+// Exact logical condition in incumbent sweep, with elapsed milliseconds.
+fn sweep(writing:bool,write_elapsed:u64,header_elapsed:Option<u64>,idle_elapsed:u64,write_limit:u64,header_limit:u64,idle_limit:u64)->bool{if writing {write_elapsed>=write_limit} else if let Some(x)=header_elapsed{x>=header_limit}else{idle_elapsed>=idle_limit}}
+#[test] fn overlapping_write_and_header_deadline_is_not_checked(){assert!(!sweep(true,1500,Some(1500),0,2000,1000,2000)); assert!(sweep(false,1500,Some(1500),0,2000,1000,2000));}

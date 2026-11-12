@@ -1,0 +1,260 @@
+{
+  "dollar_limit": "5.00",
+  "model": "gpt-6-luna",
+  "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+  "price_verified_date": "2026-11-12",
+  "rates_usd_per_million": {
+    "cached": "0.01",
+    "input": "0.10",
+    "output": "0.50",
+    "write_upper": "0.25"
+  },
+  "reason": "finished",
+  "requests": [
+    {
+      "id": "92bf47ba5b1648f88ccc087757febb06",
+      "input_bound": 2162,
+      "output_bound": 16000,
+      "reserved_tokens": 18162,
+      "reserved_unix": 1794457577.3782701,
+      "reserved_usd": "0.0085405",
+      "response_id": "resp_0748162036db3980016af53fe9916c87d08fe3672e3ec24248",
+      "response_status": "completed",
+      "settled_unix": 1794457682.7755125,
+      "state": "settled",
+      "usage": {
+        "cache_write": 2237,
+        "cached_input": 0,
+        "cost_usd_upper_bound": "0.00057405",
+        "input": 2240,
+        "output": 29,
+        "reasoning": 12,
+        "total": 2269
+      }
+    },
+    {
+      "counted_input": 2168,
+      "id": "772e9f3f246f4d15ad42db2aa1dc619c",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457683.1670558,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af54053da3887d0a33eeabd4d686790",
+      "response_status": "completed",
+      "settled_unix": 1794457685.1779556,
+      "state": "settled",
+      "usage": {
+        "cache_write": 292,
+        "cached_input": 1951,
+        "cost_usd_upper_bound": "0.00011231",
+        "input": 2246,
+        "output": 39,
+        "reasoning": 22,
+        "total": 2285
+      }
+    },
+    {
+      "counted_input": 2798,
+      "id": "b51f6bf0b2aa4c4280176bab691a5128",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457685.4778557,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af54055ac2887d0a40955a52181603e",
+      "response_status": "completed",
+      "settled_unix": 1794457713.8131669,
+      "state": "settled",
+      "usage": {
+        "cache_write": 630,
+        "cached_input": 2243,
+        "cost_usd_upper_bound": "0.00166173",
+        "input": 2876,
+        "output": 2963,
+        "reasoning": 1164,
+        "total": 5839
+      }
+    },
+    {
+      "counted_input": 7074,
+      "id": "045922b9d9934b64bdceb07dbcfbb664",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457716.432328,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af540749c9087d099619bb256e8f6e8",
+      "response_status": "completed",
+      "settled_unix": 1794457717.4762998,
+      "state": "settled",
+      "usage": {
+        "cache_write": 4276,
+        "cached_input": 2873,
+        "cost_usd_upper_bound": "0.00111303",
+        "input": 7152,
+        "output": 30,
+        "reasoning": 13,
+        "total": 7182
+      }
+    },
+    {
+      "counted_input": 7711,
+      "id": "295174b01e35490d88e19ef835ca52c5",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457717.7765303,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af54075fc9887d0b9a370ab02cd3d52",
+      "response_status": "completed",
+      "settled_unix": 1794457728.8285258,
+      "state": "settled",
+      "usage": {
+        "cache_write": 637,
+        "cached_input": 7149,
+        "cost_usd_upper_bound": "0.00067054",
+        "input": 7789,
+        "output": 879,
+        "reasoning": 862,
+        "total": 8668
+      }
+    },
+    {
+      "counted_input": 9197,
+      "id": "8d0a90ce6fe1404c867cfc9a7bf21763",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457729.1524441,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af54081618c87d0adc1241424715883",
+      "response_status": "completed",
+      "settled_unix": 1794457746.1591427,
+      "state": "settled",
+      "usage": {
+        "cache_write": 1486,
+        "cached_input": 7786,
+        "cost_usd_upper_bound": "0.00155466",
+        "input": 9275,
+        "output": 2210,
+        "reasoning": 272,
+        "total": 11485
+      }
+    },
+    {
+      "counted_input": 12698,
+      "id": "ea23f713a8d34ceba0733ec29bacd353",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457748.0128558,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af5409434cc87d08b9f73801d4a3a09",
+      "response_status": "completed",
+      "settled_unix": 1794457756.8450236,
+      "state": "settled",
+      "usage": {
+        "cache_write": 3501,
+        "cached_input": 9272,
+        "cost_usd_upper_bound": "0.00130727",
+        "input": 12776,
+        "output": 678,
+        "reasoning": 661,
+        "total": 13454
+      }
+    },
+    {
+      "counted_input": 13992,
+      "id": "389f0f31744b4a97968e80fe785eca9a",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457757.216148,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af5409d67c487d0bec55274419e982b",
+      "response_status": "completed",
+      "settled_unix": 1794457771.5903692,
+      "state": "settled",
+      "usage": {
+        "cache_write": 1294,
+        "cached_input": 12773,
+        "cost_usd_upper_bound": "0.00142603",
+        "input": 14070,
+        "output": 1949,
+        "reasoning": 59,
+        "total": 16019
+      }
+    },
+    {
+      "counted_input": 17231,
+      "id": "e4e5fb740b34492a974cc23c7533073c",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457773.299139,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af540ad888487d0a030586e9c4cae43",
+      "response_status": "completed",
+      "settled_unix": 1794457803.29316,
+      "state": "settled",
+      "usage": {
+        "cache_write": 3239,
+        "cached_input": 14067,
+        "cost_usd_upper_bound": "0.00268572",
+        "input": 17309,
+        "output": 3470,
+        "reasoning": 1606,
+        "total": 20779
+      }
+    },
+    {
+      "counted_input": 22038,
+      "id": "e5143b0df99f4d8185ef4916496e2a0f",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457805.1439807,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af540cd667087d0a6bbe3f84fe751db",
+      "response_status": "completed",
+      "settled_unix": 1794457807.761863,
+      "state": "settled",
+      "usage": {
+        "cache_write": 4807,
+        "cached_input": 17306,
+        "cost_usd_upper_bound": "0.00140461",
+        "input": 22116,
+        "output": 59,
+        "reasoning": 42,
+        "total": 22175
+      }
+    },
+    {
+      "counted_input": 22735,
+      "id": "a7e1de2a98b04d51b97fad044a1d8170",
+      "input_bound": 1050000,
+      "output_bound": 16000,
+      "reserved_tokens": 1066000,
+      "reserved_unix": 1794457808.144649,
+      "reserved_usd": "0.537",
+      "response_id": "resp_0415b21da46584d2016af540d05f7887d08f1ac7435ae18d9c",
+      "response_status": "completed",
+      "settled_unix": 1794457809.4088962,
+      "state": "settled",
+      "usage": {
+        "cache_write": 697,
+        "cached_input": 22113,
+        "cost_usd_upper_bound": "0.00040218",
+        "input": 22813,
+        "output": 13,
+        "reasoning": 0,
+        "total": 22826
+      }
+    }
+  ],
+  "schema_version": 1,
+  "service_tier": "default",
+  "state": "stopped",
+  "token_limit": 10000000
+}

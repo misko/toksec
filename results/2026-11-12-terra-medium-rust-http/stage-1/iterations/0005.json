@@ -1,0 +1,12 @@
+{
+  "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+  "category": "security",
+  "change": "Plan executable symlink, FIFO and rename-race tests using the retained openat implementation.",
+  "evidence": "Both retained and parser-fix candidate passed three independent restart suites; parser-fix unit regression passed but the candidate is not promoted.",
+  "evidence_author": "model; not independent verification",
+  "hypothesis": "Descriptor-relative traversal should reject symlinks and preserve confinement even when a path component changes concurrently.",
+  "last": "7a678ae104244ccbb14a1752f1e3f58d",
+  "next_action": "Exercise openat traversal and descriptor ownership in sandboxed Rust unit tests.",
+  "recorded_unix": 1794496599.926361,
+  "verdict": "Confinement behavior requires targeted race evidence beyond public fixtures."
+}

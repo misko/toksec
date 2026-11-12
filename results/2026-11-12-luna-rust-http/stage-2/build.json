@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "timeout": false,
+  "seconds": 0.5679830256849527,
+  "diagnostics": "warning: field `pipeline` is never read\n  --> /src/main.rs:11:164\n   |\n11 | ...ct Config { listen: SocketAddr, root: PathBuf, max_conn: usize, header_bytes: usize, header_ms:u64, idle_ms:u64, write_ms:u64, max_req:usize, pipeline:us...\n   |       ------ field in this struct                                                                                                                ^^^^^^^^\n   |\n   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+  "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "test": false
+}

@@ -1,0 +1,28 @@
+{
+  "run_id": "luna-http-l1-metered-v2",
+  "model": "gpt-6-luna",
+  "service_tier": "default",
+  "outcome": "promotion_suite_conformant",
+  "candidate": "8db8cf43de66-5854e342",
+  "source_sha256": "8db8cf43de66e1ee4c72ac1f72612db2ccd21a7921c4b72ed6ec2414ac890403",
+  "requests": 11,
+  "candidates": 4,
+  "tokens": {
+    "input": 120662,
+    "cached_input": 97533,
+    "cache_write": 23096,
+    "output": 12319,
+    "reasoning": 4713,
+    "total": 132981
+  },
+  "cost_usd_upper_bound": "0.01291213",
+  "elapsed_seconds_including_recovery": 233.0618348121643,
+  "token_limit": 10000000,
+  "dollar_limit": "5.00",
+  "unresolved_reservations": 0,
+  "sealed_final_evaluated": false,
+  "security_evaluated": false,
+  "clean_benchmark_run": false,
+  "harness_commit": "3888005",
+  "recovery": "First response reported 2240 input tokens versus 2162 preflight. Actual 2269 total tokens and cost fit the original reservation. Reconciled the response, preserved total allowance and deadline, restarted model context, and reserved full model input ceiling thereafter."
+}

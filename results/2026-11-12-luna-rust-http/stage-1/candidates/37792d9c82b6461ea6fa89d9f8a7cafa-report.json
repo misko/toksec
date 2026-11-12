@@ -1,0 +1,104 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "warning: fields `idle_timeout`, `max_requests`, and `pipeline_depth` are never read\n  --> /src/main.rs:13:123\n   |\n13 | ...ct Config { listen: SocketAddr, root: PathBuf, max_connections: usize, header_bytes: usize, header_timeout: Duration, idle_timeout: Duration, write_timeout: Duration, max_requests: usize, pipeline_depth: u...\n   |       ------ fields in this struct                                                                                       ^^^^^^^^^^^^                                     ^^^^^^^^^^^^         ^^^^^^^^^^^^^^\n   |\n   = note: `Config` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+    "passed": true,
+    "seconds": 1.0713293720036745,
+    "test": false,
+    "timeout": false
+  },
+  "capacity_at_submission": {
+    "best_candidate": null,
+    "can_start_model_call": true,
+    "dollar_limit": "5.00",
+    "full_acceptance": false,
+    "model": "gpt-6-luna",
+    "next_call_reservation_tokens": 1066000,
+    "next_call_reservation_usd": "0.537",
+    "optimization_attempts": 0,
+    "reason": null,
+    "remaining": 9794218,
+    "remaining_usd": "4.97624660",
+    "reserved": 0,
+    "reserved_usd": "0",
+    "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+    "seconds_remaining": 1730.1798911094666,
+    "service_tier": "default",
+    "spent_usd_upper_bound": "0.02375340",
+    "state": "active",
+    "token_limit": 10000000,
+    "used": 205782
+  },
+  "checks": {
+    "cases": [
+      {
+        "error": "ConnectionResetError: [Errno 104] Connection reset by peer",
+        "id": "bootstrap",
+        "passed": false,
+        "seconds": 0.1564398007467389
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "files",
+        "passed": false,
+        "seconds": 0.0012237904593348503
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "query-and-decoding",
+        "passed": false,
+        "seconds": 8.904095739126205e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "confinement",
+        "passed": false,
+        "seconds": 2.405606210231781e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "fragmentation",
+        "passed": false,
+        "seconds": 1.8387101590633392e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "syntax",
+        "passed": false,
+        "seconds": 1.5028752386569977e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "request-framing",
+        "passed": false,
+        "seconds": 1.71000137925148e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "header-limit",
+        "passed": false,
+        "seconds": 2.3305416107177734e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "absolute-header-deadline",
+        "passed": false,
+        "seconds": 1.5356577932834625e-05
+      },
+      {
+        "error": "ConnectionRefusedError: [Errno 111] Connection refused",
+        "id": "disconnect-recovery",
+        "passed": false,
+        "seconds": 1.4059245586395264e-05
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.09706690721213818
+      }
+    ],
+    "passed": false
+  },
+  "id": "37792d9c82b6461ea6fa89d9f8a7cafa",
+  "source_sha256": "936bd856726f6c798d64d3b9419877f825fc0bb118adfe69f4b896dd9e0d9345"
+}
