@@ -1,0 +1,31 @@
+{
+  "name": "record_iteration",
+  "result": {
+    "capacity": {
+      "best_candidate": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 1,
+      "dollar_limit": "5.00",
+      "full_acceptance": true,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 2,
+      "reason": null,
+      "remaining": 6054794,
+      "remaining_usd": "4.22889751",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 476.47315311431885,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.77110249",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 3945206,
+      "work_phase": "improve"
+    },
+    "recorded": 5
+  }
+}

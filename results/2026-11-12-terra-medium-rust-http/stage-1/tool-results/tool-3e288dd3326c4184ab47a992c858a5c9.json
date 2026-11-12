@@ -1,0 +1,47 @@
+{
+  "name": "benchmark_candidate",
+  "result": {
+    "candidate": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "decision": {
+      "promote": false,
+      "reason": "initial accepted baseline"
+    },
+    "incumbent": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "summaries": {
+      "20ef0414aaf14ae5a88d2a8e9379383f": {
+        "fresh-4096-256": {
+          "eligible": false,
+          "failures": 22,
+          "max_rps": 42156.666666666664,
+          "median_rps": 40476.666666666664,
+          "min_rps": 39354.666666666664,
+          "worst_p99_ms": 7.7
+        },
+        "fresh-4096-4096": {
+          "eligible": false,
+          "failures": 396454,
+          "max_rps": 40481.666666666664,
+          "median_rps": 33718.666666666664,
+          "min_rps": 0.0,
+          "worst_p99_ms": null
+        },
+        "fresh-65536-256": {
+          "eligible": false,
+          "failures": 13,
+          "max_rps": 24003.0,
+          "median_rps": 18015.333333333332,
+          "min_rps": 17196.333333333332,
+          "worst_p99_ms": 87.3
+        },
+        "fresh-65536-4096": {
+          "eligible": false,
+          "failures": 1113640,
+          "max_rps": 21262.333333333332,
+          "median_rps": 0.0,
+          "min_rps": 0.0,
+          "worst_p99_ms": null
+        }
+      }
+    }
+  }
+}

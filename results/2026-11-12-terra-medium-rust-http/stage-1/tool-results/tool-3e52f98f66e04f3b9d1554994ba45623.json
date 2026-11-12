@@ -1,0 +1,104 @@
+{
+  "name": "submit_candidate",
+  "result": {
+    "best": "20ef0414aaf14ae5a88d2a8e9379383f",
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "",
+      "passed": true,
+      "seconds": 0.3158093076199293,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": "20ef0414aaf14ae5a88d2a8e9379383f",
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 2,
+      "dollar_limit": "5.00",
+      "full_acceptance": true,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 3,
+      "reason": null,
+      "remaining": 7145230,
+      "remaining_usd": "4.52497526",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 474.98750495910645,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.47502474",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 2854770,
+      "work_phase": "improve"
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0013914238661527634
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.0061865923926234245
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.002404225990176201
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.005775291472673416
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0009763576090335846
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.0023409081622958183
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.0017884094268083572
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.0017391899600625038
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2010470749810338
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.0010682828724384308
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.04827478528022766
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    },
+    "id": "3fbcc7adb3e847d4a0268cacf48baf12",
+    "retained": false,
+    "source_sha256": "712b85e18c239e60e78683c56fee6994195b8d5e15f0d05d489253c1f6a8910c"
+  }
+}

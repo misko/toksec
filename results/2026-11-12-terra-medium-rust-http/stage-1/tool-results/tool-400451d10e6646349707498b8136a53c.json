@@ -1,0 +1,15 @@
+{
+  "name": "run_tests",
+  "result": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.21607813518494368,
+    "test": true,
+    "tests": {
+      "output": "\nrunning 1 test\ntest sample_virtual_memory_for_slow_threads ... FAILED\n\nfailures:\n\n---- sample_virtual_memory_for_slow_threads stdout ----\n\nthread 'sample_virtual_memory_for_slow_threads' (3) panicked at /src/main.rs:3:399:\nbaseline_kib=71396, 16_threads_kib=466876\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    sample_virtual_memory_for_slow_threads\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n",
+      "passed": false
+    },
+    "timeout": false
+  }
+}

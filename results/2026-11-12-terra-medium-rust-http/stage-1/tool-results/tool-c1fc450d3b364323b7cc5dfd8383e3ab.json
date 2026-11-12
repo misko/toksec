@@ -1,0 +1,15 @@
+{
+  "name": "run_tests",
+  "result": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 0.26610964071005583,
+    "test": true,
+    "tests": {
+      "output": "\nrunning 1 test\ntest incomplete_clients_then_valid_recovery ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s\n\n",
+      "passed": true
+    },
+    "timeout": false
+  }
+}

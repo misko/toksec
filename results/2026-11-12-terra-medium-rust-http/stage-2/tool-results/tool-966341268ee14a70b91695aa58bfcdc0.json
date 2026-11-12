@@ -1,0 +1,129 @@
+{
+  "name": "submit_candidate",
+  "result": {
+    "best": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+    "build": {
+      "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "diagnostics": "",
+      "passed": true,
+      "seconds": 0.5711099691689014,
+      "test": false,
+      "timeout": false
+    },
+    "capacity_at_submission": {
+      "best_candidate": null,
+      "can_finish": false,
+      "can_start_model_call": true,
+      "context_rollovers": 0,
+      "dollar_limit": "5.00",
+      "full_acceptance": false,
+      "model": "gpt-6.1-terra",
+      "next_call_reservation_tokens": 1066000,
+      "next_call_reservation_usd": "2.745",
+      "optimization_attempts": 0,
+      "reason": null,
+      "remaining": 6525476,
+      "remaining_usd": "4.34354491",
+      "reserved": 0,
+      "reserved_usd": "0",
+      "scope": "Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation",
+      "seconds_remaining": 1697.88201379776,
+      "service_tier": "default",
+      "spent_usd_upper_bound": "0.65645509",
+      "state": "active",
+      "token_limit": 10000000,
+      "used": 3474524,
+      "work_phase": "conformance"
+    },
+    "checks": {
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.0033446159213781357
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.00627712719142437
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.00041315890848636627
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.00026249419897794724
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0002820175141096115
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.00023502297699451447
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00017460808157920837
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.00011358316987752914
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.201096385717392
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.003037862479686737
+        },
+        {
+          "id": "head",
+          "passed": true,
+          "seconds": 0.00035326555371284485
+        },
+        {
+          "id": "persistent-pipeline",
+          "passed": true,
+          "seconds": 0.00410494115203619
+        },
+        {
+          "id": "connection-semantics",
+          "passed": true,
+          "seconds": 0.00015836209058761597
+        },
+        {
+          "id": "connection-limits",
+          "passed": true,
+          "seconds": 2.0449237739667296
+        },
+        {
+          "id": "slow-client-fairness",
+          "passed": true,
+          "seconds": 0.004370478913187981
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.12504882644861937
+        }
+      ],
+      "passed": true,
+      "server_diagnostics": "",
+      "server_exit_code": null
+    },
+    "id": "dcdb837a1c6e4a4c98ee2207212fa5ed",
+    "retained": true,
+    "source_sha256": "6f42aad18c9416179224bfce1e40075226fe8adc8cf32d9e86c3b8c448750e1a"
+  }
+}
