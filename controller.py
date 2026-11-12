@@ -41,7 +41,7 @@ def atomic_json(path, value):
 
 
 def fingerprints():
-    paths = [ROOT / "controller.py", ROOT / "evaluator.py", ROOT / "probe.py",
+    paths = [ROOT / "controller.py", ROOT / "capacity.py", ROOT / "evaluator.py", ROOT / "probe.py",
              ROOT / "tasks/http/level-1.md", ROOT / "experiments/luna-http-l1.json"]
     paths.extend(sorted((ROOT / "prompts").glob("*.md")))
     return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
@@ -171,10 +171,12 @@ def preflight(run):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "preflight", "evaluate", "status", "export"))
+    parser.add_argument("command", choices=("prepare", "preflight", "evaluate", "status", "budget-status", "export"))
     parser.add_argument("--run", required=True, type=Path)
     args = parser.parse_args()
+    from capacity import budget_status
     commands = {"prepare": prepare, "preflight": preflight, "evaluate": submit, "export": export,
+                "budget-status": budget_status,
                 "status": lambda p: json.loads((p / "state.json").read_text())}
     try:
         result = commands[args.command](args.run)

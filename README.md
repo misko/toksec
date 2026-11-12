@@ -52,3 +52,4 @@ Tests cover sandbox execution, real socket probes against a deliberately incompl
 - `prompts/handoff.md` describes agent replacement without losing state.
 - `experiments/luna-http-l1.json` records the requested pilot configuration.
 - `docs/budget.md` records the launch blocker and requirements for an enforceable adapter.
+- `docs/capacity-tool.md` describes the `budget_status` tool and local handler. Use `python3 controller.py budget-status --run RUN` to inspect a newly prepared run. A model adapter still needs to wire the handler into its tool dispatcher.
