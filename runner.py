@@ -120,14 +120,21 @@ def deadline(seconds):
         signal.signal(signal.SIGALRM, previous)
 
 
-def run_loop(run, client):
+def run_loop(run, client, *, continue_reconciled=False):
     run = Path(run).resolve()
     with (run / ".runner.lock").open("a") as ownership:
         fcntl.flock(ownership, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        metering.initialize(run)
+        if continue_reconciled:
+            with controller.locked(run):
+                ledger = metering.read_ledger(run)
+                if ledger["state"] != "active" or any(r["state"] != "settled" for r in ledger["requests"]):
+                    raise ValueError("continuation requires a reconciled active ledger")
+        else:
+            metering.initialize(run)
         manifest = json.loads((run / "manifest.json").read_text())
         config = manifest["configuration"]
-        end = time.monotonic() + config["wall_seconds"]
+        remaining_seconds = max(0.001, config["wall_seconds"] - (time.time() - manifest["started_unix"]))
+        end = time.monotonic() + remaining_seconds
         packet = (run / "launch-packet.md").read_text()
         packet += ("\n\nThis runner exposes only budget_status, submit_candidate, and finish. "
                    "Use submit_candidate with the complete server.py source to write and test it. "
@@ -137,7 +144,7 @@ def run_loop(run, client):
         history = [{"role": "developer", "content": packet}]
         reason = "finished"
         try:
-            with deadline(config["wall_seconds"]):
+            with deadline(remaining_seconds):
                 while True:
                     capacity = budget_status(run)
                     if not capacity["can_start_model_call"]:

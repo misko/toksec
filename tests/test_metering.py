@@ -44,7 +44,7 @@ class MeteringTests(unittest.TestCase):
 
     def test_pending_request_survives_restart_and_blocks_new_calls(self):
         metering.reserve(self.run, 100)
-        self.assertEqual(metering.totals(metering.read_ledger(self.run))["reserved"], 16100)
+        self.assertEqual(metering.totals(metering.read_ledger(self.run))["reserved"], 1066000)
         self.assertFalse(budget_status(self.run)["can_start_model_call"])
         with self.assertRaises(ValueError):
             metering.reserve(self.run, 100)
@@ -52,11 +52,11 @@ class MeteringTests(unittest.TestCase):
             metering.initialize(self.run)
         metering.stop(self.run, "timeout")
         self.assertEqual(metering.read_ledger(self.run)["state"], "uncertain")
-        self.assertEqual(budget_status(self.run)["tokens"]["reserved"], 16100)
+        self.assertEqual(budget_status(self.run)["tokens"]["reserved"], 1066000)
 
     def test_cap_refuses_before_dispatch(self):
         ledger = metering.read_ledger(self.run)
-        ledger["token_limit"] = 16099
+        ledger["token_limit"] = 1065999
         controller.atomic_json(self.run / "ledger.json", ledger)
         with self.assertRaises(ValueError):
             metering.reserve(self.run, 100)
@@ -74,14 +74,14 @@ class MeteringTests(unittest.TestCase):
 
     def test_invalid_usage_retains_reservation(self):
         identity = metering.reserve(self.run, 100)
-        invalid = response(input_count=101)
+        invalid = response(input_count=metering.MODEL_CONTEXT_LIMIT + 1)
         with self.assertRaises(ValueError):
             metering.settle(self.run, identity, invalid)
         status = budget_status(self.run)
         self.assertEqual(status["accounting_status"], "uncertain")
         self.assertFalse(status["usage_complete"])
         self.assertEqual(status["tokens"]["used"], 0)
-        self.assertEqual(status["tokens"]["reserved"], 16100)
+        self.assertEqual(status["tokens"]["reserved"], 1066000)
 
     def test_incomplete_response_accounts_usage_then_stops(self):
         identity = metering.reserve(self.run, 100)
@@ -113,6 +113,27 @@ class MeteringTests(unittest.TestCase):
         actual = metering.usage_record(usage)
         self.assertEqual(Decimal(actual["cost_usd_upper_bound"]), Decimal("0.00005"))
         self.assertEqual(actual["total"], 150)
+
+    def test_count_endpoint_underestimate_settles_actual_usage(self):
+        identity = metering.reserve(self.run, 2162)
+        actual = response(input_count=2240, output_count=29, cached=0, written=2237, reasoning=12)
+        metering.settle(self.run, identity, actual)
+        self.assertEqual(budget_status(self.run)["tokens"]["used"], 2269)
+        self.assertTrue(budget_status(self.run)["can_start_model_call"])
+
+    def test_long_context_usage_is_priced_then_stopped(self):
+        identity = metering.reserve(self.run, 64000)
+        actual = response(input_count=300000, output_count=50, cached=0, written=0, reasoning=20)
+        metering.settle(self.run, identity, actual)
+        status = budget_status(self.run)
+        self.assertFalse(status["can_start_model_call"])
+        self.assertEqual(Decimal(status["dollars"]["spent_upper_bound"]), Decimal("0.0600375"))
+
+    def test_full_context_reservation_covers_long_context_cost(self):
+        metering.reserve(self.run, 1)
+        balance = metering.totals(metering.read_ledger(self.run))
+        self.assertEqual(balance["reserved"], 1066000)
+        self.assertEqual(Decimal(balance["reserved_usd"]), Decimal("0.537"))
 
     def test_invalid_subsets_and_totals(self):
         for invalid in (response(cached=101), response(reasoning=51), response(written=-1)):
@@ -174,7 +195,7 @@ class RunnerTests(unittest.TestCase):
         self.assertTrue(result["exported"])
         self.assertEqual(client.responses, 2)
         self.assertEqual(result["capacity"]["tokens"]["used"], 150)
-        self.assertEqual(result["capacity"]["tokens"]["reserved"], 16100)
+        self.assertEqual(result["capacity"]["tokens"]["reserved"], 1066000)
         self.assertEqual(result["capacity"]["accounting_status"], "uncertain")
 
     def test_preflight_missing_key_makes_no_requests(self):

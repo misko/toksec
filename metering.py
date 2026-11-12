@@ -12,6 +12,7 @@ from controller import atomic_json, locked
 MODEL = "gpt-6-luna"
 TOKEN_LIMIT = 10_000_000
 MAX_INPUT = 64_000
+MODEL_CONTEXT_LIMIT = 1_050_000
 MAX_OUTPUT = 16_000
 RATES = {"input": "0.10", "cached": "0.01", "write_upper": "0.25", "output": "0.50"}
 PRICE_SOURCE = "https://developers.openai.com/api/docs/models/gpt-6-luna"
@@ -37,10 +38,12 @@ def usage_record(usage):
     if tokens(usage["total_tokens"]) != total:
         raise ValueError("inconsistent total token usage")
     ordinary_rate = RATES["input"] if "cache_write_tokens" in details else RATES["write_upper"]
-    cost = (Decimal(input_count - cached - written) * Decimal(ordinary_rate)
+    input_multiplier = Decimal(2 if input_count > 272_000 else 1)
+    output_multiplier = Decimal("1.5" if input_count > 272_000 else "1")
+    cost = ((Decimal(input_count - cached - written) * Decimal(ordinary_rate)
             + Decimal(cached) * Decimal(RATES["cached"])
-            + Decimal(written) * Decimal(RATES["write_upper"])
-            + Decimal(output_count) * Decimal(RATES["output"])) / 1_000_000
+            + Decimal(written) * Decimal(RATES["write_upper"])) * input_multiplier
+            + Decimal(output_count) * Decimal(RATES["output"]) * output_multiplier) / 1_000_000
     return {"input": input_count, "cached_input": cached, "cache_write": written,
             "output": output_count, "reasoning": reasoning, "total": total,
             "cost_usd_upper_bound": str(cost)}
@@ -97,13 +100,14 @@ def reserve(run, input_count):
         if time.time() >= manifest["started_unix"] + config["wall_seconds"] - config["reserve_seconds"]:
             raise ValueError("validation reserve reached")
         balance = totals(ledger)
-        reservation = input_count + MAX_OUTPUT
-        dollars = (Decimal(input_count) * Decimal(RATES["write_upper"])
-                   + Decimal(MAX_OUTPUT) * Decimal(RATES["output"])) / 1_000_000
+        reservation = MODEL_CONTEXT_LIMIT + MAX_OUTPUT
+        dollars = (Decimal(MODEL_CONTEXT_LIMIT) * Decimal(RATES["write_upper"]) * 2
+                   + Decimal(MAX_OUTPUT) * Decimal(RATES["output"]) * Decimal("1.5")) / 1_000_000
         if reservation > balance["remaining"] or dollars > Decimal(balance["remaining_usd"]):
             raise ValueError("insufficient remaining budget for the next request")
         request_id = uuid.uuid4().hex
-        ledger["requests"].append({"id": request_id, "state": "reserved", "input_bound": input_count,
+        ledger["requests"].append({"id": request_id, "state": "reserved", "input_bound": MODEL_CONTEXT_LIMIT,
+                                   "counted_input": input_count,
                                    "output_bound": MAX_OUTPUT, "reserved_tokens": reservation,
                                    "reserved_usd": str(dollars), "reserved_unix": time.time()})
         atomic_json(run / "ledger.json", ledger)
@@ -125,13 +129,14 @@ def settle(run, request_id, response):
                 raise ValueError("unexpected response model or service tier")
             if any(r.get("response_id") == response["id"] for r in ledger["requests"]):
                 raise ValueError("response already accounted for")
-            if (record["input"] > entry["input_bound"] or record["output"] > entry["output_bound"]
+            if (record["input"] > MODEL_CONTEXT_LIMIT or record["total"] > entry["reserved_tokens"]
+                    or record["output"] > entry["output_bound"]
                     or Decimal(record["cost_usd_upper_bound"]) > Decimal(entry["reserved_usd"])):
                 raise ValueError("reported usage exceeded reservation")
             entry.update(state="settled", response_id=response["id"], usage=record,
                          response_status=response["status"], settled_unix=time.time())
-            if response["status"] != "completed":
-                ledger.update(state="stopped", reason="incomplete response")
+            if response["status"] != "completed" or record["input"] > MAX_INPUT:
+                ledger.update(state="stopped", reason="incomplete response or actual input exceeds pilot limit")
         except (KeyError, TypeError, ValueError) as error:
             ledger.update(state="uncertain", reason=str(error))
             atomic_json(run / "ledger.json", ledger)

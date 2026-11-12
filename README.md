@@ -23,7 +23,7 @@ Configure `OPENAI_API_KEY` securely in the runner environment, then launch:
 python3 runner.py run --run .runs/luna-http-l1
 ```
 
-The runner reserves input plus at most 16,000 output tokens before each request. It stops admitting work after 14 minutes and enforces a 15-minute process deadline. Timeout or uncertain usage retains the reservation and stops the run. Every exit exports the best validated artifact if one exists. Runs cannot restart automatically.
+The runner reserves the model-wide input ceiling plus at most 16,000 output tokens before each request, then settles actual usage. Preflight input counts can differ from reported usage and are used only to screen prompt size. It stops admitting work after 14 minutes and enforces a 15-minute process deadline. Timeout or uncertain usage retains the reservation and stops the run. Every exit exports the best validated artifact if one exists. Runs cannot restart automatically.
 
 Existing Codex ChatGPT login is not wired into this adapter. The native launcher exposes no enforceable per-request token allowance. ChatGPT-plan OAuth inference has a separate authorization flow and does not accept `max_output_tokens`. This package does not extract cached credentials or label post-response cancellation a hard cap. See `docs/budget.md`.
 

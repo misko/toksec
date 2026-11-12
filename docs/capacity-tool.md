@@ -8,7 +8,7 @@ The response separates dollars, cumulative run tokens, context-window capacity, 
 
 Before a run starts, the controller reports the untouched dollar budget and an unstarted clock. Once the API runner initializes `ledger.json`, snapshots report settled token usage, outstanding reservations, and remaining allowance. Dollar spend is explicitly an upper bound at the pinned API rates. `usage_complete` is false when a reservation remains unresolved or usage is uncertain.
 
-`can_start_model_call` means the run is eligible to attempt admission. It does not promise that the next request will fit. The runner counts that request and atomically reserves its input and maximum output before submitting inference. Pending requests, exhausted budgets, stopped runs, and the validation reserve prevent further admission.
+`can_start_model_call` means the run is eligible to attempt admission. It does not promise that the next request will fit. The runner screens the request with the counting endpoint and atomically reserves the model-wide input ceiling and maximum output before submitting inference. Pending requests, exhausted budgets, stopped runs, and the validation reserve prevent further admission.
 
 The diagnostic wall clock uses the manifest's start time. The runner separately enforces the deadline with a monotonic clock and a process timer. Candidate reports supply conformance or performance work orders. The runner stops new inference during the final validation reserve and exports without another model call.
 
