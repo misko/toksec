@@ -91,7 +91,7 @@ class CampaignTests(unittest.TestCase):
         run = Path(controller.prepare(self.directory, 1)['run'])
         first = controller.submit(run, PARTIAL)
         self.assertTrue(first['retained'])
-        self.assertFalse(first['checks']['passed'])
+        self.assertTrue(first['checks']['passed'])
         second = controller.submit(run, 'fn main() { this is not rust }')
         self.assertFalse(second['retained'])
         self.assertEqual(controller.export(run)['best'], first['id'])
@@ -109,7 +109,7 @@ class CampaignTests(unittest.TestCase):
     def test_deadline_during_validation_preserves_retained_artifact(self):
         run = Path(controller.prepare(self.directory, 1)['run'])
         first = controller.submit(run, PARTIAL)
-        with patch('toksec.sandbox.evaluate', side_effect=lambda *args: time.sleep(2)):
+        with patch('toksec.sandbox.evaluate', side_effect=lambda *args, **kwargs: time.sleep(2)):
             with self.assertRaises(runner.CampaignDeadline):
                 with runner.deadline(0.5):
                     controller.submit(run, PARTIAL)
@@ -135,7 +135,7 @@ class CampaignTests(unittest.TestCase):
                 return result
         result = runner.run_loop(run, Client())
         self.assertIsNotNone(result['artifact'])
-        self.assertFalse(result['full_acceptance'])
+        self.assertTrue(result['full_acceptance'])
         self.assertTrue(all(r['service_tier'] == 'default' for r in requests))
         self.assertNotIn('def run_checks', requests[0]['input'][0]['content'])
         self.assertEqual(len([r for r in campaign.read(self.directory)['requests'] if r['run'] == run.name]), 3)

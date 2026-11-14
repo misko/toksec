@@ -42,7 +42,7 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=Non
         shutil.copyfile(ROOT / name, destination)
     (run / 'launch-packet.md').write_text(packet(level))
     atomic_json(run / 'specification.json', specification(level))
-    atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only' if level <= 2 else 'full', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'toolchain': str(sandbox.toolchain()),
@@ -69,7 +69,7 @@ def capacity(run):
     result = campaign.status(manifest['campaign'], manifest.get('model', 'gpt-6-luna'))
     started = manifest['started_unix']
     remaining = max(0, manifest['wall_seconds'] - (time.time() - started)) if started else manifest['wall_seconds']
-    result.update(seconds_remaining=remaining, best_candidate=read(run)['best'],
+    result.update(evaluation_scope=manifest['builder_evaluation_scope'], seconds_remaining=remaining, best_candidate=read(run)['best'],
                   full_acceptance=read(run)['full_acceptance'], optimization_attempts=read(run)['optimization_attempts'])
     target = manifest.get('spend_target_usd')
     if target is not None:
@@ -101,10 +101,10 @@ def submit(run, source):
     identity = uuid.uuid4().hex
     artifact = run / 'candidates' / identity
     report = {'id': identity, 'build': sandbox.build(source, artifact, manifest['level']),
-              'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run)}
+              'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run), 'evaluation_scope': manifest['builder_evaluation_scope']}
     if report['build']['passed']:
         try:
-            report['checks'] = sandbox.evaluate(artifact, manifest['level'])
+            report['checks'] = sandbox.evaluate(artifact, manifest['level'], smoke=manifest['level'] <= 2)
         except (RuntimeError, OSError, ValueError) as error:
             report['checks']['error'] = str(error)[:2000]
     report['source_sha256'] = hashlib.sha256((artifact / 'main.rs').read_bytes()).hexdigest()
@@ -146,7 +146,7 @@ def measure(run):
             atomic_json(run / 'benchmark-progress.json', collected)
     summaries = {key: {name: benchmark.summarize(rounds) for name, rounds in value.items()} for key, value in collected.items()}
     decision = benchmark.compare(summaries[incumbent], summaries[identity]) if pair else {'promote': False, 'reason': 'initial accepted baseline'}
-    result = {'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision}
+    result = {'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision, 'evaluation_scope': 'development_only_not_final_grade'}
     result['recorded_unix'] = time.time()
     result['capacity'] = capacity(run)
     history = run / 'benchmarks'
@@ -211,7 +211,7 @@ def revalidate(run, target):
     destination = folder / (uuid.uuid4().hex + '.json')
     for _ in range(3):
         try:
-            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, manifest['level']))
+            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, manifest['level'], smoke=manifest['level'] <= 2))
         except (RuntimeError, OSError, ValueError) as error:
             reports.append({'passed': False, 'error': str(error)[:8000]})
         atomic_json(destination, {'candidate': identity, 'passed': False, 'complete': False, 'restarts': reports})

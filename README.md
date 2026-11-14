@@ -2,17 +2,17 @@
 
 Implement and benchmark nginx-like HTTP servers with an AI agent under a measured campaign budget.
 
-Stages 1 and 2 are independent, from-scratch Rust tasks: neither receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
+Stages 1 and 2 are independent, from-scratch Rust tasks: neither receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, minimal smoke-check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
 
 The authoritative instructions live in [RULES.md](RULES.md). See [the stage layout](docs/stage-layout.md) for shared and stage-specific files. Published packets are generated snapshots; edit the source documents and regenerate them.
 
 | Level | Complete target | Performance workloads |
 |---|---|---|
-| [1](tasks/v5/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
-| [2](tasks/v5/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
-| [3](tasks/v5/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
-| [4](tasks/v5/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
-| [5](tasks/v5/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
+| [1](tasks/v6/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
+| [2](tasks/v6/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
+| [3](tasks/v6/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
+| [4](tasks/v6/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
+| [5](tasks/v6/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
 
 Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**. Five rounds report goodput, p50/p95/p99 latency, failures, timeouts, CPU, RSS and load-generator saturation. This is a defined nginx-inspired subset, not a quantitative claim of half of nginx.
 
@@ -29,7 +29,7 @@ edits do not replace the graded submission.
 Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, OpenSSL, system zlib, five available CPUs and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
 
 ```sh
-python3 -m toksec publish --output tasks/v5
+python3 -m toksec publish --output tasks/v6
 python3 -m toksec init --campaign .runs/http-campaign
 python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 python3 -m toksec prepare --campaign .runs/http-campaign --level 2
@@ -83,3 +83,5 @@ python3 -m unittest discover -s tests -v
 No framework can guarantee a working implementation before the agent's first successful submission. An empty or unsuccessful run reports that explicitly. Passing this finite public suite is not proof of complete correctness or security.
 
 Read the [full walkthrough](docs/public-system.md), [implementation decisions](docs/system-plan.md) and [verification record](docs/system-verification.md). The original Python pilot remains available in the root modules and [recorded results](results/2026-11-11-luna-http-l1-pilot/README.md). It has a different contract and runner. Use the `python3 -m toksec` commands for the shared Rust campaign.
+
+Stages 1 and 2 use the [visible/held-out split](docs/visible-and-held-out-tests.md). Builder feedback is smoke-only; development benchmarks are provisional. Final API grading remains comprehensive and gates final performance.

@@ -1,8 +1,9 @@
-# Proposed visible and held-out suites
+# Visible and held-out suites
 
-Status: proposed split, not yet wired into the runner. RULES.md now assigns test
-design to the builder. The current runner still lists and returns the full API
-suite; it must be changed before a run can be described as using held-out tests.
+Status: enforced for Stage 1 and Stage 2 in rust-http-v6. Builder submissions,
+revalidation, release evidence and checkpoints use only visible smoke checks.
+The full grader remains host-only and runs after the campaign. Development
+sandboxes contain only ordinary smoke/benchmark fixtures, not edge-case fixtures.
 
 ## Visible API smoke checks
 
@@ -55,7 +56,7 @@ contract declares them. Slow-client correctness belongs in required API grading.
 If held-out API fails, skip final performance and assign zero performance credit,
 regardless of any earlier development benchmark.
 
-## Implementation changes needed
+## Enforced separation
 
 - Maintain one catalog with explicit visible-smoke and held-out membership.
 - Builder packets list only smoke checks; retain the full English contract.
@@ -68,5 +69,4 @@ regardless of any earlier development benchmark.
   Evaluate historical tags after the run to measure true progress without feedback.
 - Add regression tests ensuring every builder tool and checkpoint respects the split.
 
-Do not start a held-out campaign until these changes are implemented and checked.
 The strict $3 shared cap and two-hour ceiling remain unchanged.

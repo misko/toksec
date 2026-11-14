@@ -15,7 +15,7 @@ def main():
     check.add_argument('--level', type=int, choices=range(1,6), required=True)
     check.add_argument('--performance', action='store_true')
     pub = commands.add_parser('publish', help='Generate all five complete contracts. No API call.')
-    pub.add_argument('--output', type=Path, default=Path('tasks/v4'))
+    pub.add_argument('--output', type=Path, default=Path('tasks/v6'))
     for name in ('init', 'status', 'upgrade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)

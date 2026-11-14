@@ -127,11 +127,11 @@ def build(source, artifact, level, test=False):
 
 
 @contextlib.contextmanager
-def running(artifact, level, configuration_override=None):
+def running(artifact, level, configuration_override=None, smoke=False):
     artifact = Path(artifact).resolve()
     with tempfile.TemporaryDirectory(prefix='toksec-runtime-') as temporary:
         directory = Path(temporary)
-        fixtures.create(directory, level)
+        (fixtures.create_smoke if smoke else fixtures.create)(directory, level)
         if configuration_override is not None:
             (directory / 'server.conf').write_text(configuration_override)
         read_fd, write_fd = os.pipe()
@@ -159,7 +159,7 @@ def running(artifact, level, configuration_override=None):
 
 
 def invoke_driver(artifact, level, mode='check', configuration_override=None, **options):
-    with running(artifact, level, configuration_override) as runtime:
+    with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or (mode == 'benchmark' and level <= 2)) as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
                    '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
@@ -220,7 +220,11 @@ def configuration_check(artifact, level):
         return {'id': 'configuration', 'passed': False, 'seconds': time.monotonic() - started, 'error': str(error)}
 
 
-def evaluate(artifact, level):
+def evaluate(artifact, level, smoke=False):
+    if smoke:
+        result = invoke_driver(artifact, level, suite='smoke')
+        result['evaluation_scope'] = 'visible_smoke_only'
+        return result
     result = invoke_driver(artifact, level)
     config = configuration_check(artifact, level)
     from toksec.checks import configured_cases

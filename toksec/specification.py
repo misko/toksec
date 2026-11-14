@@ -5,7 +5,7 @@ from stages.common.performance import Workload, matrix
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'rust-http-v5'
+VERSION = 'rust-http-v6'
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'TLS and operational features'}
 DESIGN = {
@@ -110,14 +110,16 @@ def packet(level):
     for name in instruction_files(level):
         lines.extend([(ROOT / name).read_text(), ''])
     lines.extend(API[n] for n in range(3, level + 1))
+    from stages.common.smoke import cases as smoke_cases
+    visible = [{'id': c.id, 'description': c.description} for c in smoke_cases(level)] if level <= 2 else spec['cases']
     lines.extend(['## Required configuration', '', '```ini',
                   *[f'{k}={v}' for k, v in spec['configuration'].items()], '```', '',
-                  '## Independent acceptance checks', '',
-                  'Checker source stays on the evaluator side. Test the English requirements, including boundary cases.', ''])
-    lines.extend(f'- `{c["id"]}`: {c["description"]}' for c in spec['cases'])
+                  '## Supplied smoke checks', '',
+                  'These checks demonstrate ordinary API usage only. Design your own tests from the English requirements. Full independent grading is withheld until the run ends.', ''])
+    lines.extend(f'- `{c["id"]}`: {c["description"]}' for c in visible)
     lines.extend(['', '## Workload matrix', '', '| Workload | Clients | Bytes | Connection |', '|---|---:|---:|---|'])
     lines.extend(f'| {w.id} | {w.clients} | {w.size} | {"persistent" if w.persistent else "fresh"} |' for w in workloads(level))
-    lines.extend(['', '## Optional implementation suggestions', '', DESIGN[level], ''])
+    lines.append('')
     return '\n'.join(lines)
 
 

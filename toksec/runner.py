@@ -23,10 +23,10 @@ def tool(name, description, properties=None):
 TOOLS = [tool('init_repository', 'Create a new Git repository inside the sandbox and tag the first working snapshot.'),
          tool('release_candidate', 'Commit and tag the latest validated candidate. You are graded on the latest completed tag if stopped.', {'note': {'type': 'string'}}),
          tool('budget_status', 'Read remaining shared campaign dollars, tokens, wall time and retained candidate.'),
-         tool('submit_candidate', 'Compile complete main.rs in a sandbox and run every public acceptance check. Retain improvements automatically.', {'source': {'type': 'string'}}),
+         tool('submit_candidate', 'Compile complete main.rs in a sandbox and run the visible smoke checks. Retain improvements automatically.', {'source': {'type': 'string'}}),
          tool('run_tests', 'Compile and execute a complete Rust unit-test source with rustc --test inside the sandbox.', {'source': {'type': 'string'}}),
-         tool('benchmark_candidate', 'Run the complete workload matrix; compare the last fully accepted candidate with the incumbent in alternating rounds.'),
-         tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and full public suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
+         tool('benchmark_candidate', 'Run the complete workload matrix; compare the latest smoke-passing candidate with the incumbent in alternating rounds.'),
+         tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and visible smoke suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
          tool('record_iteration', 'Persist concise experiment notes across context rollover. These notes are model claims, not promotion authority.',
               {'category': {'type': 'string', 'enum': ['correctness', 'performance', 'security', 'stability']},
                **{key: {'type': 'string'} for key in ('hypothesis', 'change', 'evidence', 'verdict', 'next_action')}}),
@@ -101,7 +101,7 @@ def dispatch(run, name, args):
     if not isinstance(args['report'], str) or len(args['report']) > 16000:
         raise ValueError('report must be text of at most 16000 characters')
     if not capacity['can_finish']:
-        raise ValueError('Capacity remains. Continue one hypothesis/change/test iteration. If a full benchmark does not fit or is inconclusive, run bounded security tests or revalidate restarts. Finish is allowed only in the final 120 seconds or when model admission capacity is exhausted.')
+        raise ValueError('Capacity remains. Continue improving the implementation using your chosen tests or measurements. Finish is allowed only in the final 120 seconds or when model admission capacity is exhausted.')
     (Path(run) / 'model-report.md').write_text(args['report'])
     return {'finished': True}
 
@@ -169,7 +169,7 @@ def run_loop(run, client):
                                                    for part in item.get('content', []) if part.get('type') == 'output_text')
                             (run / 'model-report.md').write_text(final_text)
                             break
-                        history.append({'role': 'user', 'content': 'Capacity remains. A final message does not end this run. Continue the improvement/security loop using a tool; inspect budget_status if needed.'})
+                        history.append({'role': 'user', 'content': 'Capacity remains. A final message does not end this run. Continue improving the implementation using a tool; inspect budget_status if needed.'})
                         continue
                     if len(calls) != 1:
                         raise ValueError('backend violated sequential tool-call requirement')

@@ -45,7 +45,7 @@ contains main.rs and controller-generated release.json evidence. The last comple
 tag is your final submission. Untagged edits do not replace it. No tag means no
 submission, and stopping before the first working tag can leave no deliverable.
 Published releases must compile, pass bootstrap and preserve previously passing
-API checks. Publication is explicit; submitting source alone does not publish it.
+visible smoke checks. Publication is explicit; submitting source alone does not publish it.
 
 You receive partial credit for validated progress since the previous tag, even
 if you do not finish the target. Explain the before/after evidence in each release
@@ -54,6 +54,15 @@ performance improvements are progress. Duplicate source, cosmetic edits, repeate
 claims and extra tags alone earn no additional credit. Do not deliberately split
 an easy solution to inflate the milestone count. Numeric milestone weights are
 not yet defined.
+
+## Development feedback
+
+submit_candidate and revalidate_candidate run only the supplied smoke suite.
+The full host API suite is held out until the run ends. Tool fields named
+full_acceptance refer only to the supplied smoke suite, not final correctness.
+benchmark_candidate provides provisional ordinary-traffic performance feedback
+after smoke acceptance. Such measurements do not establish final eligibility.
+Release metadata and retained baselines contain development evidence only.
 
 ## Grading
 

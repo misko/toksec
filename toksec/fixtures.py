@@ -8,6 +8,16 @@ from toksec.specification import configuration
 from toksec.wire import payload
 
 
+def create_smoke(directory, level):
+    directory = Path(directory)
+    root = directory / 'www'
+    (root / 'data').mkdir(parents=True)
+    (root / 'hello.txt').write_bytes(b'hello toksec\n')
+    for size in (4096, 65536):
+        (root / 'data' / str(size)).write_bytes(payload(size))
+    (directory / 'server.conf').write_text(''.join(f'{k}={v}\n' for k, v in configuration(level).items()))
+
+
 def create(directory, level):
     directory = Path(directory)
     root = directory / 'www'

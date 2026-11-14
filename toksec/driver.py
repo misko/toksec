@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--pid', type=int, required=True)
     parser.add_argument('--server-cpu', type=int, required=True)
     parser.add_argument('--mode', choices=('check', 'benchmark'), required=True)
+    parser.add_argument('--suite', choices=('full', 'smoke'), default='full')
     parser.add_argument('--case')
     parser.add_argument('--workload')
     parser.add_argument('--rounds', type=int, default=5)
@@ -50,6 +51,11 @@ def main():
                 time.sleep(0.01)
         if args.mode == 'check':
             selected = None
+            if args.suite == 'smoke':
+                from stages.common.smoke import cases
+                selected = cases(args.level)
+                if args.case:
+                    raise ValueError('smoke suite cannot select a held-out case')
             if args.case:
                 selected = [c for c in cases_for(args.level) + configured_cases(args.level) if c.id == args.case]
                 if len(selected) != 1:

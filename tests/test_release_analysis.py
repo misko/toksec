@@ -35,6 +35,7 @@ class ReleaseAnalysisTests(unittest.TestCase):
             self.assertEqual((root/'analysis/implementation/main.rs').read_text(), (ROOT/'starters/static.rs').read_text())
             self.assertEqual(timeline['releases'][0]['commit'], release['commit'])
             self.assertTrue(timeline['releases'][0]['build_passed'])
-            self.assertEqual(timeline['releases'][0]['passed'], len(release['passed_checks']))
+            self.assertEqual(release['passed_checks'], ['bootstrap'])
+            self.assertGreater(timeline['releases'][0]['passed'], len(release['passed_checks']))
             self.assertEqual(timeline['releases'][0]['benchmarks'], {})
             self.assertEqual(analysis.analyze(run, root/'analysis'), timeline)
