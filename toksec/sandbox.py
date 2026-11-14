@@ -84,7 +84,12 @@ def toolchain():
     return Path(subprocess.check_output(['rustc', '--print', 'sysroot'], text=True).strip())
 
 
-def build(source, artifact, level, test=False):
+def build(source, artifact, level, test=False, language='rust'):
+    from toksec.languages import profile
+    profile(language, level)
+    if language == 'cpp':
+        from toksec.cpp_build import build as cpp_build
+        return cpp_build(source, artifact, level, test)
     artifact = Path(artifact).resolve()
     artifact.mkdir(parents=True, exist_ok=False)
     if not isinstance(source, str) or len(source.encode()) > 1024 * 1024:

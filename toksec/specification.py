@@ -5,7 +5,7 @@ from stages.common.performance import Workload, matrix
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'rust-http-v6'
+VERSION = 'http-v7'
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'TLS and operational features'}
 DESIGN = {
@@ -85,29 +85,31 @@ def workloads(level):
     return matrix(modes)
 
 
-def specification(level):
+def specification(level, language='rust'):
+    from toksec.languages import profile
     from toksec.checks import cases_for, configured_cases, EXTERNAL_CASES
     configuration(level)
-    return {'version': VERSION, 'level': level, 'title': TITLES[level],
+    return {'version': VERSION, 'level': level, 'title': TITLES[level], 'language': language,
             'configuration': configuration(level), 'requirements': [(ROOT / 'stages/common/HTTP.md').read_text(), (ROOT / f'stages/stage{min(level, 2)}/SPEC.md').read_text()] + [API[n] for n in range(3, level + 1)],
             'cases': [{'id': c.id, 'description': c.description} for c in cases_for(level) + configured_cases(level) + EXTERNAL_CASES],
             'benchmarks': [asdict(w) for w in workloads(level)],
-            'build': {'compiler': 'rustc', 'edition': '2021', 'optimization': 3, 'source': 'main.rs',
-                      'approved_libraries': ['libc'] + (['libssl.so.3', 'libcrypto.so.3', 'libz.so.1'] if level == 5 else [])},
+            'build': profile(language, level),
             'resources': {'server_cpu_cores': 1, 'server_address_space_mib': 512, 'server_open_files': 16384,
                           'compile_address_space_mib': 4096, 'compile_cpu_seconds': 60, 'compile_wall_seconds': 120}}
 
 
-def instruction_files(level):
+def instruction_files(level, language='rust'):
+    from toksec.languages import profile
+    profile(language, level)
     configuration(level)
-    return ['RULES.md', 'stages/common/INTERFACE.md', 'stages/common/HTTP.md',
+    return ['RULES.md', f'stages/languages/{language}.md', 'stages/common/INTERFACE.md', 'stages/common/HTTP.md',
             f'stages/stage{min(level, 2)}/SPEC.md', 'stages/common/BENCHMARK.md']
 
 
-def packet(level):
-    spec = specification(level)
+def packet(level, language='rust'):
+    spec = specification(level, language)
     lines = [f'# Stage {level}: {TITLES[level]}', '', f'Contract version: {VERSION}.', '']
-    for name in instruction_files(level):
+    for name in instruction_files(level, language):
         lines.extend([(ROOT / name).read_text(), ''])
     lines.extend(API[n] for n in range(3, level + 1))
     from stages.common.smoke import cases as smoke_cases
@@ -130,9 +132,9 @@ def fingerprint():
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in sorted(paths))).hexdigest()
 
 
-def publish(directory):
+def publish(directory, language='rust'):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
-    for level in TITLES:
-        (directory / f'level-{level}.md').write_text(packet(level))
-        (directory / f'level-{level}.json').write_text(json.dumps(specification(level), indent=2) + '\n')
+    for level in ((1, 2) if language == 'cpp' else TITLES):
+        (directory / f'level-{level}.md').write_text(packet(level, language))
+        (directory / f'level-{level}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')

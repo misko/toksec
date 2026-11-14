@@ -13,7 +13,7 @@ class StageLayoutTests(unittest.TestCase):
             text = packet(level)
             self.assertEqual(text.count('# Shared builder rules'), 1)
             self.assertNotIn('def run_checks', text)
-            self.assertIn('No Rust starter', text)
+            self.assertIn('No starter code', text)
         self.assertNotIn('GET only', packet(2))
         self.assertEqual(len(specification(1)['cases']), 12)
         self.assertEqual(len(specification(2)['cases']), 21)

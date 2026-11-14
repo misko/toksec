@@ -6,11 +6,11 @@ from toksec import sandbox
 from toksec.specification import workloads
 
 
-def evaluate(source, directory, level, performance=False):
+def evaluate(source, directory, level, performance=False, language='rust'):
     directory=Path(directory).resolve()
     directory.mkdir(parents=True,exist_ok=False)
     artifact=directory/'candidate'
-    result={'level':level,'build':sandbox.build(Path(source).read_text(),artifact,level)}
+    result={'level':level,'language':language,'build':sandbox.build(Path(source).read_text(),artifact,level,language=language)}
     if result['build']['passed']:
         result['checks']=sandbox.evaluate(artifact,level)
         atomic_json(directory/'result.json',result)

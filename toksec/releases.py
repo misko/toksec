@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 from toksec import sandbox, controller, evaluate
+from toksec.languages import source_name, profile
 
 TAG = re.compile(r'release/([0-9]{6})\Z')
 
@@ -68,7 +69,7 @@ def publish(run, note):
     existing=list_releases(run)
     if existing and not set(existing[-1]['passed_checks']) <= passed:
         raise ValueError('release loses previously passing public checks')
-    source=(candidate/'main.rs').read_bytes()
+    source=(candidate/source_name(manifest)).read_bytes()
     digest=hashlib.sha256(source).hexdigest()
     if existing and existing[-1]['source_sha256']==digest:
         return existing[-1]
@@ -76,14 +77,14 @@ def publish(run, note):
     if number>999999:
         raise ValueError('release sequence exhausted')
     tag=f'release/{number:06d}'
-    metadata={'candidate':identity,'level':manifest['level'],'note':note,
+    metadata={'candidate':identity,'level':manifest['level'],'language':manifest.get('language', 'rust'),'note':note,
               'source_sha256':digest,'passed_checks':sorted(passed),
               'evaluation_scope':manifest['builder_evaluation_scope'], 'full_acceptance':report['checks']['passed'],'framework':manifest['fingerprint'],
               'recorded_unix':time.time(), 'capacity':controller.capacity(run)}
     repository=run/'repository'
-    (repository/'main.rs').write_bytes(source)
+    (repository/source_name(manifest)).write_bytes(source)
     (repository/'release.json').write_text(json.dumps(metadata,indent=2)+'\n')
-    git(run,'add','--','main.rs','release.json')
+    git(run,'add','--',source_name(manifest),'release.json')
     git(run,'commit','--allow-empty','-m',note)
     commit=git(run,'rev-parse','HEAD').strip()
     git(run,'tag',tag,commit)
@@ -98,13 +99,13 @@ def grade(run, output, performance=False):
     from toksec.specification import fingerprint
     if release['framework'] != fingerprint():
         raise ValueError('release uses a different evaluator; grade with its original framework checkout')
-    source=git(run,'show',release['tag']+':main.rs')
+    source=git(run,'show',release['tag']+':'+source_name(release))
     if hashlib.sha256(source.encode()).hexdigest()!=release['source_sha256']:
         raise ValueError('tagged source hash differs from release metadata')
     with tempfile.TemporaryDirectory(prefix='toksec-grade-') as temporary:
-        file=Path(temporary)/'main.rs'
+        file=Path(temporary)/source_name(release)
         file.write_text(source)
-        result=evaluate.evaluate(file,output,release['level'],performance)
+        result=evaluate.evaluate(file,output,release['level'],performance,language=release.get('language', 'rust'))
     result['release']=release
     from controller import atomic_json
     atomic_json(Path(output)/'result.json',result)

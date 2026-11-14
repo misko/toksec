@@ -1,11 +1,7 @@
 # Shared executable interface
 
-Submit one UTF-8 file named main.rs, at most 1 MiB, with a Rust executable entry
-point. The evaluator uses Rust edition 2021 and optimization level 3. Rust std and
-direct libc OS calls through declared FFI are allowed. No Cargo build scripts,
-proc macros, downloads, subprocess servers, HTTP frameworks or parser libraries.
-The choice of threads, polling, buffers and algorithms is yours. Disclose unsafe
-FFI usage. Stage 5 additionally permits system OpenSSL and zlib.
+The selected language document defines the source file, compiler and permitted
+libraries. The choice of threads, polling, buffers and algorithms is yours.
 
 The evaluator launches `/candidate/server --config /fixtures/server.conf`.
 Read that supplied configuration and bind within two seconds. Configuration is

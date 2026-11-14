@@ -15,7 +15,9 @@ def main():
     check.add_argument('--level', type=int, choices=range(1,6), required=True)
     check.add_argument('--performance', action='store_true')
     pub = commands.add_parser('publish', help='Generate all five complete contracts. No API call.')
-    pub.add_argument('--output', type=Path, default=Path('tasks/v6'))
+    pub.add_argument('--output', type=Path, default=Path('tasks/v7/rust'))
+    pub.add_argument('--language', choices=('rust', 'cpp'), default='rust')
+    check.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     for name in ('init', 'status', 'upgrade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)
@@ -25,6 +27,7 @@ def main():
     prepare.add_argument('--campaign', type=Path, required=True)
     prepare.add_argument('--level', type=int, choices=range(1, 6), required=True)
     prepare.add_argument('--model', choices=['gpt-6-luna', 'gpt-6.1-terra'], default='gpt-6-luna')
+    prepare.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     prepare.add_argument('--starter', type=Path)
     prepare.add_argument('--spend-target-usd', help='Stop this run after settled spending reaches this target; a call can cross it')
     prepare.add_argument('--wall-seconds', type=int, default=7200)
@@ -45,11 +48,11 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == 'check':
-            result = evaluate.evaluate(args.source, args.output, args.level, args.performance)
+            result = evaluate.evaluate(args.source, args.output, args.level, args.performance, language=args.language)
             print(json.dumps(result, indent=2))
             return 0 if result.get('checks', {}).get('passed') else 2
         elif args.command == 'publish':
-            publish(args.output)
+            publish(args.output, args.language)
             result = {'published': str(args.output.resolve())}
         elif args.command == 'init':
             result = campaign.initialize(args.campaign, args.budget_usd)
@@ -58,7 +61,7 @@ def main():
         elif args.command == 'upgrade':
             result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
-            result = controller.prepare(args.campaign, args.level, args.wall_seconds, args.model, args.starter, args.spend_target_usd)
+            result = controller.prepare(args.campaign, args.level, args.wall_seconds, args.model, args.starter, args.spend_target_usd, language=args.language)
         elif args.command in ('init-repository', 'release'):
             with campaign.locked(controller.read(args.run, 'manifest.json')['campaign'], owner=True):
                 result = releases.initialize(args.run) if args.command == 'init-repository' else releases.publish(args.run, args.note)

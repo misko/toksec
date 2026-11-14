@@ -8,6 +8,7 @@ import time
 import uuid
 from pathlib import Path
 
+from toksec.languages import source_name, profile
 from controller import atomic_json
 from toksec import benchmark, campaign, sandbox
 from toksec.specification import ROOT, fingerprint, packet, specification, workloads, instruction_files
@@ -26,8 +27,8 @@ def validate(run):
     return manifest
 
 
-def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None):
-    specification(level)
+def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None, language='rust'):
+    specification(level, language)
     if level in (1, 2) and starter is not None:
         raise ValueError("Stages 1 and 2 start without starter code")
     if not 120 <= wall_seconds <= 7200:
@@ -36,17 +37,17 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=Non
         raise ValueError('campaign is unavailable')
     run = Path(directory).resolve() / 'runs' / f'level-{level}-{uuid.uuid4().hex[:12]}'
     (run / 'candidates').mkdir(parents=True)
-    for name in instruction_files(level):
+    for name in instruction_files(level, language):
         destination = run / 'builder-inputs' / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, destination)
-    (run / 'launch-packet.md').write_text(packet(level))
-    atomic_json(run / 'specification.json', specification(level))
-    atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only' if level <= 2 else 'full', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    (run / 'launch-packet.md').write_text(packet(level, language))
+    atomic_json(run / 'specification.json', specification(level, language))
+    atomic_json(run / 'manifest.json', {'level': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only' if level <= 2 else 'full', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
-                'toolchain': str(sandbox.toolchain()),
-                'compiler': subprocess.check_output(['rustc', '--version', '--verbose'], text=True),
+                'toolchain': str(sandbox.toolchain()) if language == 'rust' else '/usr/bin/g++',
+                'compiler': subprocess.check_output([profile(language, level)['compiler'], '--version'], text=True),
                 'cpu_affinity': sorted(os.sched_getaffinity(0)), 'load_average': list(os.getloadavg())})
     atomic_json(run / 'state.json', {'best': None, 'full_acceptance': False, 'last': None,
                                     'optimization_attempts': 0, 'finished': False, 'context_rollovers': 0,
@@ -100,14 +101,14 @@ def submit(run, source):
         raise ValueError('run is finished')
     identity = uuid.uuid4().hex
     artifact = run / 'candidates' / identity
-    report = {'id': identity, 'build': sandbox.build(source, artifact, manifest['level']),
+    report = {'id': identity, 'build': sandbox.build(source, artifact, manifest['level'], language=manifest.get('language', 'rust')),
               'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run), 'evaluation_scope': manifest['builder_evaluation_scope']}
     if report['build']['passed']:
         try:
             report['checks'] = sandbox.evaluate(artifact, manifest['level'], smoke=manifest['level'] <= 2)
         except (RuntimeError, OSError, ValueError) as error:
             report['checks']['error'] = str(error)[:2000]
-    report['source_sha256'] = hashlib.sha256((artifact / 'main.rs').read_bytes()).hexdigest()
+    report['source_sha256'] = hashlib.sha256((artifact / source_name(manifest)).read_bytes()).hexdigest()
     atomic_json(artifact / 'report.json', report)
     old = read(run / 'candidates' / state['best'], 'report.json') if state['best'] and state['best'] not in state.get('invalidated', []) else {}
     if not state['full_acceptance'] and 'bootstrap' in passed(report) and passed(report) > passed(old):
@@ -167,7 +168,7 @@ def test_source(run, source):
     if read(run)['finished']:
         raise ValueError('run is finished')
     artifact = Path(run) / 'unit-tests' / uuid.uuid4().hex
-    result = sandbox.build(source, artifact, manifest['level'], test=True)
+    result = sandbox.build(source, artifact, manifest['level'], test=True, language=manifest.get('language', 'rust'))
     if result['passed']:
         result['tests'] = sandbox.self_test(artifact)
     return result

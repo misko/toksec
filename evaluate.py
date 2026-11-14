@@ -12,7 +12,8 @@ from toksec import evaluate, releases, campaign, controller
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--section', required=True, choices=('api','performance'))
-    parser.add_argument('--source', type=Path, default=Path('main.rs'))
+    parser.add_argument('--source', type=Path, default=None)
+    parser.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     parser.add_argument('--level', type=int, choices=range(1,6))
     parser.add_argument('--run', type=Path, help='Grade the latest completed Git release of this run instead of a source file')
     parser.add_argument('--output', type=Path, help='New directory for sources, diagnostics and JSON results')
@@ -26,7 +27,8 @@ def main(argv=None):
             level=args.level
             if level is None:
                 level=json.loads(Path('evaluation.json').read_text())['level']
-            result=evaluate.evaluate(args.source,output,level,args.section=='performance')
+            source=args.source or Path('main.cpp' if args.language == 'cpp' else 'main.rs')
+            result=evaluate.evaluate(source,output,level,args.section=='performance',language=args.language)
         result['section']=args.section
         result['output']=str(output.resolve())
         from controller import atomic_json

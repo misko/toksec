@@ -1,13 +1,13 @@
 # Shared builder rules
 
 Build a working, efficient HTTP server that satisfies the selected stage's English
-contract. Stages 1 and 2 are independent from-scratch assignments. No Rust starter,
+contract. Stages 1 and 2 are independent from-scratch assignments. No starter code,
 previous implementation, or another run's conversation is supplied.
 
 ## Freedom to work
 
 You choose the architecture, order of work, debugging strategy, tests and
-optimizations. You may use the evaluator tools, supply your own Rust tests, or
+optimizations. You may use the evaluator tools, supply your own tests, or
 reason about a change before testing it. There is no mandatory iteration sequence,
 number of experiments, journal entry, or implementation technique. Tool access,
 the source/process interface, sandbox limits and the grading contract still apply.
@@ -34,14 +34,14 @@ a finite suite does not prove complete correctness or maximum performance.
 
 ## Deliverable and Git releases
 
-Submit a complete main.rs through submit_candidate. Compilation and execution
+Submit a complete source file defined by the language interface through submit_candidate. Compilation and execution
 occur in sandboxes. Controller tools are your filesystem/execution interface;
-you do not have a general host shell. Additional Rust tests run through run_tests.
+you do not have a general host shell. Additional tests run through run_tests.
 
 You can be stopped at any time. After your first working submission, call
 init_repository to create a new private Git repository and its first release tag.
 Use release_candidate to publish periodic working milestones. Each numbered tag
-contains main.rs and controller-generated release.json evidence. The last completed
+contains the source file and controller-generated release.json evidence. The last completed
 tag is your final submission. Untagged edits do not replace it. No tag means no
 submission, and stopping before the first working tag can leave no deliverable.
 Published releases must compile, pass bootstrap and preserve previously passing
