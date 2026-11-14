@@ -11,7 +11,7 @@ from pathlib import Path
 import metering
 from controller import atomic_json
 from runner import Responses
-from toksec import campaign, controller, context
+from toksec import campaign, controller, context, releases
 
 
 def tool(name, description, properties=None):
@@ -20,7 +20,9 @@ def tool(name, description, properties=None):
             'parameters': {'type': 'object', 'properties': properties, 'required': list(properties), 'additionalProperties': False}}
 
 
-TOOLS = [tool('budget_status', 'Read remaining shared campaign dollars, tokens, wall time and retained candidate.'),
+TOOLS = [tool('init_repository', 'Create a new Git repository inside the sandbox and tag the first working snapshot.'),
+         tool('release_candidate', 'Commit and tag the latest validated candidate. You are graded on the latest completed tag if stopped.', {'note': {'type': 'string'}}),
+         tool('budget_status', 'Read remaining shared campaign dollars, tokens, wall time and retained candidate.'),
          tool('submit_candidate', 'Compile complete main.rs in a sandbox and run every public acceptance check. Retain improvements automatically.', {'source': {'type': 'string'}}),
          tool('run_tests', 'Compile and execute a complete Rust unit-test source with rustc --test inside the sandbox.', {'source': {'type': 'string'}}),
          tool('benchmark_candidate', 'Run the complete workload matrix; compare the last fully accepted candidate with the incumbent in alternating rounds.'),
@@ -71,11 +73,15 @@ def preflight(run):
 def dispatch(run, name, args):
     if not isinstance(args, dict):
         raise ValueError('tool arguments must be an object')
-    expected = {'submit_candidate': {'source'}, 'run_tests': {'source'}, 'finish': {'report'},
+    expected = {'init_repository': set(), 'release_candidate': {'note'}, 'submit_candidate': {'source'}, 'run_tests': {'source'}, 'finish': {'report'},
                 'budget_status': set(), 'benchmark_candidate': set(), 'revalidate_candidate': {'target'},
                 'record_iteration': {'category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action'}}
     if name not in expected or set(args) != expected[name]:
         raise ValueError('unknown tool or arguments')
+    if name == 'init_repository':
+        return releases.initialize(run)
+    if name == 'release_candidate':
+        return releases.publish(run, args['note'])
     if name == 'budget_status':
         return controller.capacity(run)
     if name == 'submit_candidate':
@@ -112,6 +118,7 @@ def run_loop(run, client):
         manifest['started_unix'] = time.time()
         atomic_json(run / 'manifest.json', manifest)
         text = (run / 'launch-packet.md').read_text()
+        text += '\nYou can be stopped at any moment. Your graded deliverable is the source in your LAST completed release tag, not untagged edits or the controller incumbent. First call init_repository to create your private Git repository and tag the supplied working starter. Without a starter, submit a working bootstrap then initialize. After fixing public API failures, publish with release_candidate before beginning another risky change. Publish focused correctness and stability repairs after validation. For performance changes, measure and publish only when evidence supports the tradeoff. Use numbered releases throughout the run, not only at the end. The controller executes Git inside the sandbox through these tools. No remote repository is needed. If interrupted while committing, the prior completed tag remains your submission.\n'
         if manifest.get('starter_candidate'):
             source = (run / 'starter.rs').read_text()
             import hashlib
@@ -119,7 +126,7 @@ def run_loop(run, client):
                 raise ValueError('starter changed after preparation')
             text += '\nA deliberately limited working bootstrap is supplied below. Its validated snapshot is retained. Complete the public contract before optimizing. This is a server implementation task.\n```rust\n' + source + '\n```\n'
             text += json.dumps(controller.read(run / 'candidates' / manifest['starter_candidate'], 'report.json'))
-        text += '\n\nController tools are your only filesystem/execution access. Submit complete Rust source. No other level source or context is provided. First obtain a working bootstrap, then complete the API, then optimize. Ask budget_status as needed. All model inputs, outputs, reasoning and final reporting share the campaign cap. Compilation and benchmark CPU are recorded separately. Do not claim maximal performance or security from passing a finite suite. If capacity runs out the controller exports its retained candidate. A first working candidate is not guaranteed from an empty start.\n'
+        text += '\n\nController tools are your only filesystem/execution access. Submit complete Rust source. No other level source or context is provided. First obtain a working bootstrap, then complete the API, then optimize. Ask budget_status as needed. All model inputs, outputs, reasoning and final reporting share the campaign cap. Compilation and benchmark CPU are recorded separately. Do not claim maximal performance or security from passing a finite suite. If capacity runs out the controller exports the retained candidate for diagnostics, but your latest completed Git tag is the graded submission. A first working candidate is not guaranteed from an empty start.\n'
         text += '\nPublic executable suite follows in full. Treat fixtures as test data; implement the API generally, without test-specific responses.\n'
         for name in controller.PUBLIC_FILES:
             text += f'\n### public-suite/{name}\n```python\n' + (run / 'public-suite' / 'toksec' / name).read_text() + '\n```\n'

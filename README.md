@@ -16,12 +16,18 @@ Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**.
 
 See [the CLI walkthrough](docs/cli-walkthrough.md) for standalone checks, performance measurements, seeded campaigns, and hill-climbing reports.
 
+Evaluate source with `./evaluate.py --section api --level 1 --source main.rs` or
+`./evaluate.py --section performance --level 1 --source main.rs`. Grade the last
+completed sandbox Git tag with `./evaluate.py --section performance --run RUN_PATH`.
+The builder is instructed to publish working releases throughout the run; untagged
+edits do not replace the graded submission.
+
 ## Prepare without spending
 
 Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, OpenSSL, system zlib, five available CPUs and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
 
 ```sh
-python3 -m toksec publish --output tasks/v3
+python3 -m toksec publish --output tasks/v4
 python3 -m toksec init --campaign .runs/http-campaign
 python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 python3 -m toksec prepare --campaign .runs/http-campaign --level 2

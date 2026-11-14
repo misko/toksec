@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from toksec import campaign, controller, runner, reporting, evaluate
+from toksec import campaign, controller, runner, reporting, evaluate, releases
 from toksec.specification import publish
 
 
@@ -28,9 +28,14 @@ def main():
     prepare.add_argument('--starter', type=Path)
     prepare.add_argument('--spend-target-usd', help='Stop this run after settled spending reaches this target; a call can cross it')
     prepare.add_argument('--wall-seconds', type=int, default=1800)
-    for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate'):
+    for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--run', type=Path, required=True)
+        if name == 'release':
+            cmd.add_argument('--note', required=True)
+        if name == 'grade':
+            cmd.add_argument('--output', type=Path, required=True)
+            cmd.add_argument('--performance', action='store_true')
         if name == 'revalidate':
             cmd.add_argument('--target', choices=['incumbent', 'latest'], default='incumbent')
         if name in ('submit', 'test'):
@@ -54,6 +59,16 @@ def main():
             result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
             result = controller.prepare(args.campaign, args.level, args.wall_seconds, args.model, args.starter, args.spend_target_usd)
+        elif args.command in ('init-repository', 'release'):
+            with campaign.locked(controller.read(args.run, 'manifest.json')['campaign'], owner=True):
+                result = releases.initialize(args.run) if args.command == 'init-repository' else releases.publish(args.run, args.note)
+        elif args.command == 'releases':
+            result = {'releases': releases.list_releases(args.run)}
+        elif args.command == 'grade':
+            with campaign.locked(controller.read(args.run, 'manifest.json')['campaign'], owner=True):
+                result = releases.grade(args.run, args.output, args.performance)
+            print(json.dumps(result, indent=2))
+            return 0 if result.get('checks', {}).get('passed') else 2
         elif args.command == 'report':
             print(reporting.markdown(args.run))
             return 0

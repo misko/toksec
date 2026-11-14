@@ -238,5 +238,9 @@ def export(run):
         result['acceptance'] = read(run / 'candidates' / best, 'report.json')
         if best in state.get('invalidated', []):
             result['warning'] = 'Retained snapshot failed revalidation. It is not a reliably accepted implementation.'
+    from toksec.releases import list_releases
+    tagged = list_releases(run)
+    result['graded_release'] = tagged[-1] if tagged else None
+    result['grading_policy'] = 'Latest completed release tag; untagged candidates are not graded.'
     atomic_json(run / 'result.json', result)
     return result

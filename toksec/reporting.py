@@ -22,11 +22,16 @@ def markdown(run):
     lines += ['', '| Measurement | Candidate | Workload | Median req/s | Worst p99 ms | Failures | Eligible | Promoted |', '|---|---|---|---:|---:|---:|---|---|']
     records = sorted(run.glob('benchmarks/*.json'),key=lambda p:read(p).get('recorded_unix',0))
     if not records: records=sorted(run.glob('candidates/*/benchmark.json'))
+    decisions=[]
     for n,p in enumerate(records,1):
         r=read(p)
         for candidate,workloads in r['summaries'].items():
             for name,m in workloads.items():
                 lines.append(f"| {n} | {candidate[:12]} | {name} | {m['median_rps']:.1f} | {m['worst_p99_ms']} | {m['failures']} | {m['eligible']} | {r['decision']['promote'] and candidate==r['candidate']} |")
-        lines.append(f"\nMeasurement {n}: {r['decision']['reason']}\n")
+        decisions.append(f"Measurement {n}: {r['decision']['reason']}")
+    lines += [''] + decisions
+    from toksec.releases import list_releases
+    tagged=list_releases(run)
+    lines += ['', 'Graded release: ' + (tagged[-1]['tag'] + ' at ' + tagged[-1]['commit'] if tagged else 'none')]
     lines += ['', 'Ineligible measurements do not establish a performance improvement. Full round metrics are preserved in benchmarks/*.json.']
     return '\n'.join(lines)

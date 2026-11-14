@@ -150,7 +150,7 @@ def packet(level):
 
 def fingerprint():
     paths = sorted((ROOT / 'toksec').glob('*.py'))
-    paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'metering.py', 'runner.py')]
+    paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'evaluate.py', 'metering.py', 'runner.py')]
     paths.append(ROOT / 'prompts/improve.md')
     return hashlib.sha256(b''.join(p.name.encode() + p.read_bytes() for p in paths)).hexdigest()
 
