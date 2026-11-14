@@ -4,6 +4,7 @@ import json
 import re
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
 from toksec import sandbox, controller, evaluate
@@ -77,7 +78,8 @@ def publish(run, note):
     tag=f'release/{number:06d}'
     metadata={'candidate':identity,'level':manifest['level'],'note':note,
               'source_sha256':digest,'passed_checks':sorted(passed),
-              'full_acceptance':report['checks']['passed'],'framework':manifest['fingerprint']}
+              'full_acceptance':report['checks']['passed'],'framework':manifest['fingerprint'],
+              'recorded_unix':time.time(), 'capacity':controller.capacity(run)}
     repository=run/'repository'
     (repository/'main.rs').write_bytes(source)
     (repository/'release.json').write_text(json.dumps(metadata,indent=2)+'\n')
