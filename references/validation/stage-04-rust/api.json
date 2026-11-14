@@ -1,0 +1,184 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 2.0254182871431112,
+    "test": false,
+    "timeout": false
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.0006289361044764519
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.005542047321796417
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.00042961910367012024
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.00022722594439983368
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.00032613426446914673
+      },
+      {
+        "id": "syntax",
+        "passed": true,
+        "seconds": 0.0002527572214603424
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.00019579846411943436
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 0.00011557154357433319
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.2012407211586833
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.0006123846396803856
+      },
+      {
+        "id": "headerless-request",
+        "passed": true,
+        "seconds": 8.760392665863037e-05
+      },
+      {
+        "id": "head",
+        "passed": true,
+        "seconds": 0.00017479900270700455
+      },
+      {
+        "id": "persistent-pipeline",
+        "passed": true,
+        "seconds": 0.00026128627359867096
+      },
+      {
+        "id": "connection-semantics",
+        "passed": true,
+        "seconds": 0.00013683270663022995
+      },
+      {
+        "id": "connection-limits",
+        "passed": true,
+        "seconds": 2.0068352427333593
+      },
+      {
+        "id": "slow-client-fairness",
+        "passed": true,
+        "seconds": 0.0008862745016813278
+      },
+      {
+        "id": "byte-header-values",
+        "passed": true,
+        "seconds": 5.650147795677185e-05
+      },
+      {
+        "id": "hosts",
+        "passed": true,
+        "seconds": 0.00019765272736549377
+      },
+      {
+        "id": "routes-index-mime",
+        "passed": true,
+        "seconds": 0.0002113720402121544
+      },
+      {
+        "id": "etag",
+        "passed": true,
+        "seconds": 0.0002236049622297287
+      },
+      {
+        "id": "ranges",
+        "passed": true,
+        "seconds": 0.0002297600731253624
+      },
+      {
+        "id": "routing-interactions",
+        "passed": true,
+        "seconds": 0.0004928456619381905
+      },
+      {
+        "id": "proxy-get-and-post",
+        "passed": true,
+        "seconds": 0.005709614604711533
+      },
+      {
+        "id": "proxy-framing-and-hops",
+        "passed": true,
+        "seconds": 0.006093480624258518
+      },
+      {
+        "id": "proxy-pool-and-errors",
+        "passed": true,
+        "seconds": 1.0191540317609906
+      },
+      {
+        "id": "proxy-no-post-retry",
+        "passed": true,
+        "seconds": 0.004623436369001865
+      },
+      {
+        "id": "proxy-fragmented-upload",
+        "passed": true,
+        "seconds": 0.003994007594883442
+      },
+      {
+        "id": "connection-capacity",
+        "passed": true,
+        "seconds": 0.3036522213369608
+      },
+      {
+        "id": "write-deadline",
+        "passed": true,
+        "seconds": 1.1023771297186613
+      },
+      {
+        "id": "pipeline-backpressure",
+        "passed": true,
+        "seconds": 0.13724622316658497
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.34635606221854687
+      }
+    ],
+    "passed": true,
+    "server_diagnostics": "",
+    "server_exit_code": null
+  },
+  "framework": "6fb7772770821e4f56dbcebe476c5cf9647b02c65faa6c0e5433d0cd355ebcb4",
+  "grading": {
+    "api_checks_failed": 0,
+    "api_checks_passed": 31,
+    "api_passed": true,
+    "performance_status": "not_requested"
+  },
+  "language": "rust",
+  "level": 4,
+  "output": "/home/mouse9911/gits/toksec-next/.runs/references/stage-04-rust/api-006",
+  "section": "api",
+  "source_sha256": "42e880d1b878d4e2e45ba39ac9168f33ab339c355e9c53a642e421ac00610249"
+}

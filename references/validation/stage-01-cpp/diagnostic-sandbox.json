@@ -1,0 +1,17 @@
+{
+  "sandboxed": true,
+  "returncode": 0,
+  "timeout": false,
+  "script": "references/stage-01/cpp/focused_tests.py",
+  "script_sha256": "614771e408a234596b9fceaf88c677e3aa5a81a3dcf5e181c5a3274ce9370315",
+  "arguments": [
+    ".runs/references/stage-01-cpp/api-002/candidate/server",
+    ".runs/references/stage-01-cpp/sandbox-focused-002/checks"
+  ],
+  "writable_output": "/home/mouse9911/gits/toksec-next/.runs/references/stage-01-cpp/sandbox-focused-002",
+  "limits": {
+    "address_space_mib": 512,
+    "cpu_seconds": 120,
+    "file_descriptors": 16384
+  }
+}

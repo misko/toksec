@@ -1,0 +1,17 @@
+{
+  "sandboxed": true,
+  "returncode": 0,
+  "timeout": false,
+  "script": "references/stage-02/rust/contract_checks.py",
+  "script_sha256": "f5083e4779a64045bb591ed77d6aaf16fa9d06e0b8e3c3d7aff05d9d962f1094",
+  "arguments": [
+    ".runs/references/stage-02-rust/sandbox-focused-001/checks",
+    ".runs/references/stage-02-rust/api-003/candidate/server"
+  ],
+  "writable_output": "/home/mouse9911/gits/toksec-next/.runs/references/stage-02-rust/sandbox-focused-001",
+  "limits": {
+    "address_space_mib": 512,
+    "cpu_seconds": 120,
+    "file_descriptors": 16384
+  }
+}

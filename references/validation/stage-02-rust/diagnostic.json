@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "id": "pipeline-depth-one-and-custom-max-requests",
+      "passed": true,
+      "seconds": 0.016934232786297798
+    },
+    {
+      "id": "head-and-error-pipeline-framing",
+      "passed": true,
+      "seconds": 0.01397372130304575
+    },
+    {
+      "id": "one-pass-path-and-component-confinement",
+      "passed": true,
+      "seconds": 0.006235627457499504
+    },
+    {
+      "id": "strict-syntax-and-byte-values",
+      "passed": true,
+      "seconds": 0.012798048555850983
+    },
+    {
+      "id": "configured-header-byte-boundary",
+      "passed": true,
+      "seconds": 0.015171670354902744
+    },
+    {
+      "id": "configured-absolute-and-idle-deadlines",
+      "passed": true,
+      "seconds": 0.2885025581344962
+    },
+    {
+      "id": "configured-stalled-writer-slot-release",
+      "passed": true,
+      "seconds": 0.4848891096189618
+    },
+    {
+      "id": "malformed-configuration-values",
+      "passed": true,
+      "seconds": 0.029878340661525726
+    }
+  ],
+  "binary_sha256": "84f4e4ae3b3cf7538116d1f7499a1031c958e7257b3214b50518e91fbbf83c75",
+  "source_sha256": "bc395f4b2b02ce34ab9fbc5ebeb0e68ffed83f976c1ab5993f4c0fdbe46b85ae"
+}
