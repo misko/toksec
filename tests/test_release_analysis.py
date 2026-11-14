@@ -31,6 +31,7 @@ class ReleaseAnalysisTests(unittest.TestCase):
             (run/'repository/main.rs').write_text('broken untagged source')
             timeline = analysis.analyze(run, root/'analysis')
             self.assertTrue((root/'analysis/implementation/.git').is_dir())
+            self.assertEqual((root/'analysis/implementation/main.rs').read_text(), (ROOT/'starters/static.rs').read_text())
             self.assertEqual(timeline['releases'][0]['commit'], release['commit'])
             self.assertTrue(timeline['releases'][0]['build_passed'])
             self.assertEqual(timeline['releases'][0]['passed'], len(release['passed_checks']))

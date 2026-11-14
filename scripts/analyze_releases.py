@@ -36,6 +36,7 @@ def analyze(run, output):
     repository = output / 'implementation'
     if not repository.exists():
         subprocess.run(['git', '-c', 'core.hooksPath=/dev/null', 'clone', '--no-checkout', str(bundle), str(repository)], check=True, capture_output=True)
+    subprocess.run(['git', '-C', str(repository), '-c', 'core.hooksPath=/dev/null', 'checkout', '--detach', records[-1]['tag']], check=True, capture_output=True)
     timeline = {'level': manifest['level'], 'framework': manifest['fingerprint'],
                 'started_unix': manifest['started_unix'], 'ended_unix': state.get('ended_unix'),
                 'total_checks': len(specification(manifest['level'])['cases']),
