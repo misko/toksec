@@ -1,0 +1,92 @@
+{
+  "analysis_complete": true,
+  "benchmark_skipped": "Build and all required API checks must pass before performance measurement.",
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 5.373356060124934,
+    "test": false,
+    "timeout": false
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.00215296633541584
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.009410323575139046
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.000447259284555912
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.00026252586394548416
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.0003075897693634033
+      },
+      {
+        "error": "AssertionError: ",
+        "id": "syntax",
+        "passed": false,
+        "seconds": 0.0001785801723599434
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.00019753910601139069
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 0.00010641850531101227
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.201252874918282
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.003703780472278595
+      },
+      {
+        "id": "headerless-request",
+        "passed": true,
+        "seconds": 0.0011657802388072014
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.3256041705608368
+      }
+    ],
+    "passed": false,
+    "server_diagnostics": "",
+    "server_exit_code": null
+  },
+  "evaluated_unix": 1794634249.704891,
+  "grading": {
+    "api_checks_failed": 1,
+    "api_checks_passed": 11,
+    "api_passed": false,
+    "deduction": "Failed API requirements lose API credit; all performance credit is forfeited.",
+    "performance_credit": 0,
+    "performance_status": "failed_api"
+  },
+  "language": "cpp",
+  "level": 1
+}

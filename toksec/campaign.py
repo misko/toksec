@@ -11,7 +11,7 @@ import metering
 from controller import atomic_json
 from toksec.specification import ROOT, fingerprint
 
-PILOT = ROOT / 'results/2026-11-11-luna-http-l1-pilot/ledger.json'
+PILOT = ROOT / 'fixtures/accounting/legacy-pilot-ledger.json'
 RESERVED_TOKENS = metering.MODEL_CONTEXT_LIMIT + metering.MAX_OUTPUT
 RESERVED_USD = (Decimal(metering.MODEL_CONTEXT_LIMIT) * Decimal(metering.RATES['write_upper']) * 2
                 + Decimal(metering.MAX_OUTPUT) * Decimal(metering.RATES['output']) * Decimal('1.5')) / 1_000_000

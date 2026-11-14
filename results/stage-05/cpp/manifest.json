@@ -1,0 +1,45 @@
+{
+  "billing_profile": {
+    "model": "gpt-6.1-terra",
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+    "price_verified_date": "2026-11-12",
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "rates": {
+      "cached": "0.05",
+      "input": "1.00",
+      "output": "5.00",
+      "write_upper": "1.25"
+    },
+    "reservation_usd": "2.745"
+  },
+  "builder_evaluation_scope": "visible_smoke_only",
+  "campaign": "/home/mouse9911/gits/toksec-stage5-cpp/.runs/terra-cpp-stage5-1794682940",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu_affinity": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "fingerprint": "4d5b4ee0ee148f9c579d973aee7253ae5ac08281e4ce31c28771e3e760f20c23",
+  "language": "cpp",
+  "level": 5,
+  "load_average": [
+    51.77685546875,
+    49.26025390625,
+    49.3642578125
+  ],
+  "model": "gpt-6.1-terra",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "prepared_unix": 1794682940.5866117,
+  "reasoning_effort": "medium",
+  "spend_target_usd": null,
+  "started_unix": 1794682952.5142586,
+  "toolchain": "/usr/bin/g++",
+  "wall_seconds": 7200
+}

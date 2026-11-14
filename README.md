@@ -2,6 +2,8 @@
 
 Implement and benchmark nginx-like HTTP servers with an AI agent under a measured campaign budget.
 
+See [latest comparable-input results](results/README.md) and the [result storage policy](docs/result-storage.md).
+
 Stages 1 through 5 are independent, from-scratch Rust or C++ tasks: none receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, minimal smoke-check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
 
 See [v8 alignment and calibration status](docs/stages-3-5-v8.md) for the new Stage 3–5 protocol and remaining benchmark bottleneck.
@@ -71,7 +73,7 @@ python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 
 Upgrade records old/new framework fingerprints and retains all charges. It refuses unresolved usage. Old runs stay frozen and are not resumed under changed prompts.
 
-The [first Rust results](results/2026-11-12-luna-rust-http/README.md) motivated this policy. Stage 1 passed its initial checks but later had restart failures. Stage 2 passed its checks but had substantial load failures and finished early. Neither result establishes reliable high-concurrency service or security.
+The [first Rust results](https://github.com/misko/toksec/blob/f61d564/results/2026-11-12-luna-rust-http/README.md) motivated this policy. Stage 1 passed its initial checks but later had restart failures. Stage 2 passed its checks but had substantial load failures and finished early. Neither result establishes reliable high-concurrency service or security.
 
 ## Inspect and verify
 
@@ -84,7 +86,7 @@ python3 -m unittest discover -s tests -v
 
 No framework can guarantee a working implementation before the agent's first successful submission. An empty or unsuccessful run reports that explicitly. Passing this finite public suite is not proof of complete correctness or security.
 
-Read the [full walkthrough](docs/public-system.md), [implementation decisions](docs/system-plan.md) and [verification record](docs/system-verification.md). The original Python pilot remains available in the root modules and [recorded results](results/2026-11-11-luna-http-l1-pilot/README.md). It has a different contract and runner. Use the `python3 -m toksec` commands for the shared Rust campaign.
+Read the [full walkthrough](docs/public-system.md), [implementation decisions](docs/system-plan.md) and [verification record](docs/system-verification.md). The original Python pilot remains available in the root modules and [recorded results](https://github.com/misko/toksec/blob/f61d564/results/2026-11-11-luna-http-l1-pilot/README.md). It has a different contract and runner. Use the `python3 -m toksec` commands for the shared Rust campaign.
 
 Stages 1 through 5 use the [visible/held-out split](docs/visible-and-held-out-tests.md). Builder feedback is smoke-only; development benchmarks are provisional. Final API grading remains comprehensive and gates final performance.
 

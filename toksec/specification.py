@@ -105,6 +105,7 @@ def fingerprint():
     paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'evaluate.py', 'metering.py', 'runner.py', 'RULES.md')]
     paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json')]
     paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
+    paths += [ROOT / 'fixtures/accounting/legacy-pilot-ledger.json']
     paths += [ROOT / 'scripts/analyze_releases.py', ROOT / 'scripts/calibrate_benchmarks.py']
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in sorted(paths))).hexdigest()
 
