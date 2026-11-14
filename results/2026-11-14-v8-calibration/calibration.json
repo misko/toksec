@@ -1,0 +1,419 @@
+{
+  "benchmarks": {
+    "fresh-4096-256": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 27070.333333333332,
+      "median_rps": 27070.333333333332,
+      "min_rps": 27070.333333333332,
+      "rounds": [
+        {
+          "attempts": 81467,
+          "bytes_per_second": 110880085.33333333,
+          "clients_started": 256,
+          "completed_in_window": 81211,
+          "cpu_seconds": 12.343345321000001,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 468.0733662098646,
+          "generator_saturated": true,
+          "load_average": [
+            55.86865234375,
+            53.767578125,
+            51.37158203125
+          ],
+          "p50_ms": 7.0,
+          "p95_ms": 12.3,
+          "p99_ms": 56.8,
+          "payload_bytes": 332640256,
+          "rss_kib": 78376,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 1.72,
+          "server_peak_rss_kib": 3764,
+          "successes": 81467,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 27070.333333333332
+        }
+      ],
+      "worst_p99_ms": 56.8
+    },
+    "fresh-4096-4096": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 14780.666666666666,
+      "median_rps": 14780.666666666666,
+      "min_rps": 14780.666666666666,
+      "rounds": [
+        {
+          "attempts": 48438,
+          "bytes_per_second": 60541610.666666664,
+          "clients_started": 4096,
+          "completed_in_window": 44342,
+          "cpu_seconds": 15.455249092,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 300.87855365127325,
+          "generator_saturated": true,
+          "load_average": [
+            56.826171875,
+            54.12353515625,
+            51.54052734375
+          ],
+          "p50_ms": 231.3,
+          "p95_ms": 378.7,
+          "p99_ms": 501.3,
+          "payload_bytes": 181624832,
+          "rss_kib": 126492,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 1.62,
+          "server_peak_rss_kib": 4052,
+          "successes": 48438,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 14780.666666666666
+        }
+      ],
+      "worst_p99_ms": 501.3
+    },
+    "fresh-65536-256": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 14719.0,
+      "median_rps": 14719.0,
+      "min_rps": 14719.0,
+      "rounds": [
+        {
+          "attempts": 44413,
+          "bytes_per_second": 964624384.0,
+          "clients_started": 256,
+          "completed_in_window": 44157,
+          "cpu_seconds": 13.661931313,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 106.40891548246145,
+          "generator_saturated": true,
+          "load_average": [
+            56.19970703125,
+            53.87109375,
+            51.41796875
+          ],
+          "p50_ms": 15.5,
+          "p95_ms": 31.4,
+          "p99_ms": 49.7,
+          "payload_bytes": 2893873152,
+          "rss_kib": 90880,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 2.02,
+          "server_peak_rss_kib": 3752,
+          "successes": 44413,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 14719.0
+        }
+      ],
+      "worst_p99_ms": 49.7
+    },
+    "fresh-65536-4096": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 11394.666666666666,
+      "median_rps": 11394.666666666666,
+      "min_rps": 11394.666666666666,
+      "rounds": [
+        {
+          "attempts": 38280,
+          "bytes_per_second": 746760874.6666666,
+          "clients_started": 4096,
+          "completed_in_window": 34184,
+          "cpu_seconds": 14.848068335,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 667.5473814830184,
+          "generator_saturated": true,
+          "load_average": [
+            56.759765625,
+            54.15478515625,
+            51.56494140625
+          ],
+          "p50_ms": 297.2,
+          "p95_ms": 379.2,
+          "p99_ms": 392.5,
+          "payload_bytes": 2240282624,
+          "rss_kib": 262808,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 2.58,
+          "server_peak_rss_kib": 4056,
+          "successes": 38280,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 11394.666666666666
+        }
+      ],
+      "worst_p99_ms": 392.5
+    },
+    "persistent-4096-256": {
+      "eligible": true,
+      "failures": 0,
+      "max_rps": 135402.33333333334,
+      "median_rps": 135402.33333333334,
+      "min_rps": 135402.33333333334,
+      "rounds": [
+        {
+          "attempts": 406463,
+          "bytes_per_second": 554607957.3333334,
+          "clients_started": 256,
+          "completed_in_window": 406207,
+          "cpu_seconds": 12.515649621,
+          "eligible": true,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 144.4360362365842,
+          "generator_saturated": false,
+          "load_average": [
+            56.26416015625,
+            53.92333984375,
+            51.4482421875
+          ],
+          "p50_ms": 1.5,
+          "p95_ms": 4.9,
+          "p99_ms": 8.6,
+          "payload_bytes": 1663823872,
+          "rss_kib": 78608,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 2.81,
+          "server_peak_rss_kib": 3764,
+          "successes": 406463,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 135402.33333333334
+        }
+      ],
+      "worst_p99_ms": 8.6
+    },
+    "persistent-4096-4096": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 77823.33333333333,
+      "median_rps": 77823.33333333333,
+      "min_rps": 77823.33333333333,
+      "rounds": [
+        {
+          "attempts": 237566,
+          "bytes_per_second": 318764373.3333333,
+          "clients_started": 4096,
+          "completed_in_window": 233470,
+          "cpu_seconds": 13.088904796,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 141.847625374794,
+          "generator_saturated": true,
+          "load_average": [
+            56.37841796875,
+            54.11865234375,
+            51.5673828125
+          ],
+          "p50_ms": 47.3,
+          "p95_ms": 88.5,
+          "p99_ms": 139.6,
+          "payload_bytes": 956293120,
+          "rss_kib": 123044,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 3.82,
+          "server_peak_rss_kib": 4320,
+          "successes": 237566,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 77823.33333333333
+        }
+      ],
+      "worst_p99_ms": 139.6
+    },
+    "persistent-65536-256": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 24107.333333333332,
+      "median_rps": 24107.333333333332,
+      "min_rps": 24107.333333333332,
+      "rounds": [
+        {
+          "attempts": 72578,
+          "bytes_per_second": 1579898197.3333333,
+          "clients_started": 256,
+          "completed_in_window": 72322,
+          "cpu_seconds": 12.362565108,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 510.41664462536573,
+          "generator_saturated": true,
+          "load_average": [
+            56.7236328125,
+            54.0576171875,
+            51.50537109375
+          ],
+          "p50_ms": 8.3,
+          "p95_ms": 18.3,
+          "p99_ms": 59.7,
+          "payload_bytes": 4739694592,
+          "rss_kib": 91700,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 2.28,
+          "server_peak_rss_kib": 3772,
+          "successes": 72578,
+          "sum_worker_peak_inflight": 256,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 24107.333333333332
+        }
+      ],
+      "worst_p99_ms": 59.7
+    },
+    "persistent-65536-4096": {
+      "eligible": false,
+      "failures": 0,
+      "max_rps": 26745.666666666668,
+      "median_rps": 26745.666666666668,
+      "min_rps": 26745.666666666668,
+      "rounds": [
+        {
+          "attempts": 84333,
+          "bytes_per_second": 1752804010.6666667,
+          "clients_started": 4096,
+          "completed_in_window": 80237,
+          "cpu_seconds": 16.118826435,
+          "eligible": false,
+          "failures": 0,
+          "generator_cpus": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "generator_lag_max_ms": 185.56515593081713,
+          "generator_saturated": true,
+          "load_average": [
+            56.66845703125,
+            54.21630859375,
+            51.61279296875
+          ],
+          "p50_ms": 143.4,
+          "p95_ms": 171.6,
+          "p99_ms": 194.5,
+          "payload_bytes": 5258412032,
+          "rss_kib": 263372,
+          "server_child_processes": 0,
+          "server_cpu": 16,
+          "server_cpu_seconds": 3.51,
+          "server_peak_rss_kib": 4312,
+          "successes": 84333,
+          "sum_worker_peak_inflight": 4096,
+          "timeouts": 0,
+          "upstream_cpu": null,
+          "upstream_cpu_seconds": 0,
+          "upstream_sample_valid": true,
+          "upstream_saturated": false,
+          "upstream_utilization": 0,
+          "valid_rps": 26745.666666666668
+        }
+      ],
+      "worst_p99_ms": 194.5
+    }
+  },
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 0.9976644273847342,
+    "test": false,
+    "timeout": false
+  },
+  "framework": "4d5b4ee0ee148f9c579d973aee7253ae5ac08281e4ce31c28771e3e760f20c23",
+  "launch_ready": false,
+  "next_step": "Resolve load-generator saturation/failures before performance-comparison campaigns.",
+  "proxy_calibration_ready": false,
+  "purpose": "Static generator calibration; not stage API conformance or proxy calibration",
+  "static_generator_ready": false
+}

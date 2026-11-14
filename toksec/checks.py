@@ -41,14 +41,8 @@ class Context:
 
 
 def cases_for(level):
-    if level == 1:
-        from stages.stage1.api import CASES
-        return list(CASES)
-    from stages.stage2.api import CASES
-    if level == 2:
-        return list(CASES)
-    from toksec.extended_checks import CASES as EXTRA
-    return list(CASES) + [c for c in EXTRA if c.minimum <= level]
+    import importlib
+    return list(importlib.import_module(f'stages.stage{level}.api').CASES)
 
 
 def configured_cases(level):

@@ -25,7 +25,7 @@ TOOLS = [tool('init_repository', 'Create a new Git repository inside the sandbox
          tool('budget_status', 'Read remaining shared campaign dollars, tokens, wall time and retained candidate.'),
          tool('submit_candidate', 'Compile the complete source file for the selected language in a sandbox and run the visible smoke checks. Retain improvements automatically.', {'source': {'type': 'string'}}),
          tool('run_tests', 'Compile and execute your complete test source using the selected language test interface inside the sandbox.', {'source': {'type': 'string'}}),
-         tool('benchmark_candidate', 'Run the complete workload matrix; compare the latest smoke-passing candidate with the incumbent in alternating rounds.'),
+         tool('benchmark_candidate', 'Compare smoke-passing candidates in alternating rounds. Use null for the full matrix or a declared workload ID for a diagnostic subset.', {'workload': {'type': ['string', 'null']}}),
          tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and visible smoke suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
          tool('record_iteration', 'Persist concise experiment notes across context rollover. These notes are model claims, not promotion authority.',
               {'category': {'type': 'string', 'enum': ['correctness', 'performance', 'security', 'stability']},
@@ -56,11 +56,12 @@ def preflight(run):
     age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(metering.PRICE_DATE)).days
     if not 0 <= age <= 7:
         reasons.append('Pinned API pricing requires review before launch.')
-    for command in (('g++', 'gcc', 'readelf', 'nm', 'dpkg-query') if manifest.get('language') == 'cpp' else ('rustc', 'gcc', 'openssl')) + ('bwrap', 'nsenter'):
+    for command in (('g++', 'gcc', 'readelf', 'nm', 'dpkg-query') if manifest.get('language') == 'cpp' else ('rustc', 'gcc', 'readelf', 'nm')) + ('bwrap', 'nsenter'):
         if not shutil.which(command):
             reasons.append(f'{command} is unavailable.')
-    if len(os.sched_getaffinity(0)) < 5:
-        reasons.append('Five CPUs required for one server and four load workers.')
+    needed_cpus = 6 if manifest['level'] >= 4 else 5
+    if len(os.sched_getaffinity(0)) < needed_cpus:
+        reasons.append(f'{needed_cpus} CPUs required for server, load workers and any upstream fixture.')
     if resource.getrlimit(resource.RLIMIT_NOFILE)[1] < 16384:
         reasons.append('Descriptor hard limit must be at least 16384.')
     if manifest['started_unix'] is not None:
@@ -75,7 +76,7 @@ def dispatch(run, name, args):
     if not isinstance(args, dict):
         raise ValueError('tool arguments must be an object')
     expected = {'init_repository': set(), 'release_candidate': {'note'}, 'submit_candidate': {'source'}, 'run_tests': {'source'}, 'finish': {'report'},
-                'budget_status': set(), 'benchmark_candidate': set(), 'revalidate_candidate': {'target'},
+                'budget_status': set(), 'benchmark_candidate': {'workload'}, 'revalidate_candidate': {'target'},
                 'record_iteration': {'category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action'}}
     if name not in expected or set(args) != expected[name]:
         raise ValueError('unknown tool or arguments')
@@ -94,7 +95,7 @@ def dispatch(run, name, args):
     if name == 'revalidate_candidate':
         return controller.revalidate(run, args['target'])
     if name == 'benchmark_candidate':
-        result = controller.measure(run)
+        result = controller.measure(run, args['workload'])
         return {**result, 'summaries': {key: {w: {k: v for k, v in metrics.items() if k != 'rounds'}
                                             for w, metrics in values.items()} for key, values in result['summaries'].items()}}
     capacity = controller.capacity(run)

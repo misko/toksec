@@ -2,17 +2,19 @@
 
 Implement and benchmark nginx-like HTTP servers with an AI agent under a measured campaign budget.
 
-Stages 1 and 2 are independent, from-scratch Rust or C++ tasks: neither receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, minimal smoke-check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
+Stages 1 through 5 are independent, from-scratch Rust or C++ tasks: none receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, minimal smoke-check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
+
+See [v8 alignment and calibration status](docs/stages-3-5-v8.md) for the new Stage 3–5 protocol and remaining benchmark bottleneck.
 
 The authoritative instructions live in [RULES.md](RULES.md). See [the stage layout](docs/stage-layout.md) for shared and stage-specific files. Published packets are generated snapshots; edit the source documents and regenerate them.
 
 | Level | Complete target | Performance workloads |
 |---|---|---|
-| [1](tasks/v7/rust/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
-| [2](tasks/v7/rust/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
-| [3](tasks/v7/rust/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
-| [4](tasks/v7/rust/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
-| [5](tasks/v7/rust/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
+| [1](tasks/v8/rust/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
+| [2](tasks/v8/rust/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
+| [3](tasks/v8/rust/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
+| [4](tasks/v8/rust/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
+| [5](tasks/v8/rust/level-5.md) | Previous capabilities plus cache, rate limiting, reload and graceful drain | HTTP, routed files, proxy, cache hits and misses |
 
 Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**. Five rounds report goodput, p50/p95/p99 latency, failures, timeouts, CPU, RSS and load-generator saturation. This is a defined nginx-inspired subset, not a quantitative claim of half of nginx.
 
@@ -26,10 +28,10 @@ edits do not replace the graded submission.
 
 ## Prepare without spending
 
-Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, OpenSSL, system zlib, five available CPUs and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
+Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, five available CPUs (six for proxy/operations benchmarks) and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
 
 ```sh
-python3 -m toksec publish --output tasks/v7/rust
+python3 -m toksec publish --output tasks/v8/rust
 python3 -m toksec init --campaign .runs/http-campaign
 python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 python3 -m toksec prepare --campaign .runs/http-campaign --level 2
@@ -84,6 +86,6 @@ No framework can guarantee a working implementation before the agent's first suc
 
 Read the [full walkthrough](docs/public-system.md), [implementation decisions](docs/system-plan.md) and [verification record](docs/system-verification.md). The original Python pilot remains available in the root modules and [recorded results](results/2026-11-11-luna-http-l1-pilot/README.md). It has a different contract and runner. Use the `python3 -m toksec` commands for the shared Rust campaign.
 
-Stages 1 and 2 use the [visible/held-out split](docs/visible-and-held-out-tests.md). Builder feedback is smoke-only; development benchmarks are provisional. Final API grading remains comprehensive and gates final performance.
+Stages 1 through 5 use the [visible/held-out split](docs/visible-and-held-out-tests.md). Builder feedback is smoke-only; development benchmarks are provisional. Final API grading remains comprehensive and gates final performance.
 
 [C++ Stage 1 and Stage 2](docs/cpp-stages.md) use the same contracts and evaluation suites with main.cpp and only standard/system libraries. Select --language cpp when preparing or evaluating a C++ run.

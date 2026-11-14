@@ -57,8 +57,17 @@ def analyze(run, output):
         if result_path.exists():
             result = json.loads(result_path.read_text())
             if not result.get('analysis_complete'):
-                raise ValueError('Incomplete prior evaluation at ' + str(destination) + '; preserve it and use a fresh output directory')
+                if result.get('checks', {}).get('passed'):
+                    result = evaluate.resume(source_path, destination, manifest['level'], manifest.get('language', 'rust'))
+                else:
+                    destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
+                    result = evaluate.evaluate(source_path, destination, manifest['level'], performance=True, language=manifest.get('language', 'rust'))
+                result['analysis_complete'] = True
+                result['evaluated_unix'] = time.time()
+                atomic_json(result_path, result)
         else:
+            if destination.exists():
+                destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
             result = evaluate.evaluate(source_path, destination, manifest['level'], performance=True, language=manifest.get('language', 'rust'))
             result['analysis_complete'] = True
             result['evaluated_unix'] = time.time()

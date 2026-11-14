@@ -19,7 +19,7 @@ class RerunTests(unittest.TestCase):
             manifest=controller.read(run,'manifest.json')
             self.assertEqual(manifest['wall_seconds'],7200)
             self.assertEqual(controller.read(run)['best'],candidate)
-            self.assertTrue(controller.read(run)['full_acceptance'])
+            self.assertTrue(controller.read(run)['smoke_passed'])
             with sandbox.running(run/'candidates'/candidate,1) as runtime:
                 pid=sandbox.server_pid(runtime['pid'],run/'candidates'/candidate)
                 self.assertEqual(Path(f'/proc/{pid}/comm').read_text().strip(),'server')

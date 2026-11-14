@@ -79,7 +79,7 @@ def publish(run, note):
     tag=f'release/{number:06d}'
     metadata={'candidate':identity,'level':manifest['level'],'language':manifest.get('language', 'rust'),'note':note,
               'source_sha256':digest,'passed_checks':sorted(passed),
-              'evaluation_scope':manifest['builder_evaluation_scope'], 'full_acceptance':report['checks']['passed'],'framework':manifest['fingerprint'],
+              'evaluation_scope':manifest['builder_evaluation_scope'], 'smoke_passed':report['checks']['passed'],'framework':manifest['fingerprint'],
               'recorded_unix':time.time(), 'capacity':controller.capacity(run)}
     repository=run/'repository'
     (repository/source_name(manifest)).write_bytes(source)

@@ -104,8 +104,6 @@ def build(source, artifact, level, test=False, language='rust'):
                             '/src/main.rs', '-o', '/out/server']
         if test:
             command.append('--test')
-        if level == 5:
-            command += ['-C', 'link-arg=-l:libssl.so.3', '-C', 'link-arg=-l:libcrypto.so.3', '-C', 'link-arg=-l:libz.so.1']
         started = time.monotonic()
         process = None
         timed_out = False
@@ -122,6 +120,12 @@ def build(source, artifact, level, test=False, language='rust'):
         report = {'passed': success, 'timeout': timed_out, 'seconds': time.monotonic() - started,
                   'diagnostics': (output / 'compiler.log').read_text(errors='replace')[-16000:],
                   'compiler': subprocess.check_output(['rustc', '--version'], text=True).strip(), 'test': test}
+        if success:
+            from toksec.binary_policy import inspect_binary
+            violation = inspect_binary(binary, allow_test_runtime_symbols=test)
+            if violation:
+                report['diagnostics'] += '\n' + violation
+                report['passed'] = success = False
         if success:
             import shutil
             shutil.copyfile(binary, artifact / 'server')
@@ -164,7 +168,12 @@ def running(artifact, level, configuration_override=None, smoke=False):
 
 
 def invoke_driver(artifact, level, mode='check', configuration_override=None, **options):
-    with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or (mode == 'benchmark' and level <= 2)) as runtime:
+    if mode == 'benchmark' and level == 5 and configuration_override is None:
+        from toksec.specification import configuration
+        values = configuration(level)
+        values['cache_ttl_ms'] = '60000'
+        configuration_override = ''.join(f'{k}={v}\n' for k, v in values.items())
+    with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or mode == 'benchmark') as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
                    '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),

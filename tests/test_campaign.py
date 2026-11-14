@@ -84,7 +84,7 @@ class CampaignTests(unittest.TestCase):
         self.assertFalse(list((second / 'candidates').iterdir()))
         self.assertNotIn(str(first), (second / 'launch-packet.md').read_text())
         self.assertEqual(controller.read(first, 'manifest.json')['campaign'], controller.read(second, 'manifest.json')['campaign'])
-        self.assertFalse(controller.export(first)['full_acceptance'])
+        self.assertFalse(controller.export(first)['smoke_passed'])
         self.assertIsNone(controller.export(first)['artifact'])
 
     def test_regression_does_not_replace_retained_artifact(self):
@@ -135,7 +135,7 @@ class CampaignTests(unittest.TestCase):
                 return result
         result = runner.run_loop(run, Client())
         self.assertIsNotNone(result['artifact'])
-        self.assertTrue(result['full_acceptance'])
+        self.assertTrue(result['smoke_passed'])
         self.assertTrue(all(r['service_tier'] == 'default' for r in requests))
         self.assertNotIn('def run_checks', requests[0]['input'][0]['content'])
         self.assertEqual(len([r for r in campaign.read(self.directory)['requests'] if r['run'] == run.name]), 3)

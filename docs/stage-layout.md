@@ -1,3 +1,6 @@
+> Current v8 layout and protocol: [Stages 3–5 alignment](stages-3-5-v8.md).
+> The description below records the original Stage 1–2 layout.
+
 # Shared rules and stage suites
 
 ```text

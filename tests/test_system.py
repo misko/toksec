@@ -39,7 +39,7 @@ class SpecificationTests(unittest.TestCase):
             self.assertIn('files', {c['id'] for c in spec['cases']})
         self.assertNotIn('upstreams', configuration(1))
         self.assertIn('upstreams', configuration(4))
-        self.assertIn('tls_cert', configuration(5))
+        self.assertNotIn('tls_cert', configuration(5))
 
     def test_no_empty_or_invalid_level(self):
         for level in (0, 6):
@@ -48,8 +48,8 @@ class SpecificationTests(unittest.TestCase):
 
     def test_published_contracts_match_executable_suite(self):
         for level in range(1, 6):
-            self.assertEqual((ROOT / f'tasks/v7/rust/level-{level}.md').read_text(), packet(level))
-            self.assertEqual(json.loads((ROOT / f'tasks/v7/rust/level-{level}.json').read_text()), specification(level))
+            self.assertEqual((ROOT / f'tasks/v8/rust/level-{level}.md').read_text(), packet(level))
+            self.assertEqual(json.loads((ROOT / f'tasks/v8/rust/level-{level}.json').read_text()), specification(level))
 
 
 class RustSandboxTests(unittest.TestCase):
@@ -93,10 +93,9 @@ class RustSandboxTests(unittest.TestCase):
         self.assertTrue(report['passed'], report['diagnostics'])
         self.assertTrue(sandbox.self_test(candidate)['passed'])
 
-    def test_level_five_approved_crypto_and_compression_libraries_link(self):
+    def test_level_five_does_not_implicitly_link_crypto_and_compression(self):
         candidate = Path(self.temporary.name) / 'libraries'
         source = '''extern "C" { fn OpenSSL_version_num() -> u64; fn zlibVersion() -> *const u8; }
 #[test] fn libraries(){unsafe{assert!(OpenSSL_version_num()>0); assert!(!zlibVersion().is_null());}}'''
         report = sandbox.build(source, candidate, 5, test=True)
-        self.assertTrue(report['passed'], report['diagnostics'])
-        self.assertTrue(sandbox.self_test(candidate)['passed'])
+        self.assertFalse(report['passed'], report['diagnostics'])

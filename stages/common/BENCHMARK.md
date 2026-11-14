@@ -19,3 +19,22 @@ conservative diagnostic promotion requires eligible error-free measurements,
 no more than a 5% p99 regression, separated throughput ranges and at least a 5%
 geometric-mean throughput gain. You may choose other diagnostic experiments.
 The host's final grade uses your tagged source and the declared full matrix.
+
+
+Stage 3 adds persistent routed files from beta.test via the alias prefix, using
+the same payload sizes. Stage 4 adds persistent proxy GETs to healthy upstreams.
+Proxy/operations runs require a sixth CPU dedicated to the trusted upstreams,
+separate from the server and four generators. Upstream utilization above 90%
+makes the measurement ineligible. These resources are reported in each round.
+
+Stage 5 adds cache-hit and cache-miss workloads. Benchmark configuration sets
+cache_ttl_ms=60000, cache_bytes=4194304 and rate_per_second=0. A cache-hit round
+repeats one URL whose upstream sends public,max-age=60; the one-second warmup
+primes it before measurement. A cache-miss round repeats a URL with max-age=0,
+so responses must not be reused. Both return the ordinary 4/64-KiB payloads.
+No TLS or gzip is measured in the bare-bones operations profile.
+
+benchmark_candidate accepts a declared workload ID for a smaller diagnostic run,
+or null for the full matrix. Subset measurements do not promote a full-matrix
+baseline. Every result identifies its selected workloads. Final grading still
+requires full API acceptance followed by the complete declared matrix.

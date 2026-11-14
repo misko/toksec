@@ -8,7 +8,7 @@ Use only the C++ standard library, C standard library and POSIX/Linux OS APIs
 such as sockets, epoll/poll, threads, filesystem operations and sendfile.
 No third-party libraries, HTTP parsers/frameworks, Boost, networking libraries,
 TLS/encryption/cryptography or compression libraries. Do not load libraries at
-runtime or delegate to subprocess programs. Stages 1 and 2 serve plaintext HTTP;
+runtime or delegate to subprocess programs. All five stages serve plaintext HTTP;
 there is no encryption requirement and you should not implement cryptography.
 The compile harness checks included header provenance and linked dependencies.
 

@@ -23,15 +23,8 @@ def inspect(output):
     forbidden = [p for p in files if p not in ('/src/main.cpp', 'main.cpp') and str(Path(p).resolve()) not in allowed_headers()]
     if forbidden:
         return 'Unapproved headers: ' + ', '.join(forbidden[:10])
-    dynamic = subprocess.check_output(['readelf', '-d', str(output/'server')], text=True)
-    needed = set(re.findall(r'\(NEEDED\).*?\[(.*?)\]', dynamic))
-    allowed = {'libstdc++.so.6', 'libc.so.6', 'libm.so.6', 'libgcc_s.so.1', 'libpthread.so.0', 'librt.so.1'}
-    if needed - allowed:
-        return 'Unapproved linked libraries: ' + ', '.join(sorted(needed - allowed))
-    symbols = subprocess.check_output(['nm', '-u', str(output/'server')], text=True)
-    if re.search(r'\b(dlopen|dlmopen|dlsym|dlvsym)(@|\s|$)', symbols):
-        return 'Runtime library loading is not permitted'
-    return None
+    from toksec.binary_policy import inspect_binary
+    return inspect_binary(output / 'server')
 
 
 def build(source, artifact, level, test=False):

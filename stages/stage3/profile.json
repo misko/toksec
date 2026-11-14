@@ -1,0 +1,15 @@
+{
+  "level": 3,
+  "profile": "bare-bones-http",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "routing"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false
+}

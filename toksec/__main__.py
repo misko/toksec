@@ -15,7 +15,7 @@ def main():
     check.add_argument('--level', type=int, choices=range(1,6), required=True)
     check.add_argument('--performance', action='store_true')
     pub = commands.add_parser('publish', help='Generate all five complete contracts. No API call.')
-    pub.add_argument('--output', type=Path, default=Path('tasks/v7/rust'))
+    pub.add_argument('--output', type=Path, default=Path('tasks/v8/rust'))
     pub.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     check.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     for name in ('init', 'status', 'upgrade'):
@@ -34,6 +34,8 @@ def main():
     for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--run', type=Path, required=True)
+        if name == 'benchmark':
+            cmd.add_argument('--workload', help='One declared workload ID; omit for full matrix')
         if name == 'release':
             cmd.add_argument('--note', required=True)
         if name == 'grade':
@@ -90,7 +92,7 @@ def main():
                 result = controller.test_source(args.run, args.source.read_text())
         elif args.command == 'benchmark':
             with campaign.locked(controller.read(args.run, 'manifest.json')['campaign'], owner=True):
-                result = controller.measure(args.run)
+                result = controller.measure(args.run, args.workload)
         else:
             result = controller.export(args.run)
         print(json.dumps(result, indent=2, allow_nan=False))

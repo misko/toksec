@@ -25,7 +25,7 @@ int main(){
 
 class CppTests(unittest.TestCase):
     def test_language_contract_preserves_api_and_workloads(self):
-        for level in (1, 2):
+        for level in range(1, 6):
             cpp=specification(level,'cpp');rust=specification(level)
             self.assertEqual(cpp['cases'],rust['cases'])
             self.assertEqual(cpp['benchmarks'],rust['benchmarks'])
@@ -35,7 +35,7 @@ class CppTests(unittest.TestCase):
             self.assertNotIn('main.rs',text)
             self.assertNotIn('rustc',text)
         with self.assertRaises(ValueError):
-            specification(5,'cpp')
+            specification(6,'cpp')
 
     def test_cpp_tests_are_sandboxed_and_assertions_enabled(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -10,6 +10,7 @@ class Workload:
     persistent: bool = False
     tls: bool = False
     gzip: bool = False
+    host: str = 'alpha.test'
     rounds: int = 5
     warmup_seconds: float = 1.0
     seconds: float = 3.0

@@ -29,8 +29,8 @@ def validate(run):
 
 def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None, language='rust'):
     specification(level, language)
-    if level in (1, 2) and starter is not None:
-        raise ValueError("Stages 1 and 2 start without starter code")
+    if starter is not None:
+        raise ValueError("All stages start without starter code")
     if not 120 <= wall_seconds <= 7200:
         raise ValueError('wall_seconds must be between 120 and 7200')
     if not campaign.status(directory, model)['can_start_model_call']:
@@ -43,25 +43,15 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=Non
         shutil.copyfile(ROOT / name, destination)
     (run / 'launch-packet.md').write_text(packet(level, language))
     atomic_json(run / 'specification.json', specification(level, language))
-    atomic_json(run / 'manifest.json', {'level': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only' if level <= 2 else 'full', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {'level': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'toolchain': str(sandbox.toolchain()) if language == 'rust' else '/usr/bin/g++',
                 'compiler': subprocess.check_output([profile(language, level)['compiler'], '--version'], text=True),
                 'cpu_affinity': sorted(os.sched_getaffinity(0)), 'load_average': list(os.getloadavg())})
-    atomic_json(run / 'state.json', {'best': None, 'full_acceptance': False, 'last': None,
+    atomic_json(run / 'state.json', {'best': None, 'smoke_passed': False, 'last': None,
                                     'optimization_attempts': 0, 'finished': False, 'context_rollovers': 0,
                                     'invalidated': [], 'journal_entries': 0})
-    if starter is not None:
-        source = Path(starter).read_text()
-        (run / 'starter.rs').write_text(source)
-        report = submit(run, source)
-        if 'bootstrap' not in passed(report):
-            raise ValueError('starter failed bootstrap; inspect prepared run ' + str(run))
-        manifest = read(run, 'manifest.json')
-        manifest['starter_sha256'] = hashlib.sha256(source.encode()).hexdigest()
-        manifest['starter_candidate'] = report['id']
-        atomic_json(run / 'manifest.json', manifest)
     return {'run': str(run), 'level': level, 'launch_packet': str(run / 'launch-packet.md')}
 
 
@@ -71,7 +61,7 @@ def capacity(run):
     started = manifest['started_unix']
     remaining = max(0, manifest['wall_seconds'] - (time.time() - started)) if started else manifest['wall_seconds']
     result.update(evaluation_scope=manifest['builder_evaluation_scope'], seconds_remaining=remaining, best_candidate=read(run)['best'],
-                  full_acceptance=read(run)['full_acceptance'], optimization_attempts=read(run)['optimization_attempts'])
+                  smoke_passed=read(run)['smoke_passed'], optimization_attempts=read(run)['optimization_attempts'])
     target = manifest.get('spend_target_usd')
     if target is not None:
         from decimal import Decimal
@@ -83,7 +73,7 @@ def capacity(run):
     admitted = result['can_start_model_call']
     result['can_finish'] = remaining <= 120 or not admitted
     result['work_phase'] = ('stabilize' if remaining <= 120 else
-                            'improve' if result['full_acceptance'] else 'conformance')
+                            'improve' if result['smoke_passed'] else 'conformance')
     result['context_rollovers'] = read(run).get('context_rollovers', 0)
     result['can_start_model_call'] &= remaining > 30 and not read(run)['finished']
     return result
@@ -105,21 +95,21 @@ def submit(run, source):
               'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run), 'evaluation_scope': manifest['builder_evaluation_scope']}
     if report['build']['passed']:
         try:
-            report['checks'] = sandbox.evaluate(artifact, manifest['level'], smoke=manifest['level'] <= 2)
+            report['checks'] = sandbox.evaluate(artifact, manifest['level'], smoke=True)
         except (RuntimeError, OSError, ValueError) as error:
             report['checks']['error'] = str(error)[:2000]
     report['source_sha256'] = hashlib.sha256((artifact / source_name(manifest)).read_bytes()).hexdigest()
     atomic_json(artifact / 'report.json', report)
     old = read(run / 'candidates' / state['best'], 'report.json') if state['best'] and state['best'] not in state.get('invalidated', []) else {}
-    if not state['full_acceptance'] and 'bootstrap' in passed(report) and passed(report) > passed(old):
-        state.update(best=identity, full_acceptance=report['checks']['passed'])
+    if not state['smoke_passed'] and 'bootstrap' in passed(report) and passed(report) > passed(old):
+        state.update(best=identity, smoke_passed=report['checks']['passed'])
     state['last'] = identity
     atomic_json(run / 'state.json', state)
     export(run)
     return {**report, 'retained': state['best'] == identity, 'best': state['best']}
 
 
-def measure(run):
+def measure(run, workload=None):
     run = Path(run)
     manifest = validate(run)
     state = read(run)
@@ -129,8 +119,10 @@ def measure(run):
     if not identity or identity in state.get('invalidated', []) or not read(run / 'candidates' / identity, 'report.json')['checks']['passed']:
         raise ValueError('last candidate must pass all public checks before benchmarking')
     level = manifest['level']
-    selected = workloads(level)
-    incumbent = state['best']
+    selected = [w for w in workloads(level) if workload is None or w.id == workload]
+    if not selected:
+        raise ValueError('unknown workload')
+    incumbent = state['best'] or identity
     pair = incumbent != identity
     estimated = sum(w.rounds * (w.warmup_seconds + w.seconds + w.timeout_seconds + 1) for w in selected) * (2 if pair else 1) + 30
     if capacity(run)['seconds_remaining'] < estimated:
@@ -147,7 +139,9 @@ def measure(run):
             atomic_json(run / 'benchmark-progress.json', collected)
     summaries = {key: {name: benchmark.summarize(rounds) for name, rounds in value.items()} for key, value in collected.items()}
     decision = benchmark.compare(summaries[incumbent], summaries[identity]) if pair else {'promote': False, 'reason': 'initial accepted baseline'}
-    result = {'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision, 'evaluation_scope': 'development_only_not_final_grade'}
+    if workload is not None:
+        decision = {**decision, 'promote': False, 'reason': 'selected workload diagnostic; full matrix required for baseline promotion'}
+    result = {'selected_workloads': [w.id for w in selected], 'complete_matrix': workload is None, 'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision, 'evaluation_scope': 'development_only_not_final_grade'}
     result['recorded_unix'] = time.time()
     result['capacity'] = capacity(run)
     history = run / 'benchmarks'
@@ -157,7 +151,7 @@ def measure(run):
     if pair:
         state['optimization_attempts'] += 1
     if decision['promote']:
-        state.update(best=identity, full_acceptance=True)
+        state.update(best=identity, smoke_passed=True)
     atomic_json(run / 'state.json', state)
     export(run)
     return result
@@ -212,14 +206,14 @@ def revalidate(run, target):
     destination = folder / (uuid.uuid4().hex + '.json')
     for _ in range(3):
         try:
-            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, manifest['level'], smoke=manifest['level'] <= 2))
+            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, manifest['level'], smoke=True))
         except (RuntimeError, OSError, ValueError) as error:
             reports.append({'passed': False, 'error': str(error)[:8000]})
         atomic_json(destination, {'candidate': identity, 'passed': False, 'complete': False, 'restarts': reports})
         if not reports[-1]['passed']:
             state['invalidated'] = sorted(set(state.get('invalidated', []) + [identity]))
             if state['best'] == identity:
-                state['full_acceptance'] = False
+                state['smoke_passed'] = False
             atomic_json(Path(run) / 'state.json', state)
     result = {'candidate': identity, 'passed': all(r['passed'] for r in reports), 'restarts': reports}
     result['complete'] = True
@@ -232,7 +226,7 @@ def export(run):
     run = Path(run)
     state = read(run)
     best = state['best']
-    result = {'best': best, 'full_acceptance': state['full_acceptance'], 'state': state,
+    result = {'best': best, 'smoke_passed': state['smoke_passed'], 'state': state,
               'capacity': capacity(run), 'artifact': None,
               'warning': None if best else 'No working candidate has passed bootstrap. No working product is claimed.'}
     if best:

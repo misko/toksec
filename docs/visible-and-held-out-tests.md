@@ -1,3 +1,5 @@
+> v8 extends this isolation policy to all five stages. See [v8 details](stages-3-5-v8.md).
+
 # Visible and held-out suites
 
 Status: enforced for Stage 1 and Stage 2 in rust-http-v6. Builder submissions,

@@ -1,7 +1,7 @@
 # Shared builder rules
 
 Build a working, efficient HTTP server that satisfies the selected stage's English
-contract. Stages 1 and 2 are independent from-scratch assignments. No starter code,
+contract. Stages 1 through 5 are independent from-scratch assignments. No starter code,
 previous implementation, or another run's conversation is supplied.
 
 ## Freedom to work
@@ -36,7 +36,8 @@ a finite suite does not prove complete correctness or maximum performance.
 
 Submit a complete source file defined by the language interface through submit_candidate. Compilation and execution
 occur in sandboxes. Controller tools are your filesystem/execution interface;
-you do not have a general host shell. Additional tests run through run_tests.
+you do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own
+fixtures and listeners; no candidate server is automatically running for them.
 
 You can be stopped at any time. After your first working submission, call
 init_repository to create a new private Git repository and its first release tag.
@@ -58,8 +59,7 @@ not yet defined.
 ## Development feedback
 
 submit_candidate and revalidate_candidate run only the supplied smoke suite.
-The full host API suite is held out until the run ends. Tool fields named
-full_acceptance refer only to the supplied smoke suite, not final correctness.
+The full host API suite is held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.
 benchmark_candidate provides provisional ordinary-traffic performance feedback
 after smoke acceptance. Such measurements do not establish final eligibility.
 Release metadata and retained baselines contain development evidence only.
@@ -82,7 +82,7 @@ tag determines the final implementation.
 
 ## Capacity
 
-The configured campaign cap is $3. The controller reports the actual remaining
+The frozen run manifest defines the campaign cap and builder wall-time ceiling. The controller reports the actual remaining
 shared dollars, tokens and wall time through budget_status and before each model
 call. All model input, output, reasoning and final reporting consume that budget.
 Compilation and evaluation CPU are tracked separately. The strict worst-case

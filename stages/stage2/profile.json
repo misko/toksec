@@ -1,0 +1,14 @@
+{
+  "level": 2,
+  "profile": "bare-bones-http",
+  "capabilities": [
+    "static-files",
+    "persistence"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false
+}
