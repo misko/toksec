@@ -66,7 +66,11 @@ implementation first, then call `init_repository` to create and tag the private
 repository. Call `release_candidate` after validated milestones. Every release
 contains `main.rs` plus controller-generated `release.json` metadata. Tags are
 numbered `release/000001`, `release/000002`, and so on. The last completed tag is
-the graded submission; untagged candidates do not replace it.
+the graded submission; untagged candidates do not replace it. The instructions also
+award partial credit for validated progress shown by periodic tags, with before/after
+evidence in release notes. Extra tags without demonstrated progress earn no credit.
+This is a qualitative progress rubric; numeric milestone weights are not currently
+implemented in the evaluator.
 
 The independent grader extracts tagged source, recompiles it and runs the public
 suite. It does not trust a supplied executable or the model's claim that tests pass.

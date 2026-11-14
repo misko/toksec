@@ -1,3 +1,25 @@
+## Partial credit for tagged progress
+
+You receive partial credit for validated progress preserved in periodic Git release
+tags, even if you cannot finish the full target before the run stops. Publish a
+working milestone as soon as it is validated; do not save all publication for the
+end. The last completed tag remains your final implementation, while the sequence
+of tags provides evidence of progress over time.
+
+For each release, describe what improved since the previous tag: newly passing
+public API checks, an executable regression demonstrating a reliability repair,
+or a performance improvement supported by eligible benchmark comparisons. Record
+the before/after results and the relevant evidence in the release note. The first
+working tag establishes the baseline. Preserve all previously passing API checks.
+
+Tag count alone earns no credit. Duplicate source, cosmetic changes, repeated
+claims, regaining a previously credited check, or inconclusive performance numbers
+do not establish additional progress. Correctness takes priority over performance.
+Use focused increments, validate them, and tag the improvement before starting the
+next risky edit. Do not deliberately delay or fragment an easy correct solution
+merely to create extra milestones. Partial credit is for demonstrated progress,
+not activity.
+
 ## Continue after acceptance
 
 Your objective is the best validated implementation attainable within this run's remaining capacity. Passing the public suite is the beginning of improvement work. It is not permission to finish. One or two optimization attempts are not a stopping condition. Continue until the controller's finalization window or admission limit.
