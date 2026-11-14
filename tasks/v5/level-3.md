@@ -19,12 +19,22 @@ Testing correctness first, addressing failed requests before speed, and measurin
 one change at a time are suggestions. The goal is a working and very efficient
 implementation, not compliance with a prescribed development process.
 
-The English requirements are authoritative. Independent host-side tests assess
-them later. The case list and benchmark matrix are provided for orientation, not
-as a substitute for the requirements. Design your own tests for boundary cases,
-configuration changes, slow clients, disconnects and recovery. Implement general
-behavior rather than hardcoded fixture responses. Passing a finite suite does not
-prove complete correctness or maximum performance.
+## Testing is part of your task
+
+You are responsible for designing and running tests for your implementation.
+Infer what needs testing from the English contract; do not rely on the supplied
+checks as a comprehensive test plan. Choose your own cases, tools and strategy.
+Providing only enough behavior to pass supplied examples does not satisfy the task.
+
+The English requirements are authoritative. Supplied smoke checks demonstrate
+basic API usage only; passing them is not evidence of full correctness. The host
+may independently evaluate any behavior required by the contract. It must not
+introduce undocumented requirements. No starter implementation is supplied.
+
+Develop and retain your own correctness evidence before publishing releases.
+You choose how much capacity to spend on tests versus implementation and
+optimization. Report what you tested and any known limitations honestly. Passing
+a finite suite does not prove complete correctness or maximum performance.
 
 ## Deliverable and Git releases
 
