@@ -12,6 +12,22 @@ The v1 monitor could discard a long scheduling pause that resumed after the
 measurement window ended. Raw v1 records remain preserved for audit; use v2
 reruns for eligibility claims. The change does not affect the official harness.
 
+The current orchestration adds guard revision `v2-upstream-liveness-1`, recorded
+as `guard_revision` in future results. It polls the trusted upstream process
+before, during, and after rounds, so an exited unreaped child cannot pass a
+`/proc/PID` existence check. Future proxy runs retain `upstream.stdout.log` and
+`upstream.stderr.log`. Numeric metrics, workload timings, latency bins, and
+eligibility thresholds are unchanged.
+
+Completed v2 measurements used orchestration SHA-256
+`4aeb4b44a346d55dac6c6e6cf44ef653f69d318e846cad9e1a0ddd5efa3066e0`,
+preserved exactly at `.runs/references/tool-snapshot-v2/supplemental.py` and in
+commit `d430936`. Those raw records remain frozen. The old guard could miss an
+exited fixture, but no past timeout or status failure is attributed to that
+defect without evidence; later recovery with the same fixture PID excludes a
+permanent fixture exit for the reviewed intermittent cases. This guard revision
+has unit validation only; it has not run load traffic.
+
 `native_load.cpp` is a Linux C++17 epoll worker. Four independently pinned
 processes run 64 or 1024 clients each, with exactly one request outstanding per
 client. All declared plaintext workloads are supported: fresh or persistent,

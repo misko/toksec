@@ -1,5 +1,24 @@
 # Native diagnostic validation
 
+The post-campaign guard revision `v2-upstream-liveness-1` polls the trusted
+upstream `Popen` before, during, and after a round, and before final result
+publication. It rejects exited children, including unreaped zombies whose
+`/proc/PID` entry remains, and retains upstream stdout/stderr in future runs.
+Workload timing, numeric aggregation, latency bins, and eligibility thresholds
+remain unchanged; the native worker is unchanged. This revision has no load
+measurements, and it does not establish the cause of any historical failure.
+
+The exact orchestrator used for completed v2 measurements has SHA-256
+`4aeb4b44a346d55dac6c6e6cf44ef653f69d318e846cad9e1a0ddd5efa3066e0`.
+It is archived at `.runs/references/tool-snapshot-v2/supplemental.py`, with hash
+metadata beside it, and retained in commit `d430936`. All original campaign
+records remain untouched. The guard regressions use mocked processes and
+network calls, including zero/nonzero exits with a surviving process entry,
+exits before/during/after worker execution, a late exit during aggregation, and
+fixture log retention. No test sends network traffic.
+All 26 tests pass on CPU 22, including an eligible mocked proxy round asserting
+unchanged throughput, byte, latency, failure, CPU/RSS, and accounting values.
+
 **All v1 eligibility is provisional because of a lag-coverage defect.** This
 includes the historical Stage 1 C++ 80,246 req/s result below. The original raw
 records are preserved; their bytes/counters are diagnostic observations, and

@@ -23,6 +23,7 @@ from toksec.specification import configuration, fingerprint, workloads
 from toksec.wire import request
 
 SCHEMA = 'toksec-supplemental-native-v2'
+GUARD_REVISION = 'v2-upstream-liveness-1'
 LABEL = 'Supplemental native closed-loop diagnostic; not comparable to canonical asyncio full-suite metrics'
 TOOLS = Path(__file__).resolve().parent
 
@@ -130,7 +131,16 @@ def aggregate(parts, workload, server, upstream, cpus):
             'ineligible_reasons': reasons, 'load_average': list(os.getloadavg())}
 
 
-def run_round(spec, worker, runtime, cpus, directory, upstream_pid):
+def require_upstream_alive(upstream):
+    if upstream is not None:
+        code = upstream.poll()
+        if code is not None:
+            raise RuntimeError(f'trusted upstream exited with code {code}; see upstream.stdout.log and upstream.stderr.log')
+
+
+def run_round(spec, worker, runtime, cpus, directory, upstream):
+    require_upstream_alive(upstream)
+    upstream_pid = upstream.pid if upstream is not None else None
     raw = directory / 'request.bin'
     raw.write_bytes(request(spec['path'], close=not spec['persistent'], host=spec['host']))
     processes, streams = [], []
@@ -152,6 +162,7 @@ def run_round(spec, worker, runtime, cpus, directory, upstream_pid):
                        '--start-ns', str(start), '--request', str(raw)]
             processes.append(subprocess.Popen(command, stdout=out, stderr=err))
         while any(process.poll() is None for process in processes):
+            require_upstream_alive(upstream)
             t = time.monotonic()
             sample = proc_sample(server_pid)
             peak_rss, children = max(peak_rss, sample[1]), max(children, sample[2])
@@ -164,6 +175,7 @@ def run_round(spec, worker, runtime, cpus, directory, upstream_pid):
             if t > end + 5:
                 raise TimeoutError('native generators exceeded drain deadline')
             time.sleep(.01)
+        require_upstream_alive(upstream)
         for index, process in enumerate(processes):
             if process.returncode:
                 raise RuntimeError(f'worker {index} failed: ' + (directory / f'worker-{index}.stderr').read_text()[-2000:])
@@ -180,15 +192,15 @@ def run_round(spec, worker, runtime, cpus, directory, upstream_pid):
                     'utilization': used / max(.001, duration)}
         server = {'pid': server_pid, 'cpu_seconds': max(0, after[0] - before[0]), 'peak_rss_kib': peak_rss,
                   'child_processes': children, **window(server_window)}
-        if upstream_pid and not Path(f'/proc/{upstream_pid}').exists():
-            raise RuntimeError('trusted upstream exited during supplemental measurement')
-        upstream = None if upstream_pid is None else {
+        require_upstream_alive(upstream)
+        upstream_metrics = None if upstream_pid is None else {
             'pid': upstream_pid, 'cpu_seconds': max(0, proc_sample(upstream_pid)[0] - upstream_before[0]),
             'peak_rss_kib': upstream_rss, **window(upstream_window)}
-        result = aggregate(parts, spec, server, upstream, cpus)
+        result = aggregate(parts, spec, server, upstream_metrics, cpus)
         if not server['sample_valid']:
             result['eligible'] = False
             result['ineligible_reasons'].append('missing server measurement-window CPU sample')
+        require_upstream_alive(upstream)
         return result
     finally:
         for process in processes:
@@ -202,17 +214,24 @@ def inside(config):
     cpus, runtime = config['cpus'], config['runtime']
     output = Path(config['output'])
     upstream = None
+    upstream_streams = []
     try:
         if config['level'] >= 4:
             ready = Path(runtime['fixtures']) / 'supplemental-upstream.ready'
+            stdout = (output / 'upstream.stdout.log').open('wb')
+            upstream_streams.append(stdout)
+            stderr = (output / 'upstream.stderr.log').open('wb')
+            upstream_streams.append(stderr)
             upstream = subprocess.Popen(['taskset', '-c', str(cpus[5]), sys.executable, '-m',
                                          'evaluation.smoke.upstream', str(ready)], cwd=ROOT,
-                                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                        stdout=stdout, stderr=stderr)
             deadline = time.monotonic() + 2
             while not ready.exists():
-                if upstream.poll() is not None or time.monotonic() > deadline:
+                require_upstream_alive(upstream)
+                if time.monotonic() > deadline:
                     raise RuntimeError('trusted benchmark upstream failed to start')
                 time.sleep(.01)
+            require_upstream_alive(upstream)
         deadline = time.monotonic() + 2
         while True:
             try:
@@ -231,7 +250,8 @@ def inside(config):
                 directory = output / spec['id'] / f'round-{index + 1}'
                 directory.mkdir(parents=True)
                 rounds.append(run_round(spec, Path(config['worker']), runtime, cpus, directory,
-                                        upstream.pid if upstream else None))
+                                        upstream))
+                require_upstream_alive(upstream)
                 save(output / 'partial.json', results | {spec['id']: {'rounds': rounds, 'incomplete': True}})
             import statistics
             rates = [r['valid_rps'] for r in rounds]
@@ -241,12 +261,18 @@ def inside(config):
                                   'failures': sum(r['failures'] for r in rounds),
                                   'eligible': all(r['eligible'] for r in rounds)}
             save(output / 'partial.json', results)
+        require_upstream_alive(upstream)
         save(output / 'measurements.json', results)
+        require_upstream_alive(upstream)
     finally:
-        if upstream:
-            upstream.terminate()
-            try: upstream.wait(timeout=3)
-            except subprocess.TimeoutExpired: upstream.kill(); upstream.wait()
+        try:
+            if upstream:
+                if upstream.poll() is None:
+                    upstream.terminate()
+                try: upstream.wait(timeout=3)
+                except subprocess.TimeoutExpired: upstream.kill(); upstream.wait()
+        finally:
+            for stream in upstream_streams: stream.close()
 
 
 def main():
@@ -295,7 +321,8 @@ def main():
             calibration_build = sandbox.build(calibration_source.read_text(), artifact, 2, language='cpp')
             if not calibration_build['passed']: raise RuntimeError(calibration_build['diagnostics'])
         binary_hash = digest(artifact / 'server')
-        result = {'schema': SCHEMA, 'label': LABEL, 'canonical': False, 'comparable_to_official': False,
+        result = {'schema': SCHEMA, 'guard_revision': GUARD_REVISION,
+                  'label': LABEL, 'canonical': False, 'comparable_to_official': False,
                   'purpose': 'static generator calibration only; no API or proxy claim' if args.mode == 'calibrate' else 'accepted candidate supplemental diagnostic',
                   'mode': args.mode, 'framework': fingerprint(), 'level': level,
                   'source_sha256': record['source_sha256'] if record else digest(calibration_source),

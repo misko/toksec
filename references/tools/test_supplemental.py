@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, Mock, patch
 
 HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('supplemental', HERE / 'supplemental.py')
@@ -216,6 +216,133 @@ class GateAndEligibilityTests(unittest.TestCase):
         self.assertFalse(self.aggregate(part)['eligible'])
         part = self.worker(); part['attempts'] += 1
         self.assertFalse(self.aggregate(part)['accounting_valid'])
+
+
+class UpstreamGuardTests(unittest.TestCase):
+    def test_running_upstream_is_allowed(self):
+        upstream = Mock()
+        upstream.poll.return_value = None
+        supplemental.require_upstream_alive(upstream)
+        upstream.poll.assert_called_once_with()
+
+    def test_exited_upstream_is_rejected_even_when_proc_entry_exists(self):
+        for code in (0, 7, -9):
+            with self.subTest(returncode=code), patch.object(Path, 'exists', return_value=True):
+                upstream = Mock()
+                upstream.poll.return_value = code
+                with self.assertRaisesRegex(RuntimeError, f'exited with code {code}'):
+                    supplemental.require_upstream_alive(upstream)
+
+    def test_static_workload_needs_no_upstream(self):
+        supplemental.require_upstream_alive(None)
+
+    def run_with_exit(self, poll_results, worker_running):
+        upstream = Mock(pid=12345)
+        upstream.poll.side_effect = poll_results
+        workers = [Mock(returncode=0) for _ in range(4)]
+        for worker in workers: worker.poll.return_value = None if worker_running else 0
+        with tempfile.TemporaryDirectory(prefix='toksec-upstream-guard-') as temporary:
+            with patch.object(supplemental.subprocess, 'Popen', side_effect=workers) as spawn, \
+                    patch.object(supplemental, 'proc_sample', return_value=(0, 0, 0)):
+                with self.assertRaisesRegex(RuntimeError, 'trusted upstream exited with code 7'):
+                    supplemental.run_round(asdict(workloads(1)[0]), Path('/unused/worker'),
+                                           {'server_pid': 56789}, [10, 11, 12, 13, 14, 15], Path(temporary), upstream)
+        return spawn, workers
+
+    def test_exit_before_round_prevents_worker_launch(self):
+        spawn, _ = self.run_with_exit([7], False)
+        spawn.assert_not_called()
+
+    def test_exit_during_round_stops_workers(self):
+        spawn, workers = self.run_with_exit([None, 7], True)
+        self.assertEqual(spawn.call_count, 4)
+        for worker in workers:
+            worker.kill.assert_called_once_with()
+            worker.wait.assert_called_once_with()
+
+    def test_exit_after_workers_finish_prevents_result(self):
+        spawn, workers = self.run_with_exit([None, 7], False)
+        self.assertEqual(spawn.call_count, 4)
+        for worker in workers:
+            worker.kill.assert_not_called()
+            worker.wait.assert_called_once_with()
+
+    def test_exit_during_result_aggregation_prevents_return(self):
+        upstream = Mock(pid=12345)
+        upstream.poll.side_effect = [None, None, None, 7]
+        def worker_process(*args, **kwargs):
+            kwargs['stdout'].write('{}')
+            worker = Mock(returncode=0)
+            worker.poll.return_value = 0
+            return worker
+        with tempfile.TemporaryDirectory(prefix='toksec-upstream-guard-') as temporary:
+            with patch.object(supplemental.subprocess, 'Popen', side_effect=worker_process), \
+                    patch.object(supplemental, 'proc_sample', return_value=(0, 0, 0)), \
+                    patch.object(Path, 'exists', return_value=True), \
+                    patch.object(supplemental, 'aggregate', return_value={'eligible': True, 'ineligible_reasons': []}) as aggregate:
+                with self.assertRaisesRegex(RuntimeError, 'trusted upstream exited with code 7'):
+                    supplemental.run_round(asdict(workloads(1)[0]), Path('/unused/worker'),
+                                           {'server_pid': 56789}, [10, 11, 12, 13, 14, 15], Path(temporary), upstream)
+                aggregate.assert_called_once()
+
+    def test_successful_proxy_round_retains_process_and_numeric_metrics(self):
+        upstream = Mock(pid=12345)
+        upstream.poll.return_value = None
+        part = GateAndEligibilityTests.worker()
+        spawned = []
+        def worker_process(*args, **kwargs):
+            json.dump(part, kwargs['stdout'])
+            worker = Mock(returncode=0)
+            worker.poll.return_value = 0
+            if not spawned:
+                worker.poll.side_effect = [None, None, None, 0, 0]
+            spawned.append(worker)
+            return worker
+        with tempfile.TemporaryDirectory(prefix='toksec-upstream-round-') as temporary:
+            with patch.object(supplemental.subprocess, 'Popen', side_effect=worker_process), \
+                    patch.object(supplemental, 'proc_sample', return_value=(1, 100, 0)), \
+                    patch.object(supplemental.time, 'monotonic_ns', return_value=0), \
+                    patch.object(supplemental.time, 'monotonic', side_effect=[2.0, 3.5, 4.99]), \
+                    patch.object(supplemental.time, 'sleep'), \
+                    patch.object(Path, 'exists', return_value=True):
+                spec = next(w for w in workloads(4) if w.id == 'proxy-4096-256')
+                result = supplemental.run_round(asdict(spec), Path('/unused/worker'),
+                                                {'server_pid': 56789}, [10, 11, 12, 13, 14, 15], Path(temporary), upstream)
+        self.assertGreaterEqual(upstream.poll.call_count, 4)
+        self.assertEqual(result['upstream']['pid'], 12345)
+        self.assertEqual(result['upstream']['cpu_seconds'], 0)
+        self.assertEqual(result['upstream']['peak_rss_kib'], 100)
+        self.assertEqual(result['attempts'], 400)
+        self.assertEqual(result['successes'], 400)
+        self.assertEqual(result['failures'], 0)
+        self.assertEqual(result['valid_rps'], 400 / 3)
+        self.assertEqual(result['payload_bytes'], 400 * 4096)
+        self.assertEqual(result['p99_ms'], .1)
+        self.assertTrue(result['accounting_valid'])
+        self.assertTrue(result['upstream']['sample_valid'])
+        self.assertTrue(result['server']['sample_valid'])
+        self.assertTrue(result['eligible'])
+
+    def test_fixture_stdout_stderr_are_retained(self):
+        upstream = Mock(pid=12345)
+        upstream.poll.return_value = None
+        def fixture_process(*args, **kwargs):
+            kwargs['stdout'].write(b'fixture startup\n')
+            kwargs['stderr'].write(b'fixture diagnostic\n')
+            return upstream
+        with tempfile.TemporaryDirectory(prefix='toksec-upstream-logs-') as temporary:
+            root = Path(temporary)
+            (root / 'supplemental-upstream.ready').write_text('ready')
+            config = {'cpus': [10, 11, 12, 13, 14, 15], 'runtime': {'fixtures': str(root), 'server_pid': 56789},
+                      'output': str(root), 'level': 4, 'workloads': [], 'rounds': 1, 'worker': '/unused/worker'}
+            with patch.object(supplemental.subprocess, 'Popen', side_effect=fixture_process), \
+                    patch.object(supplemental.socket, 'create_connection', return_value=MagicMock()), \
+                    patch.object(supplemental.os, 'sched_getaffinity', side_effect=[{10}, {15}]):
+                supplemental.inside(config)
+            self.assertEqual((root / 'upstream.stdout.log').read_text(), 'fixture startup\n')
+            self.assertEqual((root / 'upstream.stderr.log').read_text(), 'fixture diagnostic\n')
+            upstream.terminate.assert_called_once_with()
+            upstream.wait.assert_called_once_with(timeout=3)
 
 
 if __name__ == '__main__':

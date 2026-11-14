@@ -123,3 +123,14 @@ bound individual proxy bodies but do not have a global body-memory admission
 budget: many simultaneous maximum-size bodies may exhaust the process limit.
 See individual reports for further architecture and resource limitations. These
 references implement the specified stage contracts, not full production nginx.
+
+## Harness checks
+
+The repository regression suite passed all **92 tests** after the reference work
+(`taskset -c 10-15 python3 -m unittest discover -s tests -v`). An initial run with
+only CPU 0 exposed nine affinity precondition errors; rerunning with the required
+six CPUs passed. Raw logs are retained under `/tmp/toksec-reference-final-tests*`.
+The completed campaign used the frozen v2 orchestrator in commit `d430936`.
+A subsequent fixture-liveness guard revision and its unit tests are documented
+in [../tools/REPORT.md](../tools/REPORT.md); no archived result is relabeled as a
+run of that later revision.
