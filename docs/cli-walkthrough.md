@@ -184,3 +184,26 @@ If interrupted during a commit, the preceding completed tag remains the submissi
 If no tag exists, there is no graded release. Partial releases can receive partial
 correctness credit. Passing the public suite does not establish complete HTTP
 conformance. The grader reports both failed and passed cases.
+
+## Export releases and plot progress after a run
+
+```sh
+python3 scripts/analyze_releases.py --run RUN_PATH --output .runs/release-analysis
+python3 scripts/plot_releases.py .runs/release-analysis
+```
+
+The plotting command requires Matplotlib. The analyzer refuses an active run or a
+changed evaluator fingerprint. It exports all tags into `implementation.bundle`,
+clones a local `implementation/` Git repository, verifies each source hash, then
+independently compiles/tests every release. Fully conforming releases receive the
+complete performance matrix. These evaluations make no model API calls.
+
+`timeline.json` stores publication timestamps, commits, correctness cases, budget
+snapshots, and post-run benchmark rounds. The correctness and performance plots
+use elapsed release-publication time on the x-axis. They describe the quality of
+the version available at each point during development, measured after the run;
+they do not claim those post-run metrics were known by the builder at that time.
+In-run measurements are preserved separately under `in-run-benchmarks/`.
+Ineligible results use crosses and must not be interpreted as proven improvements.
+Each completed evaluation is saved and reused on resumption. Preserve interrupted
+partial evaluations and choose a fresh output directory before retrying.
