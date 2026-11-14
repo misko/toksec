@@ -1,0 +1,40 @@
+{
+  "model": "gpt-6.1-terra",
+  "reasoning": "medium",
+  "service_tier": "default",
+  "starter_provided": false,
+  "run_cost_upper_bound_usd": "0.04802785",
+  "total_tokens": 69197,
+  "campaign_cost_upper_bound_usd": "0.25643615",
+  "campaign_cap_usd": "3",
+  "per_request_usage": [
+    {
+      "cache_write": 20327,
+      "cached_input": 0,
+      "cost_usd_upper_bound": "0.02737175",
+      "input": 20330,
+      "output": 392,
+      "reasoning": 375,
+      "total": 20722
+    },
+    {
+      "cache_write": 823,
+      "cached_input": 20327,
+      "cost_usd_upper_bound": "0.0150381",
+      "input": 21153,
+      "output": 2598,
+      "reasoning": 25,
+      "total": 23751
+    },
+    {
+      "cache_write": 3546,
+      "cached_input": 21150,
+      "cost_usd_upper_bound": "0.005618",
+      "input": 24699,
+      "output": 25,
+      "reasoning": 9,
+      "total": 24724
+    }
+  ],
+  "frozen_framework_git_commit": "e2d084e"
+}
