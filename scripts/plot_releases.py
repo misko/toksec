@@ -18,6 +18,9 @@ def plot(directory):
     end_minutes = max(times[-1] if times else 0, ((data.get('ended_unix') or 0) - (data.get('started_unix') or 0)) / 60)
     ax.step(times + [end_minutes], counts + counts[-1:], where='post', color='#157a6e')
     ax.set_xlim(0, max(1, end_minutes * 1.05))
+    if times and times[0] > 0:
+        ax.axvspan(0, times[0], color='#eeeeee', zorder=0)
+        ax.text(times[0] / 2, .5, 'No tagged submission yet', transform=ax.get_xaxis_transform(), ha='center', color='#666666', fontsize=9)
     ax.scatter(times, counts, color='#157a6e')
     for x, y, row in zip(times, counts, rows):
         ax.annotate(row['tag'].split('/')[-1], (x, y), xytext=(4, 7), textcoords='offset points', fontsize=8)
