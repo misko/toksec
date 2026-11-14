@@ -158,8 +158,8 @@ def running(artifact, level, configuration_override=None):
                 kill(process)
 
 
-def invoke_driver(artifact, level, mode='check', **options):
-    with running(artifact, level) as runtime:
+def invoke_driver(artifact, level, mode='check', configuration_override=None, **options):
+    with running(artifact, level, configuration_override) as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
                    '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
@@ -203,7 +203,9 @@ def configuration_check(artifact, level):
     valid = ''.join(f'{k}={v}\n' for k, v in values.items())
     variants = [valid + 'unknown=true\n', valid + 'root=/www\n',
                 valid.replace('root=/www\n', ''), valid.replace('root=/www\n', 'root=/absent\n'),
-                valid.replace('header_bytes=8192\n', 'header_bytes=0\n')]
+                valid.replace('header_bytes=8192\n', 'header_bytes=0\n'),
+                valid.replace('root=/www\n', 'root=/www/hello.txt\n'),
+                valid.replace('root=/www\n', 'root=/www/pipe\n')]
     started = time.monotonic()
     try:
         for data in variants:
@@ -221,6 +223,20 @@ def configuration_check(artifact, level):
 def evaluate(artifact, level):
     result = invoke_driver(artifact, level)
     config = configuration_check(artifact, level)
+    from toksec.checks import configured_cases
+    from toksec.specification import configuration
+    for check in configured_cases(level):
+        from stages.stage2.api import CONFIGURATIONS
+        values = configuration(level)
+        values.update(CONFIGURATIONS[check.id])
+        data = ''.join(f'{k}={v}\n' for k, v in values.items())
+        try:
+            extra = invoke_driver(artifact, level, case=check.id, configuration_override=data)
+            result['cases'].extend(extra['cases'])
+            result['passed'] &= extra['passed']
+        except Exception as error:
+            result['cases'].append({'id': check.id, 'passed': False, 'error': str(error)[:1000]})
+            result['passed'] = False
     result['cases'].append(config)
     result['passed'] &= config['passed']
     return result

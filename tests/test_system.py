@@ -34,7 +34,7 @@ class SpecificationTests(unittest.TestCase):
             self.assertEqual({w.clients for w in workloads(level)}, {256, 4096})
             self.assertTrue(spec['cases'])
             self.assertEqual(len({c['id'] for c in spec['cases']}), len(spec['cases']))
-            self.assertIn('Complete wire API', packet(level))
+            self.assertIn('Shared static-file HTTP requirements', packet(level))
             self.assertIn('main.rs', packet(level))
             self.assertIn('files', {c['id'] for c in spec['cases']})
         self.assertNotIn('upstreams', configuration(1))
@@ -48,8 +48,8 @@ class SpecificationTests(unittest.TestCase):
 
     def test_published_contracts_match_executable_suite(self):
         for level in range(1, 6):
-            self.assertEqual((ROOT / f'tasks/v4/level-{level}.md').read_text(), packet(level))
-            self.assertEqual(json.loads((ROOT / f'tasks/v4/level-{level}.json').read_text()), specification(level))
+            self.assertEqual((ROOT / f'tasks/v5/level-{level}.md').read_text(), packet(level))
+            self.assertEqual(json.loads((ROOT / f'tasks/v5/level-{level}.json').read_text()), specification(level))
 
 
 class RustSandboxTests(unittest.TestCase):

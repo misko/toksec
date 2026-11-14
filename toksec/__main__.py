@@ -20,14 +20,14 @@ def main():
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)
         if name == 'init':
-            cmd.add_argument('--budget-usd', help='Start a fresh campaign without importing historical charges')
+            cmd.add_argument('--budget-usd', default='3', help='Start a fresh campaign without importing historical charges')
     prepare = commands.add_parser('prepare', help='Prepare an independent level. No API call.')
     prepare.add_argument('--campaign', type=Path, required=True)
     prepare.add_argument('--level', type=int, choices=range(1, 6), required=True)
     prepare.add_argument('--model', choices=['gpt-6-luna', 'gpt-6.1-terra'], default='gpt-6-luna')
     prepare.add_argument('--starter', type=Path)
     prepare.add_argument('--spend-target-usd', help='Stop this run after settled spending reaches this target; a call can cross it')
-    prepare.add_argument('--wall-seconds', type=int, default=1800)
+    prepare.add_argument('--wall-seconds', type=int, default=7200)
     for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--run', type=Path, required=True)

@@ -17,6 +17,8 @@ def create(directory, level):
                        'space name.txt': b'space\n', 'directory/index.html': b'<p>index</p>\n',
                        'assets/item.txt': b'asset\n', 'beta/hello.txt': b'beta toksec\n'}.items():
         (root / name).write_bytes(body)
+    if level >= 2:
+        (root / 'stall').write_bytes(payload(8 * 1024 * 1024))
     for size in (4096, 65536):
         (root / 'data' / str(size)).write_bytes(payload(size))
         (root / 'text' / (str(size) + '.txt')).write_bytes(payload(size, True))

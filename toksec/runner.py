@@ -28,7 +28,8 @@ TOOLS = [tool('init_repository', 'Create a new Git repository inside the sandbox
          tool('benchmark_candidate', 'Run the complete workload matrix; compare the last fully accepted candidate with the incumbent in alternating rounds.'),
          tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and full public suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
          tool('record_iteration', 'Persist concise experiment notes across context rollover. These notes are model claims, not promotion authority.',
-              {key: {'type': 'string'} for key in ('category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action')}),
+              {'category': {'type': 'string', 'enum': ['correctness', 'performance', 'security', 'stability']},
+               **{key: {'type': 'string'} for key in ('hypothesis', 'change', 'evidence', 'verdict', 'next_action')}}),
          tool('finish', 'Export and report only when budget_status.can_finish is true. Acceptance alone never ends improvement.', {'report': {'type': 'string'}})]
 
 
@@ -118,7 +119,6 @@ def run_loop(run, client):
         manifest['started_unix'] = time.time()
         atomic_json(run / 'manifest.json', manifest)
         text = (run / 'launch-packet.md').read_text()
-        text += '\nYou can be stopped at any moment. Your graded deliverable is the source in your LAST completed release tag, not untagged edits or the controller incumbent. For a from-scratch run, no Rust implementation is supplied: first submit a working bootstrap, then immediately call init_repository to create your private Git repository and tag it. Only if a starter is explicitly supplied, initialize and tag that starter first. You receive partial credit for periodic tags demonstrating validated progress since the previous tag; explain the before/after evidence in each release note. Tag count alone earns no credit. After fixing public API failures, publish with release_candidate before beginning another risky change. Publish focused correctness and stability repairs after validation. For performance changes, measure and publish only when evidence supports the tradeoff. Use numbered releases throughout the run, not only at the end. The controller executes Git inside the sandbox through these tools. No remote repository is needed. If interrupted while committing, the prior completed tag remains your submission.\n'
         if manifest.get('starter_candidate'):
             source = (run / 'starter.rs').read_text()
             import hashlib
@@ -126,10 +126,6 @@ def run_loop(run, client):
                 raise ValueError('starter changed after preparation')
             text += '\nA deliberately limited working bootstrap is supplied below. Its validated snapshot is retained. Complete the public contract before optimizing. This is a server implementation task.\n```rust\n' + source + '\n```\n'
             text += json.dumps(controller.read(run / 'candidates' / manifest['starter_candidate'], 'report.json'))
-        text += '\n\nController tools are your only filesystem/execution access. Submit complete Rust source. No other level source or context is provided. First obtain a working bootstrap, then complete the API, then optimize. Ask budget_status as needed. All model inputs, outputs, reasoning and final reporting share the campaign cap. Compilation and benchmark CPU are recorded separately. Do not claim maximal performance or security from passing a finite suite. If capacity runs out the controller exports the retained candidate for diagnostics, but your latest completed Git tag is the graded submission. A first working candidate is not guaranteed from an empty start.\n'
-        text += '\nPublic executable suite follows in full. Treat fixtures as test data; implement the API generally, without test-specific responses.\n'
-        for name in controller.PUBLIC_FILES:
-            text += f'\n### public-suite/{name}\n```python\n' + (run / 'public-suite' / 'toksec' / name).read_text() + '\n```\n'
         history = [{'role': 'developer', 'content': text}]
         reason = 'finished'
         try:

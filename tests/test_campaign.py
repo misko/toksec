@@ -137,7 +137,7 @@ class CampaignTests(unittest.TestCase):
         self.assertIsNotNone(result['artifact'])
         self.assertFalse(result['full_acceptance'])
         self.assertTrue(all(r['service_tier'] == 'default' for r in requests))
-        self.assertIn('public-suite/checks.py', requests[0]['input'][0]['content'])
+        self.assertNotIn('def run_checks', requests[0]['input'][0]['content'])
         self.assertEqual(len([r for r in campaign.read(self.directory)['requests'] if r['run'] == run.name]), 3)
 
     def test_timeout_preserves_reservation_and_exports_without_retry(self):

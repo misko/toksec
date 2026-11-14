@@ -10,9 +10,9 @@ from pathlib import Path
 
 from controller import atomic_json
 from toksec import benchmark, campaign, sandbox
-from toksec.specification import ROOT, fingerprint, packet, specification, workloads
+from toksec.specification import ROOT, fingerprint, packet, specification, workloads, instruction_files
 
-PUBLIC_FILES = ('__init__.py', 'specification.py', 'checks.py', 'wire.py', 'fixtures.py', 'benchmark.py', 'sandbox.py', 'driver.py')
+
 
 
 def read(run, name='state.json'):
@@ -28,17 +28,18 @@ def validate(run):
 
 def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None):
     specification(level)
+    if level in (1, 2) and starter is not None:
+        raise ValueError("Stages 1 and 2 start without starter code")
     if not 120 <= wall_seconds <= 7200:
         raise ValueError('wall_seconds must be between 120 and 7200')
     if not campaign.status(directory, model)['can_start_model_call']:
         raise ValueError('campaign is unavailable')
     run = Path(directory).resolve() / 'runs' / f'level-{level}-{uuid.uuid4().hex[:12]}'
     (run / 'candidates').mkdir(parents=True)
-    (run / 'public-suite' / 'toksec').mkdir(parents=True)
-    (run / 'public-suite' / 'prompts').mkdir()
-    shutil.copyfile(ROOT / 'prompts/improve.md', run / 'public-suite' / 'prompts/improve.md')
-    for name in PUBLIC_FILES:
-        shutil.copyfile(ROOT / 'toksec' / name, run / 'public-suite' / 'toksec' / name)
+    for name in instruction_files(level):
+        destination = run / 'builder-inputs' / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / name, destination)
     (run / 'launch-packet.md').write_text(packet(level))
     atomic_json(run / 'specification.json', specification(level))
     atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),

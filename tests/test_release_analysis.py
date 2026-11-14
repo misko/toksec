@@ -18,7 +18,8 @@ class ReleaseAnalysisTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             campaign.initialize(root/'campaign', '3')
-            run = Path(controller.prepare(root/'campaign', 1, starter=ROOT/'starters/static.rs')['run'])
+            run = Path(controller.prepare(root/'campaign', 1)['run'])
+            controller.submit(run, (ROOT/'starters/static.rs').read_text())
             manifest = controller.read(run, 'manifest.json')
             manifest['started_unix'] = time.time()
             atomic_json(run/'manifest.json', manifest)

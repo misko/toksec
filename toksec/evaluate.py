@@ -21,5 +21,14 @@ def evaluate(source, directory, level, performance=False):
                 atomic_json(directory/'result.json',result)
         elif performance:
             result['benchmark_skipped']='Correctness checks must pass before performance measurement.'
+    api_passed = result['build']['passed'] and result.get('checks', {}).get('passed', False)
+    cases = result.get('checks', {}).get('cases', [])
+    result['grading'] = {'api_passed': api_passed, 'api_checks_passed': sum(c['passed'] for c in cases),
+                         'api_checks_failed': sum(not c['passed'] for c in cases),
+                         'performance_status': 'measured' if 'benchmarks' in result else ('not_requested' if api_passed else 'failed_api')}
+    if not api_passed:
+        result['grading']['performance_credit'] = 0
+        result['grading']['deduction'] = 'Failed API requirements lose API credit; all performance credit is forfeited.'
+        result['benchmark_skipped'] = 'Build and all required API checks must pass before performance measurement.'
     atomic_json(directory/'result.json',result)
     return result

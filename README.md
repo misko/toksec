@@ -2,19 +2,21 @@
 
 Implement and benchmark nginx-like HTTP servers with an AI agent under a measured campaign budget.
 
-The current system prepares five **independent Rust HTTP tasks**. Each starts with fresh model context and either an empty workspace or an explicitly recorded limited starter. The agent receives its complete API, configuration, public acceptance checks, benchmark source and workload matrix before writing code. Levels share one campaign ledger, never a prior implementation.
+Stages 1 and 2 are independent, from-scratch Rust tasks: neither receives starter code or another implementation. The agent receives shared English rules, its stage contract, configuration, check descriptions and workload matrix. Independent checker implementations stay on the host. Stages share one campaign ledger.
+
+The authoritative instructions live in [RULES.md](RULES.md). See [the stage layout](docs/stage-layout.md) for shared and stage-specific files. Published packets are generated snapshots; edit the source documents and regenerate them.
 
 | Level | Complete target | Performance workloads |
 |---|---|---|
-| [1](tasks/v4/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
-| [2](tasks/v4/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
-| [3](tasks/v4/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
-| [4](tasks/v4/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
-| [5](tasks/v4/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
+| [1](tasks/v5/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
+| [2](tasks/v5/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
+| [3](tasks/v5/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
+| [4](tasks/v5/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
+| [5](tasks/v5/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
 
 Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**. Five rounds report goodput, p50/p95/p99 latency, failures, timeouts, CPU, RSS and load-generator saturation. This is a defined nginx-inspired subset, not a quantitative claim of half of nginx.
 
-See [the CLI walkthrough](docs/cli-walkthrough.md) for standalone checks, performance measurements, seeded campaigns, and hill-climbing reports.
+See [the CLI walkthrough](docs/cli-walkthrough.md) for standalone checks, performance measurements, from-scratch campaigns, and hill-climbing reports.
 
 Evaluate source with `./evaluate.py --section api --level 1 --source main.rs` or
 `./evaluate.py --section performance --level 1 --source main.rs`. Grade the last
@@ -27,14 +29,14 @@ edits do not replace the graded submission.
 Requires Linux, Python 3.11+, Rust, GCC, Bubblewrap, nsenter, OpenSSL, system zlib, five available CPUs and a descriptor hard limit of at least 16384. Compilation and generated execution both use private namespaces. Host credentials are not mounted.
 
 ```sh
-python3 -m toksec publish --output tasks/v4
+python3 -m toksec publish --output tasks/v5
 python3 -m toksec init --campaign .runs/http-campaign
 python3 -m toksec prepare --campaign .runs/http-campaign --level 1
 python3 -m toksec prepare --campaign .runs/http-campaign --level 2
 python3 -m toksec status --campaign .runs/http-campaign
 ```
 
-Prepare prints a unique run path. Use that exact path for subsequent commands. Creating the campaign imports the recorded Python pilot's $0.01291213 conservative charge. The remaining balance starts at $4.98708787. Use **one campaign directory** for the entire experiment. Initializing another directory starts a separate accounting scope and does not carry later spending from this one.
+Prepare prints a unique run path. The CLI defaults to a fresh **$3 campaign** and a **two-hour run ceiling**. Use one campaign directory for a shared cap; two prepared runs share its balance. A different campaign directory starts a separate accounting scope.
 
 ```sh
 python3 -m toksec preflight --run RUN_PATH
@@ -50,13 +52,13 @@ This command makes paid API calls. Configure `OPENAI_API_KEY` securely, or use a
 python3 -m toksec run --run RUN_PATH --key-file ~/.codexapi
 ```
 
-Luna uses `service_tier="default"`. The campaign admits at most $5 of conservatively priced API usage and 10 million input-plus-output tokens, including the prior pilot. All measured prompts, tool feedback, reasoning and model reporting count. Framework preparation in this chat was not metered and is outside that accounting scope. Compilation and benchmark compute are separate.
+Model requests use `service_tier="default"`. All model prompts, tool feedback, reasoning and final reporting count against the configured cap. Framework preparation in this chat and compilation/benchmark CPU are outside the model-spend accounting scope.
 
-The controller reserves before dispatch and settles actual API usage. Unknown usage retains the reservation and blocks the campaign. Runs have a 30-minute deadline by default and cannot resume automatically. A time or budget limit may stop work before the whole dollar balance is spent. Context rolls over into a same-run checkpoint before the 64,000-token request ceiling; a checkpoint that itself exceeds that ceiling still stops safely.
+The controller reserves before dispatch and settles actual API usage. Unknown usage retains the reservation and blocks the campaign. CLI-prepared runs have a two-hour deadline by default and cannot resume automatically. A time or budget limit may stop work before the whole dollar balance is spent. Context rolls over into a same-run checkpoint before the 64,000-token request ceiling; a checkpoint that itself exceeds that ceiling still stops safely.
 
 ## Continue beyond acceptance
 
-The shared [improvement prompt](prompts/improve.md) starts a repeated performance, stability and security loop after API acceptance. `finish` is rejected until the final 120 seconds or exhausted admission capacity. If a full benchmark no longer fits, the agent continues with bounded tests and restart checks. Notes and retained/latest source survive context rollover without resetting spending.
+[Shared rules](RULES.md) ask the agent to keep improving after API acceptance. `finish` is available in the final 120 seconds or when admission capacity is exhausted. Architecture, debugging, tests and optimization choices are the agent's own. Periodic validated tags preserve progress. If any API requirement fails, performance is skipped and earns zero credit; API failures also reduce correctness credit. Numeric milestone weights are not yet defined.
 
 For an existing campaign after a framework revision, preserve its ledger and prepare fresh runs:
 
