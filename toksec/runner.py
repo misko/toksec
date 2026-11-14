@@ -107,11 +107,18 @@ def run_loop(run, client):
         check = preflight(run)
         if not check['launch_allowed']:
             raise ValueError('; '.join(check['reasons']))
-        if any(run.glob('candidates/*')):
+        if any(run.glob('candidates/*')) and not manifest.get('starter_candidate'):
             raise ValueError('Measured runs must start with an empty candidate workspace.')
         manifest['started_unix'] = time.time()
         atomic_json(run / 'manifest.json', manifest)
         text = (run / 'launch-packet.md').read_text()
+        if manifest.get('starter_candidate'):
+            source = (run / 'starter.rs').read_text()
+            import hashlib
+            if hashlib.sha256(source.encode()).hexdigest() != manifest['starter_sha256']:
+                raise ValueError('starter changed after preparation')
+            text += '\nA deliberately limited working bootstrap is supplied below. Its validated snapshot is retained. Complete the public contract before optimizing. This is a server implementation task.\n```rust\n' + source + '\n```\n'
+            text += json.dumps(controller.read(run / 'candidates' / manifest['starter_candidate'], 'report.json'))
         text += '\n\nController tools are your only filesystem/execution access. Submit complete Rust source. No other level source or context is provided. First obtain a working bootstrap, then complete the API, then optimize. Ask budget_status as needed. All model inputs, outputs, reasoning and final reporting share the campaign cap. Compilation and benchmark CPU are recorded separately. Do not claim maximal performance or security from passing a finite suite. If capacity runs out the controller exports its retained candidate. A first working candidate is not guaranteed from an empty start.\n'
         text += '\nPublic executable suite follows in full. Treat fixtures as test data; implement the API generally, without test-specific responses.\n'
         for name in controller.PUBLIC_FILES:

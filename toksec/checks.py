@@ -428,3 +428,15 @@ def run_checks(context):
             results.append({'id': check.id, 'passed': False, 'seconds': time.monotonic() - started,
                             'error': f'{type(error).__name__}: {error}'[:1000]})
     return {'cases': results, 'passed': all(r['passed'] for r in results)}
+
+
+@case('headerless-request', 1, 'HTTP/1.0 accepts a GET without header fields.')
+def headerless_request(c):
+    r=c.exchange(b'GET /hello.txt HTTP/1.0\r\n\r\n')
+    assert r.status == 200 and r.body == b'hello toksec\n'
+
+
+@case('byte-header-values', 2, 'Opaque header values need not be UTF-8.')
+def byte_header_values(c):
+    r=c.exchange(b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nX-Note: \xff\r\nConnection: close\r\n\r\n')
+    assert r.status == 200 and r.body == b'hello toksec\n'

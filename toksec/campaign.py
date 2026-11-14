@@ -45,15 +45,20 @@ def locked(directory, owner=False):
         yield
 
 
-def initialize(directory):
+def initialize(directory, budget_usd=None):
     directory = Path(directory).resolve()
     directory.mkdir(parents=True, exist_ok=False)
     ledger = json.loads(PILOT.read_text())
+    if budget_usd is not None:
+        budget = Decimal(str(budget_usd))
+        if not budget.is_finite() or budget <= 0:
+            raise ValueError('budget must be positive and finite')
+        ledger.update(requests=[], dollar_limit=str(budget))
     if any(r['state'] != 'settled' for r in ledger['requests']):
         raise ValueError('pilot has unresolved charges')
     ledger.update(schema_version=2, state='active', reason=None, fingerprint=fingerprint(),
                   imported_ledger_sha256=hashlib.sha256(PILOT.read_bytes()).hexdigest(),
-                  scope='Measured Luna API calls, including recorded pilot; excludes unmetered framework preparation',
+                  scope=('Fresh measured API campaign; excludes framework preparation' if budget_usd is not None else 'Measured API calls including recorded pilot; excludes framework preparation'),
                   created_unix=time.time())
     for entry in ledger['requests']:
         entry['run'] = 'historical-python-pilot'

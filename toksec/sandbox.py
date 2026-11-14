@@ -32,6 +32,25 @@ def sandbox_info(fd):
     raise RuntimeError('invalid sandbox status')
 
 
+def server_pid(namespace_pid, artifact, timeout=3):
+    """Resolve the executable below bwrap's namespace supervisor, not the supervisor."""
+    expected = (Path(artifact) / 'server').stat()
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        pending = [namespace_pid]
+        while pending:
+            pid = pending.pop()
+            try:
+                actual = Path(f'/proc/{pid}/exe').stat()
+                if (actual.st_dev, actual.st_ino) == (expected.st_dev, expected.st_ino):
+                    return pid
+                pending.extend(int(x) for x in Path(f'/proc/{pid}/task/{pid}/children').read_text().split())
+            except (OSError, ValueError):
+                pass
+        time.sleep(.01)
+    raise RuntimeError('server executable not found under sandbox supervisor')
+
+
 def limits(memory_mib, cpu_seconds, files=16384):
     def apply():
         resource.setrlimit(resource.RLIMIT_AS, (memory_mib * 1024 * 1024,) * 2)
@@ -143,7 +162,7 @@ def invoke_driver(artifact, level, mode='check', **options):
     with running(artifact, level) as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
-                   '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(runtime['pid']),
+                   '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
                    '--mode', mode, '--server-cpu', str(runtime['cpu'])]
         for key, value in options.items():
             command += ['--' + key.replace('_', '-'), str(value)]

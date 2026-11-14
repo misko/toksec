@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'rust-http-v3'
+VERSION = 'rust-http-v4'
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'TLS and operational features'}
 DESIGN = {
@@ -143,7 +143,7 @@ def packet(level):
     lines.extend(f'| {w.id} | {w.clients} | {w.size} | {"persistent" if w.persistent else "fresh"} | {"TLS" if w.tls else "HTTP"} |' for w in workloads(level))
     lines.extend(['', '## Test suggestions', '', 'Start with a runnable file-serving path. Exercise arbitrary TCP fragmentation, path confinement, malformed messages, timeout boundaries, slow senders/readers, disconnect recovery and exact response framing. For applicable features test HEAD body suppression, pipelining order, host separation, proxy retries, cache isolation, TLS, invalid reload and graceful drain. Use small executable increments. Ask budget_status before substantial work. Never weaken required behavior for performance.', ''])
     lines.extend(['## Implementation guidance', '', DESIGN[level], '',
-                  'Use the first small fraction of the wall budget to submit a runnable bootstrap. Spend the next work on failed public checks. Once all pass, measure a baseline, make one focused optimization, and compare. These are suggestions, not hidden acceptance rules. Every submission is archived. Failed compiles, lost checks and inconclusive performance leave the incumbent intact. There is no supplied server implementation and no guarantee of success before the first working submission.', '',
+                  'Use the first small fraction of the wall budget to submit a runnable bootstrap. Spend the next work on failed public checks. Once all pass, measure a baseline, make one focused optimization, and compare. These are suggestions, not hidden acceptance rules. Every submission is archived. Failed compiles, lost checks and inconclusive performance leave the incumbent intact. A run may provide a deliberately limited starter; its source, hash and validation are recorded. Without a starter, there is no guarantee of success before the first working submission.', '',
                   'The run has 30 minutes by default, independent of the shared dollar cap. A complete paired benchmark needs time proportional to this level’s workload matrix. When it no longer fits, continue with bounded security tests and restart validation until the finalization window. Report unmeasured changes honestly.', '', (ROOT / 'prompts/improve.md').read_text()])
     return '\n'.join(lines)
 

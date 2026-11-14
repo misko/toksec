@@ -1,18 +1,20 @@
 # Toksec
 
-Measure the cost of building a working server with an AI agent, then the cost of finding an exploit in that exact artifact.
+Implement and benchmark nginx-like HTTP servers with an AI agent under a measured campaign budget.
 
-The current system prepares five **independent Rust HTTP tasks**. Each starts from an empty candidate workspace and fresh model context. The agent receives its complete API, configuration, public acceptance checks, benchmark source and workload matrix before writing code. Levels share one campaign ledger, never a prior implementation.
+The current system prepares five **independent Rust HTTP tasks**. Each starts with fresh model context and either an empty workspace or an explicitly recorded limited starter. The agent receives its complete API, configuration, public acceptance checks, benchmark source and workload matrix before writing code. Levels share one campaign ledger, never a prior implementation.
 
 | Level | Complete target | Performance workloads |
 |---|---|---|
-| [1](tasks/v3/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
-| [2](tasks/v3/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
-| [3](tasks/v3/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
-| [4](tasks/v3/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
-| [5](tasks/v3/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
+| [1](tasks/v4/level-1.md) | GET static files, strict framing, confinement and deadlines | Fresh HTTP |
+| [2](tasks/v4/level-2.md) | Static GET/HEAD, persistent connections, pipelining and concurrent service | Fresh and persistent HTTP |
+| [3](tasks/v4/level-3.md) | Hosts, routes, indexes, MIME types, ETags and ranges | Fresh and persistent HTTP |
+| [4](tasks/v4/level-4.md) | Static/routing API plus reverse proxy, upstream reuse, request bodies and failure handling | HTTP plus proxy |
+| [5](tasks/v4/level-5.md) | Previous capabilities plus TLS, cache, gzip, rate limiting, reload and graceful drain | HTTP, proxy, TLS and gzip |
 
 Every mode runs with 4 KiB and 64 KiB bodies at **256 and 4096 active clients**. Five rounds report goodput, p50/p95/p99 latency, failures, timeouts, CPU, RSS and load-generator saturation. This is a defined nginx-inspired subset, not a quantitative claim of half of nginx.
+
+See [the CLI walkthrough](docs/cli-walkthrough.md) for standalone checks, performance measurements, seeded campaigns, and hill-climbing reports.
 
 ## Prepare without spending
 

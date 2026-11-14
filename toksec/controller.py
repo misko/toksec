@@ -26,7 +26,7 @@ def validate(run):
     return manifest
 
 
-def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna'):
+def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None):
     specification(level)
     if not 120 <= wall_seconds <= 7200:
         raise ValueError('wall_seconds must be between 120 and 7200')
@@ -42,7 +42,7 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna'):
     (run / 'launch-packet.md').write_text(packet(level))
     atomic_json(run / 'specification.json', specification(level))
     atomic_json(run / 'manifest.json', {'level': level, 'model': model, 'reasoning_effort': 'medium', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
-                'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
+                'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'toolchain': str(sandbox.toolchain()),
                 'compiler': subprocess.check_output(['rustc', '--version', '--verbose'], text=True),
@@ -50,6 +50,16 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna'):
     atomic_json(run / 'state.json', {'best': None, 'full_acceptance': False, 'last': None,
                                     'optimization_attempts': 0, 'finished': False, 'context_rollovers': 0,
                                     'invalidated': [], 'journal_entries': 0})
+    if starter is not None:
+        source = Path(starter).read_text()
+        (run / 'starter.rs').write_text(source)
+        report = submit(run, source)
+        if 'bootstrap' not in passed(report):
+            raise ValueError('starter failed bootstrap; inspect prepared run ' + str(run))
+        manifest = read(run, 'manifest.json')
+        manifest['starter_sha256'] = hashlib.sha256(source.encode()).hexdigest()
+        manifest['starter_candidate'] = report['id']
+        atomic_json(run / 'manifest.json', manifest)
     return {'run': str(run), 'level': level, 'launch_packet': str(run / 'launch-packet.md')}
 
 
@@ -60,6 +70,14 @@ def capacity(run):
     remaining = max(0, manifest['wall_seconds'] - (time.time() - started)) if started else manifest['wall_seconds']
     result.update(seconds_remaining=remaining, best_candidate=read(run)['best'],
                   full_acceptance=read(run)['full_acceptance'], optimization_attempts=read(run)['optimization_attempts'])
+    target = manifest.get('spend_target_usd')
+    if target is not None:
+        from decimal import Decimal
+        entries = campaign.read(manifest['campaign'])['requests']
+        spent = sum((Decimal(r['usage']['cost_usd_upper_bound']) for r in entries if r.get('run') == Path(run).name and r['state'] == 'settled'), Decimal(0))
+        result['run_spent_usd'] = str(spent)
+        result['spend_target_usd'] = target
+        result['can_start_model_call'] &= spent < Decimal(str(target))
     admitted = result['can_start_model_call']
     result['can_finish'] = remaining <= 120 or not admitted
     result['work_phase'] = ('stabilize' if remaining <= 120 else
@@ -128,6 +146,11 @@ def measure(run):
     summaries = {key: {name: benchmark.summarize(rounds) for name, rounds in value.items()} for key, value in collected.items()}
     decision = benchmark.compare(summaries[incumbent], summaries[identity]) if pair else {'promote': False, 'reason': 'initial accepted baseline'}
     result = {'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision}
+    result['recorded_unix'] = time.time()
+    result['capacity'] = capacity(run)
+    history = run / 'benchmarks'
+    history.mkdir(exist_ok=True)
+    atomic_json(history / (uuid.uuid4().hex + '.json'), result)
     atomic_json(run / 'candidates' / identity / 'benchmark.json', result)
     if pair:
         state['optimization_attempts'] += 1
