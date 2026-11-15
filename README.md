@@ -8,6 +8,14 @@ Stages 1 through 5 are independent, from-scratch Rust or C++ tasks: none receive
 
 See [v8 alignment and calibration status](docs/stages-3-5-v8.md) for the new Stage 3–5 protocol and remaining benchmark bottleneck.
 
+The [Stages 6–10 design](docs/stages-6-10-design.md) adds nginx configuration
+syntax and HTTPS/TLS before streaming, cache coordination and multiworker
+operation. Stages 6–9 remain proposed. Stage 10 has an
+[experimental sandbox runner](stage10/README.md) and [preserved results](results/stage-10/cpp/README.md); its full acceptance suite is incomplete.
+The [Stage 10 preparation packet](proposals/stage10/README.md) contains the draft
+instructions and sample files. See [artifact storage](docs/result-storage.md)
+for implementation, accounting, and parent evaluation locations.
+
 The authoritative instructions live in [RULES.md](RULES.md). See [the stage layout](docs/stage-layout.md) for shared and stage-specific files. Published packets are generated snapshots; edit the source documents and regenerate them.
 
 | Level | Complete target | Performance workloads |

@@ -1,8 +1,10 @@
 # Stage 10 preparation packet
 
-This is a concrete instruction and fixture draft for review, not a runnable
-Stage 10 evaluator. No model campaign or candidate server was launched. See
-[host readiness](host/READINESS.md) for the launch gates still missing.
+This directory contains the draft instructions and fixtures used by the
+[experimental Stage 10 runner](../../stage10/README.md). A Terra campaign has
+completed; its [implementation and partial evaluation](../../results/stage-10/cpp/README.md)
+are preserved. The full acceptance evaluator remains incomplete.
+[Host readiness](host/READINESS.md) records the original launch requirements.
 
 ## What the agent receives
 
