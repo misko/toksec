@@ -68,3 +68,17 @@ no moving or rewriting occurred in the active Stage 5 campaign.
 Accounting tests previously depended on a pilot ledger inside results/. That
 fixture now lives under fixtures/accounting so removing old visible results cannot
 break budget enforcement. This change does not alter charges or budget rules.
+
+## Stage 10 experimental snapshot
+
+`results/stage-10/cpp/` preserves the first Stage 10 C++ Terra campaign separately
+from the Stage 1–5 protocols. It includes all seven tags in a Git bundle, per-tag
+source and smoke results, final partial API grading, exact supplied inputs and
+conservative accounting for both attempts under the single $2 cap. It has no
+performance measurements or full-stage acceptance. `sha256.json` inventories the
+published files. Raw campaigns remain in `.runs/`.
+
+Its `run.json` marks `inventory_management: preserved_snapshot`. The Stage 1–5
+refresh script retains this entry without modifying its artifacts. Replacing this
+snapshot requires an explicit Stage 10 publication rather than selecting it through
+the legacy evaluator. The Git bundle can recreate the complete standalone repository.

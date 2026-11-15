@@ -1,0 +1,100 @@
+{
+  "releases": [
+    {
+      "tag": "release/000001",
+      "source_sha256": "1fcad8481e15d5eeb3bb016b2de23897b98f98d23fd7fd8b722ca568bbade9e9",
+      "recorded_unix": 1794763621.8928862,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get"
+      ],
+      "note": "First working release"
+    },
+    {
+      "tag": "release/000002",
+      "source_sha256": "c6951d6d1c5f28200094179268e228d4003bdff09d68b1e10b6967fb901406b0",
+      "recorded_unix": 1794763723.5153556,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Adds TLS 1.2/1.3 transport and basic upstream proxy GET. Visible smoke now passes bootstrap, config, HTTP GET, HTTPS GET, HTTPS persistent and proxy; these checks do not establish full API correctness. Proxy currently buffers and lacks POST and required admission/cache behavior; reload and many validation and deadline cases remain incomplete."
+    },
+    {
+      "tag": "release/000003",
+      "source_sha256": "7488a156cbe715c3da398b8c1e2092eeed172a3ec8a4313a4dec34a57da2c806",
+      "recorded_unix": 1794763769.8913407,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Adds normalized decoded path handling, UTF-8 validation, descriptor-relative no-follow file traversal, conditional ETag and single-range support beyond the previous TLS/proxy smoke milestone. Visible bootstrap, config, HTTP, HTTPS persistence and proxy smoke pass; broader behavior remains incomplete and independently unverified."
+    },
+    {
+      "tag": "release/000004",
+      "source_sha256": "5f44b6fe9d703f5816ee54c42ec8d813bb5a2f234cef81c128343311573bf310",
+      "recorded_unix": 1794763884.5514026,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Adds directive context, duplicate, block-shape and selected value validation, plus stricter HTTP framing and request validation since the preceding tagged milestone. Visible bootstrap, config, HTTP, HTTPS persistence and proxy checks pass. Proxy streaming, full configuration validation, reload, cache, admission and many deadline requirements remain incomplete; full API acceptance is not established."
+    },
+    {
+      "tag": "release/000005",
+      "source_sha256": "dc954b7dc7bb2ee7b94e3249762d0b753abc054df387426b412d8aeefcb82745",
+      "recorded_unix": 1794763936.5544078,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Adds stricter request path normalization and UTF-8 validation, safer component-wise file opens and expanded request framing validation. Visible bootstrap, configuration, HTTP, HTTPS persistence and proxy smoke checks remain passing. Streaming proxy, full validation, reload, cache and global admission remain incomplete; no full-stage acceptance is claimed."
+    },
+    {
+      "tag": "release/000006",
+      "source_sha256": "5a9b5c044bc678d80706a6d87ded6deda64e1fd98226d21c0fcec7dc6f1a45ae",
+      "recorded_unix": 1794763964.558265,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Adds absolute request-header, response-write and TLS-handshake timeout tracking to the event loop. Visible bootstrap, config, HTTP GET, HTTPS GET/persistence and proxy checks pass. Full deadline semantics, streaming proxy, cache, reload and global resource controls remain incomplete; no full-stage acceptance is claimed."
+    },
+    {
+      "tag": "release/000007",
+      "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+      "recorded_unix": 1794764014.024447,
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "note": "Strengthens configuration directive validation, rejecting unknown directives, wrong contexts, duplicate directives and several invalid forms, while retaining visible bootstrap, configuration, HTTP, HTTPS persistence and proxy checks. Full grammar and semantic validation, streaming proxy, cache, transactional reload, and global limits remain incomplete; no full-stage acceptance is claimed."
+    }
+  ],
+  "independent_grading": "Only last tag graded with partial API suite; per-tag reports are visible smoke."
+}

@@ -87,6 +87,14 @@ def publish(roots, output):
                 shutil.rmtree(destination)
             staging.rename(destination)
         entries.append(record)
+    # Separate experimental protocols publish their own immutable snapshots.
+    # Keep their inventory entries when refreshing the supported Stage 1–5 runs.
+    for path in sorted(output.glob('stage-*/*/run.json')):
+        record = read(path)
+        if (record.get('inventory_management') == 'preserved_snapshot'
+                and record.get('stage') not in range(1, 6)):
+            entries.append(record)
+    entries.sort(key=lambda r: (r['stage'], r['language']))
     atomic_json(output/'index.json',{'selection':'Latest started run per stage/language, no starter and smoke-only feedback','runs':entries})
     rows = [f'| {r["stage"]} | {r["language"]} | {r["protocol"]} | {r["status"]} | [{r["started_utc"]}]({r["path"]}/README.md) |' for r in entries]
     (output/'README.md').write_text('# Latest server experiments\n\nOne run per stage and language. Starter-code and comprehensive-feedback runs are excluded.\nThese entries have different evaluator versions: do not pool their scores or performance.\nStages without an eligible run have no result folder. Running entries are snapshots.\n\n| Stage | Language | Protocol | Status | Latest run (UTC) |\n|---|---|---|---|---|\n'+'\n'.join(rows)+'\n\nRefresh using scripts/refresh_results.py with the frozen source worktrees.\nHistorical experiments are preserved in Git history and a local external archive.\nCalibration reports live under diagnostics/, not server results.\n')

@@ -53,3 +53,16 @@ class ResultStorageTests(unittest.TestCase):
             self.assertFalse((dest/'response-secret.json').exists())
             self.assertFalse((dest/'ledger.json').exists())
             self.assertTrue((run/'response-secret.json').exists())
+
+    def test_external_protocol_snapshot_survives_refresh(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);output=root/'results';dest=output/'stage-10/cpp'
+            dest.mkdir(parents=True)
+            record={'stage':10,'language':'cpp','protocol':'stage10-experimental',
+                    'status':'partially_graded','started_utc':'2026-11-15',
+                    'path':'stage-10/cpp','inventory_management':'preserved_snapshot'}
+            (dest/'run.json').write_text(json.dumps(record))
+            (dest/'implementation.bundle').write_bytes(b'preserved artifact')
+            self.assertEqual(refresh.publish([root],output),[record])
+            self.assertEqual((dest/'implementation.bundle').read_bytes(),b'preserved artifact')
+            self.assertIn('stage-10/cpp/README.md',(output/'README.md').read_text())

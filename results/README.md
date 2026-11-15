@@ -12,6 +12,8 @@ Stages without an eligible run have no result folder. Running entries are snapsh
 | 2 | rust | rust-http-v6 | graded | [2026-11-14T05-07-35Z](stage-02/rust/README.md) |
 | 5 | cpp | http-v8 | running | [2026-11-14T19-02-32Z](stage-05/cpp/README.md) |
 
+| 10 | cpp | stage10-experimental | partially graded | [2026-11-15T17-26-37Z](stage-10/cpp/README.md) |
+
 Refresh using scripts/refresh_results.py with the frozen source worktrees.
 Historical experiments are preserved in Git history and a local external archive.
 Calibration reports live under diagnostics/, not server results.
