@@ -91,7 +91,7 @@ class PublicationIdentityTests(unittest.TestCase):
             self.assertEqual(record['id'], run.name)
 
     def test_parent_evaluations_append_and_cannot_change(self):
-        from test_result_storage import RawPublicationTests
+        from tests.test_result_storage import RawPublicationTests
         from toksec.evaluation_artifacts import write_evaluation
         from toksec.result_storage import digest
         with tempfile.TemporaryDirectory() as tmp:
