@@ -18,7 +18,7 @@ def main(argv=None):
     parser.add_argument('--run', type=Path, help='Grade the latest completed Git release of this run instead of a source file')
     parser.add_argument('--output', type=Path, help='New directory for sources, diagnostics and JSON results')
     args=parser.parse_args(argv)
-    output=args.output or Path('evaluation-results')/uuid.uuid4().hex
+    output=args.output or ((args.run/'evaluation' if args.run else Path('evaluation-results'))/uuid.uuid4().hex)
     try:
         if args.run:
             with campaign.locked(controller.read(args.run,'manifest.json')['campaign'],owner=True):

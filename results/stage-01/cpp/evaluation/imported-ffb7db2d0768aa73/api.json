@@ -1,0 +1,79 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 3.322956759482622,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.002497659996151924
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.008000586181879044
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.005916070193052292
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.015988833270967007
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.00197606161236763
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.00137315783649683
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.00019079353660345078
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00010637007653713226
+    },
+    {
+      "id": "absolute-header-deadline",
+      "passed": true,
+      "seconds": 1.2010675966739655
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.00040705129504203796
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 6.242562085390091e-05
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.1960274502635002
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "status": "passed",
+    "total": 12
+  },
+  "unimplemented_requirements": []
+}

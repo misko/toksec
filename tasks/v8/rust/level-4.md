@@ -38,7 +38,8 @@ a finite suite does not prove complete correctness or maximum performance.
 
 ## Deliverable and Git releases
 
-Submit a complete source file defined by the language interface through submit_candidate. Compilation and execution
+Submit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.
+The shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution
 occur in sandboxes. Controller tools are your filesystem/execution interface;
 you do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own
 fixtures and listeners; no candidate server is automatically running for them.
@@ -130,6 +131,23 @@ descriptors. Compilation has 4096 MiB address space, 60 CPU seconds and 120 wall
 seconds. The candidate executable, fixtures and document root are read-only.
 Temporary scratch space is available. Host credentials and other implementations
 are absent. Respond on the configured socket; stdout is diagnostic output.
+
+
+# Artifact ownership and submission format
+
+The supplied `artifact.json` defines your source filename, UTF-8 encoding, size
+limit, and release-tag format. Submit the complete source through
+`submit_candidate`. The controller validates the contract and writes the required
+filename. Do not choose a different submission path or create parent-owned files.
+
+The controller owns `release.json` and creates numbered Git tags when you call
+`init_repository` or `release_candidate`. Only the last completed tag is the final
+submission. Untagged changes and claims in a report do not replace that tag.
+
+The parent publishes the frozen implementation separately from independent API
+results, performance measurements, reports, and figures. You do not write the
+parent's evaluation files or choose their destination. Development smoke feedback
+and your own tests are not parent acceptance evidence.
 
 
 # Shared static-file HTTP requirements
@@ -230,6 +248,26 @@ or null for the full matrix. Subset measurements do not promote a full-matrix
 baseline. Every result identifies its selected workloads. Final grading still
 requires full API acceptance followed by the complete declared matrix.
 
+
+## Artifact contract
+
+```json
+{
+  "language": "rust",
+  "release": {
+    "metadata_owner": "controller",
+    "selection": "last_completed_tag",
+    "tag_pattern": "^release/[0-9]{6}$"
+  },
+  "schema_version": 1,
+  "stage": 4,
+  "submission": {
+    "encoding": "utf-8",
+    "max_bytes": 1048576,
+    "source_file": "main.rs"
+  }
+}
+```
 
 ## Required configuration
 

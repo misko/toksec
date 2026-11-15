@@ -34,7 +34,8 @@ a finite suite does not prove complete correctness or maximum performance.
 
 ## Deliverable and Git releases
 
-Submit a complete source file defined by the language interface through submit_candidate. Compilation and execution
+Submit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.
+The shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution
 occur in sandboxes. Controller tools are your filesystem/execution interface;
 you do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own
 fixtures and listeners; no candidate server is automatically running for them.

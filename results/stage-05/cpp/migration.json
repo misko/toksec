@@ -1,0 +1,26 @@
+{
+  "files": {
+    "README.md": {
+      "path": "provenance/legacy/README.md",
+      "sha256": "3405a846e6c1318723fe3b3776614375ef4372aa93fee66f722b73d7ec9dad1f"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "7027e0f1f277d6273ab9936a45f4fe9f25a3b425e76ac7c774b0e6d4bb5b6450"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "ce4e00ea11f476304d6e614e4b3f9c97ac317c272a21f6368d7f59c387ed4550"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "4d5ae25dfc629c4c809897404baebaf78c5d8e7e833b11999d3d72ed5e68f707"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "f8ffd450f8c31fc2dfde7efd3a0d4e5d307f523c740760f1092e4fcb4d053810"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "2f2017f2dd154452ce17dd78718fbf3114ae4df53b00297c9f542f471ca5131f"
+}

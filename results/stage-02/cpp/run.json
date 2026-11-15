@@ -1,4 +1,5 @@
 {
+  "artifact_contract_provenance": "reconstructed_for_storage",
   "budget_usd": "3",
   "comparison_policy": "Do not pool different framework fingerprints, languages, models, budgets or input policies.",
   "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
@@ -8,8 +9,17 @@
     "starter": false
   },
   "language": "cpp",
+  "layout_version": 1,
   "model": "gpt-6.1-terra",
   "path": "stage-02/cpp",
+  "paths": {
+    "accounting": "accounting",
+    "artifact_contract": "provenance/artifact.json",
+    "evaluation": "evaluation",
+    "implementation": "implementation",
+    "inputs": "inputs",
+    "latest_evaluation": "evaluation/imported-7e71498428b10526"
+  },
   "protocol": "http-v7",
   "source_run": "/home/mouse9911/gits/toksec-cpp/.runs/terra-cpp-stage2-1794633258/runs/level-2-1d7d52f32031",
   "stage": 2,

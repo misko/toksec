@@ -1,0 +1,482 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Toksec evaluation contract version 1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^release/[0-9]{6}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commit": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "commit",
+        "source_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "contract_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evaluator_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance_status": {
+      "enum": [
+        "verified",
+        "historical_incomplete"
+      ]
+    },
+    "missing_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "environment": {
+      "type": "object"
+    },
+    "coverage": {
+      "enum": [
+        "full",
+        "partial",
+        "unknown"
+      ]
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "partial",
+        "not_run",
+        "error"
+      ]
+    },
+    "api": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "not_run",
+            "error"
+          ]
+        },
+        "passed": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "total": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "passed",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "measured",
+            "skipped_api_failure",
+            "skipped_incomplete_suite",
+            "not_run",
+            "error",
+            "invalid_measurement"
+          ]
+        },
+        "credit": {
+          "enum": [
+            0,
+            null
+          ]
+        },
+        "metrics": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "credit",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "evaluation_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "release",
+    "contract_sha256",
+    "evaluator_sha256",
+    "provenance_status",
+    "missing_evidence",
+    "environment",
+    "coverage",
+    "status",
+    "api",
+    "performance"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "provenance_status": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "release": {
+            "properties": {
+              "tag": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^release/[0-9]{6}$"
+              },
+              "commit": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+              },
+              "source_sha256": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "contract_sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "evaluator_sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "missing_evidence": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "missing_evidence": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "passed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "coverage": {
+            "const": "full"
+          },
+          "provenance_status": {
+            "const": "verified"
+          },
+          "api": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "measured"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "coverage": {
+            "const": "full"
+          },
+          "provenance_status": {
+            "const": "verified"
+          },
+          "api": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              }
+            }
+          },
+          "performance": {
+            "properties": {
+              "metrics": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "api": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "skipped_api_failure"
+              },
+              "credit": {
+                "const": 0
+              },
+              "metrics": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "skipped_api_failure"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "api": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          },
+          "performance": {
+            "properties": {
+              "credit": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "skipped_incomplete_suite"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "coverage": {
+            "enum": [
+              "partial",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "measured",
+                  "invalid_measurement"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "metrics": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "metrics": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "invalid_measurement"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "credit": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,48 +1,141 @@
-# Results storage
+# Result storage and artifact contracts
 
-`results/` is the curated view: one latest eligible run per stage and language.
-Rust and C++ remain separate experiments. An eligible run must have started,
-received no starter code, and received only minimal smoke feedback. Full-feedback,
-seeded and older unknown-policy runs do not enter this view, even if newer.
+The controller owns filenames, Git metadata, and release publication. The builder
+submits source through controller tools. The parent owns independent evaluation
+and permanent publication. Neither the builder's claims nor smoke success can
+create a parent acceptance result.
+
+## Contracts and instructions
+
+`contracts/artifact.schema.json` defines the builder's source and release format.
+Both runners generate `artifact.json`, copy it into the builder inputs, append the
+same JSON to the launch packet, and pin its SHA-256 in the run manifest. The shared
+`stages/common/ARTIFACTS.md` explains ownership. `RULES.md` describes tagging and
+correctness-first grading. Stage and language instructions define server behavior
+and permitted dependencies.
+
+`contracts/evaluation.schema.json` defines the parent evaluation record. The
+standard-library validator in `toksec/artifacts.py` rejects unsupported shapes.
+The publisher also checks paths and file hashes. Schema validity alone does not
+prove a server correct.
+
+Existing frozen runs retain their original instructions. During migration, an
+inferred format contract is stored as `provenance/artifact.json` and labeled
+`reconstructed_for_storage`. It is not placed in the historical builder inputs.
+
+## Permanent layout
+
+There is one current result per stage and language. Different languages, model
+settings, budgets, and evaluator fingerprints remain separate experiments.
 
 ```text
 results/
-  README.md                       # current inventory, protocol and status
-  index.json                      # machine-readable inventory
-  stage-01/{cpp,rust}/             # one run per language
-  stage-02/{cpp,rust}/
-  stage-05/cpp/                    # current run; snapshot until refreshed
-    run.json                      # identity, provenance and compatibility
+  README.md
+  index.json
+  stage-10/cpp/
+    run.json
     README.md
-    launch-packet.md               # exact instructions
-    manifest.json
-    specification.json
-    timeline.json                 # only after independent grading completes
-    correctness.png
-    performance.png
-    implementation.bundle         # all tags from this one run
-    release-*.cpp                 # source and grading evidence per tag
-    ledger.json                   # completed campaign accounting
-
-diagnostics/calibration/http-v8/   # harness diagnostics, not server results
-fixtures/accounting/               # historical accounting fixture used by tests
+    sha256.json
+    migration.json
+    inputs/
+      artifact.json
+      manifest.json
+      launch-packet.md
+      builder-inputs/
+      attempts/
+    implementation/
+      implementation.bundle
+      releases.json
+      source/main.cpp
+      releases/release-000001.cpp
+      evidence/
+    accounting/
+      ledger.json
+      attempts/
+    evaluation/
+      <evaluation-id>/
+        evaluation.json
+        report.md
+        api.json
+        performance.json
+        figures/
+        raw/
+    provenance/
+      artifact.json
+      legacy/
 ```
 
-Stages 3 and 4 currently have no runs and no result directories. Each current run
-retains its periodic releases: “one run” does not mean deleting its earlier tags.
+Files appear only when evidence exists. For example, the published Stage 5 snapshot
+has no completed submission bundle. Rust uses `main.rs`. The Git bundle preserves
+all tags from a run; source/ contains the last tagged submission. Development
+smoke reports and builder notes belong under implementation/evidence/, never in
+parent grading evidence.
 
-Folders are stable; timestamp/model/protocol belong in `run.json`. The human-readable
-run ID uses UTC:
+Parent reports and figures belong exclusively under evaluation/. The parent may
+evaluate the same implementation more than once. Each evaluation identifies the
+run, release tag, commit, source hash, contract hash, evaluator hash, and environment.
+A report with missing historical identity says so. It cannot claim verified full
+acceptance. `run.json` supplies paths to the current implementation and evaluation.
 
-`2026-11-14T19-02-32Z__stage-05__cpp__gpt-6.1-terra__http-v8__<fingerprint>`
+## Evaluate and publish a run
 
-The latest C++ Stages 1–2 used v7, Rust Stages 1–2 used v6, and Stage 5 uses v8.
-Their minimal-input policy matches, but their evaluation protocols are not identical.
-Do not combine scores across framework fingerprints, languages, model settings,
-budgets or wall ceilings. A new protocol with no run has no baseline; do not silently
-fill it with a historical score. Current results are an inventory, not a leaderboard.
+Run these commands from the repository root. Compilation and candidate execution
+remain sandboxed. These commands do not make model API calls.
 
-## Refresh
+For Stages 1–5, grade the last completed tag with the full API suite and then the
+performance workloads, provided the API gate passes:
+
+```sh
+python3 evaluate.py --run .runs/CAMPAIGN/runs/RUN --section performance
+python3 scripts/publish_results.py --run .runs/CAMPAIGN/runs/RUN
+```
+
+The default evaluation output is `.runs/CAMPAIGN/runs/RUN/evaluation/<id>/`.
+The evaluator creates the machine-readable envelope and report there. Put figures
+derived from that evaluation's measurements in its figures/ directory before
+publication. An explicit output directory remains available for diagnostics;
+publication automatically collects evaluations in the run's evaluation/ directory.
+
+Stage 10 currently has only partial independent API coverage:
+
+```sh
+python3 -m stage10.runner grade --run .runs/RUN
+python3 scripts/publish_results.py --run .runs/RUN
+```
+
+Stage 10 reports remain partial even when every implemented check passes. A full
+suite must exist before a report can establish full-stage acceptance.
+
+The publisher derives `results/stage-XX/LANGUAGE/` from validated run identity,
+preserves the immutable bundle, and separates implementation evidence from parent
+reports. It copies an explicit allowlist, excluding API conversations and credentials.
+Test TLS keys supplied as fixtures are public test material. Republishing the same
+run preserves its parent evaluations. Publishing another run does not reuse the
+old run's reports. Published snapshots include checksums; add later evaluations to
+the raw run and republish rather than modifying an existing evaluation in place.
+
+Performance is skipped after failed API correctness and earns zero credit. A skipped
+benchmark has no measured throughput or latency. Ineligible measurements, including
+load-generator saturation, retain their diagnostic evidence without performance
+credit. The report distinguishes partial coverage, failed checks, unrun tests,
+and invalid measurements.
+
+## Migrate existing results
+
+Preview and validate every byte mapping before applying the migration:
+
+```sh
+python3 scripts/migrate_results.py
+python3 scripts/migrate_results.py --apply
+```
+
+The migration preserves existing sources, bundles, instructions, ledgers, reports,
+and figures. `migration.json` maps each original file to its new path and checksum.
+Unknown files and symlinks stop migration. Repeating the command verifies the migrated
+snapshot without changing it. Migration never starts a model or re-runs server tests.
+Historical grades and missing evidence keep their original meaning.
+
+The bulk refresh command uses the same publication code:
 
 ```sh
 python3 scripts/refresh_results.py \
@@ -52,33 +145,8 @@ python3 scripts/refresh_results.py \
   --source /home/mouse9911/gits/toksec-stage5-cpp
 ```
 
-The publisher reads original manifests and never changes raw campaigns. While a
-builder is running it publishes provenance and instructions, not a live or final
-grade. Refresh after grading to populate plots and tagged artifacts. The complete
-frozen source set must be supplied each time. API response/conversation logs and
-credentials are never copied into published results.
-
-Old published folders were removed from the working results tree, with a local
-backup under `/home/mouse9911/gits/toksec-archive/results-cleanup-20261114T190934Z/`.
-They also remain in Git history at `f61d564`. Raw campaigns in older worktrees are
-kept in place because their records contain absolute paths and their graders are
-fingerprinted. They are historical provenance, not current results. In particular,
-no moving or rewriting occurred in the active Stage 5 campaign.
-
-Accounting tests previously depended on a pilot ledger inside results/. That
-fixture now lives under fixtures/accounting so removing old visible results cannot
-break budget enforcement. This change does not alter charges or budget rules.
-
-## Stage 10 experimental snapshot
-
-`results/stage-10/cpp/` preserves the first Stage 10 C++ Terra campaign separately
-from the Stage 1–5 protocols. It includes all seven tags in a Git bundle, per-tag
-source and smoke results, final partial API grading, exact supplied inputs and
-conservative accounting for both attempts under the single $2 cap. It has no
-performance measurements or full-stage acceptance. `sha256.json` inventories the
-published files. Raw campaigns remain in `.runs/`.
-
-Its `run.json` marks `inventory_management: preserved_snapshot`. The Stage 1–5
-refresh script retains this entry without modifying its artifacts. Replacing this
-snapshot requires an explicit Stage 10 publication rather than selecting it through
-the legacy evaluator. The Git bundle can recreate the complete standalone repository.
+Stages without published runs have no placeholder implementation. Currently the
+inventory contains Stage 1 and Stage 2 in Rust and C++, and Stage 5 and Stage 10 in
+C++. Historical raw campaigns remain in their original worktrees. Older published
+results also remain in Git history at `f61d564` and in the local backup at
+`/home/mouse9911/gits/toksec-archive/results-cleanup-20261114T190934Z/`.

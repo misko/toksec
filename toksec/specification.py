@@ -79,14 +79,16 @@ def contract_files(level):
 def instruction_files(level, language='rust'):
     from toksec.languages import profile
     profile(language, level)
-    return ['RULES.md', f'stages/languages/{language}.md', 'stages/common/INTERFACE.md', *contract_files(level), 'stages/common/BENCHMARK.md']
+    return ['RULES.md', f'stages/languages/{language}.md', 'stages/common/INTERFACE.md', 'stages/common/ARTIFACTS.md', *contract_files(level), 'stages/common/BENCHMARK.md']
 
 
 def packet(level, language='rust'):
+    from toksec.artifacts import artifact_contract
     spec = specification(level, language)
     lines = [f'# Stage {level}: {TITLES[level]}', '', f'Contract version: {VERSION}.', '']
     for name in instruction_files(level, language):
         lines.extend([(ROOT / name).read_text(), ''])
+    lines.extend(['## Artifact contract', '', '```json', json.dumps(artifact_contract(level, language), indent=2, sort_keys=True), '```', ''])
     from stages.common.smoke import cases as smoke_cases
     visible = [{'id': c.id, 'description': c.description} for c in smoke_cases(level)]
     lines.extend(['## Required configuration', '', '```ini',
@@ -105,6 +107,7 @@ def fingerprint():
     paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'evaluate.py', 'metering.py', 'runner.py', 'RULES.md')]
     paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json')]
     paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
+    paths += list((ROOT / 'contracts').glob('*.schema.json'))
     paths += [ROOT / 'fixtures/accounting/legacy-pilot-ledger.json']
     paths += [ROOT / 'scripts/analyze_releases.py', ROOT / 'scripts/calibrate_benchmarks.py']
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in sorted(paths))).hexdigest()

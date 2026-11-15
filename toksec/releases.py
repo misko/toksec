@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 from toksec import sandbox, controller, evaluate
-from toksec.languages import source_name, profile
+from toksec.artifacts import read_artifact, validate_source
 
 TAG = re.compile(r'release/([0-9]{6})\Z')
 
@@ -69,7 +69,10 @@ def publish(run, note):
     existing=list_releases(run)
     if existing and not set(existing[-1]['passed_checks']) <= passed:
         raise ValueError('release loses previously passing public checks')
-    source=(candidate/source_name(manifest)).read_bytes()
+    contract=read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
+    filename=contract['submission']['source_file']
+    source=(candidate/filename).read_bytes()
+    validate_source(source.decode('utf-8'), contract)
     digest=hashlib.sha256(source).hexdigest()
     if existing and existing[-1]['source_sha256']==digest:
         return existing[-1]
@@ -80,18 +83,24 @@ def publish(run, note):
     metadata={'candidate':identity,'level':manifest['level'],'language':manifest.get('language', 'rust'),'note':note,
               'source_sha256':digest,'passed_checks':sorted(passed),
               'evaluation_scope':manifest['builder_evaluation_scope'], 'smoke_passed':report['checks']['passed'],'framework':manifest['fingerprint'],
-              'recorded_unix':time.time(), 'capacity':controller.capacity(run)}
+              'recorded_unix':time.time(), 'capacity':controller.capacity(run), 'artifact_sha256':manifest.get('artifact_sha256')}
     repository=run/'repository'
-    (repository/source_name(manifest)).write_bytes(source)
+    (repository/filename).write_bytes(source)
     (repository/'release.json').write_text(json.dumps(metadata,indent=2)+'\n')
-    git(run,'add','--',source_name(manifest),'release.json')
+    git(run,'add','--',filename,'release.json')
     git(run,'commit','--allow-empty','-m',note)
     commit=git(run,'rev-parse','HEAD').strip()
     git(run,'tag',tag,commit)
     return {'tag':tag,'commit':commit,**metadata}
 
 
-def grade(run, output, performance=False):
+def grade(run, output=None, performance=False):
+    import uuid
+    from toksec.evaluation_artifacts import write_evaluation
+    run = Path(run)
+    output = Path(output) if output is not None else run / 'evaluation' / uuid.uuid4().hex
+    if output.resolve().is_relative_to((run / 'repository').resolve()):
+        raise ValueError('parent evaluation output cannot be inside the implementation repository')
     records=list_releases(run)
     if not records:
         raise ValueError('no tagged release to grade')
@@ -99,14 +108,23 @@ def grade(run, output, performance=False):
     from toksec.specification import fingerprint
     if release['framework'] != fingerprint():
         raise ValueError('release uses a different evaluator; grade with its original framework checkout')
-    source=git(run,'show',release['tag']+':'+source_name(release))
+    manifest=controller.read(run, 'manifest.json')
+    contract=read_artifact(run, release['level'], release.get('language', 'rust'), manifest.get('artifact_sha256'))
+    filename=contract['submission']['source_file']
+    source=git(run,'show',release['tag']+':'+filename)
+    validate_source(source, contract)
     if hashlib.sha256(source.encode()).hexdigest()!=release['source_sha256']:
         raise ValueError('tagged source hash differs from release metadata')
     with tempfile.TemporaryDirectory(prefix='toksec-grade-') as temporary:
-        file=Path(temporary)/source_name(release)
+        file=Path(temporary)/filename
         file.write_text(source)
         result=evaluate.evaluate(file,output,release['level'],performance,language=release.get('language', 'rust'))
     result['release']=release
     from controller import atomic_json
     atomic_json(Path(output)/'result.json',result)
+    write_evaluation(output, run_id=run.name,
+                     release={k: release[k] for k in ('tag', 'commit', 'source_sha256')},
+                     contract_sha256=manifest.get('artifact_sha256'), evaluator_sha256=fingerprint(),
+                     environment={k: manifest[k] for k in ('compiler', 'platform', 'cpu_affinity', 'toolchain') if k in manifest},
+                     coverage='full', result=result)
     return result

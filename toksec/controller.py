@@ -9,6 +9,7 @@ import uuid
 from pathlib import Path
 
 from toksec.languages import source_name, profile
+from toksec.artifacts import write_artifact, read_artifact, validate_source
 from controller import atomic_json
 from toksec import benchmark, campaign, sandbox
 from toksec.specification import ROOT, fingerprint, packet, specification, workloads, instruction_files
@@ -24,6 +25,7 @@ def validate(run):
     manifest = read(run, 'manifest.json')
     if manifest['fingerprint'] != fingerprint():
         raise ValueError('framework changed since preparation; prepare a fresh run')
+    read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
     return manifest
 
 
@@ -41,11 +43,15 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=Non
         destination = run / 'builder-inputs' / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, destination)
+    write_artifact(run, level, language)
     (run / 'launch-packet.md').write_text(packet(level, language))
     atomic_json(run / 'specification.json', specification(level, language))
     atomic_json(run / 'manifest.json', {'level': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
+                'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(),
+                'input_sha256': {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                 for p in (run / 'builder-inputs').rglob('*') if p.is_file()},
                 'toolchain': str(sandbox.toolchain()) if language == 'rust' else '/usr/bin/g++',
                 'compiler': subprocess.check_output([profile(language, level)['compiler'], '--version'], text=True),
                 'cpu_affinity': sorted(os.sched_getaffinity(0)), 'load_average': list(os.getloadavg())})
@@ -86,6 +92,7 @@ def passed(report):
 def submit(run, source):
     run = Path(run)
     manifest = validate(run)
+    validate_source(source, read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256')))
     state = read(run)
     if state['finished']:
         raise ValueError('run is finished')

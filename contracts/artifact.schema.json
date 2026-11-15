@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Toksec artifact contract version 1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "language": {
+      "enum": [
+        "cpp",
+        "rust"
+      ]
+    },
+    "submission": {
+      "type": "object",
+      "properties": {
+        "source_file": {
+          "enum": [
+            "main.cpp",
+            "main.rs"
+          ]
+        },
+        "encoding": {
+          "const": "utf-8"
+        },
+        "max_bytes": {
+          "const": 1048576
+        }
+      },
+      "required": [
+        "source_file",
+        "encoding",
+        "max_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "tag_pattern": {
+          "const": "^release/[0-9]{6}$"
+        },
+        "selection": {
+          "const": "last_completed_tag"
+        },
+        "metadata_owner": {
+          "const": "controller"
+        }
+      },
+      "required": [
+        "tag_pattern",
+        "selection",
+        "metadata_owner"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage",
+    "language",
+    "submission",
+    "release"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "language": {
+            "const": "cpp"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "submission": {
+            "properties": {
+              "source_file": {
+                "const": "main.cpp"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "language": {
+            "const": "rust"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "submission": {
+            "properties": {
+              "source_file": {
+                "const": "main.rs"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

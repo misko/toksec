@@ -1,0 +1,33 @@
+{
+  "api": {
+    "passed": null,
+    "status": "not_run",
+    "total": null
+  },
+  "contract_sha256": null,
+  "coverage": "unknown",
+  "environment": {
+    "provenance": "Imported historical evidence; no tests rerun during migration"
+  },
+  "evaluator_sha256": "4d5b4ee0ee148f9c579d973aee7253ae5ac08281e4ce31c28771e3e760f20c23",
+  "missing_evidence": [
+    "release.tag",
+    "release.commit",
+    "release.source_sha256",
+    "contract_sha256"
+  ],
+  "performance": {
+    "credit": null,
+    "metrics": null,
+    "status": "not_run"
+  },
+  "provenance_status": "historical_incomplete",
+  "release": {
+    "commit": null,
+    "source_sha256": null,
+    "tag": null
+  },
+  "run_id": "2026-11-14T19-02-32Z__stage-05__cpp__gpt-6.1-terra__http-v8__4d5b4ee0",
+  "schema_version": 1,
+  "status": "not_run"
+}

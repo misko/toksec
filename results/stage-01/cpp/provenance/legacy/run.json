@@ -1,0 +1,19 @@
+{
+  "budget_usd": "3",
+  "comparison_policy": "Do not pool different framework fingerprints, languages, models, budgets or input policies.",
+  "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
+  "id": "2026-11-14T05-14-27Z__stage-01__cpp__gpt-6.1-terra__http-v7__ed6253e1",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "language": "cpp",
+  "model": "gpt-6.1-terra",
+  "path": "stage-01/cpp",
+  "protocol": "http-v7",
+  "source_run": "/home/mouse9911/gits/toksec-cpp/.runs/terra-cpp-stage1-1794633258/runs/level-1-0989d5c40297",
+  "stage": 1,
+  "started_utc": "2026-11-14T05-14-27Z",
+  "status": "graded",
+  "wall_seconds": 7200
+}

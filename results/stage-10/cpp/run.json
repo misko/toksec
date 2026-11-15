@@ -1,23 +1,33 @@
 {
-  "id": "2026-11-15T17-26-37Z__stage-10__cpp__gpt-6.1-terra__stage10-experimental__f02ed71d",
-  "stage": 10,
-  "language": "cpp",
-  "model": "gpt-6.1-terra",
-  "status": "partially_graded",
-  "protocol": "stage10-experimental",
-  "framework": "f02ed71d055cb6d8d98df193fde15b7908ca67140b478e431c0a9e355612c5e0",
-  "started_utc": "2026-11-15T17-26-37Z",
-  "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-stage10-cpp-20261115-2usd-recovery",
-  "input_policy": {
-    "starter": false,
-    "feedback": "visible_smoke_only",
-    "recovery_retained_prior_fixture_reads": true
-  },
+  "artifact_contract_provenance": "reconstructed_for_storage",
   "budget_usd": "2.00",
-  "wall_seconds": 7200,
   "comparison_policy": "Experimental partial grader; do not pool with Stage 1\u20135 protocols. No performance grade.",
-  "path": "stage-10/cpp",
+  "final_grade_eligible": false,
+  "framework": "f02ed71d055cb6d8d98df193fde15b7908ca67140b478e431c0a9e355612c5e0",
+  "id": "2026-11-15T17-26-37Z__stage-10__cpp__gpt-6.1-terra__stage10-experimental__f02ed71d",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "recovery_retained_prior_fixture_reads": true,
+    "starter": false
+  },
   "inventory_management": "preserved_snapshot",
+  "language": "cpp",
   "last_tag": "release/000007",
-  "final_grade_eligible": false
+  "layout_version": 1,
+  "model": "gpt-6.1-terra",
+  "path": "stage-10/cpp",
+  "paths": {
+    "accounting": "accounting",
+    "artifact_contract": "provenance/artifact.json",
+    "evaluation": "evaluation",
+    "implementation": "implementation",
+    "inputs": "inputs",
+    "latest_evaluation": "evaluation/imported-5f9296aa8f1d8927"
+  },
+  "protocol": "stage10-experimental",
+  "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-stage10-cpp-20261115-2usd-recovery",
+  "stage": 10,
+  "started_utc": "2026-11-15T17-26-37Z",
+  "status": "partially_graded",
+  "wall_seconds": 7200
 }
