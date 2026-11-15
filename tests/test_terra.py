@@ -3,7 +3,7 @@ import time
 import unittest
 from decimal import Decimal
 from pathlib import Path
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import campaign, controller, runner
 
 

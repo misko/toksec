@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import tempfile
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 
 LAYOUT_VERSION = 1
 

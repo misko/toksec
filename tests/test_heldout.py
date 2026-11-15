@@ -12,7 +12,7 @@ class HeldOutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             campaign.initialize(Path(tmp)/'campaign', '3')
             run = Path(controller.prepare(Path(tmp)/'campaign', 1)['run'])
-            source = (ROOT/'starters/static.rs').read_text()
+            source = (ROOT/'tests/fixtures/implementations/static.rs').read_text()
             with patch('toksec.sandbox.configuration_check', side_effect=AssertionError('held-out executed')):
                 report = controller.submit(run, source)
                 self.assertTrue(report['checks']['passed'])

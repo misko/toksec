@@ -5,10 +5,10 @@ from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
-import controller
-import metering
-import runner
-from capacity import budget_status
+from legacy.python_pilot import controller
+from legacy.python_pilot import metering
+from legacy.python_pilot import runner
+from legacy.python_pilot.capacity import budget_status
 from test_controller import PARTIAL_SERVER
 
 SERVER = PARTIAL_SERVER.replace("__CONTROLLER_PATH__", repr(str(controller.ROOT / "controller.py")))
@@ -94,7 +94,7 @@ class MeteringTests(unittest.TestCase):
 
     def test_time_reserve_blocks_new_request(self):
         manifest = json.loads((self.run / "manifest.json").read_text())
-        with patch("metering.time.time", return_value=manifest["started_unix"] + 841):
+        with patch("legacy.python_pilot.metering.time.time", return_value=manifest["started_unix"] + 841):
             with self.assertRaises(ValueError):
                 metering.reserve(self.run, 100)
 

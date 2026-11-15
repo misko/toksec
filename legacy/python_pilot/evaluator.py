@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from probe import GROUPS
+from .probe import GROUPS
 
 
 ROOT = Path(__file__).resolve().parent

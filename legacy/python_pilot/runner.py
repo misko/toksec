@@ -8,13 +8,11 @@ import json
 import os
 import signal
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
-import controller
-import metering
-from capacity import TOOL_SPEC, budget_status
+from . import controller, metering
+from toksec.api import Responses
+from .capacity import TOOL_SPEC, budget_status
 
 
 SUBMIT_TOOL = {
@@ -28,30 +26,6 @@ FINISH_TOOL = {
     "parameters": {"type": "object", "properties": {}, "additionalProperties": False}, "strict": True,
 }
 TOOLS = [TOOL_SPEC, SUBMIT_TOOL, FINISH_TOOL]
-
-
-class NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise ValueError("API redirects are not allowed")
-
-
-class Responses:
-    def __init__(self, key):
-        if not key:
-            raise ValueError("OPENAI_API_KEY is not configured")
-        self.key = key
-        self.opener = urllib.request.build_opener(NoRedirect())
-
-    def post(self, endpoint, payload, timeout):
-        request = urllib.request.Request("https://api.openai.com/v1/" + endpoint,
-                                         data=json.dumps(payload).encode(),
-                                         headers={"Authorization": "Bearer " + self.key,
-                                                  "Content-Type": "application/json"})
-        try:
-            with self.opener.open(request, timeout=timeout) as response:
-                return json.load(response)
-        except urllib.error.HTTPError as error:
-            raise RuntimeError(f"API HTTP {error.code}; no automatic retry") from None
 
 
 def preflight(run):

@@ -8,7 +8,7 @@ import ssl
 import subprocess
 import time
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from stage10 import evaluate, sandbox
 
 

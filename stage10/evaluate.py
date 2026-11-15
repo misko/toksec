@@ -5,11 +5,11 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from stage10 import sandbox
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXTURES = ROOT / 'proposals/stage10/fixtures'
+FIXTURES = ROOT / 'stages/stage10/fixtures'
 
 
 def fixtures(destination, bootstrap=False):

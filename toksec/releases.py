@@ -120,7 +120,7 @@ def grade(run, output=None, performance=False):
         file.write_text(source)
         result=evaluate.evaluate(file,output,release['level'],performance,language=release.get('language', 'rust'))
     result['release']=release
-    from controller import atomic_json
+    from toksec.storage import atomic_json
     atomic_json(Path(output)/'result.json',result)
     write_evaluation(output, run_id=run.name,
                      release={k: release[k] for k in ('tag', 'commit', 'source_sha256')},

@@ -4,7 +4,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import campaign, controller, releases
 from toksec.specification import ROOT
 
@@ -19,7 +19,7 @@ class ReleaseAnalysisTests(unittest.TestCase):
             root = Path(tmp)
             campaign.initialize(root/'campaign', '3')
             run = Path(controller.prepare(root/'campaign', 1)['run'])
-            controller.submit(run, (ROOT/'starters/static.rs').read_text())
+            controller.submit(run, (ROOT/'tests/fixtures/implementations/static.rs').read_text())
             manifest = controller.read(run, 'manifest.json')
             manifest['started_unix'] = time.time()
             atomic_json(run/'manifest.json', manifest)
@@ -32,7 +32,7 @@ class ReleaseAnalysisTests(unittest.TestCase):
             (run/'repository/main.rs').write_text('broken untagged source')
             timeline = analysis.analyze(run, root/'analysis')
             self.assertTrue((root/'analysis/implementation/.git').is_dir())
-            self.assertEqual((root/'analysis/implementation/main.rs').read_text(), (ROOT/'starters/static.rs').read_text())
+            self.assertEqual((root/'analysis/implementation/main.rs').read_text(), (ROOT/'tests/fixtures/implementations/static.rs').read_text())
             self.assertEqual(timeline['releases'][0]['commit'], release['commit'])
             self.assertTrue(timeline['releases'][0]['build_passed'])
             self.assertEqual(release['passed_checks'], ['bootstrap'])

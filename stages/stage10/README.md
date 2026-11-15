@@ -1,10 +1,14 @@
-# Stage 10 preparation packet
+# Stage 10 inputs and specification
 
-This directory contains the draft instructions and fixtures used by the
+This is the canonical input directory for the Stage 10 experiment. It contains
+the draft instructions and fixtures used by the
 [experimental Stage 10 runner](../../stage10/README.md). A Terra campaign has
 completed; its [implementation and partial evaluation](../../results/stage-10/cpp/README.md)
 are preserved. The full acceptance evaluator remains incomplete.
-[Host readiness](host/READINESS.md) records the original launch requirements.
+[Host readiness](host/READINESS.md) and `input-manifest.json` preserve the original
+preparation checklist. Their readiness flags are historical, not the current
+runner status. The relocation preserves builder files, previews, and fixture bytes;
+historical run packets remain unchanged.
 
 ## What the agent receives
 
@@ -25,10 +29,9 @@ signing key was discarded and is not supplied. The host's independent tests use
 different inputs. No server source, parser, TLS event-loop wrapper, previous
 implementation or comprehensive test suite is supplied.
 
-The final runtime image must additionally provide pinned OpenSSL headers and API
-documentation, libssl/libcrypto and their approved runtime dependencies. This
-packet records the preparation environment's observed OpenSSL version only.
-It does not claim those runtime mounts or dependency policies are implemented.
+The runner provides approved OpenSSL headers, libssl/libcrypto, and constrained
+build/runtime sandboxes. Run manifests record the installed toolchain. This packet
+retains the preparation environment's original OpenSSL metadata.
 
 ## Comparison with Stages 1–5
 
@@ -46,7 +49,7 @@ It does not claim those runtime mounts or dependency policies are implemented.
 | Resource accounting | One CPU, per-process 512 MiB address-space limit | 1/2/4-CPU profiles, 512 MiB aggregate charged memory, total descriptor limit |
 | Release output | Controller-managed Git, periodic tags, last completed tag | Same; early plaintext tag allowed before complete TLS support |
 | Final grade | API first; any required failure forfeits performance credit | Same; all mandatory TLS/worker checks are part of the gate |
-| Run readiness | Existing v8 tools | Not implemented; proposal cannot be passed to current --level |
+| Run readiness | Existing v8 tools | Separate experimental `python3 -m stage10.runner`; full grading incomplete |
 
 The memory accounting basis changes, not just the number of processes. Results
 must identify the resource profile and must not be presented as direct v8
@@ -59,12 +62,13 @@ TLS/cache/worker example. A working plaintext GET can therefore establish a firs
 tag. Later tags must preserve previously passing visible checks. The agent chooses
 which capability to implement and test next; examples do not impose a workflow.
 
-Final grading extracts the last completed tag, rebuilds it independently and tests
-the entire contract. An early tag with only plaintext GET receives whatever API
+Final grading extracts the last completed tag and rebuilds it independently. The
+current independent checker covers part of the contract; full acceptance requires
+the remaining tests. An early tag with only plaintext GET receives whatever API
 credit its behavior earns, but no full-stage performance credit. Numeric partial
 credit and milestone weights are still undefined in the existing framework.
 
-## Validation performed during preparation
+## Historical preparation validation
 
 OpenSSL generated four RSA-2048 leaf/key pairs for alpha.test and beta.test, with
 two generations per name. Each leaf passed chain and hostname verification, its
@@ -77,10 +81,9 @@ and instruction-preview assembly were checked. No nginx compatibility oracle,
 candidate-server smoke test, TLS traffic benchmark or Stage 10 API suite has run.
 Those checks cannot be replaced by successful certificate generation.
 
-## Remaining delivery work
+## Remaining acceptance work
 
-The next implementation units are versioned packet delivery, sandboxed TLS build
-policy, process-tree enforcement/accounting, config/TLS/lifecycle API suites, and
-calibrated performance drivers. Each needs independent verification before a
-campaign. This applies the Sequence work into verifiable units principle to the
-framework itself. A larger stage does not justify skipping its launch gates.
+The experimental runner implements packet delivery, approved TLS compilation,
+process-tree enforcement, tagged releases, and partial API checks. Full
+configuration, TLS, and lifecycle coverage and calibrated performance drivers
+remain incomplete. See the runner README for the current supported profile.

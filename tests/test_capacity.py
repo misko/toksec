@@ -3,8 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import controller
-from capacity import TOOL_SPEC, bind_budget_status, budget_status
+from legacy.python_pilot import controller
+from legacy.python_pilot.capacity import TOOL_SPEC, bind_budget_status, budget_status
 
 
 class CapacityTests(unittest.TestCase):

@@ -1,3 +1,7 @@
+> Historical document. Paths, budgets, and stage capabilities below describe an earlier version.
+> Use the [current guide index](README.md) for new work and the
+> [relocated Python pilot](../legacy/python_pilot/README.md) for its current module commands.
+
 # Walkthrough of the public Rust system
 
 The experiment asks how much measured agent capacity produces a working implementation of a fixed interface, and later how much attacker capacity finds an exploit in that implementation. This change implements the builder side. It does not launch another paid experiment or implement the exploit campaign.

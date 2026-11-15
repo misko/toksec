@@ -1,3 +1,7 @@
+> Historical document. Paths, budgets, and stage capabilities below describe an earlier version.
+> Use the [current guide index](README.md) for new work and the
+> [relocated Python pilot](../legacy/python_pilot/README.md) for its current module commands.
+
 # Pilot budget
 
 The Level 1 Luna pilot admits at most 10,000,000 input-plus-output tokens and $5 of model inference at the pinned standard API rates. It counts cached input within input and reasoning within output. The token cap is conservative: at $0.50 per million, even an all-output run fits $5. Local compute, preparation, and subscription fees are excluded.

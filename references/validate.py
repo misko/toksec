@@ -10,7 +10,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import evaluate
 
 

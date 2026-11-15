@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import campaign, controller, releases
 from toksec.artifacts import read_artifact
 from toksec.specification import packet

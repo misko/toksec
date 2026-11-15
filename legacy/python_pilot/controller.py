@@ -8,43 +8,26 @@ import json
 import os
 import shutil
 import stat
-import tempfile
 import time
 import uuid
 from pathlib import Path
 
-from evaluator import evaluate
-from probe import GROUPS
+from .evaluator import evaluate
+from .probe import GROUPS
+from toksec.storage import atomic_json
 
 
 ROOT = Path(__file__).resolve().parent
 
 
-def atomic_json(path, value):
-    path = Path(path)
-    fd, temporary = tempfile.mkstemp(prefix=".pending-", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w") as stream:
-            json.dump(value, stream, indent=2, sort_keys=True)
-            stream.write("\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, path)
-        directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
-        try:
-            os.fsync(directory)
-        finally:
-            os.close(directory)
-    finally:
-        if os.path.exists(temporary):
-            os.unlink(temporary)
-
-
 def fingerprints():
-    paths = [ROOT / "controller.py", ROOT / "capacity.py", ROOT / "metering.py", ROOT / "runner.py", ROOT / "evaluator.py", ROOT / "probe.py",
-             ROOT / "tasks/http/level-1.md", ROOT / "experiments/luna-http-l1.json"]
+    paths = sorted(ROOT.glob("*.py"))
+    paths += [ROOT.parent / "__init__.py", ROOT / "tasks/http/level-1.md",
+              ROOT / "experiments/luna-http-l1.json"]
     paths.extend(sorted((ROOT / "prompts").glob("*.md")))
-    return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
+    repository = ROOT.parents[1]
+    paths.extend(repository / "toksec" / name for name in ("storage.py", "api.py", "metering.py"))
+    return {str(path.relative_to(repository)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
 
 
 def prepare(run):
@@ -160,7 +143,7 @@ def export(run):
 
 
 def preflight(run):
-    from runner import preflight as runner_preflight
+    from .runner import preflight as runner_preflight
     return runner_preflight(run)
 
 
@@ -169,7 +152,7 @@ def main():
     parser.add_argument("command", choices=("prepare", "preflight", "evaluate", "status", "budget-status", "export"))
     parser.add_argument("--run", required=True, type=Path)
     args = parser.parse_args()
-    from capacity import budget_status
+    from .capacity import budget_status
     commands = {"prepare": prepare, "preflight": preflight, "evaluate": submit, "export": export,
                 "budget-status": budget_status,
                 "status": lambda p: json.loads((p / "state.json").read_text())}

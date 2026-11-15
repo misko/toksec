@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import evaluate
 from toksec.specification import fingerprint, workloads
 

@@ -5,3 +5,4 @@ __pycache__/
 .env
 .calibration/
 results/.publish.lock
+evaluation-results/

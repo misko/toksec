@@ -69,7 +69,7 @@ class ResultStorageTests(unittest.TestCase):
 
 class LayoutMigrationTests(unittest.TestCase):
     def snapshot(self, root, run_id='run-1'):
-        from controller import atomic_json
+        from toksec.storage import atomic_json
         path=root/'legacy';path.mkdir()
         atomic_json(path/'run.json', {'id':run_id,'stage':1,'language':'cpp',
                     'protocol':'http-v7','framework':'a'*64,'status':'graded',
@@ -116,7 +116,7 @@ class LayoutMigrationTests(unittest.TestCase):
 
     def test_same_run_preserves_parent_evaluation_but_new_run_does_not(self):
         from toksec.result_storage import publish_snapshot, read
-        from controller import atomic_json
+        from toksec.storage import atomic_json
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);source=self.snapshot(root);output=root/'results'
             publish_snapshot(source,output);dest=output/'stage-01/cpp'
@@ -140,7 +140,7 @@ class RawPublicationTests(unittest.TestCase):
     def run_fixture(self, root):
         import hashlib
         import subprocess
-        from controller import atomic_json
+        from toksec.storage import atomic_json
         from toksec.artifacts import write_artifact
         run=root/'.runs/run-one';repository=run/'repository';repository.mkdir(parents=True)
         source=b'int main() { return 0; }\n'

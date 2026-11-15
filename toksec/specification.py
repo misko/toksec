@@ -104,8 +104,8 @@ def packet(level, language='rust'):
 
 def fingerprint():
     paths = list((ROOT / 'toksec').glob('*.py'))
-    paths += [ROOT / name for name in ('controller.py', 'evaluator.py', 'evaluate.py', 'metering.py', 'runner.py', 'RULES.md')]
-    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json')]
+    paths += [ROOT / name for name in ('evaluate.py', 'RULES.md')]
+    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json') and not p.is_relative_to(ROOT / 'stages/stage10')]
     paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
     paths += list((ROOT / 'contracts').glob('*.schema.json'))
     paths += [ROOT / 'fixtures/accounting/legacy-pilot-ledger.json']

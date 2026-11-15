@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate HTTP source or the latest tagged release with the public suite."""
+"""Evaluate HTTP source or the latest tagged release with the independent parent API suite."""
 import argparse
 import json
 import sys
@@ -31,7 +31,7 @@ def main(argv=None):
             result=evaluate.evaluate(source,output,level,args.section=='performance',language=args.language)
         result['section']=args.section
         result['output']=str(output.resolve())
-        from controller import atomic_json
+        from toksec.storage import atomic_json
         atomic_json(output/'result.json',result)
         print(json.dumps(result,indent=2,allow_nan=False))
         if not result.get('checks',{}).get('passed'):

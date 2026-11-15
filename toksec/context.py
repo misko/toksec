@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import controller
 from toksec.languages import source_name
 

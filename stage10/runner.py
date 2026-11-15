@@ -10,8 +10,8 @@ import subprocess
 import time
 import uuid
 
-from controller import atomic_json
-from runner import Responses
+from toksec.storage import atomic_json
+from toksec.api import Responses
 from toksec.releases import git
 from toksec.artifacts import write_artifact, read_artifact, validate_source
 from toksec.runner import credentials, tool, deadline, CampaignDeadline
@@ -19,7 +19,7 @@ from stage10 import evaluate, sandbox
 from stage10.budget import BudgetLedger, COUNT_FIELDS
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKET = ROOT / 'proposals/stage10'
+PACKET = ROOT / 'stages/stage10'
 TOOLS = [
     tool('budget_status', 'Read remaining metered dollars, tokens, wall time and release state.'),
     tool('submit_candidate', 'Compile your complete source in the sandbox and run ordinary visible smoke.', {'source': {'type': 'string'}}),
@@ -42,7 +42,8 @@ def read(run, name='state.json'):
 
 def identity():
     paths = sorted((ROOT / 'stage10').glob('*.py')) + sorted((PACKET / 'builder').rglob('*.md'))
-    paths += [ROOT / 'toksec/artifacts.py', ROOT / 'toksec/evaluation_artifacts.py', ROOT / 'stages/common/ARTIFACTS.md']
+    paths += [ROOT / 'toksec/artifacts.py', ROOT / 'toksec/evaluation_artifacts.py',
+              ROOT / 'toksec/api.py', ROOT / 'toksec/storage.py', ROOT / 'stages/common/ARTIFACTS.md']
     paths += sorted((ROOT / 'contracts').glob('*.schema.json'))
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in paths)).hexdigest()
 

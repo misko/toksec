@@ -5,9 +5,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import controller
-from evaluator import evaluate
-from probe import GROUPS, response
+from legacy.python_pilot import controller
+from legacy.python_pilot.evaluator import evaluate
+from legacy.python_pilot.probe import GROUPS, response
 
 
 PARTIAL_SERVER = '''import argparse
@@ -76,7 +76,7 @@ class ControllerTests(unittest.TestCase):
 
     def submit_report(self, value, source=b"print('candidate')\n"):
         (self.run / "workspace/server.py").write_bytes(source)
-        with patch("controller.evaluate", return_value=value):
+        with patch("legacy.python_pilot.controller.evaluate", return_value=value):
             return controller.submit(self.run)
 
     def test_prepare_is_empty_and_preserves_hard_budget(self):
@@ -125,13 +125,13 @@ class ControllerTests(unittest.TestCase):
     def test_atomic_pointer_failure_preserves_previous_state(self):
         self.submit_report(report({"bootstrap"}))
         before = (self.run / "state.json").read_bytes()
-        with patch("controller.os.replace", side_effect=OSError("simulated interruption")):
+        with patch("toksec.storage.os.replace", side_effect=OSError("simulated interruption")):
             with self.assertRaises(OSError):
                 controller.atomic_json(self.run / "state.json", {"invalid": "new state"})
         self.assertEqual((self.run / "state.json").read_bytes(), before)
 
     def test_changed_contract_blocks_existing_run(self):
-        with patch("controller.fingerprints", return_value={"changed": "digest"}):
+        with patch("legacy.python_pilot.controller.fingerprints", return_value={"changed": "digest"}):
             with self.assertRaisesRegex(ValueError, "changed after preparation"):
                 controller.export(self.run)
 

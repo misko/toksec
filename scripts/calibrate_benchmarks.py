@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import sandbox
 from toksec.specification import ROOT, fingerprint, workloads
 

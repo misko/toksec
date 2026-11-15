@@ -1,7 +1,7 @@
 # Stage 10 implementation experiment
 
-This isolated runner extends the draft Stage 10 packet without changing the frozen
-Stage 1–5 framework. It supplies no server source. The worker implements the HTTP
+This isolated runner uses the [Stage 10 inputs](../stages/stage10/README.md) and
+remains separate from the Stage 1–5 runtime. Historical run inputs stay frozen. It supplies no server source. The worker implements the HTTP
 server and its OpenSSL integration in C++ (default) or Rust.
 
 ```

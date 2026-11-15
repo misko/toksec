@@ -10,7 +10,7 @@ from pathlib import Path
 
 from toksec.languages import source_name, profile
 from toksec.artifacts import write_artifact, read_artifact, validate_source
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import benchmark, campaign, sandbox
 from toksec.specification import ROOT, fingerprint, packet, specification, workloads, instruction_files
 

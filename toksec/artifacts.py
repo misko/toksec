@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 import re
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 
 CONTRACTS = Path(__file__).resolve().parents[1] / 'contracts'
 KEYWORDS = frozenset({

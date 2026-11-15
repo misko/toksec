@@ -2,7 +2,7 @@
 import json
 import hashlib
 from pathlib import Path
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import sandbox
 from toksec.specification import workloads, fingerprint
 

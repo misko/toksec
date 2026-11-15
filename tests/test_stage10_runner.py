@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from stage10 import runner
 from stage10.budget import BudgetLedger, COUNT_FIELDS, MODEL
 

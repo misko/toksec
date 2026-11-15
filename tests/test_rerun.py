@@ -13,9 +13,9 @@ class RerunTests(unittest.TestCase):
             self.assertEqual(status['dollar_limit'], '3')
             self.assertEqual(status['used'],0)
             with self.assertRaisesRegex(ValueError, 'without starter'):
-                controller.prepare(directory,1,7200,campaign.TERRA,ROOT/'starters/static.rs')
+                controller.prepare(directory,1,7200,campaign.TERRA,ROOT/'tests/fixtures/implementations/static.rs')
             run=Path(controller.prepare(directory,1,7200,campaign.TERRA)['run'])
-            candidate=controller.submit(run,(ROOT/'starters/static.rs').read_text())['id']
+            candidate=controller.submit(run,(ROOT/'tests/fixtures/implementations/static.rs').read_text())['id']
             manifest=controller.read(run,'manifest.json')
             self.assertEqual(manifest['wall_seconds'],7200)
             self.assertEqual(controller.read(run)['best'],candidate)

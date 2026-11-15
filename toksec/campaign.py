@@ -7,8 +7,8 @@ import uuid
 from decimal import Decimal
 from pathlib import Path
 
-import metering
-from controller import atomic_json
+from toksec import metering
+from toksec.storage import atomic_json
 from toksec.specification import ROOT, fingerprint
 
 PILOT = ROOT / 'fixtures/accounting/legacy-pilot-ledger.json'

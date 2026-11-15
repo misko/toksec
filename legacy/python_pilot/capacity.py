@@ -20,7 +20,7 @@ TOOL_SPEC = {
 
 
 def budget_status(run, *, now=None):
-    from controller import accepted_groups, locked
+    from .controller import accepted_groups, locked
 
     run = Path(run).resolve()
     with locked(run):
@@ -39,7 +39,7 @@ def budget_status(run, *, now=None):
             remaining = max(0, config["wall_seconds"] - (observed - started))
         identity = state["best_conformant"] or state["best_partial"]
         passed = sorted(accepted_groups(run, identity))
-        from probe import GROUPS
+        from .probe import GROUPS
 
         # The offline controller cannot infer charges after an external model launch.
         known_zero = unstarted and manifest["model_calls"] == 0
@@ -77,7 +77,7 @@ def budget_status(run, *, now=None):
             "reason": "No metered model adapter is connected. Capacity reporting does not enforce spending.",
         }
         if (run / "ledger.json").exists():
-            from metering import read_ledger, totals
+            from .metering import read_ledger, totals
             ledger = read_ledger(run)
             balance = totals(ledger)
             eligible = (ledger["state"] == "active" and balance["reserved"] == 0

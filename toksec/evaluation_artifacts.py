@@ -3,7 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec.artifacts import validate_evaluation
 
 
