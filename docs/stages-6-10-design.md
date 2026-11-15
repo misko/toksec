@@ -6,7 +6,7 @@ metered runner, partial independent checker, and [preserved results](../results/
 Full Stage 10 acceptance and calibrated performance grading remain incomplete.
 Shared artifact contracts now apply to both runners; historical run inputs remain frozen.
 
-A concrete [Stage 10 instruction and fixture packet](../stages/stage10/README.md)
+A concrete [Stage 10 instruction and fixture packet](../stages/stage-10/README.md)
 now provides language-specific prompt previews, draft contracts, example
 configuration, test certificates and a hashed input allowlist. Its host readiness
 plan records the original readiness requirements. The [runner documentation](../stage10/README.md)
