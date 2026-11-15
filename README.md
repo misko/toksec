@@ -103,8 +103,7 @@ TOKSEC_STAGE10_SANDBOX_TEST=1 python3 -m unittest discover -s tests -v
 These are framework regression tests, separate from submitted-server acceptance
 checks. See [test guidance](tests/README.md) and the [script index](scripts/README.md).
 
-The original Python pilot is isolated in [legacy/python_pilot/](legacy/python_pilot/README.md).
-It is not the default runner. [Reference implementations](references/README.md)
+The retired Python pilot is available in [Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/legacy/python_pilot). [Reference implementations](references/README.md)
 had different test access and must remain separate from budgeted experiments.
 Historical raw runs, task packets, and published evidence remain frozen. Use the
 original recorded checkout to reproduce an old fingerprint; do not rewrite a run's

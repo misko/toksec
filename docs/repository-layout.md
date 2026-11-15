@@ -1,8 +1,8 @@
 # Repository map
 
 The parent reads `AGENTS.md`. The measured builder receives `RULES.md`, selected
-stage instructions, and a generated artifact contract. Current runners never
-import the legacy pilot.
+stage instructions, and a generated artifact contract. The retired Python pilot is preserved in
+[Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/legacy/python_pilot); it is not part of the current checkout.
 
 | Location | Owner and purpose |
 |---|---|
@@ -26,7 +26,6 @@ import the legacy pilot.
 | `references/` | Engineering reference implementations and their separate validation evidence |
 | `calibrations/` | Published calibration evidence about the measurement machinery |
 | `docs/` | Current guides and explicitly indexed historical records |
-| `legacy/python_pilot/` | Original Python pilot, including its prompts, configuration, and task |
 
 ## Runtime ownership
 

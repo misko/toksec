@@ -35,6 +35,6 @@ paths, and budgets; their examples must not be treated as current launch command
 | [Sustained improvement plan](sustained-improvement-plan.md) | Earlier continuation-policy design |
 | [Tagged-release plan](tagged-release-plan.md) | Original release workflow design |
 
-The original executable pilot now lives in
-[legacy/python_pilot/](../legacy/python_pilot/README.md). Its old run records and
+The retired executable pilot remains available in
+[Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/legacy/python_pilot). Its old run records and
 published evidence retain their original paths and hashes.

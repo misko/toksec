@@ -1,6 +1,6 @@
 > Historical document. Paths, budgets, and stage capabilities below describe an earlier version.
 > Use the [current guide index](README.md) for new work and the
-> [relocated Python pilot](../legacy/python_pilot/README.md) for its current module commands.
+> [historical Python pilot](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/legacy/python_pilot) for the retired implementation.
 
 # Walkthrough of the public Rust system
 

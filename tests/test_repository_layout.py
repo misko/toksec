@@ -36,7 +36,7 @@ class RepositoryLayoutTests(unittest.TestCase):
                      'probe.py', 'runner.py', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
             self.assertFalse((ROOT / name).exists(), name)
         self.assertTrue((ROOT / 'tests/fixtures/implementations/static.rs').is_file())
-        self.assertTrue((ROOT / 'legacy/python_pilot/tasks/http/level-1.md').is_file())
+        self.assertFalse((ROOT / 'legacy').exists())
 
     def test_relocated_stage10_inputs_match_frozen_inventory(self):
         packet = ROOT / 'stages/stage-10'
