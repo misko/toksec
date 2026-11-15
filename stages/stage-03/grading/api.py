@@ -68,3 +68,8 @@ def interactions(c):
         assert result.header('content-range') == f'bytes 1-{len(body)-1}/{len(body)}'
         result = c.get(path, host=host, headers={'If-None-Match': tag, 'Range': 'bytes=999999-'}, status=304, body=b'')
         assert result.header('content-length') == '0' and result.header('etag') == tag
+
+
+from toksec.stages import module as stage_module
+OWN = CASES
+CASES = stage_module(2, 'api').CASES + OWN

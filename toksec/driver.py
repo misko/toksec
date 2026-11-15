@@ -34,7 +34,7 @@ def main():
     try:
         if args.stage >= 4:
             ready = args.fixtures / 'upstream.ready'
-            fixture_module = 'evaluation.smoke.upstream' if args.suite == 'smoke' or args.mode == 'benchmark' else 'toksec.fixtures'
+            fixture_module = 'stages.common.smoke.upstream' if args.suite == 'smoke' or args.mode == 'benchmark' else 'toksec.fixtures'
             available = sorted(os.sched_getaffinity(0) - {args.server_cpu})
             if args.mode == 'benchmark' and len(available) < 5:
                 raise RuntimeError('proxy benchmarks need one server, four generator and one upstream CPU')
@@ -58,7 +58,7 @@ def main():
         if args.mode == 'check':
             selected = None
             if args.suite == 'smoke':
-                from stages.common.smoke import cases
+                from stages.common.smoke.api import cases
                 selected = cases(args.stage)
                 if args.case:
                     raise ValueError('smoke suite cannot select a held-out case')

@@ -2,7 +2,7 @@ from toksec.stages import identifier as stage_id
 import hashlib
 import json
 from dataclasses import asdict
-from stages.common.performance import Workload, matrix
+from stages.common.grading.performance import Workload, matrix
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,7 +90,7 @@ def packet(level, language='rust'):
     for name in instruction_files(level, language):
         lines.extend([(ROOT / name).read_text(), ''])
     lines.extend(['## Artifact contract', '', '```json', json.dumps(artifact_contract(level, language), indent=2, sort_keys=True), '```', ''])
-    from stages.common.smoke import cases as smoke_cases
+    from stages.common.smoke.api import cases as smoke_cases
     visible = [{'id': c.id, 'description': c.description} for c in smoke_cases(level)]
     lines.extend(['## Required configuration', '', '```ini',
                   *[f'{k}={v}' for k, v in spec['configuration'].items()], '```', '',
@@ -106,8 +106,7 @@ def packet(level, language='rust'):
 def fingerprint():
     paths = list((ROOT / 'toksec').rglob('*.py'))
     paths += [ROOT / name for name in ('evaluate.py', 'RULES.md')]
-    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json') and not p.is_relative_to(ROOT / 'stages/stage-10')]
-    paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
+    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json', '.cpp', '.rs') and not p.is_relative_to(ROOT / 'stages/stage-10')]
     paths += list((ROOT / 'contracts').glob('*.schema.json'))
     paths += [ROOT / 'fixtures/accounting/legacy-pilot-ledger.json']
     paths += [ROOT / 'scripts/analyze_releases.py', ROOT / 'scripts/calibrate_benchmarks.py']

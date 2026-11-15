@@ -2,6 +2,8 @@
 
 `calibrations/<calibration-id>/` stores checks of the measurement machinery.
 `results/<run-id>/` stores evidence about submitted implementations.
+The static HTTP probe source lives in
+`stages/common/grading/fixtures/load_reference.cpp` and is never a builder input.
 
 New calibrations record their Toksec commit, dirty-checkout flag, probe source
 hash, environment and workload measurements. Run `python3 scripts/calibrate_benchmarks.py`

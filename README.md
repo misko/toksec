@@ -15,6 +15,10 @@ Stages 1–5 and 10 are independent Rust or C++ assignments. Their canonical ins
 live in [stages/](stages/), with shared builder policy in [RULES.md](RULES.md).
 Builders receive English requirements and minimal smoke examples; the full API
 checker stays on the host. Preparation generates and freezes each run’s packet directly from these sources.
+Each stage's `grading/` directory contains its API suite and performance workloads.
+Reusable checks live in `stages/common/grading/`; minimal development checks live
+in `stages/common/smoke/`. The framework runs these suites through `evaluate.py`.
+The separate `tests/` directory checks Toksec itself.
 Optional previews go under `.generated/packets/`; historical packets live in
 [Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/archive/task-packets).
 

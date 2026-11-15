@@ -84,7 +84,7 @@ def measure(artifact, output, clients, tls, cpus):
         generators = sorted(set(os.sched_getaffinity(0)) - set(cpus))
         if not generators: raise RuntimeError('separate generator CPU required')
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials', '--',
-                   '/usr/bin/taskset', '-c', str(generators[0]), '/usr/bin/python3', '-m', 'stages.stage-10.performance',
+                   '/usr/bin/taskset', '-c', str(generators[0]), '/usr/bin/python3', '-m', 'stages.stage-10.grading.performance',
                    '--fixtures', str(fixtures), '--clients', str(clients), '--output', str(result_path)]
         if tls: command.append('--tls')
         before = (runtime['cgroup'] / 'cpu.stat').read_text()

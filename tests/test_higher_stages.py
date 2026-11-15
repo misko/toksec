@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 from toksec import campaign, controller, context, releases, sandbox
 from toksec.specification import ROOT, packet, specification, workloads
-from stages.common.smoke import cases
+from stages.common.smoke.api import cases
 
 
 class HigherStagesTests(unittest.TestCase):
@@ -96,7 +96,7 @@ class HigherStagesTests(unittest.TestCase):
                     self.assertEqual(len(result['cases']),4)
 
     def test_catalog_contract_references_exist_and_do_not_duplicate_ids(self):
-        from evaluation.catalog import catalog
+        from stages.common.grading.catalog import catalog
         for level in range(1,6):
             rows=catalog(level)
             self.assertEqual(len({(r['visibility'],r['id']) for r in rows}),len(rows))

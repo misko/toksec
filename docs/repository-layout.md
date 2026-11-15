@@ -10,13 +10,15 @@ stage instructions, and a generated artifact contract. The retired Python pilot 
 | `AGENTS.md` | Parent/contributor working rules |
 | `RULES.md` | Shared builder policy for all supported stages |
 | `contracts/` | Schemas for submissions and parent evaluation records |
-| `stages/` | Current stage requirements, language policies, and suite selections |
+| `stages/` | Current stage requirements, language policies, and grading suites |
+| `stages/stage-XX/grading/` | Stage-specific API checks and performance workloads |
+| `stages/common/grading/` | Reusable server checks, workload helpers, catalog, and calibration probe |
+| `stages/common/smoke/` | Minimal development checks and ordinary upstream fixtures |
 | `.generated/packets/` | Optional generated previews, ignored by Git |
 | `toksec/` | Shared runner, stage identity, Git provenance, accounting, and publication |
 | `toksec/accounting/` | Counted requests and parent campaign allocations |
 | `toksec/execution/` | Counted-request conversation loop |
 | `toksec/sandbox/` | Compilation, namespaces, and process-tree resource enforcement |
-| `evaluation/` | Executable checker and calibration code, not evaluation results |
 | `evaluate.py` | Shared standalone and tagged-grading CLI |
 | `scripts/` | Campaign orchestration, analysis, plotting, calibration, and publication commands |
 | `tests/` | Harness regression tests and test-only implementation fixtures |
@@ -37,10 +39,17 @@ whole-run allocation in the shared campaign ledger via `toksec/accounting/run_al
 `toksec/stage_dispatch.py` routes shared commands to the selected backend. This does not change prices,
 authorized budgets, or model settings.
 
-Stage 10 definitions and fixtures live in `stages/stage-10/`. The shared framework owns runtime and accounting code. Stage-specific API checks
-and workloads live beside those definitions. There is no root `stage10/` package. The stage’s frozen draft policy and host readiness records
+Stage 10 definitions and fixtures live in `stages/stage-10/`. The shared framework owns runtime and accounting code. Its partial API checker
+and provisional workloads live in `stages/stage-10/grading/`. There is no root `stage10/` package. The stage’s frozen draft policy and host readiness records
 are labeled in that stage's README; they are not evidence of full acceptance.
 Stage 1–5 fingerprinting excludes Stage 10's separate definition tree.
+
+Server grading code lives beside the assignments under `stages/`; `tests/` verifies
+the framework and its graders. There is no root `evaluation/` source directory.
+Parent reports and figures still live in each run's `evaluation/<id>/` directory,
+then in `results/<run-id>/evaluation/<id>/` after publication.
+Preparation uses explicit builder-input allowlists. Sharing a stage directory does
+not make comprehensive grading code or host-only fixtures available to the builder.
 
 The limited Rust server formerly named `starters/static.rs` is now
 `tests/fixtures/implementations/static.rs`. Tests use it; builder input assembly

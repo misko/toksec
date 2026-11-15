@@ -83,3 +83,8 @@ def drain(c):
                 return
         time.sleep(0.05)
     raise AssertionError('listener remained open after SIGTERM')
+
+
+from toksec.stages import module as stage_module
+OWN = CASES
+CASES = stage_module(4, 'api').CASES + OWN

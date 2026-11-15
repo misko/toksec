@@ -64,3 +64,8 @@ def fragmented_upload(c):
         result = c.exchange(request('/proxy/echo', method='POST', headers={'Transfer-Encoding': 'chunked'}, body=body))
         assert result.status == 400
     c.get('/proxy/data/4096', body=payload(4096))
+
+
+from toksec.stages import module as stage_module
+OWN = CASES
+CASES = stage_module(3, 'api').CASES + OWN

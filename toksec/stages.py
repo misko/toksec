@@ -31,4 +31,5 @@ def module(value, component):
         raise ValueError('unsupported stage identity')
     if component not in ('api', 'checks', 'performance', 'packet'):
         raise ValueError('unsupported stage component')
-    return importlib.import_module(f'stages.{identifier(stage)}.{component}')
+    location = component if component == 'packet' else f'grading.{component}'
+    return importlib.import_module(f'stages.{identifier(stage)}.{location}')

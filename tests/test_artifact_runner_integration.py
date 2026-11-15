@@ -41,6 +41,8 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
                 self.assertIn(json.dumps(contract, indent=2, sort_keys=True), prompt)
                 self.assertNotIn(str(run), prompt)
                 self.assertFalse((run / 'builder-inputs/evaluation').exists())
+                for supplied in (run / 'builder-inputs').rglob('*'):
+                    self.assertNotIn('grading', supplied.relative_to(run / 'builder-inputs').parts)
                 if kind == 'legacy':
                     self.assertEqual(prompt, packet(2, 'cpp'))
 

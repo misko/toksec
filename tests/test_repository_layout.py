@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RepositoryLayoutTests(unittest.TestCase):
     def test_current_code_does_not_import_pilot_modules(self):
-        forbidden = {'legacy', 'controller', 'runner', 'metering', 'capacity', 'evaluator', 'probe'}
+        forbidden = {'evaluation', 'legacy', 'controller', 'runner', 'metering', 'capacity', 'evaluator', 'probe'}
         paths = [ROOT / 'evaluate.py']
-        for directory in ('toksec', 'stages', 'evaluation', 'scripts'):
+        for directory in ('toksec', 'stages', 'scripts'):
             paths.extend((ROOT / directory).rglob('*.py'))
         for path in paths:
             tree = ast.parse(path.read_text())
@@ -33,7 +33,7 @@ class RepositoryLayoutTests(unittest.TestCase):
 
     def test_old_root_modules_and_ambiguous_input_locations_are_gone(self):
         for name in ('capacity.py', 'controller.py', 'evaluator.py', 'metering.py',
-                     'probe.py', 'runner.py', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
+                     'probe.py', 'runner.py', 'evaluation', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
             self.assertFalse((ROOT / name).exists(), name)
         self.assertTrue((ROOT / 'tests/fixtures/implementations/static.rs').is_file())
         self.assertFalse((ROOT / 'legacy').exists())

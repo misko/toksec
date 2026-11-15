@@ -76,7 +76,7 @@ def byte_header_values(c):
     assert r.status == 200 and r.body == b'hello toksec\n'
 
 
-from stages.common.api import CASES as COMMON_CASES
+from stages.common.grading.api import CASES as COMMON_CASES
 
 CASES = COMMON_CASES + CASES
 

@@ -1,4 +1,4 @@
-from stages.common.performance import matrix
+from stages.common.grading.performance import matrix
 
 
 def workloads():

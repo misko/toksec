@@ -30,7 +30,7 @@ class HeldOutTests(unittest.TestCase):
             self.assertGreater(len(full['cases']), 1)
 
     def test_minimal_visible_cases(self):
-        from stages.common.smoke import cases
+        from stages.common.smoke.api import cases
         self.assertEqual([c.id for c in cases(1)], ['bootstrap'])
         self.assertEqual([c.id for c in cases(2)], ['bootstrap', 'smoke-head', 'smoke-persistent'])
         self.assertNotIn('pipeline-backpressure', packet(2))

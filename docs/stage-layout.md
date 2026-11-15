@@ -1,6 +1,6 @@
 # Stage definitions and generated inputs
 
-`stages/` is the editable source of stage requirements and suite selections.
+`stages/` is the editable source of stage requirements and grading suites.
 Use `stage-01` for directory names and machine identifiers, `Stage 1` in prose,
 and integer `stage` fields in JSON. The shared formatter lives in
 `toksec/stages.py`. Python components in these directories load through its
@@ -9,18 +9,32 @@ module selector. Protocol version directories are not part of current inputs.
 ```text
 RULES.md
 stages/
-  common/                     Shared interfaces, artifact rules, and checks
+  common/                     Shared interfaces and artifact rules
+    grading/                  Reusable API checks, workload helpers, and catalog
+      fixtures/               Host-only calibration probe
+    smoke/                    Minimal development checks and ordinary fixtures
   capabilities/               Reusable requirements
   languages/                  Rust and C++ restrictions
-  stage-01/ ... stage-05/      SPEC.md, profile.json, api.py, performance.py
+  stage-01/ ... stage-05/      SPEC.md and profile.json
+    grading/                  api.py and performance.py
   stage-10/                   Stage 10 instructions, fixtures, packet assembly
+    grading/                  api.py, checks.py, and performance.py
 .generated/packets/            Optional current previews, ignored by Git
 ```
+
+Each stage's `grading/api.py` defines its API suite. Its `grading/performance.py`
+defines its workload selection. Suites reuse shared checks without duplicating
+their implementations. The framework in `toksec/` runs the suites through
+`evaluate.py`; `tests/` verifies that framework and the grading machinery.
+Parent reports remain in `results/<run-id>/evaluation/<id>/`, separate from
+the grading source and submitted implementation.
 
 Preparation assembles English instructions from these definitions and freezes the
 selected files in the run's `builder-inputs/` and `launch-packet.md`. It never reads
 archived packets. The sandbox receives an explicit allowlist, not the whole stage
 directory or comprehensive parent tests. No starter code is provided.
+The `grading/` location is an ownership convention; the explicit input allowlist
+enforces builder visibility. Moving code does not expand the builder's inputs.
 
 Generate optional previews without model calls:
 

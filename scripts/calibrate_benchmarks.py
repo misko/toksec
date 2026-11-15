@@ -21,7 +21,7 @@ def calibrate(output=None, rounds=1):
     output = Path(output or ROOT/'calibrations'/calibration_id).resolve()
     output.mkdir(parents=True, exist_ok=False)
     artifact = output/'probe'
-    source = ROOT/'evaluation/performance/fixtures/load_reference.cpp'
+    source = ROOT/'stages/common/grading/fixtures/load_reference.cpp'
     result = {**provenance, 'calibration_id': calibration_id, 'probe_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
               'environment': {'platform': platform.platform(), 'cpu_affinity': sorted(os.sched_getaffinity(0))},
               'framework': fingerprint(), 'purpose': 'Static generator calibration; not stage API conformance or proxy calibration',

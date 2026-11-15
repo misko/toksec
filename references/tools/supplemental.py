@@ -223,7 +223,7 @@ def inside(config):
             stderr = (output / 'upstream.stderr.log').open('wb')
             upstream_streams.append(stderr)
             upstream = subprocess.Popen(['taskset', '-c', str(cpus[5]), sys.executable, '-m',
-                                         'evaluation.smoke.upstream', str(ready)], cwd=ROOT,
+                                         'stages.common.smoke.upstream', str(ready)], cwd=ROOT,
                                         stdout=stdout, stderr=stderr)
             deadline = time.monotonic() + 2
             while not ready.exists():
@@ -317,7 +317,7 @@ def main():
         build = compile_worker(worker)
         if args.mode == 'calibrate':
             artifact = output / 'probe'
-            calibration_source = ROOT / 'evaluation/performance/fixtures/load_reference.cpp'
+            calibration_source = ROOT / 'stages/common/grading/fixtures/load_reference.cpp'
             calibration_build = sandbox.build(calibration_source.read_text(), artifact, 2, language='cpp')
             if not calibration_build['passed']: raise RuntimeError(calibration_build['diagnostics'])
         binary_hash = digest(artifact / 'server')

@@ -5,6 +5,10 @@ stage-specific instructions and fixtures used by the
 [regular runner’s Stage 10 backend](../../docs/stage-10-runtime.md). A Terra campaign has
 completed; its [implementation and partial evaluation](../../results/terra-stage10-cpp-20261115-2usd-recovery/README.md)
 are preserved. The full acceptance evaluator remains incomplete.
+The parent-owned suite lives in [grading/](grading/): `api.py` orchestrates
+checks, `checks.py` implements the partial API checker, and `performance.py`
+provides provisional traffic measurements. The shared `evaluate.py` command
+invokes this suite. Grading source is not part of the builder-input allowlist.
 [Host readiness](host/READINESS.md) and `input-manifest.json` preserve the original
 preparation checklist. Their readiness flags are historical, not the current
 runner status. The relocation preserves builder files, previews, and fixture bytes;
