@@ -24,7 +24,7 @@ import the legacy pilot.
 | `fixtures/` | Shared accounting test data |
 | `results/` | Curated implementations, instructions, accounting, and parent evaluations |
 | `references/` | Engineering reference implementations and their separate validation evidence |
-| `diagnostics/` | Published calibration evidence about the measurement machinery |
+| `calibrations/` | Published calibration evidence about the measurement machinery |
 | `docs/` | Current guides and explicitly indexed historical records |
 | `legacy/python_pilot/` | Original Python pilot, including its prompts, configuration, and task |
 

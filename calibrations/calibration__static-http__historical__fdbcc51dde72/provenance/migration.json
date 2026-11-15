@@ -1,0 +1,13 @@
+{
+  "files": {
+    "README.md": {
+      "path": "README.md",
+      "sha256": "460cab5130cf2e30383bfab66c55a2e87c9b41462e91c6a757f7d9638c03b7b4"
+    },
+    "calibration.json": {
+      "path": "calibration.json",
+      "sha256": "fdbcc51dde7296aef54dc82b9856538248667e3c99eb954b723d13adee0c1bdd"
+    }
+  },
+  "original_path": "diagnostics/calibration/http-v8"
+}

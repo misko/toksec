@@ -117,7 +117,7 @@ The proxy benchmark integration verifies disjoint server/generator/upstream CPUs
 The final static calibration used separate CPUs from the regression suite and
 found seven of eight workloads ineligible due to generator saturation. One valid
 single round is not a five-round performance comparison. See the saved
-[calibration results](../diagnostics/calibration/http-v8/README.md).
+[calibration results](../calibrations/calibration__static-http__historical__fdbcc51dde72/report.md).
 
 A fully conforming Stage 3–5 reference implementation has not been validated
 against every host case. Existing cases were preserved (except the explicitly

@@ -1,0 +1,11 @@
+{
+  "calibrations": [
+    {
+      "applicability": "Explicit workload and environment match required; never inferred from recency",
+      "calibration_id": "calibration__static-http__historical__fdbcc51dde72",
+      "path": "calibration__static-http__historical__fdbcc51dde72",
+      "static_generator_ready": false,
+      "toksec_commit": null
+    }
+  ]
+}
