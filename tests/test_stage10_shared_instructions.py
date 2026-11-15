@@ -6,7 +6,11 @@ import unittest
 from unittest.mock import patch
 
 from stage10 import runner
-from stages.stage10.packet import ROOT, STAGE, input_files, packet
+from toksec.stages import module as stage_module
+ROOT = stage_module(10, 'packet').ROOT
+STAGE = stage_module(10, 'packet').STAGE
+input_files = stage_module(10, 'packet').input_files
+packet = stage_module(10, 'packet').packet
 
 
 class Stage10SharedInstructionTests(unittest.TestCase):

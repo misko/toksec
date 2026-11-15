@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from toksec.stages import number as stage_number
 from toksec.storage import atomic_json
 from toksec import controller, evaluate, releases
 from toksec.languages import source_name
@@ -38,9 +39,9 @@ def analyze(run, output):
     if not repository.exists():
         subprocess.run(['git', '-c', 'core.hooksPath=/dev/null', 'clone', '--no-checkout', str(bundle), str(repository)], check=True, capture_output=True)
     subprocess.run(['git', '-C', str(repository), '-c', 'core.hooksPath=/dev/null', 'checkout', '--detach', records[-1]['tag']], check=True, capture_output=True)
-    timeline = {'level': manifest['level'], 'framework': manifest['fingerprint'], 'language': manifest.get('language', 'rust'),
+    timeline = {'stage': stage_number(manifest), 'framework': manifest['fingerprint'], 'language': manifest.get('language', 'rust'),
                 'started_unix': manifest['started_unix'], 'ended_unix': state.get('ended_unix'),
-                'total_checks': len(specification(manifest['level'])['cases']),
+                'total_checks': len(specification(stage_number(manifest))['cases']),
                 'method': 'Independent post-run measurements plotted at release publication time; no model API calls.',
                 'releases': []}
     for record in records:
@@ -58,17 +59,17 @@ def analyze(run, output):
             result = json.loads(result_path.read_text())
             if not result.get('analysis_complete'):
                 if result.get('checks', {}).get('passed'):
-                    result = evaluate.resume(source_path, destination, manifest['level'], manifest.get('language', 'rust'))
+                    result = evaluate.resume(source_path, destination, stage_number(manifest), manifest.get('language', 'rust'))
                 else:
                     destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
-                    result = evaluate.evaluate(source_path, destination, manifest['level'], performance=True, language=manifest.get('language', 'rust'))
+                    result = evaluate.evaluate(source_path, destination, stage_number(manifest), performance=True, language=manifest.get('language', 'rust'))
                 result['analysis_complete'] = True
                 result['evaluated_unix'] = time.time()
                 atomic_json(result_path, result)
         else:
             if destination.exists():
                 destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
-            result = evaluate.evaluate(source_path, destination, manifest['level'], performance=True, language=manifest.get('language', 'rust'))
+            result = evaluate.evaluate(source_path, destination, stage_number(manifest), performance=True, language=manifest.get('language', 'rust'))
             result['analysis_complete'] = True
             result['evaluated_unix'] = time.time()
             atomic_json(result_path, result)

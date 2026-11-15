@@ -39,7 +39,7 @@ class RepositoryLayoutTests(unittest.TestCase):
         self.assertTrue((ROOT / 'legacy/python_pilot/tasks/http/level-1.md').is_file())
 
     def test_relocated_stage10_inputs_match_frozen_inventory(self):
-        packet = ROOT / 'stages/stage10'
+        packet = ROOT / 'stages/stage-10'
         manifest = json.loads((packet / 'input-manifest.json').read_text())
         for entry in manifest['entries']:
             source = packet / entry['path']
@@ -52,7 +52,7 @@ class RepositoryLayoutTests(unittest.TestCase):
         from stage10.runner import identity
         before_stage1, before_stage10 = fingerprint(), identity()
         original = Path.read_bytes
-        target = ROOT / 'stages/stage10/builder/HTTP.md'
+        target = ROOT / 'stages/stage-10/builder/HTTP.md'
 
         def changed(path):
             value = original(path)

@@ -8,6 +8,7 @@ import shutil
 import time
 from pathlib import Path
 
+from toksec.stages import number as stage_number
 from toksec import metering
 from toksec.storage import atomic_json
 from toksec.api import Responses
@@ -63,7 +64,7 @@ def preflight(run):
     for command in (('g++', 'gcc', 'readelf', 'nm', 'dpkg-query') if manifest.get('language') == 'cpp' else ('rustc', 'gcc', 'readelf', 'nm')) + ('bwrap', 'nsenter'):
         if not shutil.which(command):
             reasons.append(f'{command} is unavailable.')
-    needed_cpus = 6 if manifest['level'] >= 4 else 5
+    needed_cpus = 6 if stage_number(manifest) >= 4 else 5
     if len(os.sched_getaffinity(0)) < needed_cpus:
         reasons.append(f'{needed_cpus} CPUs required for server, load workers and any upstream fixture.')
     if resource.getrlimit(resource.RLIMIT_NOFILE)[1] < 16384:

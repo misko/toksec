@@ -17,7 +17,7 @@ from toksec.specification import workloads
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--level', type=int, required=True)
+    parser.add_argument('--stage', '--level', dest='stage', type=int, required=True)
     parser.add_argument('--fixtures', type=Path, required=True)
     parser.add_argument('--pid', type=int, required=True)
     parser.add_argument('--server-cpu', type=int, required=True)
@@ -32,7 +32,7 @@ def main():
     upstream = None
     upstream_cpu = None
     try:
-        if args.level >= 4:
+        if args.stage >= 4:
             ready = args.fixtures / 'upstream.ready'
             fixture_module = 'evaluation.smoke.upstream' if args.suite == 'smoke' or args.mode == 'benchmark' else 'toksec.fixtures'
             available = sorted(os.sched_getaffinity(0) - {args.server_cpu})
@@ -59,16 +59,16 @@ def main():
             selected = None
             if args.suite == 'smoke':
                 from stages.common.smoke import cases
-                selected = cases(args.level)
+                selected = cases(args.stage)
                 if args.case:
                     raise ValueError('smoke suite cannot select a held-out case')
             if args.case:
-                selected = [c for c in cases_for(args.level) + configured_cases(args.level) if c.id == args.case]
+                selected = [c for c in cases_for(args.stage) + configured_cases(args.stage) if c.id == args.case]
                 if len(selected) != 1:
                     raise ValueError('unknown or ambiguous case')
-            result = run_checks(Context(args.level, args.fixtures, args.pid), selected)
+            result = run_checks(Context(args.stage, args.fixtures, args.pid), selected)
         else:
-            selected = [w for w in workloads(args.level) if not args.workload or w.id == args.workload]
+            selected = [w for w in workloads(args.stage) if not args.workload or w.id == args.workload]
             if not selected or not 1 <= args.rounds <= 5:
                 raise ValueError('invalid workload or rounds')
             result = {w.id: summarize([round_run(w, args.pid, args.server_cpu, args.fixtures, upstream_pid=upstream.pid if upstream else None, upstream_cpu=upstream_cpu) for _ in range(args.rounds)]) for w in selected}

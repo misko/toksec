@@ -8,15 +8,15 @@ import the legacy pilot.
 |---|---|
 | `README.md` | Current entry points and limitations |
 | `AGENTS.md` | Parent/contributor working rules |
-| `RULES.md` | Shared Stage 1–5 builder policy |
+| `RULES.md` | Shared builder policy for all supported stages |
 | `contracts/` | Schemas for submissions and parent evaluation records |
 | `stages/` | Current stage requirements, language policies, and suite selections |
-| `tasks/v8/` | Generated Stage 1–5 packets; edit sources and regenerate |
-| `tasks/v2/` through `tasks/v7/` | Historical generated packets |
-| `toksec/` | Stage 1–5 runtime and shared artifacts, storage, transport, accounting, and publication |
+| `.generated/packets/` | Optional generated previews, ignored by Git |
+| `archive/task-packets/` | Frozen historical packets, never current inputs |
+| `toksec/` | Shared runner, stage identity, Git provenance, accounting, and publication |
 | `stage10/` | Stage 10 TLS backend and partial grader behind the regular CLI |
 | `evaluation/` | Executable checker and calibration code, not evaluation results |
-| `evaluate.py` | Thin Stage 1–5 standalone and tagged-grading CLI |
+| `evaluate.py` | Shared standalone and tagged-grading CLI |
 | `scripts/` | Campaign orchestration, analysis, plotting, calibration, and publication commands |
 | `tests/` | Harness regression tests and test-only implementation fixtures |
 | `fixtures/` | Shared accounting test data |
@@ -37,7 +37,7 @@ whole-run allocation in the shared campaign ledger via `toksec/stage10_campaign.
 `toksec/stage_dispatch.py` routes shared commands to the selected backend. This does not change prices,
 authorized budgets, or model settings.
 
-Stage 10 definitions and fixtures live in `stages/stage10/`. The experimental
+Stage 10 definitions and fixtures live in `stages/stage-10/`. The experimental
 runtime remains in `stage10/`. Its frozen draft policy and host readiness records
 are labeled in that stage's README; they are not evidence of full acceptance.
 Stage 1–5 fingerprinting excludes Stage 10's separate definition tree.

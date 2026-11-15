@@ -1,58 +1,51 @@
-# Stage definitions and checker ownership
+# Stage definitions and generated inputs
 
-Edit shared requirements and stage definitions, then regenerate current packets.
-Do not edit a historical run's copied inputs.
+`stages/` is the editable source of stage requirements and suite selections.
+Use `stage-01` for directory names and machine identifiers, `Stage 1` in prose,
+and integer `stage` fields in JSON. The shared formatter lives in
+`toksec/stages.py`. Python components in these directories load through its
+module selector. Protocol version directories are not part of current inputs.
 
 ```text
 RULES.md
-contracts/artifact.schema.json
 stages/
-  common/
-    ARTIFACTS.md
-    INTERFACE.md
-    HTTP.md
-    BENCHMARK.md
-    api.py
-    smoke.py
-    performance.py
-  languages/{rust,cpp}.md
-  capabilities/
-  stage1/ ... stage5/
-    SPEC.md
-    profile.json
-    api.py
-    performance.py
-  stage10/
-    builder/
-    fixtures/
-    preview/
-    host/
-    input-manifest.json
-tasks/v8/{rust,cpp}/
+  common/                     Shared interfaces, artifact rules, and checks
+  capabilities/               Reusable requirements
+  languages/                  Rust and C++ restrictions
+  stage-01/ ... stage-05/      SPEC.md, profile.json, api.py, performance.py
+  stage-10/                   Stage 10 instructions, fixtures, packet assembly
+.generated/packets/            Optional current previews, ignored by Git
+archive/task-packets/          Historical packets preserved byte-for-byte
 ```
 
-`toksec/specification.py` assembles the Stage 1–5 packet from shared rules, language
-policy, selected requirements, minimal smoke descriptions, and workload parameters.
-Both runners add the generated artifact contract and shared ownership instructions.
-Their input assemblies do not include reference servers or test implementation fixtures.
+Preparation assembles English instructions from these definitions and freezes the
+selected files in the run's `builder-inputs/` and `launch-packet.md`. It never reads
+archived packets. The sandbox receives an explicit allowlist, not the whole stage
+directory or comprehensive parent tests. No starter code is provided.
 
-Regenerate Stage 1–5 packets without model calls:
+Generate optional previews without model calls:
 
 ```sh
-python3 -m toksec publish --output tasks/v8/rust --language rust
-python3 -m toksec publish --output tasks/v8/cpp --language cpp
+python3 -m toksec publish --language cpp
+python3 -m toksec publish --stage 10 --language rust
 ```
 
-Stage 10 uses its separately versioned experimental packet and runtime. Its host
-readiness and manifest files retain draft provenance. The operational runner notice
-describes which parts are supported; full independent acceptance remains incomplete.
-Do not silently replace its frozen policy with another stage's policy.
+These write `stage-01.md` / `stage-01.json`, or the selected stage, under
+`.generated/packets/LANGUAGE/`. `--output DIRECTORY` selects another destination.
+Edit canonical sources, not generated previews. `--level` remains an alias for
+`--stage`; historical `level` JSON fields remain readable. Conflicting fields fail.
 
-`evaluation/` contains executable checkers and calibration fixtures. Stage selections
-reuse that code through `stages/common/` and `toksec/`. Builder submission tools run
-only minimal visible smoke checks. Parent grading runs the selected independent
-API suite and gates performance on correctness. Framework regression tests live in
-`tests/`; they are not the server acceptance suite.
+New runs record the full `toksec_commit` SHA and require a clean Git checkout.
+Their names include the stage, language, UTC timestamp, abbreviated commit, and a
+random suffix to avoid collisions. Commit framework changes before preparation.
+Each evaluation separately records its evaluator `toksec_commit` and
+`toksec_dirty` state. Tagged evaluations also record `run_toksec_commit` from the
+run manifest when available. Input and evaluator hashes remain required evidence;
+the submitted server's Git commit is a separate identity.
 
-Reports belong under a run's `evaluation/<id>/` and publish separately from its
-implementation. See [result storage](result-storage.md).
+Historical runs, reports, and manifests retain their original paths, protocol
+labels and missing provenance. Never assign the current checkout's commit to old
+evidence. Use an old run's recorded checkout to reproduce its evaluator.
+
+Stage 10 uses the same public runner and result layout. Its API coverage remains
+partial and performance measurements provisional, with no final performance credit.

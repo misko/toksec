@@ -1,3 +1,4 @@
+from toksec.stages import identifier as stage_id
 import hashlib
 import json
 from dataclasses import asdict
@@ -5,7 +6,6 @@ from stages.common.performance import Workload, matrix
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 'http-v8'
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'Plaintext operations'}
 DESIGN = {
@@ -38,22 +38,17 @@ def configuration(level):
 
 
 def workloads(level):
+    from toksec.stages import module
     configuration(level)
-    if level == 1:
-        from stages.stage1.performance import workloads as selected
-        return selected()
-    if level == 2:
-        from stages.stage2.performance import workloads as selected
-        return selected()
-    import importlib
-    return importlib.import_module(f'stages.stage{level}.performance').workloads()
+    return module(level, 'performance').workloads()
 
 
 def specification(level, language='rust'):
     if level == 10:
-        from stages.stage10.packet import input_files
+        from toksec.stages import module as stage_module
+        input_files = stage_module(10, 'packet').input_files
         from toksec.languages import profile
-        return {'version': 'stage10-experimental', 'level': 10, 'language': language,
+        return {'stage': 10, 'language': language,
                 'title': 'Configuration, HTTPS, and worker operations', 'api_coverage': 'partial',
                 'performance_scope': 'provisional', 'final_grade_eligible': False,
                 'build': profile(language, 10), 'configuration_format': 'nginx subset',
@@ -62,7 +57,7 @@ def specification(level, language='rust'):
     from toksec.languages import profile
     from toksec.checks import cases_for, configured_cases, EXTERNAL_CASES
     configuration(level)
-    return {'version': VERSION, 'level': level, 'title': TITLES[level], 'language': language,
+    return {'stage': level, 'title': TITLES[level], 'language': language,
             'configuration': configuration(level), 'requirements': [(ROOT / name).read_text() for name in contract_files(level)],
             'profile': stage_profile(level),
             'cases': [{'id': c.id, 'description': c.description} for c in cases_for(level) + configured_cases(level) + EXTERNAL_CASES],
@@ -74,14 +69,14 @@ def specification(level, language='rust'):
 
 def stage_profile(level):
     configuration(level)
-    return json.loads((ROOT / f'stages/stage{level}/profile.json').read_text())
+    return json.loads((ROOT / f'stages/{stage_id(level)}/profile.json').read_text())
 
 
 def contract_files(level):
     names = ['stages/common/HTTP.md']
     if level >= 3:
         names += [f'stages/capabilities/{name}.md' for name in stage_profile(level)['capabilities'] if name != 'static-files']
-    names.append(f'stages/stage{level}/SPEC.md')
+    names.append(f'stages/{stage_id(level)}/SPEC.md')
     return names
 
 
@@ -93,11 +88,12 @@ def instruction_files(level, language='rust'):
 
 def packet(level, language='rust'):
     if level == 10:
-        from stages.stage10.packet import packet as selected
+        from toksec.stages import module as stage_module
+        selected = stage_module(10, 'packet').packet
         return selected(language)
     from toksec.artifacts import artifact_contract
     spec = specification(level, language)
-    lines = [f'# Stage {level}: {TITLES[level]}', '', f'Contract version: {VERSION}.', '']
+    lines = [f'# Stage {level}: {TITLES[level]}', '']
     for name in instruction_files(level, language):
         lines.extend([(ROOT / name).read_text(), ''])
     lines.extend(['## Artifact contract', '', '```json', json.dumps(artifact_contract(level, language), indent=2, sort_keys=True), '```', ''])
@@ -117,7 +113,7 @@ def packet(level, language='rust'):
 def fingerprint():
     paths = list((ROOT / 'toksec').glob('*.py'))
     paths += [ROOT / name for name in ('evaluate.py', 'RULES.md')]
-    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json') and not p.is_relative_to(ROOT / 'stages/stage10')]
+    paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json') and not p.is_relative_to(ROOT / 'stages/stage-10')]
     paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
     paths += list((ROOT / 'contracts').glob('*.schema.json'))
     paths += [ROOT / 'fixtures/accounting/legacy-pilot-ledger.json']
@@ -130,5 +126,5 @@ def publish(directory, language='rust', level=None):
     directory.mkdir(parents=True, exist_ok=True)
     selected_levels = [level] if level is not None else TITLES
     for level in selected_levels:
-        (directory / f'level-{level}.md').write_text(packet(level, language))
-        (directory / f'level-{level}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')
+        (directory / f'{stage_id(level)}.md').write_text(packet(level, language))
+        (directory / f'{stage_id(level)}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')

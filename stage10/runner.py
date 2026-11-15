@@ -16,10 +16,11 @@ from toksec.releases import git
 from toksec.artifacts import write_artifact, read_artifact, validate_source
 from toksec.runner import credentials, tool, deadline, CampaignDeadline
 from stage10 import evaluate, sandbox
+from toksec.provenance import checkout
 from stage10.budget import BudgetLedger, COUNT_FIELDS
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKET = ROOT / 'stages/stage10'
+PACKET = ROOT / 'stages/stage-10'
 TOOLS = [
     tool('budget_status', 'Read remaining metered dollars, tokens, wall time and release state.'),
     tool('submit_candidate', 'Compile your complete source in the sandbox and run ordinary visible smoke.', {'source': {'type': 'string'}}),
@@ -41,7 +42,8 @@ def read(run, name='state.json'):
 
 
 def identity():
-    from stages.stage10.packet import input_files
+    from toksec.stages import module as stage_module
+    input_files = stage_module(10, 'packet').input_files
     paths = list((ROOT / 'stage10').glob('*.py'))
     paths += [PACKET / 'packet.py']
     for language in ('cpp', 'rust'):
@@ -49,17 +51,21 @@ def identity():
     paths += [ROOT / 'toksec/artifacts.py', ROOT / 'toksec/evaluation_artifacts.py',
               ROOT / 'toksec/api.py', ROOT / 'toksec/storage.py',
               ROOT / 'toksec/stage_dispatch.py', ROOT / 'toksec/stage10_campaign.py',
-              ROOT / 'toksec/campaign.py', ROOT / 'toksec/metering.py']
+              ROOT / 'toksec/campaign.py', ROOT / 'toksec/metering.py',
+              ROOT / 'toksec/stages.py', ROOT / 'toksec/provenance.py']
     paths += list((ROOT / 'contracts').glob('*.schema.json'))
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes()
                                   for p in sorted(set(paths)))).hexdigest()
 
 
 def prepare(run, language='cpp', wall_seconds=7200, budget='2.00'):
-    from stages.stage10.packet import input_files, packet
+    from toksec.stages import module as stage_module
+    input_files = stage_module(10, 'packet').input_files
+    packet = stage_module(10, 'packet').packet
     if type(wall_seconds) is not int or not 120 <= wall_seconds <= 7200:
         raise ValueError('wall_seconds must be between 120 and 7200')
     prompt = packet(language, budget)
+    provenance = checkout(require_clean=True)
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=False)
     (run / 'candidates').mkdir()
@@ -72,7 +78,7 @@ def prepare(run, language='cpp', wall_seconds=7200, budget='2.00'):
     (run / 'launch-packet.md').write_text(prompt)
     inventory = {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
                  for p in (run / 'builder-inputs').rglob('*') if p.is_file()}
-    atomic_json(run / 'manifest.json', {'stage': 10, 'model': 'gpt-6.1-terra', 'language': language,
+    atomic_json(run / 'manifest.json', {**provenance, 'stage': 10, 'model': 'gpt-6.1-terra', 'language': language,
                 'reasoning_effort': 'medium', 'service_tier': 'default', 'budget_usd': budget,
                 'wall_seconds': wall_seconds, 'created_unix': time.time(), 'started_unix': None,
                 'toolchain': subprocess.check_output(['dpkg-query','-W','g++','libssl-dev','libssl3t64'], text=True).strip(),
@@ -346,6 +352,7 @@ def grade(run, output=None, performance=False):
         source_path = Path(temporary) / name
         source_path.write_text(source)
         result = evaluate_source(source_path, output, performance, m['language'], cpus=m['cpus'])
+    result['run_toksec_commit'] = m.get('toksec_commit')
     result['release'] = release
     atomic_json(output / 'result.json', result)
     write_evaluation(output, run_id=run.name, release=release,

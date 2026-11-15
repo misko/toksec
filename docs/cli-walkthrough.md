@@ -7,8 +7,8 @@ provisional performance](../stage10/README.md). No current builder receives star
 ## Check a source file without model calls
 
 ```sh
-python3 evaluate.py --section api --level 1 --language rust --source main.rs
-python3 evaluate.py --section performance --level 2 --language cpp --source main.cpp
+python3 evaluate.py --section api --stage 1 --language rust --source main.rs
+python3 evaluate.py --section performance --stage 2 --language cpp --source main.cpp
 ```
 
 The API section compiles in a sandbox and runs the selected independent API suite.
@@ -30,11 +30,12 @@ load-generator saturation alongside latency and throughput.
 
 ## Prepare an independent campaign
 
-These commands do not call the model:
+These commands do not call the model. Commit framework changes first; preparation
+requires a clean Git checkout and records its full commit SHA:
 
 ```sh
 python3 -m toksec init --campaign .runs/terra-example --budget-usd 3
-python3 -m toksec prepare --campaign .runs/terra-example --level 1 --language cpp --model gpt-6.1-terra --wall-seconds 7200
+python3 -m toksec prepare --campaign .runs/terra-example --stage 1 --language cpp --model gpt-6.1-terra --wall-seconds 7200
 python3 -m toksec preflight --run RUN_PATH
 ```
 
@@ -43,7 +44,7 @@ share its ledger. Each run starts independently with no implementation code.
 The default campaign cap is $3 and the default run ceiling is two hours. Strict
 request reservations can stop admission before all dollars are spent.
 
-Stage 10 uses the same preparation command with `--level 10`. It defaults to
+Stage 10 uses the same preparation command with `--stage 10`. It defaults to
 `gpt-6.1-terra` (the only supported Stage 10 model), medium reasoning, and a maximum
 $2 run allocation from the shared campaign. `--spend-target-usd` is a hard allocation
 cap for Stage 10; for Stages 1–5 it remains a soft stopping target. Preparation
@@ -53,8 +54,8 @@ Uncertain usage keeps the reservation and blocks further dispatch.
 
 ```sh
 python3 -m toksec init --campaign .runs/tls-example --budget-usd 2
-python3 -m toksec prepare --campaign .runs/tls-example --level 10 --language cpp
-python3 evaluate.py --section api --level 10 --language cpp --source main.cpp
+python3 -m toksec prepare --campaign .runs/tls-example --stage 10 --language cpp
+python3 evaluate.py --section api --stage 10 --language cpp --source main.cpp
 ```
 
 The following command makes paid model API calls:
@@ -96,3 +97,12 @@ Stage 1–5 all-tags timeline workflow. Stage 10 currently uses the shared last-
 grading and publication commands above. Their explicit analysis outputs remain supported by
 the publisher; they are not builder feedback or permission to regrade a frozen run
 with another evaluator. See the [script index](../scripts/README.md).
+
+## Stage names and provenance
+
+Use `--stage 1`; `--level 1` remains a compatibility alias. Stage directory names
+are `stage-01`, `stage-02`, and `stage-10`. New manifests write integer `stage`.
+Runs record `toksec_commit` at preparation. Evaluations record their own
+`toksec_commit` and `toksec_dirty`, plus `run_toksec_commit` for tagged grading.
+The evaluator commit and the submitted server's `release.commit` are different.
+Historical records without commit provenance remain explicitly historical.

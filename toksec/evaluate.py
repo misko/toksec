@@ -2,7 +2,9 @@
 import json
 import hashlib
 from pathlib import Path
+from toksec.stages import number as stage_number
 from toksec.storage import atomic_json
+from toksec.provenance import checkout
 from toksec import sandbox
 from toksec.specification import workloads, fingerprint
 
@@ -11,10 +13,11 @@ def evaluate(source, directory, level, performance=False, language='rust'):
     if level == 10:
         from stage10.evaluation import evaluate_source
         return evaluate_source(source, directory, performance, language)
+    provenance = checkout()
     directory=Path(directory).resolve()
     directory.mkdir(parents=True,exist_ok=False)
     artifact=directory/'candidate'
-    result={'source_sha256':hashlib.sha256(Path(source).read_bytes()).hexdigest(), 'framework':fingerprint(), 'level':level,'language':language,'build':sandbox.build(Path(source).read_text(),artifact,level,language=language)}
+    result={**provenance, 'source_sha256':hashlib.sha256(Path(source).read_bytes()).hexdigest(), 'framework':fingerprint(), 'stage':level,'language':language,'build':sandbox.build(Path(source).read_text(),artifact,level,language=language)}
     if result['build']['passed']:
         result['checks']=sandbox.evaluate(artifact,level)
         atomic_json(directory/'result.json',result)
@@ -56,7 +59,7 @@ def resume(source, directory, level, language='rust'):
     """Resume only completed independent API checks/workloads, never model calls."""
     directory = Path(directory)
     result = json.loads((directory/'result.json').read_text())
-    if (result.get('framework') != fingerprint() or result.get('level') != level
+    if (result.get('framework') != fingerprint() or stage_number(result) != level
             or result.get('language') != language
             or result.get('source_sha256') != hashlib.sha256(Path(source).read_bytes()).hexdigest()):
         raise ValueError('partial evaluation does not match source/profile/framework')

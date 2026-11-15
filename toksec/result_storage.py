@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import tempfile
 
+from toksec.stages import number as stage_number
 from toksec.storage import atomic_json
 
 LAYOUT_VERSION = 1
@@ -292,7 +293,7 @@ def snapshot_run(run, snapshot):
     """Collect an allowlisted flat snapshot from either runner's raw run."""
     run, snapshot = Path(run).resolve(), Path(snapshot)
     manifest, state = read(run / 'manifest.json'), read(run / 'state.json')
-    stage = manifest.get('stage', manifest.get('level'))
+    stage = stage_number(manifest)
     language = manifest.get('language', 'rust')
     if (run / 'artifact.json').exists() or manifest.get('artifact_sha256'):
         from toksec.artifacts import read_artifact
@@ -306,7 +307,9 @@ def snapshot_run(run, snapshot):
     snapshot.mkdir()
     stamp = datetime.fromtimestamp(manifest['started_unix'], timezone.utc).strftime('%Y-%m-%dT%H-%M-%SZ')
     framework = manifest.get('framework', manifest.get('fingerprint'))
-    protocol = 'stage10-experimental' if stage == 10 else read(run / 'specification.json').get('version', 'unknown')
+    protocol = ('toksec-' + manifest['toksec_commit'][:12] if manifest.get('toksec_commit')
+                else 'stage10-experimental' if stage == 10
+                else read(run / 'specification.json').get('version', 'unknown'))
     record = {'id': f'{stamp}__stage-{stage:02d}__{language}__{manifest.get("model", "unknown")}__{protocol}__{framework[:8]}',
               'stage': stage, 'language': language, 'model': manifest.get('model', 'unknown'),
               'status': 'builder_finished' if state['finished'] else 'running', 'protocol': protocol,
@@ -314,6 +317,8 @@ def snapshot_run(run, snapshot):
               'input_policy': {'starter': False, 'feedback': 'visible_smoke_only'},
               'wall_seconds': manifest['wall_seconds'], 'path': f'stage-{stage:02d}/{language}',
               'comparison_policy': 'Do not pool different protocols, languages, models, budgets or input policies.'}
+    if manifest.get('toksec_commit'):
+        record['toksec_commit'] = manifest['toksec_commit']
     destination(snapshot.parent, record)
     for name in ('manifest.json', 'launch-packet.md', 'artifact.json', 'specification.json'):
         if (run / name).is_file():

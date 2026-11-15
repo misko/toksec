@@ -7,6 +7,7 @@ import tempfile
 import time
 from pathlib import Path
 
+from toksec.stages import number as stage_number
 from toksec import sandbox, controller, evaluate
 from toksec.artifacts import read_artifact, validate_source
 from toksec.stage_dispatch import stage_of, stage10_tool
@@ -74,7 +75,7 @@ def publish(run, note):
     existing=list_releases(run)
     if existing and not set(existing[-1]['passed_checks']) <= passed:
         raise ValueError('release loses previously passing public checks')
-    contract=read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
+    contract=read_artifact(run, stage_number(manifest), manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
     filename=contract['submission']['source_file']
     source=(candidate/filename).read_bytes()
     validate_source(source.decode('utf-8'), contract)
@@ -85,7 +86,7 @@ def publish(run, note):
     if number>999999:
         raise ValueError('release sequence exhausted')
     tag=f'release/{number:06d}'
-    metadata={'candidate':identity,'level':manifest['level'],'language':manifest.get('language', 'rust'),'note':note,
+    metadata={'candidate':identity,'stage':stage_number(manifest),'language':manifest.get('language', 'rust'),'note':note,
               'source_sha256':digest,'passed_checks':sorted(passed),
               'evaluation_scope':manifest['builder_evaluation_scope'], 'smoke_passed':report['checks']['passed'],'framework':manifest['fingerprint'],
               'recorded_unix':time.time(), 'capacity':controller.capacity(run), 'artifact_sha256':manifest.get('artifact_sha256')}
@@ -117,7 +118,7 @@ def grade(run, output=None, performance=False):
     if release['framework'] != fingerprint():
         raise ValueError('release uses a different evaluator; grade with its original framework checkout')
     manifest=controller.read(run, 'manifest.json')
-    contract=read_artifact(run, release['level'], release.get('language', 'rust'), manifest.get('artifact_sha256'))
+    contract=read_artifact(run, stage_number(release), release.get('language', 'rust'), manifest.get('artifact_sha256'))
     filename=contract['submission']['source_file']
     source=git(run,'show',release['tag']+':'+filename)
     validate_source(source, contract)
@@ -126,7 +127,8 @@ def grade(run, output=None, performance=False):
     with tempfile.TemporaryDirectory(prefix='toksec-grade-') as temporary:
         file=Path(temporary)/filename
         file.write_text(source)
-        result=evaluate.evaluate(file,output,release['level'],performance,language=release.get('language', 'rust'))
+        result=evaluate.evaluate(file,output,stage_number(release),performance,language=release.get('language', 'rust'))
+    result['run_toksec_commit'] = manifest.get('toksec_commit')
     result['release']=release
     from toksec.storage import atomic_json
     atomic_json(Path(output)/'result.json',result)

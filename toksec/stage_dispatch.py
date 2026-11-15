@@ -4,16 +4,14 @@ import fcntl
 import json
 from pathlib import Path
 
-SUPPORTED_STAGES = (1, 2, 3, 4, 5, 10)
+from toksec.stages import SUPPORTED_STAGES, number
 
 
 def stage_of(run):
     manifest = json.loads((Path(run) / 'manifest.json').read_text())
-    stage = manifest.get('stage', manifest.get('level'))
-    if type(stage) is not int or stage not in SUPPORTED_STAGES:
+    stage = number(manifest)
+    if stage not in SUPPORTED_STAGES:
         raise ValueError('unsupported stage identity')
-    if 'level' in manifest and manifest['level'] != stage:
-        raise ValueError('conflicting stage identities')
     return stage
 
 

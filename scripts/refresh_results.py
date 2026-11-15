@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from toksec.stages import number as stage_number
 
 
 def read(path):
@@ -16,7 +17,7 @@ def select(roots):
     for root in roots:
         for path in sorted((root/'.runs').glob('**/manifest.json')):
             manifest = read(path)
-            level = manifest.get('stage', manifest.get('level'))
+            level = stage_number(manifest)
             if (level not in (1,2,3,4,5,10)
                 or not manifest.get('started_unix')
                 or manifest.get('builder_evaluation_scope') != 'visible_smoke_only'

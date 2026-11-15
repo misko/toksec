@@ -14,7 +14,7 @@ paths, and budgets; their examples must not be treated as current launch command
 | [Visible and held-out tests](visible-and-held-out-tests.md) | Minimal builder feedback versus parent grading |
 | [v8 alignment](stages-3-5-v8.md) | Current Stage 3–5 protocol and calibration limitations |
 | [Stage 10 runtime](../stage10/README.md) | Experimental runtime and partial coverage |
-| [Stage 10 inputs](../stages/stage10/README.md) | Active packet and frozen draft/readiness provenance |
+| [Stage 10 inputs](../stages/stage-10/README.md) | Active packet and frozen draft/readiness provenance |
 
 ## Designs and historical records
 

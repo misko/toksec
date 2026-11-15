@@ -1,5 +1,6 @@
 from dataclasses import replace
-from stages.stage2.performance import workloads as base
+from toksec.stages import module as stage_module
+base = stage_module(2, 'performance').workloads
 from stages.common.performance import matrix
 
 def workloads():

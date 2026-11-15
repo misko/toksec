@@ -19,7 +19,7 @@ BENCHMARK, and SMOKE. The runner supplies the same allowlisted documents through
 its input tool, plus the generated artifact contract and operational budget notice.
 The old `builder/RULES.md` and `preview/` packets are preserved historical drafts;
 they are not the source of current shared policy. Generate a current preview with
-`python3 -m toksec publish --level 10 --language cpp --output OUTPUT`.
+`python3 -m toksec publish --stage 10 --language cpp --output OUTPUT`.
 
 The agent also receives a minimal bootstrap configuration, a full example with
 includes, a few static files, two test host identities and replacement certificate

@@ -16,6 +16,8 @@ from toksec import campaign, metering
 from toksec.artifacts import read_artifact
 from toksec.specification import fingerprint
 from toksec.storage import atomic_json
+from toksec.provenance import checkout, run_name
+from toksec.stages import number as stage_number
 from stage10.budget import BudgetLedger, MODEL, PRICES
 
 BACKEND = 'stage10-counted-v1'
@@ -50,7 +52,7 @@ def _parent_available(directory):
 
 def status(directory):
     ledger, balance, eligible, available = _parent_available(directory)
-    return {**balance, 'model': MODEL, 'level': 10, 'service_tier': 'default',
+    return {**balance, 'model': MODEL, 'stage': 10, 'service_tier': 'default',
             'state': ledger['state'], 'reason': ledger['reason'],
             'can_start_model_call': eligible and available >= MIN_RUN_BUDGET,
             'maximum_stage10_allocation_usd': str(available),
@@ -78,15 +80,16 @@ def prepare(campaign_dir, language='rust', wall_seconds=7200, model=MODEL,
         amount = maximum if spend_target_usd is None else _money(spend_target_usd)
         if amount < MIN_RUN_BUDGET or amount > maximum:
             raise ValueError(f'Stage 10 allocation must be between {MIN_RUN_BUDGET} and {maximum} USD')
-        run = campaign_dir / 'runs' / ('level-10-' + uuid.uuid4().hex[:12])
+        provenance = checkout(require_clean=True)
+        run = campaign_dir / 'runs' / run_name(10, language, provenance['toksec_commit'])
         result = runner.prepare(run, language=language, wall_seconds=wall_seconds, budget=str(amount))
         manifest = runner.read(run, 'manifest.json')
-        manifest.update(campaign=str(campaign_dir), level=10, campaign_backend=BACKEND,
+        manifest.update(campaign=str(campaign_dir), stage=10, campaign_backend=BACKEND,
                         campaign_fingerprint=ledger['fingerprint'],
                         builder_evaluation_scope='visible_smoke_only',
                         campaign_allocation_usd=str(amount), campaign_total_cap_usd=ledger['dollar_limit'])
         atomic_json(run / 'manifest.json', manifest)
-    return {**result, 'level': 10, 'campaign': str(campaign_dir),
+    return {**result, 'stage': 10, 'campaign': str(campaign_dir),
             'allocation_usd': str(amount), 'allocation_reserved': False,
             'launch_packet': str(run / 'launch-packet.md'),
             'api_coverage': 'partial', 'performance_scope': 'provisional'}
@@ -96,7 +99,7 @@ def _validate(run):
     from stage10 import runner
     run = Path(run).resolve()
     manifest = runner.read(run, 'manifest.json')
-    if (manifest.get('level') != 10 or manifest.get('stage') != 10
+    if (stage_number(manifest) != 10
             or manifest.get('campaign_backend') != BACKEND
             or manifest.get('model') != MODEL or manifest.get('service_tier') != 'default'
             or manifest.get('reasoning_effort') != 'medium'):

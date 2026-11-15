@@ -176,7 +176,7 @@ def invoke_driver(artifact, level, mode='check', configuration_override=None, **
     with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or mode == 'benchmark') as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
-                   '--level', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
+                   '--stage', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
                    '--mode', mode, '--server-cpu', str(runtime['cpu'])]
         for key, value in options.items():
             command += ['--' + key.replace('_', '-'), str(value)]
@@ -244,7 +244,8 @@ def evaluate(artifact, level, smoke=False):
     from toksec.checks import configured_cases
     from toksec.specification import configuration
     for check in configured_cases(level):
-        from stages.stage2.api import CONFIGURATIONS
+        from toksec.stages import module as stage_module
+        CONFIGURATIONS = stage_module(2, 'api').CONFIGURATIONS
         values = configuration(level)
         values.update(CONFIGURATIONS[check.id])
         data = ''.join(f'{k}={v}\n' for k, v in values.items())

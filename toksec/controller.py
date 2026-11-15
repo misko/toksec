@@ -8,7 +8,9 @@ import time
 import uuid
 from pathlib import Path
 
+from toksec.stages import number as stage_number
 from toksec.languages import source_name, profile
+from toksec.provenance import checkout, run_name
 from toksec.stage_dispatch import stage_of, stage10_tool
 from toksec.artifacts import write_artifact, read_artifact, validate_source
 from toksec.storage import atomic_json
@@ -26,7 +28,7 @@ def validate(run):
     manifest = read(run, 'manifest.json')
     if manifest['fingerprint'] != fingerprint():
         raise ValueError('framework changed since preparation; prepare a fresh run')
-    read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
+    read_artifact(run, stage_number(manifest), manifest.get('language', 'rust'), manifest.get('artifact_sha256'))
     return manifest
 
 
@@ -43,7 +45,8 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
         raise ValueError('wall_seconds must be between 120 and 7200')
     if not campaign.status(directory, model)['can_start_model_call']:
         raise ValueError('campaign is unavailable')
-    run = Path(directory).resolve() / 'runs' / f'level-{level}-{uuid.uuid4().hex[:12]}'
+    provenance = checkout(require_clean=True)
+    run = Path(directory).resolve() / 'runs' / run_name(level, language, provenance['toksec_commit'])
     (run / 'candidates').mkdir(parents=True)
     for name in instruction_files(level, language):
         destination = run / 'builder-inputs' / name
@@ -52,7 +55,7 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
     write_artifact(run, level, language)
     (run / 'launch-packet.md').write_text(packet(level, language))
     atomic_json(run / 'specification.json', specification(level, language))
-    atomic_json(run / 'manifest.json', {'level': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {**provenance, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(),
@@ -64,7 +67,7 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
     atomic_json(run / 'state.json', {'best': None, 'smoke_passed': False, 'last': None,
                                     'optimization_attempts': 0, 'finished': False, 'context_rollovers': 0,
                                     'invalidated': [], 'journal_entries': 0})
-    return {'run': str(run), 'level': level, 'launch_packet': str(run / 'launch-packet.md')}
+    return {'run': str(run), 'stage': level, 'launch_packet': str(run / 'launch-packet.md')}
 
 
 def capacity(run):
@@ -103,17 +106,17 @@ def submit(run, source):
         return stage10_tool(run, 'submit_candidate', {'source': source})
     run = Path(run)
     manifest = validate(run)
-    validate_source(source, read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256')))
+    validate_source(source, read_artifact(run, stage_number(manifest), manifest.get('language', 'rust'), manifest.get('artifact_sha256')))
     state = read(run)
     if state['finished']:
         raise ValueError('run is finished')
     identity = uuid.uuid4().hex
     artifact = run / 'candidates' / identity
-    report = {'id': identity, 'build': sandbox.build(source, artifact, manifest['level'], language=manifest.get('language', 'rust')),
+    report = {'id': identity, 'build': sandbox.build(source, artifact, stage_number(manifest), language=manifest.get('language', 'rust')),
               'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run), 'evaluation_scope': manifest['builder_evaluation_scope']}
     if report['build']['passed']:
         try:
-            report['checks'] = sandbox.evaluate(artifact, manifest['level'], smoke=True)
+            report['checks'] = sandbox.evaluate(artifact, stage_number(manifest), smoke=True)
         except (RuntimeError, OSError, ValueError) as error:
             report['checks']['error'] = str(error)[:2000]
     report['source_sha256'] = hashlib.sha256((artifact / source_name(manifest)).read_bytes()).hexdigest()
@@ -139,7 +142,7 @@ def measure(run, workload=None):
     identity = state['last']
     if not identity or identity in state.get('invalidated', []) or not read(run / 'candidates' / identity, 'report.json')['checks']['passed']:
         raise ValueError('last candidate must pass all public checks before benchmarking')
-    level = manifest['level']
+    level = stage_number(manifest)
     selected = [w for w in workloads(level) if workload is None or w.id == workload]
     if not selected:
         raise ValueError('unknown workload')
@@ -185,7 +188,7 @@ def test_source(run, source):
     if read(run)['finished']:
         raise ValueError('run is finished')
     artifact = Path(run) / 'unit-tests' / uuid.uuid4().hex
-    result = sandbox.build(source, artifact, manifest['level'], test=True, language=manifest.get('language', 'rust'))
+    result = sandbox.build(source, artifact, stage_number(manifest), test=True, language=manifest.get('language', 'rust'))
     if result['passed']:
         result['tests'] = sandbox.self_test(artifact)
     return result
@@ -232,7 +235,7 @@ def revalidate(run, target):
     destination = folder / (uuid.uuid4().hex + '.json')
     for _ in range(3):
         try:
-            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, manifest['level'], smoke=True))
+            reports.append(sandbox.evaluate(Path(run) / 'candidates' / identity, stage_number(manifest), smoke=True))
         except (RuntimeError, OSError, ValueError) as error:
             reports.append({'passed': False, 'error': str(error)[:8000]})
         atomic_json(destination, {'candidate': identity, 'passed': False, 'complete': False, 'restarts': reports})

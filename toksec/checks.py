@@ -1,3 +1,4 @@
+from toksec.stages import module as stage_module
 import time
 import os
 import signal
@@ -41,13 +42,13 @@ class Context:
 
 
 def cases_for(level):
-    import importlib
-    return list(importlib.import_module(f'stages.stage{level}.api').CASES)
+    return list(stage_module(level, 'api').CASES)
 
 
 def configured_cases(level):
     if level >= 2:
-        from stages.stage2.api import CONFIGURED_CASES
+        from toksec.stages import module as stage_module
+        CONFIGURED_CASES = stage_module(2, 'api').CONFIGURED_CASES
         return CONFIGURED_CASES
     return []
 

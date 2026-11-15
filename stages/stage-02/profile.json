@@ -1,11 +1,9 @@
 {
-  "level": 4,
+  "stage": 2,
   "profile": "bare-bones-http",
   "capabilities": [
     "static-files",
-    "persistence",
-    "routing",
-    "proxy"
+    "persistence"
   ],
   "languages": [
     "rust",

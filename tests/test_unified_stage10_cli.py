@@ -65,8 +65,8 @@ class UnifiedStage10CliTests(unittest.TestCase):
             root = Path(tmp)
             code, result = self.command('publish', '--level', '10', '--language', 'cpp', '--output', root)
             self.assertEqual(code, 0, result)
-            self.assertIn('partial', (root / 'level-10.md').read_text())
-            self.assertEqual(json.loads((root / 'level-10.json').read_text())['level'], 10)
+            self.assertIn('partial', (root / 'stage-10.md').read_text())
+            self.assertEqual(json.loads((root / 'stage-10.json').read_text())['stage'], 10)
             (root / 'manifest.json').write_text(json.dumps({'stage': 10, 'level': 1}))
             with self.assertRaisesRegex(ValueError, 'conflicting'):
                 stage_of(root)

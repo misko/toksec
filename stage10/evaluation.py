@@ -6,18 +6,20 @@ import subprocess
 
 from toksec.artifacts import artifact_contract, validate_source
 from toksec.storage import atomic_json
+from toksec.provenance import checkout
 from stage10 import benchmark, evaluate, sandbox
 
 
 def evaluate_source(source, directory, performance=False, language='rust', cpus=None):
     from stage10.runner import identity
+    provenance = checkout()
     source = Path(source)
     text = validate_source(source.read_text(), artifact_contract(10, language))
     directory = Path(directory).resolve()
     directory.mkdir(parents=True, exist_ok=False)
     cpus = list(cpus or sorted(os.sched_getaffinity(0))[:1])
     artifact = directory / 'candidate'
-    result = {'level': 10, 'language': language, 'coverage': 'partial',
+    result = {**provenance, 'stage': 10, 'language': language, 'coverage': 'partial',
               'final_grade_eligible': False, 'framework': identity(),
               'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
               'build': sandbox.build(text, artifact, language=language),

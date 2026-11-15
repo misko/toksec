@@ -77,6 +77,9 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
               'missing_evidence': missing, 'environment': environment, 'coverage': coverage,
               'status': status, 'api': {'status': api_status, 'passed': passed, 'total': total},
               'performance': perf}
+    for key in ('toksec_commit', 'toksec_dirty', 'run_toksec_commit'):
+        if key in (result or {}):
+            record[key] = result[key]
     validate_evaluation(record)
     json.dumps(record, allow_nan=False)
     files = ('evaluation.json', 'api.json', 'performance.json', 'report.md', 'figures')
@@ -103,6 +106,10 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
             'A skipped performance test has no measured throughput or latency.',
             'Zero performance credit is not a measured throughput of zero.', '',
             'See api.json and performance.json for evidence. Figures belong in figures/.']
+    if record.get('toksec_commit'):
+        text += ['', f"Toksec evaluator commit: `{record['toksec_commit']}`. Working tree dirty: {record.get('toksec_dirty', 'unknown')}."]
+    if record.get('run_toksec_commit'):
+        text += ['', f"Toksec run preparation commit: `{record['run_toksec_commit']}`."]
     if missing:
         text += ['', 'Historical evidence is missing: ' + ', '.join(missing) + '.']
     if coverage != 'full':

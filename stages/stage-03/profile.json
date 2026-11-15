@@ -1,8 +1,10 @@
 {
-  "level": 1,
+  "stage": 3,
   "profile": "bare-bones-http",
   "capabilities": [
-    "static-files"
+    "static-files",
+    "persistence",
+    "routing"
   ],
   "languages": [
     "rust",

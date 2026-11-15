@@ -3,12 +3,12 @@
 Stage 10 uses the regular `toksec` commands and `evaluate.py`, canonical root
 [RULES.md](../RULES.md), the shared artifact contract, and the standard result
 publisher. This directory implements its specialized TLS sandbox, bounded-request
-ledger and partial grader. Builders receive [stage-specific inputs](../stages/stage10/README.md)
+ledger and partial grader. Builders receive [stage-specific inputs](../stages/stage-10/README.md)
 and no server source. C++ and Rust workers implement the server and OpenSSL integration.
 
 ```sh
 python3 -m toksec init --campaign .runs/NAME --budget-usd 2
-python3 -m toksec prepare --campaign .runs/NAME --level 10 --language cpp
+python3 -m toksec prepare --campaign .runs/NAME --stage 10 --language cpp
 python3 -m toksec preflight --run RUN_PATH
 # The next command makes paid API calls:
 python3 -m toksec run --run RUN_PATH --key-file ~/.codexapi
@@ -19,7 +19,7 @@ python3 scripts/publish_results.py --run RUN_PATH
 ```
 
 Use the run path printed by preparation. Source-only evaluation also supports
-`--level 10 --language cpp --source main.cpp`. Successful partial checks return
+`--stage 10 --language cpp --source main.cpp`. Successful partial checks return
 exit code **4**, not full acceptance. Build/API failures return 2; diagnostic errors
 return 1. Performance first requires every implemented partial API check to pass,
 then measures HTTP/HTTPS × 256/4096 clients with 4 KiB bodies. All measurements

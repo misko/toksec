@@ -1,3 +1,4 @@
+from toksec.stages import number as stage_number
 def profile(language='rust', level=1):
     if level not in (1, 2, 3, 4, 5, 10):
         raise ValueError('level must be 1 through 5 or 10')
@@ -11,4 +12,4 @@ def profile(language='rust', level=1):
 
 
 def source_name(manifest):
-    return profile(manifest.get('language', 'rust'), manifest.get('level', manifest.get('stage')))['source']
+    return profile(manifest.get('language', 'rust'), stage_number(manifest))['source']

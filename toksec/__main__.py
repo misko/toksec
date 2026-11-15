@@ -13,21 +13,21 @@ def main(argv=None):
     check = commands.add_parser('check', help='Sandboxed compile and independent checks without API calls')
     check.add_argument('--source', type=Path, required=True)
     check.add_argument('--output', type=Path, required=True)
-    check.add_argument('--level', type=int, choices=SUPPORTED_STAGES, required=True)
+    check.add_argument('--stage', '--level', dest='stage', type=int, choices=SUPPORTED_STAGES, required=True)
     check.add_argument('--performance', action='store_true')
     pub = commands.add_parser('publish', help='Generate stage packets; Stage 10 remains experimental. No API call.')
     pub.add_argument('--output', type=Path, default=None)
     pub.add_argument('--language', choices=('rust', 'cpp'), default='rust')
-    pub.add_argument('--level', type=int, choices=SUPPORTED_STAGES, help='One stage; omit for all Stage 1–5 packets')
+    pub.add_argument('--stage', '--level', dest='stage', type=int, choices=SUPPORTED_STAGES, help='One stage; omit for all Stage 1–5 packets')
     check.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     for name in ('init', 'status', 'upgrade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)
         if name == 'init':
             cmd.add_argument('--budget-usd', default='3', help='Start a fresh campaign without importing historical charges')
-    prepare = commands.add_parser('prepare', help='Prepare an independent level. No API call.')
+    prepare = commands.add_parser('prepare', help='Prepare an independent stage. No API call.')
     prepare.add_argument('--campaign', type=Path, required=True)
-    prepare.add_argument('--level', type=int, choices=SUPPORTED_STAGES, required=True)
+    prepare.add_argument('--stage', '--level', dest='stage', type=int, choices=SUPPORTED_STAGES, required=True)
     prepare.add_argument('--model', choices=['gpt-6-luna', 'gpt-6.1-terra'], default=None, help='Defaults to Terra for Stage 10 and Luna for Stages 1–5')
     prepare.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     prepare.add_argument('--starter', type=Path)
@@ -52,12 +52,12 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.command == 'check':
-            result = evaluate.evaluate(args.source, args.output, args.level, args.performance, language=args.language)
+            result = evaluate.evaluate(args.source, args.output, args.stage, args.performance, language=args.language)
             print(json.dumps(result, indent=2))
             return evaluate.exit_code(result, args.performance)
         elif args.command == 'publish':
-            output = args.output or Path('tasks') / ('stage10' if args.level == 10 else 'v8') / args.language
-            publish(output, args.language, args.level)
+            output = args.output or Path('.generated/packets') / args.language
+            publish(output, args.language, args.stage)
             result = {'published': str(output.resolve())}
         elif args.command == 'init':
             result = campaign.initialize(args.campaign, args.budget_usd)
@@ -68,7 +68,7 @@ def main(argv=None):
         elif args.command == 'upgrade':
             result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
-            result = controller.prepare(args.campaign, args.level, args.wall_seconds, args.model, args.starter, args.spend_target_usd, language=args.language)
+            result = controller.prepare(args.campaign, args.stage, args.wall_seconds, args.model, args.starter, args.spend_target_usd, language=args.language)
         elif args.command in ('init-repository', 'release'):
             with operation_lock(args.run):
                 result = releases.initialize(args.run) if args.command == 'init-repository' else releases.publish(args.run, args.note)

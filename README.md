@@ -14,7 +14,9 @@ and [published results](results/README.md).
 Stages 1–5 and 10 are independent Rust or C++ assignments. Their canonical instructions
 live in [stages/](stages/), with shared builder policy in [RULES.md](RULES.md).
 Builders receive English requirements and minimal smoke examples; the full API
-checker stays on the host. Generated packets live in [tasks/v8/](tasks/v8/).
+checker stays on the host. Preparation generates and freezes each run’s packet directly from these sources.
+Optional previews go under `.generated/packets/`; historical packets live in
+[archive/task-packets/](archive/task-packets/).
 
 | Stage | Target |
 |---|---|
@@ -25,7 +27,7 @@ checker stays on the host. Generated packets live in [tasks/v8/](tasks/v8/).
 | 5 | Plaintext caching, rate limiting, reload, and graceful drain |
 | 10 | Experimental nginx configuration, HTTPS/TLS, streaming, cache coordination, and workers |
 
-[Stage 10 inputs](stages/stage10/README.md) use the same public runner, evaluator,
+[Stage 10 inputs](stages/stage-10/README.md) use the same public runner, evaluator,
 shared rules, and result publisher, with a specialized [TLS backend](stage10/README.md).
 Its independent checker remains partial;
 its results do not establish full Stage 10 acceptance. Stages 6–9 remain a
@@ -33,7 +35,7 @@ its results do not establish full Stage 10 acceptance. Stages 6–9 remain a
 
 Stage 1–5 workloads use 4 KiB and 64 KiB bodies at 256 and 4096 clients. Reports
 include goodput, latency, failures, timeouts, CPU, memory, and generator saturation.
-Read the [v8 calibration limitations](docs/stages-3-5-v8.md) before comparing results.
+Read the [historical calibration limitations](docs/stages-3-5-v8.md) before comparing results.
 Passing smoke checks is not full API acceptance. Failed parent API correctness
 skips performance and earns zero performance credit.
 
@@ -45,7 +47,7 @@ descriptors. Stage 10 additionally requires OpenSSL development files and delega
 user-systemd cgroups. Compilation and candidate execution are sandboxed.
 
 ```sh
-python3 evaluate.py --section api --level 1 --language cpp --source main.cpp
+python3 evaluate.py --section api --stage 1 --language cpp --source main.cpp
 python3 evaluate.py --section performance --run RUN_PATH
 python3 scripts/publish_results.py --run RUN_PATH
 ```
@@ -60,7 +62,7 @@ Preparation does not call the model:
 
 ```sh
 python3 -m toksec init --campaign .runs/http-campaign --budget-usd 3
-python3 -m toksec prepare --campaign .runs/http-campaign --level 1 --language cpp --model gpt-6.1-terra
+python3 -m toksec prepare --campaign .runs/http-campaign --stage 1 --language cpp --model gpt-6.1-terra
 python3 -m toksec preflight --run RUN_PATH
 ```
 

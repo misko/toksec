@@ -73,7 +73,11 @@ parent grading evidence.
 
 Parent reports and figures belong exclusively under evaluation/. The parent may
 evaluate the same implementation more than once. Each evaluation identifies the
-run, release tag, commit, source hash, contract hash, evaluator hash, and environment.
+run, release tag, server commit, source hash, contract hash, evaluator hash, and environment.
+New runs record `toksec_commit` at preparation. New evaluations record their own
+`toksec_commit` and `toksec_dirty`; tagged grading carries `run_toksec_commit` too.
+These framework commits are separate from the submitted server’s `release.commit`.
+Historical records without this evidence are not assigned a current commit.
 A report with missing historical identity says so. It cannot claim verified full
 acceptance. `run.json` supplies paths to the current implementation and evaluation.
 
@@ -99,7 +103,7 @@ publication automatically collects evaluations in the run's evaluation/ director
 Stage 10 currently has only partial independent API coverage:
 
 ```sh
-python3 -m stage10.runner grade --run .runs/RUN
+python3 evaluate.py --section api --run RUN_PATH
 python3 scripts/publish_results.py --run .runs/RUN
 ```
 

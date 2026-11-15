@@ -30,7 +30,7 @@ class SpecificationTests(unittest.TestCase):
     def test_all_levels_publish_complete_public_contracts(self):
         for level in range(1, 6):
             spec = specification(level)
-            self.assertEqual(spec['level'], level)
+            self.assertEqual(spec['stage'], level)
             self.assertEqual({w.clients for w in workloads(level)}, {256, 4096})
             self.assertTrue(spec['cases'])
             self.assertEqual(len({c['id'] for c in spec['cases']}), len(spec['cases']))
@@ -47,9 +47,15 @@ class SpecificationTests(unittest.TestCase):
                 specification(level)
 
     def test_published_contracts_match_executable_suite(self):
-        for level in range(1, 6):
-            self.assertEqual((ROOT / f'tasks/v8/rust/level-{level}.md').read_text(), packet(level))
-            self.assertEqual(json.loads((ROOT / f'tasks/v8/rust/level-{level}.json').read_text()), specification(level))
+        from toksec.specification import publish
+        for language in ('rust', 'cpp'):
+            with tempfile.TemporaryDirectory() as tmp:
+                publish(tmp, language)
+                for stage in range(1, 6):
+                    stem = Path(tmp) / f'stage-{stage:02d}'
+                    self.assertEqual(stem.with_suffix('.md').read_text(), packet(stage, language))
+                    self.assertEqual(json.loads(stem.with_suffix('.json').read_text()), specification(stage, language))
+                    self.assertNotIn('http-v8', stem.with_suffix('.md').read_text())
 
 
 class RustSandboxTests(unittest.TestCase):

@@ -7,6 +7,7 @@ import uuid
 from pathlib import Path
 
 from toksec import evaluate, releases
+from toksec.stages import number as stage_number
 from toksec.stage_dispatch import operation_lock
 
 
@@ -15,7 +16,7 @@ def main(argv=None):
     parser.add_argument('--section', required=True, choices=('api','performance'))
     parser.add_argument('--source', type=Path, default=None)
     parser.add_argument('--language', choices=('rust', 'cpp'), default='rust')
-    parser.add_argument('--level', type=int, choices=(1,2,3,4,5,10))
+    parser.add_argument('--stage', '--level', dest='stage', type=int, choices=(1,2,3,4,5,10))
     parser.add_argument('--run', type=Path, help='Grade the latest completed Git release of this run instead of a source file')
     parser.add_argument('--output', type=Path, help='New directory for sources, diagnostics and JSON results')
     args=parser.parse_args(argv)
@@ -25,9 +26,9 @@ def main(argv=None):
             with operation_lock(args.run):
                 result=releases.grade(args.run,output,args.section=='performance')
         else:
-            level=args.level
+            level=args.stage
             if level is None:
-                level=json.loads(Path('evaluation.json').read_text())['level']
+                level=stage_number(json.loads(Path('evaluation.json').read_text()))
             source=args.source or Path('main.cpp' if args.language == 'cpp' else 'main.rs')
             result=evaluate.evaluate(source,output,level,args.section=='performance',language=args.language)
         result['section']=args.section

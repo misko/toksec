@@ -8,7 +8,7 @@ Authoritative sources:
 - [Shared executable interface](../stages/common/INTERFACE.md): source, build, process, configuration and resource limits.
 - [Shared rules](../RULES.md): tags, partial credit, API-first grading and capacity.
 - [Common HTTP requirements](../stages/common/HTTP.md).
-- [Stage 1 contract](../stages/stage1/SPEC.md) and [Stage 2 contract](../stages/stage2/SPEC.md).
+- [Stage 1 contract](../stages/stage-01/SPEC.md) and [Stage 2 contract](../stages/stage-02/SPEC.md).
 - [Input and suite layout](stage-layout.md): exactly what goes into model context and what remains host-side.
 - [CLI walkthrough](cli-walkthrough.md): evaluating a source file or the last completed Git tag.
 

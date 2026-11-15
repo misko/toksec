@@ -6,3 +6,4 @@ __pycache__/
 .calibration/
 results/.publish.lock
 evaluation-results/
+.generated/

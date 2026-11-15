@@ -3,6 +3,10 @@
 import argparse
 import json
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from toksec.stages import number as stage_number
 
 
 def plot(directory):
@@ -25,7 +29,7 @@ def plot(directory):
     for x, y, row in zip(times, counts, rows):
         ax.annotate(row['tag'].split('/')[-1], (x, y), xytext=(4, 7), textcoords='offset points', fontsize=8)
     ax.set(xlabel='Release publication: minutes since build started', ylabel='Internal API check groups passed',
-           title=f"Stage {data['level']}: tagged releases, independently re-evaluated", ylim=(-0.5, data['total_checks'] + 1.5))
+           title=f"Stage {stage_number(data)}: tagged releases, independently re-evaluated", ylim=(-0.5, data['total_checks'] + 1.5))
     ax.set_yticks(range(data['total_checks'] + 1))
     ax.grid(alpha=.2)
     fig.tight_layout()
