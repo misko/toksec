@@ -21,7 +21,9 @@ the persisted `run_id`, validated against stage, language and preparation commit
 Store frozen source and Git bundles under `results/<run-id>/implementation/`.
 Keep one identity across the raw run, publication, and parent evaluations.
 The latest index selects by run start time, not publication time.
-Preserve existing historical `results/stage-XX/LANGUAGE/` snapshots. Store supplied inputs under `inputs/`
+Preserve historical result evidence. Relocate older stage/language snapshots only
+through the checksum-verified migration command, retaining original metadata and
+evaluation IDs as historical provenance. Store supplied inputs under `inputs/`
 and campaign accounting under `accounting/`.
 
 After grading, run `python3 scripts/publish_results.py --run RAW_RUN` from the

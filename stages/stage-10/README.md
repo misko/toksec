@@ -3,7 +3,7 @@
 This is the canonical input directory for the Stage 10 experiment. It contains
 stage-specific instructions and fixtures used by the
 [regular runner’s Stage 10 backend](../../docs/stage-10-runtime.md). A Terra campaign has
-completed; its [implementation and partial evaluation](../../results/stage-10/cpp/README.md)
+completed; its [implementation and partial evaluation](../../results/terra-stage10-cpp-20261115-2usd-recovery/README.md)
 are preserved. The full acceptance evaluator remains incomplete.
 [Host readiness](host/READINESS.md) and `input-manifest.json` preserve the original
 preparation checklist. Their readiness flags are historical, not the current

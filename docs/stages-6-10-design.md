@@ -2,7 +2,7 @@
 
 Status: proposed progression with an experimental Stage 10 implementation path.
 Stages 6–9 do not yet have runnable stage profiles. Stage 10 now has a sandbox,
-metered runner, partial independent checker, and [preserved results](../results/stage-10/cpp/README.md).
+metered runner, partial independent checker, and [preserved results](../results/terra-stage10-cpp-20261115-2usd-recovery/README.md).
 Full Stage 10 acceptance and calibrated performance grading remain incomplete.
 Shared artifact contracts now apply to both runners; historical run inputs remain frozen.
 

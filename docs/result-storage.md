@@ -135,28 +135,39 @@ and invalid measurements.
 
 ## Historical results
 
-Existing `results/stage-XX/LANGUAGE/` snapshots remain at their original paths with
-unchanged contents. The index can discover these alongside new run-ID directories.
-No new framework commit is inferred for old records. Historical IDs, protocol
-labels, figures, and source hashes retain their meaning.
+Historical snapshots also use `results/<run-id>/`. Runs that predate canonical
+commit-based names retain their recorded raw run IDs, for example
+`level-1-0989d5c40297`. Missing framework commits remain missing. Migration does not
+retroactively give old runs a modern name or rewrite their supplied instructions.
 
-The migration command below concerns older flat snapshots. It does not rename or
-rewrite already migrated historical result directories.
+`run.json` records the old publication/evaluation IDs in `historical_ids` and the
+former stage/language directory in `historical_path`. Existing evaluation JSON,
+reports, figures, bundles, inputs and accounting retain their original bytes.
+Their historical run IDs remain meaningful aliases, not newly issued evaluations.
+
+`provenance/run-id-migration.json` maps every former file to its preserved path and
+SHA-256. The old top-level `run.json`, `README.md`, and `sha256.json` are preserved
+under `provenance/run-id-migration/original/`. The original results index and README
+are retained under `results/provenance/run-id-migration/`.
 
 ## Migrate existing results
 
-Preview and validate every byte mapping before applying the migration:
+Preview and validate every byte mapping before applying the run-ID relocation:
 
 ```sh
-python3 scripts/migrate_results.py
-python3 scripts/migrate_results.py --apply
+python3 scripts/migrate_results.py --run-ids
+python3 scripts/migrate_results.py --run-ids --apply
 ```
 
-The migration preserves existing sources, bundles, instructions, ledgers, reports,
-and figures. `migration.json` maps each original file to its new path and checksum.
-Unknown files and symlinks stop migration. Repeating the command verifies the migrated
-snapshot without changing it. Migration never starts a model or re-runs server tests.
-Historical grades and missing evidence keep their original meaning.
+The command validates the entire batch, copies and verifies all targets before
+removing old directories, then rebuilds the latest index. Destination collisions,
+changed evidence and symlinks stop migration. An interrupted installation can be
+rerun. Repeating a completed migration verifies preservation without changing the
+published evidence. It never calls a model or reruns server acceptance tests.
+
+The earlier flat-layout migration remains available without `--run-ids`. Normalize
+flat snapshots first if needed, then relocate their directories. Both migrations
+preserve historical grades and missing evidence.
 
 The bulk refresh command uses the same publication code:
 
