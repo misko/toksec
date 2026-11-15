@@ -8,13 +8,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TITLES = {1: 'Static files', 2: 'Concurrent persistent HTTP', 3: 'Hosts and routing',
           4: 'Reverse proxy', 5: 'Plaintext operations'}
-DESIGN = {
-    1: 'Begin with a blocking, bounded request reader and exact file response. Submit that runnable path early. Add strict parsing and confinement before optimizing. Consider bounded workers or nonblocking sockets only after the contract passes. Avoid allocating the whole file per connection; immutable file metadata and sendfile are permitted.',
-    2: 'Model each connection with explicit read-header, write-header, write-body and idle states. At 4096 clients a thread and a large buffer per connection can exceed the memory limit. Consider nonblocking sockets with epoll/poll and small bounded buffers. Track deadlines independently and preserve pipeline order under partial writes.',
-    3: 'Normalize and validate the path once, then select host and route before opening a confined file. Keep conditional requests, ranges and HEAD as transformations of one representation descriptor. Avoid divergent GET/HEAD paths and validate alias confinement separately.',
-    4: 'Model downstream and upstream lifecycles separately. Bound request and response bodies, make retry eligibility explicit, and return failed connections to no pool. First prove byte-exact proxying, then add healthy connection reuse and nonblocking backpressure.',
-    5: 'Treat configuration as an immutable snapshot replaced after validation. Bound cache bytes and test shutdown before optimizing.',
-}
 BASE_CONFIG = {'listen': '127.0.0.1:8080', 'root': '/www', 'max_connections': '8192',
                'header_bytes': '8192', 'header_timeout_ms': '1000', 'idle_timeout_ms': '2000',
                'write_timeout_ms': '2000', 'max_requests': '100', 'pipeline_depth': '16'}

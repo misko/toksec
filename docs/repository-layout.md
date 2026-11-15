@@ -12,7 +12,6 @@ stage instructions, and a generated artifact contract. The retired Python pilot 
 | `contracts/` | Schemas for submissions and parent evaluation records |
 | `stages/` | Current stage requirements, language policies, and suite selections |
 | `.generated/packets/` | Optional generated previews, ignored by Git |
-| `archive/task-packets/` | Frozen historical packets, never current inputs |
 | `toksec/` | Shared runner, stage identity, Git provenance, accounting, and publication |
 | `toksec/accounting/` | Counted requests and parent campaign allocations |
 | `toksec/execution/` | Counted-request conversation loop |
@@ -61,3 +60,6 @@ checkout for old runs instead of adding path shims or modifying their manifests.
 
 For permanent artifact placement and parent report ownership, see
 [result storage](result-storage.md).
+
+Archived assignment packets and retired pilot documentation are available in
+[Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2). They are not current runtime inputs.

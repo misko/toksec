@@ -15,7 +15,6 @@ stages/
   stage-01/ ... stage-05/      SPEC.md, profile.json, api.py, performance.py
   stage-10/                   Stage 10 instructions, fixtures, packet assembly
 .generated/packets/            Optional current previews, ignored by Git
-archive/task-packets/          Historical packets preserved byte-for-byte
 ```
 
 Preparation assembles English instructions from these definitions and freezes the
@@ -52,3 +51,6 @@ evidence. Use an old run's recorded checkout to reproduce its evaluator.
 
 Stage 10 uses the same public runner and result layout. Its API coverage remains
 partial and performance measurements provisional, with no final performance credit.
+
+Historical generated packets are preserved in [Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/archive/task-packets).
+Frozen instructions supplied to measured runs remain in their published inputs.

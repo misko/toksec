@@ -23,8 +23,8 @@ paths, and budgets; their examples must not be treated as current launch command
 | [C++ stages](cpp-stages.md) | Earlier Stage 1–2 C++ rollout; use current CLI/profile definitions |
 | [Implementation interface](implementation-interface.md) | Earlier interface description |
 | [Public system](public-system.md) | Earlier Rust-stage architecture, superseded where current contracts differ |
-| [Budget](budget.md) | Original Python pilot accounting design |
-| [Capacity tool](capacity-tool.md) | Original pilot tool and paths; see relocated pilot README |
+| [Pilot budget](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/docs/budget.md) | Retired pilot accounting design, preserved in Git |
+| [Pilot capacity tool](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/docs/capacity-tool.md) | Retired pilot tool, preserved in Git |
 | [System plan](system-plan.md) | Original framework plan |
 | [System verification](system-verification.md) | Historical verification record |
 | [System decisions](system-decisions.tsv) | Historical decision trail |

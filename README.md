@@ -16,7 +16,7 @@ live in [stages/](stages/), with shared builder policy in [RULES.md](RULES.md).
 Builders receive English requirements and minimal smoke examples; the full API
 checker stays on the host. Preparation generates and freezes each run’s packet directly from these sources.
 Optional previews go under `.generated/packets/`; historical packets live in
-[archive/task-packets/](archive/task-packets/).
+[Git history](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/archive/task-packets).
 
 | Stage | Target |
 |---|---|
