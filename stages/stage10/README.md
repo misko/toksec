@@ -1,8 +1,8 @@
 # Stage 10 inputs and specification
 
 This is the canonical input directory for the Stage 10 experiment. It contains
-the draft instructions and fixtures used by the
-[experimental Stage 10 runner](../../stage10/README.md). A Terra campaign has
+stage-specific instructions and fixtures used by the
+[regular runner’s Stage 10 backend](../../stage10/README.md). A Terra campaign has
 completed; its [implementation and partial evaluation](../../results/stage-10/cpp/README.md)
 are preserved. The full acceptance evaluator remains incomplete.
 [Host readiness](host/READINESS.md) and `input-manifest.json` preserve the original
@@ -12,15 +12,14 @@ historical run packets remain unchanged.
 
 ## What the agent receives
 
-The instruction order is [START](builder/START.md), [RULES](builder/RULES.md),
-[INTERFACE](builder/INTERFACE.md), the selected language policy,
-[HTTP](builder/HTTP.md), [CONFIGURATION](builder/CONFIGURATION.md),
-[TLS](builder/TLS.md), [OPERATIONS](builder/OPERATIONS.md),
-[BENCHMARK](builder/BENCHMARK.md), and [SMOKE](builder/SMOKE.md).
-An assembled preview for each language lives in `preview/`. The launch system
-must provide the selected preview's content in model context and make allowlisted
-fixture bytes accessible through its sandbox tools; host paths alone are not a
-usable agent filesystem interface.
+[packet.py](packet.py) assembles the current packet from the canonical root
+[RULES.md](../../RULES.md), shared [ARTIFACTS.md](../common/ARTIFACTS.md), START,
+INTERFACE, the selected language policy, HTTP, CONFIGURATION, TLS, OPERATIONS,
+BENCHMARK, and SMOKE. The runner supplies the same allowlisted documents through
+its input tool, plus the generated artifact contract and operational budget notice.
+The old `builder/RULES.md` and `preview/` packets are preserved historical drafts;
+they are not the source of current shared policy. Generate a current preview with
+`python3 -m toksec publish --level 10 --language cpp --output OUTPUT`.
 
 The agent also receives a minimal bootstrap configuration, a full example with
 includes, a few static files, two test host identities and replacement certificate
@@ -35,7 +34,7 @@ retains the preparation environment's original OpenSSL metadata.
 
 ## Comparison with Stages 1–5
 
-| Area | Current Stage 1–5 packet | Prepared Stage 10 draft |
+| Area | Current Stage 1–5 packet | Current Stage 10 |
 |---|---|---|
 | Starting code | None | None |
 | Task scope | Selected complete stage, from static GET through plaintext operations | Complete HTTP/HTTPS/configuration/streaming/cache/worker contract |
@@ -49,7 +48,7 @@ retains the preparation environment's original OpenSSL metadata.
 | Resource accounting | One CPU, per-process 512 MiB address-space limit | 1/2/4-CPU profiles, 512 MiB aggregate charged memory, total descriptor limit |
 | Release output | Controller-managed Git, periodic tags, last completed tag | Same; early plaintext tag allowed before complete TLS support |
 | Final grade | API first; any required failure forfeits performance credit | Same; all mandatory TLS/worker checks are part of the gate |
-| Run readiness | Existing v8 tools | Separate experimental `python3 -m stage10.runner`; full grading incomplete |
+| Run readiness | Existing v8 tools | Regular `toksec` / `evaluate.py`; partial API, provisional performance |
 
 The memory accounting basis changes, not just the number of processes. Results
 must identify the resource profile and must not be presented as direct v8

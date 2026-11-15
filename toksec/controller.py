@@ -9,6 +9,7 @@ import uuid
 from pathlib import Path
 
 from toksec.languages import source_name, profile
+from toksec.stage_dispatch import stage_of, stage10_tool
 from toksec.artifacts import write_artifact, read_artifact, validate_source
 from toksec.storage import atomic_json
 from toksec import benchmark, campaign, sandbox
@@ -29,7 +30,12 @@ def validate(run):
     return manifest
 
 
-def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=None, spend_target_usd=None, language='rust'):
+def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend_target_usd=None, language='rust'):
+    if level == 10:
+        if starter is not None: raise ValueError('All stages start without starter code')
+        from toksec import stage10_campaign
+        return stage10_campaign.prepare(directory, language, wall_seconds, model or campaign.TERRA, spend_target_usd)
+    model = model or 'gpt-6-luna'
     specification(level, language)
     if starter is not None:
         raise ValueError("All stages start without starter code")
@@ -62,6 +68,9 @@ def prepare(directory, level, wall_seconds=1800, model='gpt-6-luna', starter=Non
 
 
 def capacity(run):
+    if stage_of(run) == 10:
+        from stage10.runner import capacity as selected
+        return selected(run)
     manifest = validate(run)
     result = campaign.status(manifest['campaign'], manifest.get('model', 'gpt-6-luna'))
     started = manifest['started_unix']
@@ -90,6 +99,8 @@ def passed(report):
 
 
 def submit(run, source):
+    if stage_of(run) == 10:
+        return stage10_tool(run, 'submit_candidate', {'source': source})
     run = Path(run)
     manifest = validate(run)
     validate_source(source, read_artifact(run, manifest['level'], manifest.get('language', 'rust'), manifest.get('artifact_sha256')))
@@ -117,6 +128,9 @@ def submit(run, source):
 
 
 def measure(run, workload=None):
+    if stage_of(run) == 10:
+        from toksec.stage_dispatch import stage10_benchmark
+        return stage10_benchmark(run, workload)
     run = Path(run)
     manifest = validate(run)
     state = read(run)
@@ -165,6 +179,8 @@ def measure(run, workload=None):
 
 
 def test_source(run, source):
+    if stage_of(run) == 10:
+        return stage10_tool(run, 'run_tests', {'source': source})
     manifest = validate(run)
     if read(run)['finished']:
         raise ValueError('run is finished')
@@ -196,6 +212,9 @@ def record_iteration(run, entry):
 
 
 def revalidate(run, target):
+    if stage_of(run) == 10:
+        from toksec.stage_dispatch import stage10_revalidate
+        return stage10_revalidate(run, target)
     manifest = validate(run)
     if target not in {'incumbent', 'latest'}:
         raise ValueError('target must be incumbent or latest')
@@ -230,6 +249,9 @@ def revalidate(run, target):
 
 
 def export(run):
+    if stage_of(run) == 10:
+        from stage10.runner import final_export
+        return final_export(run)
     run = Path(run)
     state = read(run)
     best = state['best']

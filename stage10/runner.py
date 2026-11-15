@@ -41,50 +41,35 @@ def read(run, name='state.json'):
 
 
 def identity():
-    paths = sorted((ROOT / 'stage10').glob('*.py')) + sorted((PACKET / 'builder').rglob('*.md'))
+    from stages.stage10.packet import input_files
+    paths = list((ROOT / 'stage10').glob('*.py'))
+    paths += [PACKET / 'packet.py']
+    for language in ('cpp', 'rust'):
+        paths.extend(input_files(language).values())
     paths += [ROOT / 'toksec/artifacts.py', ROOT / 'toksec/evaluation_artifacts.py',
-              ROOT / 'toksec/api.py', ROOT / 'toksec/storage.py', ROOT / 'stages/common/ARTIFACTS.md']
-    paths += sorted((ROOT / 'contracts').glob('*.schema.json'))
-    return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in paths)).hexdigest()
+              ROOT / 'toksec/api.py', ROOT / 'toksec/storage.py',
+              ROOT / 'toksec/stage_dispatch.py', ROOT / 'toksec/stage10_campaign.py',
+              ROOT / 'toksec/campaign.py', ROOT / 'toksec/metering.py']
+    paths += list((ROOT / 'contracts').glob('*.schema.json'))
+    return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes()
+                                  for p in sorted(set(paths)))).hexdigest()
 
 
 def prepare(run, language='cpp', wall_seconds=7200, budget='2.00'):
+    from stages.stage10.packet import input_files, packet
+    if type(wall_seconds) is not int or not 120 <= wall_seconds <= 7200:
+        raise ValueError('wall_seconds must be between 120 and 7200')
+    prompt = packet(language, budget)
     run = Path(run).resolve()
     run.mkdir(parents=True, exist_ok=False)
     (run / 'candidates').mkdir()
-    shutil.copytree(PACKET / 'builder', run / 'builder-inputs/builder')
+    for name, source in input_files(language).items():
+        destination = run / 'builder-inputs' / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, destination)
     shutil.copytree(PACKET / 'fixtures', run / 'builder-inputs/fixtures')
-    other = 'rust' if language == 'cpp' else 'cpp'
-    (run / 'builder-inputs/builder/languages' / (other + '.md')).unlink()
-    contract = write_artifact(run, 10, language)
-    shared_instructions = ROOT / 'stages/common/ARTIFACTS.md'
-    shutil.copyfile(shared_instructions, run / 'builder-inputs/builder/ARTIFACTS.md')
-    preview = (PACKET / 'preview' / (language + '-launch-packet.md')).read_text()
-    operational = '''
-Operational campaign notice, authoritative over draft availability statements:
-This is a Stage 10 implementation experiment with sandboxed compilation, test
-execution and ordinary smoke feedback. The full Stage 10 API grader and calibrated
-performance matrix remain incomplete. No result claims full-stage acceptance.
-You must implement the server, HTTP parsing, configuration, workers and TLS
-integration yourself. OpenSSL headers/libraries are supplied, not server code.
-No prior implementation is supplied. The controller creates your private Git
-repository when you call init_repository after passing bootstrap. Publish periodic
-working tags; only your last completed tag is graded. Do not wait until all Stage 10
-features work to publish your first tag. Keep improving while capacity remains.
-You have a strict $2 total model-spend cap, including input, output, reasoning and
-final reporting. Standard service tier and medium reasoning are used. Requests
-are counted before admission. A response's reasoning plus text shares its output
-limit, so prefer small complete improvements and use edit_candidate as useful.
-Your full latest source and notes are retained outside the context. read_source
-retrieves it if the context omits it. No shell or network tool accesses the host.
-run_tests builds a standalone test executable; it starts no candidate automatically.
-read_input accepts artifact.json, packet-relative builder/ or fixtures/ paths and approved
-OpenSSL headers under openssl/. Certificate private keys are public test fixtures.
-Read capacity to learn effective sandbox task/descriptor limits. These conservative
-per-process limits enforce the total descriptor bound across the bounded task tree.
-'''
-    (run / 'launch-packet.md').write_text(preview + '\n' + operational + '\n' + shared_instructions.read_text()
-                                          + '\n## Artifact contract\n\n```json\n' + json.dumps(contract, indent=2, sort_keys=True) + '\n```\n')
+    write_artifact(run, 10, language)
+    (run / 'launch-packet.md').write_text(prompt)
     inventory = {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
                  for p in (run / 'builder-inputs').rglob('*') if p.is_file()}
     atomic_json(run / 'manifest.json', {'stage': 10, 'model': 'gpt-6.1-terra', 'language': language,
@@ -95,6 +80,7 @@ per-process limits enforce the total descriptor bound across the bounded task tr
                 'framework': identity(), 'input_sha256': inventory,
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(), 'starter': False,
                 'scope': 'implementation_experiment_with_partial_independent_validation',
+                'api_coverage': 'partial', 'performance_scope': 'provisional',
                 'cpus': sorted(os.sched_getaffinity(0))[:1]})
     atomic_json(run / 'state.json', {'latest': None, 'tags': [], 'notes': '', 'last_feedback': {}, 'finished': False})
     BudgetLedger(run / 'budget.sqlite', limit_usd=budget)
@@ -222,7 +208,8 @@ def dispatch(run, name, args):
 
 def final_export(run):
     run = Path(run); m, state = read(run, 'manifest.json'), read(run)
-    result = {'capacity': capacity(run), 'release_count': len(state['tags']), 'final_grade_eligible': False}
+    result = {'capacity': capacity(run), 'release_count': len(state['tags']), 'final_grade_eligible': False,
+              'coverage': 'partial', 'performance_scope': 'provisional'}
     if state['tags']:
         tag = state['tags'][-1]; name = 'main.cpp' if m['language'] == 'cpp' else 'main.rs'
         source = git(run, 'show', tag['tag'] + ':' + name)
@@ -238,6 +225,9 @@ def final_export(run):
 
 
 def run_loop(run, client):
+    if read(run, 'manifest.json').get('campaign'):
+        from toksec.stage10_campaign import run_loop as selected
+        return selected(run, client)
     with (Path(run) / 'run.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         return _locked_run_loop(run, client)
@@ -332,7 +322,9 @@ def _campaign_loop(run, client, m, ledger, prompt):
 
 
 
-def grade(run, output=None):
+def grade(run, output=None, performance=False):
+    import tempfile
+    from stage10.evaluation import evaluate_source
     from toksec.evaluation_artifacts import write_evaluation
     run = Path(run)
     output = Path(output) if output is not None else run / 'evaluation' / uuid.uuid4().hex
@@ -350,12 +342,11 @@ def grade(run, output=None):
         raise ValueError('tag digest mismatch')
     release = {'tag': tag['tag'], 'commit': git(run, 'rev-parse', tag['tag'] + '^{commit}').strip(),
                'source_sha256': tag['source_sha256']}
-    output.mkdir(parents=True, exist_ok=False)
-    candidate = output / 'candidate'
-    built = sandbox.build(source, candidate, language=m['language'])
-    checks = evaluate.evaluate(candidate, output / 'api-checks', mode='api', cpus=m['cpus']) if built['passed'] else {'passed': False, 'cases': []}
-    result = {'build': built, 'checks': checks, 'release': release,
-              'source_sha256': tag['source_sha256'], 'framework': identity(), 'final_grade_eligible': False}
+    with tempfile.TemporaryDirectory(prefix='toksec-stage10-grade-') as temporary:
+        source_path = Path(temporary) / name
+        source_path.write_text(source)
+        result = evaluate_source(source_path, output, performance, m['language'], cpus=m['cpus'])
+    result['release'] = release
     atomic_json(output / 'result.json', result)
     write_evaluation(output, run_id=run.name, release=release,
                      contract_sha256=m.get('artifact_sha256'), evaluator_sha256=identity(),

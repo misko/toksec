@@ -16,7 +16,8 @@ def select(roots):
     for root in roots:
         for path in sorted((root/'.runs').glob('**/manifest.json')):
             manifest = read(path)
-            if (manifest.get('level') not in range(1,6)
+            level = manifest.get('stage', manifest.get('level'))
+            if (level not in (1,2,3,4,5,10)
                 or not manifest.get('started_unix')
                 or manifest.get('builder_evaluation_scope') != 'visible_smoke_only'
                 or manifest.get('starter_candidate') or manifest.get('starter_sha256')):
@@ -24,7 +25,7 @@ def select(roots):
             language = manifest.get('language', 'rust')
             if language not in ('rust', 'cpp'):
                 continue
-            key = (manifest['level'], language)
+            key = (level, language)
             if key not in latest or manifest['started_unix'] > latest[key][1]['started_unix']:
                 latest[key] = (path.parent, manifest)
     return latest

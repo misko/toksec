@@ -337,10 +337,16 @@ def snapshot_run(run, snapshot):
                 shutil.copyfile(attempt / name, dest / name)
         limit = manifest.get('campaign_total_cap_usd', manifest['budget_usd'])
         record['budget_usd'] = limit
+        record['run_budget_usd'] = manifest['budget_usd']
+        record['api_coverage'] = 'partial'
+        record['performance_scope'] = 'provisional'
         if state['finished']:
             atomic_json(snapshot / 'ledger.json', {'campaign_limit_usd': limit, 'attempts': ledgers,
                         'spent_usd_upper_bound': str(sum(x['accounting']['spent_nanodollars'] for x in ledgers) / 1e9),
-                        'pending_usd': sum(x['accounting']['held_nanodollars'] for x in ledgers) / 1e9})
+                        'pending_usd': sum(x['accounting']['held_nanodollars'] for x in ledgers) / 1e9,
+                        'run_allocation_usd': manifest['budget_usd'],
+                        'parent_campaign': read(Path(manifest['campaign']) / 'ledger.json') if manifest.get('campaign') else None,
+                        'campaign_allocation_id': manifest.get('campaign_allocation_id')})
         if (run / 'grade-summary.json').exists() and state['finished']:
             shutil.copyfile(run / 'grade-summary.json', snapshot / 'grade-summary.json')
             record['status'] = 'partially_graded'

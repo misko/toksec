@@ -12,6 +12,7 @@ from toksec import metering
 from toksec.storage import atomic_json
 from toksec.api import Responses
 from toksec import campaign, controller, context, releases
+from toksec.stage_dispatch import stage_of
 
 
 def tool(name, description, properties=None):
@@ -51,6 +52,9 @@ def deadline(seconds):
 
 
 def preflight(run):
+    if stage_of(run) == 10:
+        from toksec import stage10_campaign
+        return stage10_campaign.preflight(run)
     manifest = controller.validate(run)
     reasons = []
     age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(metering.PRICE_DATE)).days
@@ -108,6 +112,9 @@ def dispatch(run, name, args):
 
 
 def run_loop(run, client):
+    if stage_of(run) == 10:
+        from stage10.runner import run_loop as selected
+        return selected(run, client)
     run = Path(run).resolve()
     manifest = controller.validate(run)
     directory = Path(manifest['campaign'])

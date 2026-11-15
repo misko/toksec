@@ -1,17 +1,43 @@
 # Stage 10 implementation experiment
 
-This isolated runner uses the [Stage 10 inputs](../stages/stage10/README.md) and
-remains separate from the Stage 1–5 runtime. Historical run inputs stay frozen. It supplies no server source. The worker implements the HTTP
-server and its OpenSSL integration in C++ (default) or Rust.
+Stage 10 uses the regular `toksec` commands and `evaluate.py`, canonical root
+[RULES.md](../RULES.md), the shared artifact contract, and the standard result
+publisher. This directory implements its specialized TLS sandbox, bounded-request
+ledger and partial grader. Builders receive [stage-specific inputs](../stages/stage10/README.md)
+and no server source. C++ and Rust workers implement the server and OpenSSL integration.
 
-```
-python3 -m stage10.runner prepare --run .runs/NAME --language cpp --budget-usd 2.00
-python3 -m stage10.runner run --run .runs/NAME --key-file ~/.codexapi
-python3 -m stage10.runner status --run .runs/NAME
-python3 -m stage10.runner grade --run .runs/NAME
+```sh
+python3 -m toksec init --campaign .runs/NAME --budget-usd 2
+python3 -m toksec prepare --campaign .runs/NAME --level 10 --language cpp
+python3 -m toksec preflight --run RUN_PATH
+# The next command makes paid API calls:
+python3 -m toksec run --run RUN_PATH --key-file ~/.codexapi
+python3 -m toksec status --campaign .runs/NAME
+python3 evaluate.py --section api --run RUN_PATH
+python3 evaluate.py --section performance --run RUN_PATH
+python3 scripts/publish_results.py --run RUN_PATH
 ```
 
-The $2 ledger covers the entire campaign. Exact provider input counts and bounded
+Use the run path printed by preparation. Source-only evaluation also supports
+`--level 10 --language cpp --source main.cpp`. Successful partial checks return
+exit code **4**, not full acceptance. Build/API failures return 2; diagnostic errors
+return 1. Performance first requires every implemented partial API check to pass,
+then measures HTTP/HTTPS × 256/4096 clients with 4 KiB bodies. All measurements
+remain provisional and earn zero final performance credit.
+
+Stage 10 defaults to Terra, medium reasoning, standard service. Each run receives
+at most $2 from the enclosing campaign. Preparation does not reserve money; launch
+reserves the full allocation in the parent ledger. Known child charges settle that
+hold and release unused funds. Uncertain charges retain the full hold and block
+further generation. The older `python3 -m stage10.runner` entry point remains for
+standalone experiments; campaign-linked runs always use parent accounting even
+through that entry point.
+
+Parent grading writes `RUN_PATH/evaluation/<id>/`. Publication uses
+`results/stage-10/LANGUAGE/`, with `implementation/`, `inputs/`, `accounting/`, and
+parent-owned `evaluation/` kept separate. Historical packets and results stay frozen.
+
+The child ledger covers all model calls within its allocated run cap. Exact provider input counts and bounded
 output (including reasoning) are reserved before each generation. Requests admit
 at most 32,000 input and 20,000 output tokens: at most $0.23 reserved, with smaller
 output requests near exhaustion. Conservative settlement ignores cache discounts.

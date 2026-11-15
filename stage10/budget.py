@@ -23,6 +23,7 @@ import sqlite3
 import uuid
 
 MODEL = "gpt-6.1-terra"
+PRICE_DATE = "2026-11-15"
 MAX_INPUT_TOKENS = 32_000
 MAX_OUTPUT_TOKENS = 20_000
 # Nanodollars per token. Reserve worst 30-minute cache-write input at 2x,

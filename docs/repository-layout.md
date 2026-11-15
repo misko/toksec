@@ -14,7 +14,7 @@ import the legacy pilot.
 | `tasks/v8/` | Generated Stage 1–5 packets; edit sources and regenerate |
 | `tasks/v2/` through `tasks/v7/` | Historical generated packets |
 | `toksec/` | Stage 1–5 runtime and shared artifacts, storage, transport, accounting, and publication |
-| `stage10/` | Experimental Stage 10 runtime and partial grader |
+| `stage10/` | Stage 10 TLS backend and partial grader behind the regular CLI |
 | `evaluation/` | Executable checker and calibration code, not evaluation results |
 | `evaluate.py` | Thin Stage 1–5 standalone and tagged-grading CLI |
 | `scripts/` | Campaign orchestration, analysis, plotting, calibration, and publication commands |
@@ -32,7 +32,9 @@ import the legacy pilot.
 Responses transport, including its fixed endpoint and no-retry policy.
 `toksec/metering.py` owns shared accounting constants and pure usage calculations.
 The Stage 1–5 campaign ledger, Stage 10 request ledger, and legacy pilot ledger
-retain their distinct reservation policies. Extraction does not change prices,
+retain their distinct request reservation policies. New Stage 10 runs reserve a
+whole-run allocation in the shared campaign ledger via `toksec/stage10_campaign.py`.
+`toksec/stage_dispatch.py` routes shared commands to the selected backend. This does not change prices,
 authorized budgets, or model settings.
 
 Stage 10 definitions and fixtures live in `stages/stage10/`. The experimental

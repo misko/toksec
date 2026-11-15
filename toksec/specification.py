@@ -50,6 +50,15 @@ def workloads(level):
 
 
 def specification(level, language='rust'):
+    if level == 10:
+        from stages.stage10.packet import input_files
+        from toksec.languages import profile
+        return {'version': 'stage10-experimental', 'level': 10, 'language': language,
+                'title': 'Configuration, HTTPS, and worker operations', 'api_coverage': 'partial',
+                'performance_scope': 'provisional', 'final_grade_eligible': False,
+                'build': profile(language, 10), 'configuration_format': 'nginx subset',
+                'instructions': list(input_files(language)),
+                'diagnostics': ['http-256', 'http-4096', 'https-256', 'https-4096']}
     from toksec.languages import profile
     from toksec.checks import cases_for, configured_cases, EXTERNAL_CASES
     configuration(level)
@@ -83,6 +92,9 @@ def instruction_files(level, language='rust'):
 
 
 def packet(level, language='rust'):
+    if level == 10:
+        from stages.stage10.packet import packet as selected
+        return selected(language)
     from toksec.artifacts import artifact_contract
     spec = specification(level, language)
     lines = [f'# Stage {level}: {TITLES[level]}', '', f'Contract version: {VERSION}.', '']
@@ -113,9 +125,10 @@ def fingerprint():
     return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes() for p in sorted(paths))).hexdigest()
 
 
-def publish(directory, language='rust'):
+def publish(directory, language='rust', level=None):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
-    for level in TITLES:
+    selected_levels = [level] if level is not None else TITLES
+    for level in selected_levels:
         (directory / f'level-{level}.md').write_text(packet(level, language))
         (directory / f'level-{level}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')

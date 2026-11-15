@@ -1,7 +1,7 @@
 # Shared builder rules
 
 Build a working, efficient HTTP server that satisfies the selected stage's English
-contract. Stages 1 through 5 are independent from-scratch assignments. No starter code,
+contract. Each selected stage is an independent from-scratch assignment. No starter code,
 previous implementation, or another run's conversation is supplied.
 
 ## Freedom to work
@@ -59,11 +59,15 @@ not yet defined.
 
 ## Development feedback
 
-submit_candidate and revalidate_candidate run only the supplied smoke suite.
-The full host API suite is held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.
+submit_candidate and, when available, revalidate_candidate run only the supplied smoke suite.
+Independent host API checks are held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.
 benchmark_candidate provides provisional ordinary-traffic performance feedback
 after smoke acceptance. Such measurements do not establish final eligibility.
 Release metadata and retained baselines contain development evidence only.
+The selected stage declares whether independent API coverage is full or partial.
+Passing all available checks in a partial suite cannot establish full acceptance.
+Any performance diagnostics for such a stage remain provisional and earn no final
+performance credit. Use only the tools actually supplied for the selected stage.
 
 ## Grading
 
@@ -87,7 +91,7 @@ The frozen run manifest defines the campaign cap and builder wall-time ceiling. 
 shared dollars, tokens and wall time through budget_status and before each model
 call. All model input, output, reasoning and final reporting consume that budget.
 Compilation and evaluation CPU are tracked separately. The strict worst-case
-reservation policy can stop admission well before $3 of settled spend.
+reservation policy can stop admission before the authorized balance is fully spent.
 
 Use the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the
 finalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall

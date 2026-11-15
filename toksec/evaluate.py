@@ -8,6 +8,9 @@ from toksec.specification import workloads, fingerprint
 
 
 def evaluate(source, directory, level, performance=False, language='rust'):
+    if level == 10:
+        from stage10.evaluation import evaluate_source
+        return evaluate_source(source, directory, performance, language)
     directory=Path(directory).resolve()
     directory.mkdir(parents=True,exist_ok=False)
     artifact=directory/'candidate'
@@ -33,6 +36,20 @@ def evaluate(source, directory, level, performance=False, language='rust'):
         result['benchmark_skipped'] = 'Build and all required API checks must pass before performance measurement.'
     atomic_json(directory/'result.json',result)
     return result
+
+
+def exit_code(result, performance=False):
+    if not result.get('checks', {}).get('passed'):
+        return 2
+    if result.get('diagnostic_errors'):
+        return 1
+    if result.get('coverage') == 'partial' or result.get('final_grade_eligible') is False:
+        return 4
+    if performance and (not result.get('benchmarks') or not all(
+            value.get('eligible') is True and value.get('failures') == 0
+            for value in result['benchmarks'].values())):
+        return 3
+    return 0
 
 
 def resume(source, directory, level, language='rust'):

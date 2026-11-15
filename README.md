@@ -11,7 +11,7 @@ and [published results](results/README.md).
 
 ## Supported stages
 
-Stages 1–5 are independent Rust or C++ assignments. Their canonical instructions
+Stages 1–5 and 10 are independent Rust or C++ assignments. Their canonical instructions
 live in [stages/](stages/), with shared builder policy in [RULES.md](RULES.md).
 Builders receive English requirements and minimal smoke examples; the full API
 checker stays on the host. Generated packets live in [tasks/v8/](tasks/v8/).
@@ -25,8 +25,9 @@ checker stays on the host. Generated packets live in [tasks/v8/](tasks/v8/).
 | 5 | Plaintext caching, rate limiting, reload, and graceful drain |
 | 10 | Experimental nginx configuration, HTTPS/TLS, streaming, cache coordination, and workers |
 
-[Stage 10 inputs](stages/stage10/README.md) have a separate
-[experimental runner](stage10/README.md). Its independent checker remains partial;
+[Stage 10 inputs](stages/stage10/README.md) use the same public runner, evaluator,
+shared rules, and result publisher, with a specialized [TLS backend](stage10/README.md).
+Its independent checker remains partial;
 its results do not establish full Stage 10 acceptance. Stages 6–9 remain a
 [design proposal](docs/stages-6-10-design.md), not runnable profiles.
 
@@ -78,7 +79,10 @@ All model requests use standard service. Prompts, feedback, reasoning, and final
 reporting count toward the cap. The controller reserves before dispatch, settles
 reported usage, and blocks further generation on uncertain charges. Strict
 reservations can stop a run before its entire dollar balance is spent. The
-[Stage 10 runner](stage10/README.md) uses a separate bounded-request ledger.
+[Stage 10 backend](stage10/README.md) reserves a run allocation from that same
+campaign before launch, then uses its bounded-request ledger within the allocation.
+Stage 10 defaults to Terra and allows at most $2 per run. Successful partial API
+checks and provisional performance diagnostics return exit code 4, never full acceptance.
 
 Builders choose their implementation and testing strategy. They publish working
 tags early and continue improving while capacity remains. Untagged edits do not

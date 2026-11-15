@@ -9,6 +9,7 @@ from pathlib import Path
 
 from toksec import sandbox, controller, evaluate
 from toksec.artifacts import read_artifact, validate_source
+from toksec.stage_dispatch import stage_of, stage10_tool
 
 TAG = re.compile(r'release/([0-9]{6})\Z')
 
@@ -37,6 +38,8 @@ def list_releases(run):
 
 
 def initialize(run):
+    if stage_of(run) == 10:
+        return stage10_tool(run, 'init_repository', {})
     controller.validate(run)
     if controller.read(run)['finished']:
         raise ValueError('run is finished')
@@ -49,6 +52,8 @@ def initialize(run):
 
 
 def publish(run, note):
+    if stage_of(run) == 10:
+        return stage10_tool(run, 'release_candidate', {'note': note})
     run=Path(run)
     manifest=controller.validate(run)
     state=controller.read(run)
@@ -101,6 +106,9 @@ def grade(run, output=None, performance=False):
     output = Path(output) if output is not None else run / 'evaluation' / uuid.uuid4().hex
     if output.resolve().is_relative_to((run / 'repository').resolve()):
         raise ValueError('parent evaluation output cannot be inside the implementation repository')
+    if stage_of(run) == 10:
+        from stage10.runner import grade as selected
+        return selected(run, output, performance)
     records=list_releases(run)
     if not records:
         raise ValueError('no tagged release to grade')

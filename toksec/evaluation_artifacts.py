@@ -53,6 +53,11 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
         pass
     elif api_status == 'failed':
         perf.update(status='skipped_api_failure', credit=0)
+    elif (coverage == 'partial' and api_status == 'passed' and measurements
+          and (result or {}).get('performance_scope') == 'provisional_diagnostics_only'):
+        perf.update(status='provisional', credit=0,
+                    metrics={name: dict(value, eligible=False, provisional=True)
+                             for name, value in measurements.items()})
     elif coverage != 'full':
         perf.update(status='skipped_incomplete_suite', credit=0)
     elif measurements:
@@ -102,6 +107,8 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
         text += ['', 'Historical evidence is missing: ' + ', '.join(missing) + '.']
     if coverage != 'full':
         text += ['', 'This report does not establish full-stage acceptance.']
+    if perf['status'] == 'provisional':
+        text += ['', 'Performance values are uncalibrated diagnostics, not final scores. No performance credit is awarded.']
     failures = [c for c in cases if not c['passed']]
     if failures:
         text += ['', 'Failed checks:', '']

@@ -165,7 +165,8 @@
             "skipped_incomplete_suite",
             "not_run",
             "error",
-            "invalid_measurement"
+            "invalid_measurement",
+            "provisional"
           ]
         },
         "credit": {
@@ -424,7 +425,8 @@
               "status": {
                 "enum": [
                   "measured",
-                  "invalid_measurement"
+                  "invalid_measurement",
+                  "provisional"
                 ]
               }
             }
@@ -472,6 +474,46 @@
             "properties": {
               "credit": {
                 "const": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "performance": {
+            "properties": {
+              "status": {
+                "const": "provisional"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "coverage": {
+            "const": "partial"
+          },
+          "status": {
+            "const": "partial"
+          },
+          "api": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              }
+            }
+          },
+          "performance": {
+            "properties": {
+              "credit": {
+                "const": 0
+              },
+              "metrics": {
+                "type": "object"
               }
             }
           }
