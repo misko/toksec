@@ -9,7 +9,9 @@ from toksec.storage import atomic_json
 from toksec import campaign, controller, releases
 from toksec.artifacts import read_artifact
 from toksec.specification import packet
-from stage10 import runner as stage10
+from toksec.sandbox import cgroup
+from toksec.stages import module as stage_module
+stage10_api = stage_module(10, 'api')
 
 
 class ArtifactRunnerIntegrationTests(unittest.TestCase):
@@ -19,8 +21,8 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
             return Path(controller.prepare(directory, 2, language='cpp')['run'])
 
     def prepare_stage10(self, directory):
-        with patch('stage10.runner.subprocess.check_output', return_value='compiler fixture'):
-            stage10.prepare(directory)
+        with patch('toksec.controller.subprocess.check_output', return_value='compiler fixture'):
+            controller.counted_prepare(directory)
         return directory
 
     def test_both_prepares_supply_frozen_contract_and_shared_instructions(self):
@@ -48,8 +50,8 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
                 destination = Path(temporary) / 'campaign'
                 run = self.prepare_legacy(destination) if kind == 'legacy' else self.prepare_stage10(destination)
                 (run / 'artifact.json').write_text('{}')
-                target = 'toksec.controller.sandbox.build' if kind == 'legacy' else 'stage10.runner.sandbox.build'
-                submit = controller.submit if kind == 'legacy' else stage10.submit
+                target = 'toksec.controller.sandbox.build' if kind == 'legacy' else 'toksec.sandbox.cgroup.build'
+                submit = controller.submit if kind == 'legacy' else controller.counted_submit
                 with patch(target) as build, self.assertRaisesRegex(ValueError, 'contract hash mismatch'):
                     submit(run, 'int main() {}')
                 build.assert_not_called()
@@ -59,8 +61,8 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
             with self.subTest(kind=kind), tempfile.TemporaryDirectory() as temporary:
                 destination = Path(temporary) / 'campaign'
                 run = self.prepare_legacy(destination) if kind == 'legacy' else self.prepare_stage10(destination)
-                target = 'toksec.controller.sandbox.build' if kind == 'legacy' else 'stage10.runner.sandbox.build'
-                submit = controller.submit if kind == 'legacy' else stage10.submit
+                target = 'toksec.controller.sandbox.build' if kind == 'legacy' else 'toksec.sandbox.cgroup.build'
+                submit = controller.submit if kind == 'legacy' else controller.counted_submit
                 with patch(target) as build:
                     for source in ('x' * 1048577, '\ud800', {'source': 'wrong tool shape'}):
                         with self.assertRaises(ValueError):
@@ -72,16 +74,16 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
             run = self.prepare_stage10(Path(temporary) / 'run')
             source = 'int main() {}\n'
             digest = hashlib.sha256(source.encode()).hexdigest()
-            state = stage10.read(run)
+            state = controller.read(run)
             state['tags'] = [{'tag': 'release/000001', 'source_sha256': digest}]
             atomic_json(run / 'state.json', state)
             def git(_run, *args):
                 return source if args[0] == 'show' else 'a' * 40
-            with patch.object(stage10, 'git', side_effect=git), \
-                 patch.object(stage10.sandbox, 'build', return_value={'passed': False}), \
-                 patch.object(stage10.evaluate, 'evaluate') as evaluate, \
+            with patch.object(releases, 'git', side_effect=git), \
+                 patch.object(cgroup, 'build', return_value={'passed': False}), \
+                 patch.object(stage10_api, 'evaluate') as evaluate, \
                  patch('toksec.evaluation_artifacts.write_evaluation') as write:
-                result = stage10.grade(run)
+                result = releases.counted_grade(run)
             evaluate.assert_not_called()
             self.assertFalse(result['build']['passed'])
             args, kwargs = write.call_args
@@ -127,7 +129,7 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
     def test_stage10_grade_rejects_reports_inside_implementation(self):
         with tempfile.TemporaryDirectory() as temporary:
             run = Path(temporary) / 'run'
-            with patch.object(stage10, 'git') as git:
+            with patch.object(releases, 'git') as git:
                 with self.assertRaisesRegex(ValueError, 'inside the implementation'):
-                    stage10.grade(run, run / 'repository/reports')
+                    releases.counted_grade(run, run / 'repository/reports')
                 git.assert_not_called()

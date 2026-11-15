@@ -25,14 +25,22 @@ inferred format contract is stored as `provenance/artifact.json` and labeled
 
 ## Permanent layout
 
-There is one current result per stage and language. Different languages, model
-settings, budgets, and evaluator fingerprints remain separate experiments.
+Every new run has one persisted `run_id`, generated at preparation. The raw run,
+published entry, and parent evaluations use that same identity. A typical ID is
+`stage-01__cpp__20261115T143000Z__0679074ae618__a1b2c3d4`. The final suffix prevents
+collisions. The timestamp is preparation time; start time is recorded separately.
+
+Published runs retain separate directories. `index.json` selects the latest
+started run per stage and language, independently of publication order, and
+`README.md` provides the same view. Publishing an older run never replaces a newer
+run's evidence. Different models, budgets, inputs, and evaluator fingerprints remain
+separate experiments and must not be pooled into one score.
 
 ```text
 results/
   README.md
   index.json
-  stage-10/cpp/
+  <run-id>/
     run.json
     README.md
     sha256.json
@@ -110,12 +118,13 @@ python3 scripts/publish_results.py --run .runs/RUN
 Stage 10 reports remain partial even when every implemented check passes. A full
 suite must exist before a report can establish full-stage acceptance.
 
-The publisher derives `results/stage-XX/LANGUAGE/` from validated run identity,
+The publisher derives `results/<run-id>/` from the persisted and validated run identity,
 preserves the immutable bundle, and separates implementation evidence from parent
 reports. It copies an explicit allowlist, excluding API conversations and credentials.
 Test TLS keys supplied as fixtures are public test material. Republishing the same
-run preserves its parent evaluations. Publishing another run does not reuse the
-old run's reports. Published snapshots include checksums; add later evaluations to
+run preserves its parent evaluations. Publishing another run creates its own directory and never reuses the
+old run's reports. Republish the same run to add evaluations; existing evaluation
+IDs cannot change their evidence. Published snapshots include checksums; add later evaluations to
 the raw run and republish rather than modifying an existing evaluation in place.
 
 Performance is skipped after failed API correctness and earns zero credit. A skipped
@@ -123,6 +132,16 @@ benchmark has no measured throughput or latency. Ineligible measurements, includ
 load-generator saturation, retain their diagnostic evidence without performance
 credit. The report distinguishes partial coverage, failed checks, unrun tests,
 and invalid measurements.
+
+## Historical results
+
+Existing `results/stage-XX/LANGUAGE/` snapshots remain at their original paths with
+unchanged contents. The index can discover these alongside new run-ID directories.
+No new framework commit is inferred for old records. Historical IDs, protocol
+labels, figures, and source hashes retain their meaning.
+
+The migration command below concerns older flat snapshots. It does not rename or
+rewrite already migrated historical result directories.
 
 ## Migrate existing results
 

@@ -9,7 +9,9 @@ import subprocess
 import time
 
 from toksec.storage import atomic_json
-from stage10 import evaluate, sandbox
+from toksec.sandbox import cgroup as sandbox
+from toksec.stages import module as stage_module
+evaluate = stage_module(10, 'api')
 
 
 async def traffic(fixtures, clients, tls):
@@ -82,7 +84,7 @@ def measure(artifact, output, clients, tls, cpus):
         generators = sorted(set(os.sched_getaffinity(0)) - set(cpus))
         if not generators: raise RuntimeError('separate generator CPU required')
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials', '--',
-                   '/usr/bin/taskset', '-c', str(generators[0]), '/usr/bin/python3', '-m', 'stage10.benchmark',
+                   '/usr/bin/taskset', '-c', str(generators[0]), '/usr/bin/python3', '-m', 'stages.stage-10.performance',
                    '--fixtures', str(fixtures), '--clients', str(clients), '--output', str(result_path)]
         if tls: command.append('--tls')
         before = (runtime['cgroup'] / 'cpu.stat').read_text()

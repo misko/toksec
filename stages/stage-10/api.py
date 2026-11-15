@@ -6,9 +6,9 @@ import shutil
 import subprocess
 
 from toksec.storage import atomic_json
-from stage10 import sandbox
+from toksec.sandbox import cgroup as sandbox
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / 'stages/stage-10/fixtures'
 
 
@@ -48,7 +48,7 @@ def evaluate(artifact, output, mode='smoke', cpus=None):
                                  timeout=180) as runtime:
                 try:
                     command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net',
-                               '--preserve-credentials', '--', '/usr/bin/python3', '-m', 'stage10.checks',
+                               '--preserve-credentials', '--', '/usr/bin/python3', '-m', 'stages.stage-10.checks',
                                '--mode', mode, '--fixtures', str(directory), '--output', str(result_path)]
                     if bootstrap:
                         command.append('--bootstrap')

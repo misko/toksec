@@ -9,7 +9,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from stage10 import evaluation as stage10_evaluation
+from toksec import evaluate as stage10_evaluation
+from toksec.sandbox import cgroup
+from toksec.stages import module as stage_module
+stage10_api = stage_module(10, 'api')
+stage10_performance = stage_module(10, 'performance')
 from toksec import evaluate
 from toksec.artifacts import validate_evaluation
 from toksec.evaluation_artifacts import write_evaluation
@@ -33,7 +37,7 @@ class Stage10EvaluationIntegrationTests(unittest.TestCase):
                                 environment={}, coverage='partial', result=result)
 
     def test_shared_source_evaluator_dispatches_stage10(self):
-        with patch.object(stage10_evaluation, 'evaluate_source', return_value={'coverage': 'partial'}) as adapter:
+        with patch.object(stage10_evaluation, 'evaluate_counted_source', return_value={'coverage': 'partial'}) as adapter:
             result = evaluate.evaluate('main.cpp', 'output', 10, True, 'cpp')
         adapter.assert_called_once_with('main.cpp', 'output', True, 'cpp')
         self.assertEqual(result['coverage'], 'partial')
@@ -41,9 +45,9 @@ class Stage10EvaluationIntegrationTests(unittest.TestCase):
     def test_partial_api_success_runs_four_diagnostics_without_performance_credit(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); source = root / 'main.cpp'; source.write_text('int main() {}')
-            with patch.object(stage10_evaluation.sandbox, 'build', return_value={'passed': True}), \
-                 patch.object(stage10_evaluation.evaluate, 'evaluate', return_value=self.checks()), \
-                 patch.object(stage10_evaluation.benchmark, 'measure',
+            with patch.object(cgroup, 'build', return_value={'passed': True}), \
+                 patch.object(stage10_api, 'evaluate', return_value=self.checks()), \
+                 patch.object(stage10_performance, 'measure',
                               return_value={'eligible': True, 'failures': 0, 'requests_per_second': 100}) as measure:
                 result = evaluate.evaluate(source, root / 'output', 10, True, 'cpp')
             self.assertEqual(measure.call_count, 4)
@@ -66,9 +70,9 @@ class Stage10EvaluationIntegrationTests(unittest.TestCase):
     def test_failed_partial_api_never_runs_diagnostics(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); source = root / 'main.cpp'; source.write_text('int main() {}')
-            with patch.object(stage10_evaluation.sandbox, 'build', return_value={'passed': True}), \
-                 patch.object(stage10_evaluation.evaluate, 'evaluate', return_value=self.checks(False)), \
-                 patch.object(stage10_evaluation.benchmark, 'measure') as measure:
+            with patch.object(cgroup, 'build', return_value={'passed': True}), \
+                 patch.object(stage10_api, 'evaluate', return_value=self.checks(False)), \
+                 patch.object(stage10_performance, 'measure') as measure:
                 result = evaluate.evaluate(source, root / 'output', 10, True, 'cpp')
             measure.assert_not_called()
             self.assertEqual(evaluate.exit_code(result, True), 2)
@@ -78,9 +82,9 @@ class Stage10EvaluationIntegrationTests(unittest.TestCase):
     def test_diagnostic_driver_failure_is_reported_as_error(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); source = root / 'main.cpp'; source.write_text('int main() {}')
-            with patch.object(stage10_evaluation.sandbox, 'build', return_value={'passed': True}), \
-                 patch.object(stage10_evaluation.evaluate, 'evaluate', return_value=self.checks()), \
-                 patch.object(stage10_evaluation.benchmark, 'measure', side_effect=RuntimeError('driver failed')):
+            with patch.object(cgroup, 'build', return_value={'passed': True}), \
+                 patch.object(stage10_api, 'evaluate', return_value=self.checks()), \
+                 patch.object(stage10_performance, 'measure', side_effect=RuntimeError('driver failed')):
                 result = evaluate.evaluate(source, root / 'output', 10, True, 'cpp')
             self.assertEqual(len(result['diagnostic_errors']), 4)
             self.assertEqual(evaluate.exit_code(result, True), 1)

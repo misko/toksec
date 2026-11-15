@@ -76,11 +76,11 @@ class StageIdentityTests(unittest.TestCase):
             self.assertEqual(record['release']['commit'], 'c' * 40)
 
     def test_new_preparation_refuses_dirty_framework_before_creating_run(self):
-        from stage10 import runner
+        from toksec import controller as runner
         with tempfile.TemporaryDirectory() as temp, patch.object(runner, 'checkout', side_effect=ValueError('dirty')):
             run = Path(temp) / 'run'
             with self.assertRaisesRegex(ValueError, 'dirty'):
-                runner.prepare(run)
+                runner.counted_prepare(run)
             self.assertFalse(run.exists())
 
     def test_both_runners_record_preparation_commit(self):
@@ -100,8 +100,8 @@ class StageIdentityTests(unittest.TestCase):
 
     def test_source_evaluators_capture_commit_even_on_build_failure(self):
         from toksec import evaluate
-        from stage10 import evaluation as tls
-        for stage, target in ((1, evaluate.sandbox), (10, tls.sandbox)):
+        from toksec.sandbox import cgroup as tls
+        for stage, target in ((1, evaluate.sandbox), (10, tls)):
             with tempfile.TemporaryDirectory() as temp:
                 root = Path(temp); source = root / 'main.cpp'; source.write_text('broken code')
                 with patch.object(target, 'build', return_value={'passed': False}):

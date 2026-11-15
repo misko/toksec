@@ -48,7 +48,7 @@ class ResultStorageTests(unittest.TestCase):
             (run/'response-secret.json').write_text('Do not publish')
             (root/'ledger.json').write_text('{"dollar_limit":"3"}')
             output=root/'results';refresh.publish([root],output)
-            dest=output/'stage-01/cpp'
+            dest=output/'live'
             self.assertEqual(json.loads((dest/'run.json').read_text())['status'],'running')
             self.assertFalse((dest/'response-secret.json').exists())
             self.assertFalse((dest/'ledger.json').exists())
@@ -174,7 +174,7 @@ class RawPublicationTests(unittest.TestCase):
             (directory/'result.json').write_text('{"internal":true}')
             (directory/'candidate').mkdir();(directory/'candidate/server').write_bytes(b'executable bytes')
             (directory/'candidate/main.cpp').write_text('scratch source')
-            record=publish_run(run,root/'results');published=root/'results/stage-01/cpp'
+            record=publish_run(run,root/'results');published=root/'results'/run.name
             evidence=published/'evaluation/grade-one'
             self.assertTrue((evidence/'evaluation.json').exists())
             self.assertFalse((evidence/'candidate').exists())

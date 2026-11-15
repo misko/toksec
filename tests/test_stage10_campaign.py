@@ -7,9 +7,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from stage10 import runner as child_runner
-from stage10.budget import BudgetLedger, MODEL
-from toksec import campaign, stage10_campaign
+from toksec import controller
+from toksec.execution import counted as child_runner
+from toksec.accounting.counted_requests import BudgetLedger, MODEL
+from toksec import campaign
+from toksec.accounting import run_allocations as stage10_campaign
 from toksec.storage import atomic_json
 
 
@@ -22,11 +24,11 @@ class Stage10CampaignTests(unittest.TestCase):
         self.addCleanup(self.stack.close)
         self.stack.enter_context(patch.object(campaign, 'fingerprint', return_value='f' * 64))
         self.stack.enter_context(patch.object(stage10_campaign, 'fingerprint', return_value='f' * 64))
-        self.stack.enter_context(patch.object(child_runner, 'identity', return_value='a' * 64))
-        clock = self.stack.enter_context(patch('toksec.stage10_campaign.datetime.datetime'))
+        self.stack.enter_context(patch.object(controller, 'counted_fingerprint', return_value='a' * 64))
+        clock = self.stack.enter_context(patch('toksec.accounting.run_allocations.datetime.datetime'))
         clock.now.return_value.date.return_value = datetime.date(2026, 11, 15)
-        self.stack.enter_context(patch('toksec.stage10_campaign.shutil.which', return_value='/bin/tool'))
-        self.stack.enter_context(patch('toksec.stage10_campaign.resource.getrlimit', return_value=(16384, 16384)))
+        self.stack.enter_context(patch('toksec.accounting.run_allocations.shutil.which', return_value='/bin/tool'))
+        self.stack.enter_context(patch('toksec.accounting.run_allocations.resource.getrlimit', return_value=(16384, 16384)))
         campaign.initialize(self.root, '3')
 
     def prepare(self, amount=None):
@@ -40,7 +42,7 @@ class Stage10CampaignTests(unittest.TestCase):
                 'input': [{'role': 'user', 'content': 'test'}], 'max_output_tokens': 1000}
 
     def spend(self, run, uncertain=False):
-        manifest = child_runner.read(run, 'manifest.json')
+        manifest = controller.read(run, 'manifest.json')
         manifest['started_unix'] = 1
         atomic_json(run / 'manifest.json', manifest)
         ledger = BudgetLedger(run / 'budget.sqlite', manifest['budget_usd'])
@@ -58,14 +60,14 @@ class Stage10CampaignTests(unittest.TestCase):
                            lambda body: {'object': 'response.input_tokens', 'input_tokens': 1000}, send)
         except TimeoutError:
             pass
-        state = child_runner.read(run); state['finished'] = True
+        state = controller.read(run); state['finished'] = True
         atomic_json(run / 'state.json', state)
         return {'finished': True}
 
     def test_preparation_does_not_reserve_or_spend(self):
         run = self.prepare()
         self.assertEqual(campaign.read(self.root)['requests'], [])
-        manifest = child_runner.read(run, 'manifest.json')
+        manifest = controller.read(run, 'manifest.json')
         self.assertEqual(manifest['campaign_backend'], stage10_campaign.BACKEND)
         self.assertEqual(manifest['campaign_total_cap_usd'], '3')
         self.assertEqual(Decimal(manifest['budget_usd']), Decimal(2))
@@ -100,7 +102,7 @@ class Stage10CampaignTests(unittest.TestCase):
         ledger = campaign.read(self.root); ledger['token_limit'] = 100_000
         atomic_json(self.root / 'ledger.json', ledger)
         run = self.prepare()
-        manifest = child_runner.read(run, 'manifest.json')
+        manifest = controller.read(run, 'manifest.json')
         self.assertEqual(Decimal(manifest['budget_usd']), Decimal('0.125'))
         with patch.object(child_runner, '_locked_run_loop', side_effect=lambda r, c: self.spend(r)):
             stage10_campaign.run_loop(run, object())
@@ -125,7 +127,7 @@ class Stage10CampaignTests(unittest.TestCase):
             with self.subTest(amount=amount), self.assertRaises(ValueError):
                 self.prepare(amount)
         run = self.prepare('1')
-        manifest = child_runner.read(run, 'manifest.json'); manifest['budget_usd'] = '2'
+        manifest = controller.read(run, 'manifest.json'); manifest['budget_usd'] = '2'
         atomic_json(run / 'manifest.json', manifest)
         self.assertFalse(stage10_campaign.preflight(run)['launch_allowed'])
 

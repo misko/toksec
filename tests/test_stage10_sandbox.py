@@ -6,7 +6,7 @@ import time
 import unittest
 from unittest.mock import patch
 
-from stage10 import sandbox
+from toksec.sandbox import cgroup as sandbox
 
 
 class PolicyTests(unittest.TestCase):

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from stage10 import runner
+from toksec import controller as runner
 from toksec.stages import module as stage_module
 ROOT = stage_module(10, 'packet').ROOT
 STAGE = stage_module(10, 'packet').STAGE
@@ -42,7 +42,7 @@ class Stage10SharedInstructionTests(unittest.TestCase):
             with self.subTest(language=language), tempfile.TemporaryDirectory() as temporary:
                 destination = Path(temporary) / 'run'
                 with patch.object(runner.subprocess, 'check_output', return_value='toolchain fixture'):
-                    runner.prepare(destination, language=language, budget='0.15')
+                    runner.counted_prepare(destination, language=language, budget='0.15')
                 manifest = json.loads((destination / 'manifest.json').read_text())
                 copied = destination / 'builder-inputs/builder/RULES.md'
                 self.assertEqual(copied.read_bytes(), (ROOT / 'RULES.md').read_bytes())
@@ -55,7 +55,7 @@ class Stage10SharedInstructionTests(unittest.TestCase):
                 self.assertFalse((destination / 'builder-inputs/preview').exists())
 
     def test_current_policy_changes_invalidate_stage10_identity(self):
-        before = runner.identity()
+        before = runner.counted_fingerprint()
         original = Path.read_bytes
 
         def changed(path):
@@ -63,7 +63,7 @@ class Stage10SharedInstructionTests(unittest.TestCase):
             return body + b'\nchanged shared policy\n' if path == ROOT / 'RULES.md' else body
 
         with patch.object(Path, 'read_bytes', changed):
-            self.assertNotEqual(before, runner.identity())
+            self.assertNotEqual(before, runner.counted_fingerprint())
 
     def test_invalid_language_budget_or_wall_limit_creates_no_run(self):
         for options in ({'language': 'python'}, {'budget': '3'}, {'budget': '0'},
@@ -71,5 +71,5 @@ class Stage10SharedInstructionTests(unittest.TestCase):
             with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary:
                 destination = Path(temporary) / 'run'
                 with self.assertRaises(ValueError):
-                    runner.prepare(destination, **options)
+                    runner.counted_prepare(destination, **options)
                 self.assertFalse(destination.exists())

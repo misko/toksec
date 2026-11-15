@@ -8,7 +8,8 @@ import unittest
 from unittest.mock import patch
 from unittest.mock import Mock
 
-from stage10 import checks
+from toksec.stages import module as stage_module
+checks = stage_module(10, 'checks')
 
 
 class Stage10CheckerTests(unittest.TestCase):
@@ -114,7 +115,8 @@ class Stage10CheckerTests(unittest.TestCase):
         self.assertEqual([c["id"] for c in checker.cases], ["http-get", "https-get", "https-persistent", "proxy"])
 
     def test_orchestrator_config_exit_logs_and_empty_results(self):
-        from stage10 import evaluate
+        from toksec.stages import module as stage_module
+        evaluate = stage_module(10, 'api')
         for config_code, empty in ((0, False), (7, False), (0, True)):
             with self.subTest(config_code=config_code, empty=empty), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp)

@@ -10,14 +10,16 @@ from pathlib import Path
 
 from toksec.stages import number as stage_number
 from toksec.languages import source_name, profile
-from toksec.provenance import checkout, run_name
+from toksec.provenance import checkout, run_name, validate_run_id
 from toksec.stage_dispatch import stage_of, stage10_tool
 from toksec.artifacts import write_artifact, read_artifact, validate_source
 from toksec.storage import atomic_json
+from toksec.accounting.counted_requests import BudgetLedger
+from toksec.sandbox import cgroup
+from toksec.stages import module as stage_module
+from toksec.specification import counted_fingerprint
 from toksec import benchmark, campaign, sandbox
 from toksec.specification import ROOT, fingerprint, packet, specification, workloads, instruction_files
-
-
 
 
 def read(run, name='state.json'):
@@ -35,8 +37,8 @@ def validate(run):
 def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend_target_usd=None, language='rust'):
     if level == 10:
         if starter is not None: raise ValueError('All stages start without starter code')
-        from toksec import stage10_campaign
-        return stage10_campaign.prepare(directory, language, wall_seconds, model or campaign.TERRA, spend_target_usd)
+        from toksec.accounting import run_allocations
+        return run_allocations.prepare(directory, language, wall_seconds, model or campaign.TERRA, spend_target_usd)
     model = model or 'gpt-6-luna'
     specification(level, language)
     if starter is not None:
@@ -55,7 +57,7 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
     write_artifact(run, level, language)
     (run / 'launch-packet.md').write_text(packet(level, language))
     atomic_json(run / 'specification.json', specification(level, language))
-    atomic_json(run / 'manifest.json', {**provenance, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {**provenance, 'run_id': run.name, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(),
@@ -72,8 +74,7 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
 
 def capacity(run):
     if stage_of(run) == 10:
-        from stage10.runner import capacity as selected
-        return selected(run)
+        return counted_capacity(run)
     manifest = validate(run)
     result = campaign.status(manifest['campaign'], manifest.get('model', 'gpt-6-luna'))
     started = manifest['started_unix']
@@ -253,7 +254,7 @@ def revalidate(run, target):
 
 def export(run):
     if stage_of(run) == 10:
-        from stage10.runner import final_export
+        from toksec.releases import counted_final_export as final_export
         return final_export(run)
     run = Path(run)
     state = read(run)
@@ -272,3 +273,124 @@ def export(run):
     result['grading_policy'] = 'Latest completed release tag; untagged candidates are not graded.'
     atomic_json(run / 'result.json', result)
     return result
+
+
+def counted_prepare(run, language='cpp', wall_seconds=7200, budget='2.00', *, run_id=None):
+    input_files = stage_module(10, 'packet').input_files
+    packet = stage_module(10, 'packet').packet
+    if type(wall_seconds) is not int or not 120 <= wall_seconds <= 7200:
+        raise ValueError('wall_seconds must be between 120 and 7200')
+    prompt = packet(language, budget)
+    provenance = checkout(require_clean=True)
+    run_id = run_id or run_name(10, language, provenance['toksec_commit'])
+    validate_run_id(run_id, 10, language, provenance['toksec_commit'])
+    run = Path(run).resolve()
+    run.mkdir(parents=True, exist_ok=False)
+    (run / 'candidates').mkdir()
+    for name, source in input_files(language).items():
+        destination = run / 'builder-inputs' / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, destination)
+    shutil.copytree(ROOT / 'stages/stage-10/fixtures', run / 'builder-inputs/fixtures')
+    write_artifact(run, 10, language)
+    (run / 'launch-packet.md').write_text(prompt)
+    inventory = {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
+                 for p in (run / 'builder-inputs').rglob('*') if p.is_file()}
+    atomic_json(run / 'manifest.json', {**provenance, 'run_id': run_id, 'stage': 10, 'model': 'gpt-6.1-terra', 'language': language,
+                'reasoning_effort': 'medium', 'service_tier': 'default', 'budget_usd': budget,
+                'wall_seconds': wall_seconds, 'created_unix': time.time(), 'started_unix': None,
+                'toolchain': subprocess.check_output(['dpkg-query','-W','g++','libssl-dev','libssl3t64'], text=True).strip(),
+                'openssl_version': subprocess.check_output(['openssl','version'], text=True).strip(),
+                'framework': counted_fingerprint(), 'input_sha256': inventory,
+                'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(), 'starter': False,
+                'scope': 'implementation_experiment_with_partial_independent_validation',
+                'api_coverage': 'partial', 'performance_scope': 'provisional',
+                'cpus': sorted(os.sched_getaffinity(0))[:1]})
+    atomic_json(run / 'state.json', {'latest': None, 'tags': [], 'notes': '', 'last_feedback': {}, 'finished': False})
+    BudgetLedger(run / 'budget.sqlite', limit_usd=budget)
+    return {'run': str(run), 'prepared': True, 'model_calls': 0}
+
+
+def counted_capacity(run):
+    m, s = read(run, 'manifest.json'), read(run)
+    elapsed = time.time() - m['started_unix'] if m['started_unix'] else 0
+    budget = BudgetLedger(Path(run) / 'budget.sqlite', limit_usd=m['budget_usd']).report()
+    budget.update(remaining_usd=budget['remaining_nanodollars']/1e9, spent_usd_upper_bound=budget['spent_nanodollars']/1e9,
+                  held_usd=budget['held_nanodollars']/1e9, request_count=len(budget.pop('requests')))
+    return {'budget': budget,
+            'seconds_remaining': max(0, m['wall_seconds'] - elapsed), 'latest': s['latest'],
+            'last_tag': ({k: s['tags'][-1][k] for k in ('tag','passed_checks')} if s['tags'] else None), 'finished': s['finished'], 'effective_runtime': {'cpu_count': 1, 'memory_mib_aggregate': 512, 'workers': 2, 'tasks_including_supervisor': 4, 'file_descriptors_per_process': 4096, 'scratch_mib': 64}}
+
+
+def counted_submit(run, source, test=False):
+    run = Path(run); m = read(run, 'manifest.json'); state = read(run)
+    validate_source(source, read_artifact(run, 10, m['language'], m.get('artifact_sha256')))
+    artifact = run / 'candidates' / uuid.uuid4().hex
+    result = {'build': cgroup.build(source, artifact, language=m['language'], test=test),
+              'id': artifact.name, 'test': test, 'checks': {'passed': False, 'cases': []}}
+    if result['build']['passed']:
+        if test:
+            result['test_result'] = cgroup.self_test(artifact, run / 'builder-inputs/fixtures', language=m['language'])
+        else:
+            result['checks'] = stage_module(10, 'api').evaluate(artifact, artifact / 'smoke', cpus=m['cpus'])
+    atomic_json(artifact / 'report.json', result)
+    if not test:
+        state['latest'] = artifact.name
+        atomic_json(run / 'state.json', state)
+    return result
+
+
+def counted_dispatch(run, name, args):
+    from toksec.execution.counted import TOOLS
+    from toksec.releases import counted_release
+    run = Path(run); m = read(run, 'manifest.json'); state = read(run)
+    if state['finished']:
+        raise ValueError('run finished')
+    allowed = {t['name']: set(t['parameters']['properties']) for t in TOOLS}
+    if name not in allowed or not isinstance(args, dict) or set(args) != allowed[name]:
+        raise ValueError('unknown tool or arguments')
+    if name == 'budget_status': return counted_capacity(run)
+    if name == 'submit_candidate': return counted_submit(run, args['source'])
+    if name == 'run_tests': return counted_submit(run, args['source'], test=True)
+    if name == 'init_repository': return counted_release(run, 'First working release', initialize=True)
+    if name == 'release_candidate': return counted_release(run, args['note'])
+    source = run / 'candidates' / (state['latest'] or '_missing') / ('main.cpp' if m['language'] == 'cpp' else 'main.rs')
+    if name == 'edit_candidate':
+        text = source.read_text()
+        if not args['old'] or text.count(args['old']) != 1:
+            raise ValueError('old must match exactly one nonempty source occurrence')
+        return counted_submit(run, text.replace(args['old'], args['new'], 1))
+    if name in ('read_source', 'read_input'):
+        if name == 'read_input':
+            path = args['path']
+            if path.startswith('openssl/'):
+                source = (Path('/usr/include') / path).resolve()
+                if not source.is_relative_to('/usr/include/openssl'):
+                    raise ValueError('unapproved header path')
+            else:
+                if path not in m['input_sha256']:
+                    raise ValueError('path is not a supplied input')
+                source = run / 'builder-inputs' / path
+        start, count = args['start_line'], args['line_count']
+        if type(start) is not int or type(count) is not int or start < 1 or not 1 <= count <= 300:
+            raise ValueError('line range requires start>=1 and count in 1..300')
+        return {'text': '\n'.join(source.read_text().splitlines()[start-1:start-1+count])[:24000]}
+    if name == 'record_notes':
+        if not isinstance(args['note'], str) or len(args['note']) > 12000:
+            raise ValueError('notes must fit 12000 characters')
+        state['notes'] = args['note']; atomic_json(run / 'state.json', state)
+        return {'saved': True}
+    if name == 'benchmark_candidate':
+        measure = stage_module(10, 'performance').measure
+        if not state['latest']: raise ValueError('no source submitted')
+        artifact = source.parent
+        if not read(artifact, 'report.json')['checks']['passed']:
+            raise ValueError('all visible smoke checks required before diagnostic measurement')
+        return measure(artifact, artifact / ('benchmark-' + uuid.uuid4().hex), args['clients'], args['tls'], m['cpus'])
+    if name == 'finish':
+        cap = counted_capacity(run)
+        if cap['seconds_remaining'] > 120 and float(cap['budget'].get('remaining_usd', 0)) >= .08768:
+            raise ValueError('capacity remains; continue implementation or validation and retain working tags')
+        (run / 'model-report.md').write_text(args['report'][:16000])
+        return {'finished': True}
+    raise ValueError('unknown tool')

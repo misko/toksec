@@ -28,7 +28,7 @@ Optional previews go under `.generated/packets/`; historical packets live in
 | 10 | Experimental nginx configuration, HTTPS/TLS, streaming, cache coordination, and workers |
 
 [Stage 10 inputs](stages/stage-10/README.md) use the same public runner, evaluator,
-shared rules, and result publisher, with a specialized [TLS backend](stage10/README.md).
+shared rules, and result publisher, with documented [Stage 10 execution constraints](docs/stage-10-runtime.md).
 Its independent checker remains partial;
 its results do not establish full Stage 10 acceptance. Stages 6–9 remain a
 [design proposal](docs/stages-6-10-design.md), not runnable profiles.
@@ -52,8 +52,10 @@ python3 evaluate.py --section performance --run RUN_PATH
 python3 scripts/publish_results.py --run RUN_PATH
 ```
 
-Tagged grading defaults to `RUN_PATH/evaluation/<id>/`. Permanent results separate
-`implementation/` from parent-owned `evaluation/`. See the
+Tagged grading defaults to `RUN_PATH/evaluation/<id>/`. Permanent results live in `results/<run-id>/` and separate
+`implementation/` from parent-owned `evaluation/`. The persisted run ID is identical
+in raw storage, publication and parent reports. The latest index shows one run per
+stage and language without overwriting older results. See the
 [artifact workflow](docs/result-storage.md) for reports, figures, and migration.
 
 ## Prepare and launch a campaign
@@ -81,7 +83,7 @@ All model requests use standard service. Prompts, feedback, reasoning, and final
 reporting count toward the cap. The controller reserves before dispatch, settles
 reported usage, and blocks further generation on uncertain charges. Strict
 reservations can stop a run before its entire dollar balance is spent. The
-[Stage 10 backend](stage10/README.md) reserves a run allocation from that same
+[Stage 10 execution path](docs/stage-10-runtime.md) reserves a run allocation from that same
 campaign before launch, then uses its bounded-request ledger within the allocation.
 Stage 10 defaults to Terra and allows at most $2 per run. Successful partial API
 checks and provisional performance diagnostics return exit code 4, never full acceptance.

@@ -2,8 +2,7 @@
 
 Stage 10 uses the regular `toksec` commands and `evaluate.py`, canonical root
 [RULES.md](../RULES.md), the shared artifact contract, and the standard result
-publisher. This directory implements its specialized TLS sandbox, bounded-request
-ledger and partial grader. Builders receive [stage-specific inputs](../stages/stage-10/README.md)
+publisher. The shared framework provides its TLS sandbox, bounded-request ledger and partial grader. Builders receive [stage-specific inputs](../stages/stage-10/README.md)
 and no server source. C++ and Rust workers implement the server and OpenSSL integration.
 
 ```sh
@@ -29,12 +28,15 @@ Stage 10 defaults to Terra, medium reasoning, standard service. Each run receive
 at most $2 from the enclosing campaign. Preparation does not reserve money; launch
 reserves the full allocation in the parent ledger. Known child charges settle that
 hold and release unused funds. Uncertain charges retain the full hold and block
-further generation. The older `python3 -m stage10.runner` entry point remains for
-standalone experiments; campaign-linked runs always use parent accounting even
-through that entry point.
+further generation. The shared runner owns the model/tool lifecycle. Its counted-request loop uses
+`toksec/execution/counted.py`; campaign reservations and the request ledger live
+under `toksec/accounting/`. Compilation and process-tree enforcement live under
+`toksec/sandbox/`. Stage-specific checks and workloads live in `stages/stage-10/`.
+Historical experiments require their recorded checkout; the separate root
+`stage10` package and its standalone CLI are retired.
 
 Parent grading writes `RUN_PATH/evaluation/<id>/`. Publication uses
-`results/stage-10/LANGUAGE/`, with `implementation/`, `inputs/`, `accounting/`, and
+`results/<run-id>/`, with `implementation/`, `inputs/`, `accounting/`, and
 parent-owned `evaluation/` kept separate. Historical packets and results stay frozen.
 
 The child ledger covers all model calls within its allocated run cap. Exact provider input counts and bounded

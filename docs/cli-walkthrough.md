@@ -2,7 +2,7 @@
 
 Run these commands from the repository root. Stages 1–5 and 10 support Rust and C++
 through these same commands. Stage 10 retains [partial independent coverage and
-provisional performance](../stage10/README.md). No current builder receives starter code.
+provisional performance](stage-10-runtime.md). No current builder receives starter code.
 
 ## Check a source file without model calls
 
@@ -88,8 +88,10 @@ python3 scripts/publish_results.py --run RUN_PATH
 ```
 
 The parent creates the evaluation record and report. Put figures derived from the
-same evaluation in its `figures/` directory before publication. The publisher
-separates implementation, inputs, accounting, and parent evidence. See
+same evaluation in its `figures/` directory before publication. The publisher writes `results/<run-id>/`, preserving the raw run’s persisted ID.
+It separates implementation, inputs, accounting, and parent evidence. The latest
+index selects by start time, so publishing an older experiment cannot replace a
+newer entry in the current view. See
 [result storage](result-storage.md) for the exact layout and provenance rules.
 
 `scripts/analyze_releases.py` and `scripts/plot_releases.py` retain the older

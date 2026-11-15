@@ -9,7 +9,7 @@ Shared artifact contracts now apply to both runners; historical run inputs remai
 A concrete [Stage 10 instruction and fixture packet](../stages/stage-10/README.md)
 now provides language-specific prompt previews, draft contracts, example
 configuration, test certificates and a hashed input allowlist. Its host readiness
-plan records the original readiness requirements. The [runner documentation](../stage10/README.md)
+plan records the original readiness requirements. The [runner documentation](stage-10-runtime.md)
 describes current experimental support and the remaining grading limitations.
 
 The user requested nginx configuration language and HTTPS/TLS in the progression.

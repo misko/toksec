@@ -111,7 +111,7 @@ def packet(level, language='rust'):
 
 
 def fingerprint():
-    paths = list((ROOT / 'toksec').glob('*.py'))
+    paths = list((ROOT / 'toksec').rglob('*.py'))
     paths += [ROOT / name for name in ('evaluate.py', 'RULES.md')]
     paths += [p for p in (ROOT / 'stages').rglob('*') if p.suffix in ('.py', '.md', '.json') and not p.is_relative_to(ROOT / 'stages/stage-10')]
     paths += [p for p in (ROOT / 'evaluation').rglob('*') if p.suffix in ('.py', '.cpp', '.rs', '.json', '.md')]
@@ -128,3 +128,16 @@ def publish(directory, language='rust', level=None):
     for level in selected_levels:
         (directory / f'{stage_id(level)}.md').write_text(packet(level, language))
         (directory / f'{stage_id(level)}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')
+
+
+def counted_fingerprint():
+    from toksec.stages import module as stage_module
+    input_files = stage_module(10, 'packet').input_files
+    paths = list((ROOT / 'toksec').rglob('*.py'))
+    paths += list((ROOT / 'stages/stage-10').rglob('*'))
+    paths = [p for p in paths if p.is_file() and '__pycache__' not in p.parts]
+    for language in ('cpp', 'rust'):
+        paths.extend(input_files(language).values())
+    paths += list((ROOT / 'contracts').glob('*.schema.json'))
+    return hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + p.read_bytes()
+                                  for p in sorted(set(paths)))).hexdigest()

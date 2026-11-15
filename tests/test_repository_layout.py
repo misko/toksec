@@ -14,7 +14,7 @@ class RepositoryLayoutTests(unittest.TestCase):
     def test_current_code_does_not_import_pilot_modules(self):
         forbidden = {'legacy', 'controller', 'runner', 'metering', 'capacity', 'evaluator', 'probe'}
         paths = [ROOT / 'evaluate.py']
-        for directory in ('toksec', 'stage10', 'evaluation', 'scripts'):
+        for directory in ('toksec', 'stages', 'evaluation', 'scripts'):
             paths.extend((ROOT / directory).rglob('*.py'))
         for path in paths:
             tree = ast.parse(path.read_text())
@@ -27,13 +27,13 @@ class RepositoryLayoutTests(unittest.TestCase):
                     continue
                 self.assertFalse(forbidden.intersection(imported), str(path))
         subprocess.run([sys.executable, '-c',
-                        'import sys; import toksec.runner; import stage10.runner; '
+                        'import sys; import toksec.runner; import toksec.execution.counted; '
                         'assert not any(k == "legacy" or k.startswith("legacy.") for k in sys.modules)'],
                        cwd=ROOT, check=True, capture_output=True, timeout=15)
 
     def test_old_root_modules_and_ambiguous_input_locations_are_gone(self):
         for name in ('capacity.py', 'controller.py', 'evaluator.py', 'metering.py',
-                     'probe.py', 'runner.py', 'prompts', 'experiments', 'starters', 'proposals'):
+                     'probe.py', 'runner.py', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
             self.assertFalse((ROOT / name).exists(), name)
         self.assertTrue((ROOT / 'tests/fixtures/implementations/static.rs').is_file())
         self.assertTrue((ROOT / 'legacy/python_pilot/tasks/http/level-1.md').is_file())
@@ -49,7 +49,7 @@ class RepositoryLayoutTests(unittest.TestCase):
 
     def test_stage10_definition_changes_do_not_change_stage1_fingerprint(self):
         from toksec.specification import fingerprint
-        from stage10.runner import identity
+        from toksec.specification import counted_fingerprint as identity
         before_stage1, before_stage10 = fingerprint(), identity()
         original = Path.read_bytes
         target = ROOT / 'stages/stage-10/builder/HTTP.md'

@@ -14,7 +14,9 @@ import the legacy pilot.
 | `.generated/packets/` | Optional generated previews, ignored by Git |
 | `archive/task-packets/` | Frozen historical packets, never current inputs |
 | `toksec/` | Shared runner, stage identity, Git provenance, accounting, and publication |
-| `stage10/` | Stage 10 TLS backend and partial grader behind the regular CLI |
+| `toksec/accounting/` | Counted requests and parent campaign allocations |
+| `toksec/execution/` | Counted-request conversation loop |
+| `toksec/sandbox/` | Compilation, namespaces, and process-tree resource enforcement |
 | `evaluation/` | Executable checker and calibration code, not evaluation results |
 | `evaluate.py` | Shared standalone and tagged-grading CLI |
 | `scripts/` | Campaign orchestration, analysis, plotting, calibration, and publication commands |
@@ -33,12 +35,12 @@ Responses transport, including its fixed endpoint and no-retry policy.
 `toksec/metering.py` owns shared accounting constants and pure usage calculations.
 The Stage 1–5 campaign ledger, Stage 10 request ledger, and legacy pilot ledger
 retain their distinct request reservation policies. New Stage 10 runs reserve a
-whole-run allocation in the shared campaign ledger via `toksec/stage10_campaign.py`.
+whole-run allocation in the shared campaign ledger via `toksec/accounting/run_allocations.py`.
 `toksec/stage_dispatch.py` routes shared commands to the selected backend. This does not change prices,
 authorized budgets, or model settings.
 
-Stage 10 definitions and fixtures live in `stages/stage-10/`. The experimental
-runtime remains in `stage10/`. Its frozen draft policy and host readiness records
+Stage 10 definitions and fixtures live in `stages/stage-10/`. The shared framework owns runtime and accounting code. Stage-specific API checks
+and workloads live beside those definitions. There is no root `stage10/` package. The stage’s frozen draft policy and host readiness records
 are labeled in that stage's README; they are not evidence of full acceptance.
 Stage 1–5 fingerprinting excludes Stage 10's separate definition tree.
 

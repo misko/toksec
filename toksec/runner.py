@@ -54,8 +54,8 @@ def deadline(seconds):
 
 def preflight(run):
     if stage_of(run) == 10:
-        from toksec import stage10_campaign
-        return stage10_campaign.preflight(run)
+        from toksec.accounting import run_allocations
+        return run_allocations.preflight(run)
     manifest = controller.validate(run)
     reasons = []
     age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(metering.PRICE_DATE)).days
@@ -114,7 +114,7 @@ def dispatch(run, name, args):
 
 def run_loop(run, client):
     if stage_of(run) == 10:
-        from stage10.runner import run_loop as selected
+        from toksec.execution.counted import run_loop as selected
         return selected(run, client)
     run = Path(run).resolve()
     manifest = controller.validate(run)

@@ -4,7 +4,7 @@ import threading
 import unittest
 from pathlib import Path
 
-from stage10.budget import BudgetError, BudgetLedger, MAX_INPUT_TOKENS, MODEL
+from toksec.accounting.counted_requests import BudgetError, BudgetLedger, MAX_INPUT_TOKENS, MODEL
 
 
 def request():

@@ -18,7 +18,7 @@ from toksec.specification import fingerprint
 from toksec.storage import atomic_json
 from toksec.provenance import checkout, run_name
 from toksec.stages import number as stage_number
-from stage10.budget import BudgetLedger, MODEL, PRICES
+from toksec.accounting.counted_requests import BudgetLedger, MODEL, PRICES
 
 BACKEND = 'stage10-counted-v1'
 NANODOLLARS = Decimal(1_000_000_000)
@@ -65,7 +65,7 @@ def status(directory):
 
 def prepare(campaign_dir, language='rust', wall_seconds=7200, model=MODEL,
             spend_target_usd=None):
-    from stage10 import runner
+    from toksec import controller
     if model != MODEL:
         raise ValueError('Stage 10 counted-request profile currently supports only gpt-6.1-terra')
     if language not in ('cpp', 'rust'):
@@ -82,8 +82,8 @@ def prepare(campaign_dir, language='rust', wall_seconds=7200, model=MODEL,
             raise ValueError(f'Stage 10 allocation must be between {MIN_RUN_BUDGET} and {maximum} USD')
         provenance = checkout(require_clean=True)
         run = campaign_dir / 'runs' / run_name(10, language, provenance['toksec_commit'])
-        result = runner.prepare(run, language=language, wall_seconds=wall_seconds, budget=str(amount))
-        manifest = runner.read(run, 'manifest.json')
+        result = controller.counted_prepare(run, language=language, wall_seconds=wall_seconds, budget=str(amount), run_id=run.name)
+        manifest = controller.read(run, 'manifest.json')
         manifest.update(campaign=str(campaign_dir), stage=10, campaign_backend=BACKEND,
                         campaign_fingerprint=ledger['fingerprint'],
                         builder_evaluation_scope='visible_smoke_only',
@@ -96,9 +96,9 @@ def prepare(campaign_dir, language='rust', wall_seconds=7200, model=MODEL,
 
 
 def _validate(run):
-    from stage10 import runner
+    from toksec import controller
     run = Path(run).resolve()
-    manifest = runner.read(run, 'manifest.json')
+    manifest = controller.read(run, 'manifest.json')
     if (stage_number(manifest) != 10
             or manifest.get('campaign_backend') != BACKEND
             or manifest.get('model') != MODEL or manifest.get('service_tier') != 'default'
@@ -110,7 +110,7 @@ def _validate(run):
     amount = _money(manifest['campaign_allocation_usd'])
     if amount > MAX_BUDGET or amount != _money(manifest['budget_usd']):
         raise ValueError('child budget differs from campaign allocation')
-    if manifest['framework'] != runner.identity() or manifest['campaign_fingerprint'] != fingerprint():
+    if manifest['framework'] != controller.counted_fingerprint() or manifest['campaign_fingerprint'] != fingerprint():
         raise ValueError('framework changed since preparation; prepare a fresh run')
     read_artifact(run, 10, manifest['language'], manifest.get('artifact_sha256'))
     if not (run / 'budget.sqlite').is_file():
@@ -119,11 +119,11 @@ def _validate(run):
 
 
 def preflight(run):
-    from stage10 import runner
+    from toksec import controller
     reasons = []
     try:
         manifest, directory, amount = _validate(run)
-        state = runner.read(run)
+        state = controller.read(run)
         child = BudgetLedger(Path(run) / 'budget.sqlite', limit_usd=manifest['budget_usd']).report()
         parent, _, eligible, maximum = _parent_available(directory)
         if not eligible or amount > maximum:
@@ -138,7 +138,7 @@ def preflight(run):
                 reasons.append(command + ' is unavailable.')
         if resource.getrlimit(resource.RLIMIT_NOFILE)[1] < 16384:
             reasons.append('Descriptor hard limit must be at least 16384.')
-        from stage10 import budget
+        from toksec.accounting import counted_requests as budget
         price_date = getattr(budget, 'PRICE_DATE', metering.PRICE_DATE)
         age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(price_date)).days
         if not 0 <= age <= 7:
@@ -222,7 +222,7 @@ def _reconcile(run, directory, identity, amount):
 
 
 def run_loop(run, client):
-    from stage10 import runner
+    from toksec import controller
     run = Path(run).resolve()
     manifest, directory, amount = _validate(run)
     with campaign.locked(directory, owner=True), (run / 'run.lock').open('a') as lock:
@@ -234,7 +234,8 @@ def run_loop(run, client):
         try:
             manifest['campaign_allocation_id'] = identity
             atomic_json(run / 'manifest.json', manifest)
-            result = runner._locked_run_loop(run, client)
+            from toksec.execution.counted import _locked_run_loop
+            result = _locked_run_loop(run, client)
         finally:
             _reconcile(run, directory, identity, amount)
     return {**result, 'campaign_accounting': status(directory)}

@@ -9,8 +9,9 @@ import unittest
 from unittest.mock import patch
 
 from toksec.storage import atomic_json
-from stage10 import runner
-from stage10.budget import BudgetLedger, COUNT_FIELDS, MODEL
+from toksec import controller, releases
+from toksec.execution import counted as runner
+from toksec.accounting.counted_requests import BudgetLedger, COUNT_FIELDS, MODEL
 
 
 class FakeProvider:
@@ -48,7 +49,7 @@ class Stage10RunnerTests(unittest.TestCase):
         (self.run / 'launch-packet.md').write_text('Implement the server. Use exactly one tool.')
         atomic_json(self.run / 'manifest.json', {
             'stage': 10, 'language': 'cpp', 'model': MODEL, 'budget_usd': '0.15',
-            'wall_seconds': 7200, 'started_unix': None, 'framework': runner.identity(),
+            'wall_seconds': 7200, 'started_unix': None, 'framework': controller.counted_fingerprint(),
             'cpus': [0], 'input_sha256': {}})
         atomic_json(self.run / 'state.json', {
             'latest': None, 'tags': [], 'notes': '', 'last_feedback': {}, 'finished': False})
@@ -75,7 +76,7 @@ class Stage10RunnerTests(unittest.TestCase):
                             for item in body['input']))
         self.assertNotIn('previous_response_id', body)
         self.assertNotIn('conversation', body)
-        state = runner.read(self.run)
+        state = controller.read(self.run)
         self.assertEqual(state['notes'], 'Retained implementation plan')
         self.assertEqual(state['stop_reason'], 'budget reservation capacity exhausted')
         self.assertTrue(state['finished'])
@@ -88,7 +89,7 @@ class Stage10RunnerTests(unittest.TestCase):
         artifact = self.run / 'candidates' / 'source'
         artifact.mkdir()
         (artifact / 'main.cpp').write_text('// retained source\n')
-        state = runner.read(self.run)
+        state = controller.read(self.run)
         state.update(latest='source', notes='n' * 12000, last_feedback={'diagnostic': 'x' * 16000})
         atomic_json(self.run / 'state.json', state)
         provider = FakeProvider(self, self.run, (33000, 32000))
@@ -119,7 +120,7 @@ class Stage10RunnerTests(unittest.TestCase):
         fixtures.mkdir(parents=True)
         (fixtures / 'first.txt').write_text('FIRST_FIXTURE_CONTENT\n')
         (fixtures / 'second.txt').write_text('SECOND_FIXTURE_CONTENT\n')
-        manifest = runner.read(self.run, 'manifest.json')
+        manifest = controller.read(self.run, 'manifest.json')
         manifest.update(wall_seconds=100, input_sha256={
             'fixtures/first.txt': 'fixture', 'fixtures/second.txt': 'fixture'})
         atomic_json(self.run / 'manifest.json', manifest)
@@ -156,7 +157,7 @@ class Stage10RunnerTests(unittest.TestCase):
 
         self.invoke(ReadingProvider())
         self.assertEqual(len(requests), 3)
-        self.assertEqual(runner.read(self.run)['stop_reason'], 'agent finished')
+        self.assertEqual(controller.read(self.run)['stop_reason'], 'agent finished')
         self.assertEqual((self.run / 'model-report.md').read_text(), 'Fixture reads retained.')
 
     def test_tag_metadata_keeps_only_previous_tag_summary(self):
@@ -165,17 +166,17 @@ class Stage10RunnerTests(unittest.TestCase):
                 (Path(run) / 'repository' / '.git').mkdir(parents=True)
             return ''
         tags = []
-        with patch.object(runner, 'git', side_effect=fake_git):
+        with patch.object(releases, 'git', side_effect=fake_git):
             for i in range(5):
                 artifact = self.run / 'candidates' / f'source{i}'
                 artifact.mkdir()
                 (artifact / 'main.cpp').write_text(f'int main() {{ return {i}; }}\n')
                 atomic_json(artifact / 'report.json', {'build': {'passed': True},
                     'checks': {'passed': True, 'cases': [{'id': 'bootstrap', 'passed': True}]}})
-                state = runner.read(self.run)
+                state = controller.read(self.run)
                 state['latest'] = artifact.name
                 atomic_json(self.run / 'state.json', state)
-                tags.append(runner.release(self.run, 'Working checkpoint', initialize=i == 0))
+                tags.append(releases.counted_release(self.run, 'Working checkpoint', initialize=i == 0))
         self.assertIsNone(tags[0]['capacity']['last_tag'])
         for previous, current in zip(tags, tags[1:]):
             self.assertEqual(current['capacity']['last_tag'],

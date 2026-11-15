@@ -31,11 +31,11 @@ def operation_lock(run):
 
 
 def stage10_tool(run, name, arguments):
-    from stage10 import runner
-    manifest = runner.read(run, 'manifest.json')
-    if manifest['framework'] != runner.identity():
+    from toksec import controller
+    manifest = controller.read(run, 'manifest.json')
+    if manifest['framework'] != controller.counted_fingerprint():
         raise ValueError('framework changed since preparation; prepare a fresh run')
-    return runner.dispatch(run, name, arguments)
+    return controller.counted_dispatch(run, name, arguments)
 
 
 def stage10_benchmark(run, workload=None):
@@ -50,10 +50,10 @@ def stage10_benchmark(run, workload=None):
 
 
 def stage10_revalidate(run, target):
-    from stage10 import runner
+    from toksec import controller
     if target not in ('latest', 'incumbent'):
         raise ValueError('target must be incumbent or latest')
-    manifest, state = runner.read(run, 'manifest.json'), runner.read(run)
+    manifest, state = controller.read(run, 'manifest.json'), controller.read(run)
     candidate = state['tags'][-1]['candidate'] if target == 'incumbent' and state['tags'] else state['latest']
     if not candidate:
         raise ValueError('no candidate to revalidate')

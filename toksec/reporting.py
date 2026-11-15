@@ -8,7 +8,7 @@ from toksec.stages import number as stage_number
 def markdown(run):
     from toksec.stage_dispatch import stage_of
     if stage_of(run) == 10:
-        from stage10.runner import capacity, read
+        from toksec.controller import counted_capacity as capacity, read
         state = read(run)
         cap = capacity(run)
         tag = state['tags'][-1]['tag'] if state['tags'] else 'none'

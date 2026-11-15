@@ -5,6 +5,7 @@ import ctypes
 import os
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import shutil
@@ -13,6 +14,7 @@ import tempfile
 
 from toksec.stages import number as stage_number
 from toksec.storage import atomic_json
+from toksec.provenance import run_identity, validate_run_id
 
 LAYOUT_VERSION = 1
 
@@ -44,8 +46,16 @@ def destination(results, record):
     stage, language = record.get('stage'), record.get('language')
     if type(stage) is not int or not 1 <= stage <= 10 or language not in ('cpp', 'rust'):
         raise ValueError('invalid stage or language')
-    result = Path(results) / f'stage-{stage:02d}' / language
-    for p in (Path(results), result.parent, result):
+    if record.get('publication_version') == 2:
+        identity = validate_run_id(record.get('run_id'))
+        if record.get('persisted_run_id'):
+            validate_run_id(identity, stage, language, record.get('toksec_commit'))
+        if any(record.get(key) != identity for key in ('id', 'raw_run_id', 'path')):
+            raise ValueError('inconsistent run identity')
+        result = Path(results) / identity
+    else:
+        result = Path(results) / f'stage-{stage:02d}' / language
+    for p in (result, *result.parents):
         if p.is_symlink():
             raise ValueError('symlinked publication path')
     return result
@@ -245,7 +255,8 @@ def install(staging, dest):
 
 
 def publish_snapshot(snapshot, results):
-    snapshot, results = Path(snapshot).resolve(), Path(results).absolute()
+    snapshot, results = Path(snapshot).absolute(), Path(results).absolute()
+    files(snapshot)
     record = read(snapshot / 'run.json')
     dest = destination(results, record)
     results.mkdir(parents=True, exist_ok=True)
@@ -258,6 +269,22 @@ def publish_snapshot(snapshot, results):
         with tempfile.TemporaryDirectory(prefix='.publish-', dir=dest.parent) as tmp:
             staging = Path(tmp) / 'entry'
             record = transform(snapshot, staging)
+            if dest.exists() and record.get('publication_version') == 2:
+                verify(dest)
+                old = read(dest / 'run.json')
+                for key in ('id', 'stage', 'language', 'toksec_commit', 'framework', 'started_utc'):
+                    if old.get(key) != record.get(key):
+                        raise ValueError('run identity collision: ' + key)
+                old_inputs = files(dest / 'inputs')
+                new_inputs = files(staging / 'inputs')
+                if old_inputs != new_inputs:
+                    raise ValueError('run identity collision: prepared inputs')
+                new_implementation = files(staging / 'implementation')
+                for name, expected in files(dest / 'implementation').items():
+                    if old.get('status') == 'running' and name == 'releases.json':
+                        continue
+                    if new_implementation.get(name) != expected:
+                        raise ValueError('run identity collision: implementation provenance')
             if dest.exists() and snapshot != dest.resolve() and read(dest / 'run.json').get('id') == record.get('id'):
                 old_evaluations = dest / 'evaluation'
                 if old_evaluations.exists():
@@ -272,16 +299,48 @@ def publish_snapshot(snapshot, results):
                 (staging / 'sha256.json').unlink()
                 atomic_json(staging / 'sha256.json', files(staging))
             install(staging, dest)
+        _update_index(results)
     return record
 
 
 def update_index(results):
-    results = Path(results)
-    entries = [read(p) for p in sorted(results.glob('stage-*/*/run.json'))]
+    results = Path(results).absolute()
+    if results.is_symlink():
+        raise ValueError('symlinked result root')
+    results.mkdir(parents=True, exist_ok=True)
+    with (results / '.publish.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        return _update_index(results)
+
+
+def _update_index(results):
+    paths = sorted(set(results.glob('stage-*/*/run.json')) | set(results.glob('*/run.json')))
+    entries = [read(p) for p in paths]
+    for path, record in zip(paths, entries):
+        if destination(results, record) != path.parent:
+            raise ValueError('result identity does not match directory')
+    def order(record):
+        stamp = record.get('started_utc', '')
+        try:
+            started = datetime.strptime(stamp, '%Y-%m-%dT%H-%M-%SZ').replace(tzinfo=timezone.utc).timestamp()
+        except ValueError:
+            try:
+                parsed = datetime.fromisoformat(stamp.replace('Z', '+00:00'))
+                started = (parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)).timestamp()
+            except ValueError:
+                started = float('-inf')
+        precise = record.get('started_unix')
+        if type(precise) in (int, float) and math.isfinite(precise) and precise > 0:
+            started = precise
+        return started, record.get('id', ''), record.get('path', '')
+    latest = {}
     for record in entries:
-        destination(results, record)
-    entries.sort(key=lambda r: (r['stage'], r['language']))
-    atomic_json(results / 'index.json', {'selection': 'Latest started run per stage/language, no starter and smoke-only feedback', 'runs': entries})
+        key = (record['stage'], record['language'])
+        if key not in latest or order(record) > order(latest[key]):
+            latest[key] = record
+    all_entries = sorted(entries, key=lambda r: (r['stage'], r['language'], order(r)))
+    entries = [latest[key] for key in sorted(latest)]
+    atomic_json(results / 'index.json', {'selection': 'Latest started run per stage/language, no starter and smoke-only feedback', 'runs': entries, 'all_runs': all_entries})
     rows = [f'| {r["stage"]} | {r["language"]} | {r["protocol"]} | {r["status"]} | [{r["started_utc"]}]({r["path"]}/README.md) |' for r in entries]
     (results / 'README.md').write_text('# Latest server experiments\n\nOne current run per stage and language. Protocols and budgets differ; do not pool scores.\n'
         'Implementations, inputs, accounting, and parent evaluations have separate folders.\n\n'
@@ -291,8 +350,13 @@ def update_index(results):
 
 def snapshot_run(run, snapshot):
     """Collect an allowlisted flat snapshot from either runner's raw run."""
-    run, snapshot = Path(run).resolve(), Path(snapshot)
+    run, snapshot = Path(run).absolute(), Path(snapshot)
+    if run.is_symlink():
+        raise ValueError('symlinked raw run')
     manifest, state = read(run / 'manifest.json'), read(run / 'state.json')
+    for name in ('manifest.json', 'state.json', 'launch-packet.md', 'artifact.json', 'specification.json'):
+        if (run / name).is_symlink():
+            raise ValueError('symlinked raw input')
     stage = stage_number(manifest)
     language = manifest.get('language', 'rust')
     if (run / 'artifact.json').exists() or manifest.get('artifact_sha256'):
@@ -310,12 +374,14 @@ def snapshot_run(run, snapshot):
     protocol = ('toksec-' + manifest['toksec_commit'][:12] if manifest.get('toksec_commit')
                 else 'stage10-experimental' if stage == 10
                 else read(run / 'specification.json').get('version', 'unknown'))
-    record = {'id': f'{stamp}__stage-{stage:02d}__{language}__{manifest.get("model", "unknown")}__{protocol}__{framework[:8]}',
+    identity = run_identity(run, manifest)
+    record = {'id': identity, 'publication_version': 2, 'persisted_run_id': 'run_id' in manifest,
               'stage': stage, 'language': language, 'model': manifest.get('model', 'unknown'),
               'status': 'builder_finished' if state['finished'] else 'running', 'protocol': protocol,
-              'framework': framework, 'started_utc': stamp, 'source_run': str(run), 'run_id': run.name, 'raw_run_id': run.name,
+              'framework': framework, 'started_utc': stamp, 'started_unix': manifest['started_unix'],
+              'source_run': str(run), 'run_id': identity, 'raw_run_id': identity,
               'input_policy': {'starter': False, 'feedback': 'visible_smoke_only'},
-              'wall_seconds': manifest['wall_seconds'], 'path': f'stage-{stage:02d}/{language}',
+              'wall_seconds': manifest['wall_seconds'], 'path': identity,
               'comparison_policy': 'Do not pool different protocols, languages, models, budgets or input policies.'}
     if manifest.get('toksec_commit'):
         record['toksec_commit'] = manifest['toksec_commit']
@@ -327,7 +393,7 @@ def snapshot_run(run, snapshot):
         files(run / 'builder-inputs')
         shutil.copytree(run / 'builder-inputs', snapshot / 'builder-inputs')
     if stage == 10:
-        from stage10.budget import BudgetLedger
+        from toksec.accounting.counted_requests import BudgetLedger
         attempts = [run]
         if manifest.get('prior_attempt'):
             attempts.insert(0, Path(manifest['prior_attempt']))
@@ -408,7 +474,7 @@ def snapshot_run(run, snapshot):
                 continue
             data = validate_evaluation(read(directory / 'evaluation.json'))
             release = data['release']; expected = release_records.get(release['tag'])
-            if (data['run_id'] != run.name or expected is None
+            if (data['run_id'] != identity or expected is None
                     or any(release[key] != expected.get(key) for key in ('commit', 'source_sha256'))):
                 raise ValueError('parent evaluation does not match a published release')
             selected = []

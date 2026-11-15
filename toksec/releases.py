@@ -5,6 +5,10 @@ import re
 import subprocess
 import tempfile
 import time
+import uuid
+from toksec.storage import atomic_json
+from toksec.provenance import run_identity
+from toksec.specification import counted_fingerprint
 from pathlib import Path
 
 from toksec.stages import number as stage_number
@@ -108,8 +112,7 @@ def grade(run, output=None, performance=False):
     if output.resolve().is_relative_to((run / 'repository').resolve()):
         raise ValueError('parent evaluation output cannot be inside the implementation repository')
     if stage_of(run) == 10:
-        from stage10.runner import grade as selected
-        return selected(run, output, performance)
+        return counted_grade(run, output, performance)
     records=list_releases(run)
     if not records:
         raise ValueError('no tagged release to grade')
@@ -132,9 +135,93 @@ def grade(run, output=None, performance=False):
     result['release']=release
     from toksec.storage import atomic_json
     atomic_json(Path(output)/'result.json',result)
-    write_evaluation(output, run_id=run.name,
+    write_evaluation(output, run_id=run_identity(run, manifest),
                      release={k: release[k] for k in ('tag', 'commit', 'source_sha256')},
                      contract_sha256=manifest.get('artifact_sha256'), evaluator_sha256=fingerprint(),
                      environment={k: manifest[k] for k in ('compiler', 'platform', 'cpu_affinity', 'toolchain') if k in manifest},
                      coverage='full', result=result)
+    return result
+
+
+def counted_release(run, note, initialize=False):
+    run = Path(run); state = controller.read(run); m = controller.read(run, 'manifest.json')
+    if not state['latest']:
+        raise ValueError('submit working source before release')
+    artifact = run / 'candidates' / state['latest']; report = controller.read(artifact, 'report.json')
+    checks = {case['id'] for case in report['checks'].get('cases', []) if case['passed']}
+    if not report['build']['passed'] or 'bootstrap' not in checks:
+        raise ValueError('release must compile and pass bootstrap')
+    if state['tags'] and not set(state['tags'][-1]['passed_checks']) <= checks:
+        raise ValueError('release would lose previously passing visible checks')
+    if not (run / 'repository/.git').exists():
+        if not initialize:
+            raise ValueError('call init_repository first')
+        git(run, 'init', '--initial-branch=main')
+    contract = read_artifact(run, 10, m['language'], m.get('artifact_sha256'))
+    source_name = contract['submission']['source_file']
+    source = (artifact / source_name).read_bytes(); digest = hashlib.sha256(source).hexdigest()
+    validate_source(source.decode('utf-8'), contract)
+    if state['tags'] and state['tags'][-1]['source_sha256'] == digest:
+        return state['tags'][-1]
+    meta = {'tag': f'release/{len(state["tags"])+1:06d}', 'source_sha256': digest,
+            'candidate': state['latest'], 'passed_checks': sorted(checks), 'note': note[:2000],
+            'recorded_unix': time.time(), 'capacity': controller.counted_capacity(run), 'scope': 'visible_smoke_only',
+            'artifact_sha256': m.get('artifact_sha256')}
+    (run / 'repository' / source_name).write_bytes(source)
+    atomic_json(run / 'repository/release.json', meta)
+    git(run, 'add', source_name, 'release.json'); git(run, 'commit', '-m', meta['tag'])
+    git(run, 'tag', meta['tag'])
+    state['tags'].append(meta); atomic_json(run / 'state.json', state)
+    return meta
+
+
+def counted_final_export(run):
+    run = Path(run); m, state = controller.read(run, 'manifest.json'), controller.read(run)
+    result = {'capacity': controller.counted_capacity(run), 'release_count': len(state['tags']), 'final_grade_eligible': False,
+              'coverage': 'partial', 'performance_scope': 'provisional'}
+    if state['tags']:
+        tag = state['tags'][-1]; name = 'main.cpp' if m['language'] == 'cpp' else 'main.rs'
+        source = git(run, 'show', tag['tag'] + ':' + name)
+        if hashlib.sha256(source.encode()).hexdigest() != tag['source_sha256']:
+            raise ValueError('tag source identity mismatch')
+        (run / 'final').mkdir(exist_ok=True); (run / 'final' / name).write_text(source)
+        result['last_tag'] = tag
+        result['source'] = str(run / 'final' / name)
+    else:
+        result['no_submission'] = 'No completed working release tag'
+    atomic_json(run / 'result.json', result)
+    return result
+
+
+def counted_grade(run, output=None, performance=False):
+    import tempfile
+    from toksec.evaluate import evaluate_counted_source
+    from toksec.evaluation_artifacts import write_evaluation
+    run = Path(run)
+    output = Path(output) if output is not None else run / 'evaluation' / uuid.uuid4().hex
+    if output.resolve().is_relative_to((run / 'repository').resolve()):
+        raise ValueError('parent evaluation output cannot be inside the implementation repository')
+    m, state = controller.read(run, 'manifest.json'), controller.read(run)
+    if not state['tags']:
+        raise ValueError('no tagged submission')
+    tag = state['tags'][-1]
+    contract = read_artifact(run, 10, m['language'], m.get('artifact_sha256'))
+    name = contract['submission']['source_file']
+    source = git(run, 'show', tag['tag'] + ':' + name)
+    validate_source(source, contract)
+    if hashlib.sha256(source.encode()).hexdigest() != tag['source_sha256']:
+        raise ValueError('tag digest mismatch')
+    release = {'tag': tag['tag'], 'commit': git(run, 'rev-parse', tag['tag'] + '^{commit}').strip(),
+               'source_sha256': tag['source_sha256']}
+    with tempfile.TemporaryDirectory(prefix='toksec-stage10-grade-') as temporary:
+        source_path = Path(temporary) / name
+        source_path.write_text(source)
+        result = evaluate_counted_source(source_path, output, performance, m['language'], cpus=m['cpus'])
+    result['run_toksec_commit'] = m.get('toksec_commit')
+    result['release'] = release
+    atomic_json(output / 'result.json', result)
+    write_evaluation(output, run_id=run_identity(run, m), release=release,
+                     contract_sha256=m.get('artifact_sha256'), evaluator_sha256=counted_fingerprint(),
+                     environment={k: m[k] for k in ('toolchain', 'openssl_version', 'cpus') if k in m},
+                     coverage='partial', result=result)
     return result

@@ -37,7 +37,10 @@ Edit canonical sources, not generated previews. `--level` remains an alias for
 
 New runs record the full `toksec_commit` SHA and require a clean Git checkout.
 Their names include the stage, language, UTC timestamp, abbreviated commit, and a
-random suffix to avoid collisions. Commit framework changes before preparation.
+random suffix to avoid collisions. Preparation persists this name as `run_id`.
+Raw directories, published `results/<run-id>/` entries and parent reports retain
+the same ID, including after an operational directory is relocated. Commit
+framework changes before preparation.
 Each evaluation separately records its evaluator `toksec_commit` and
 `toksec_dirty` state. Tagged evaluations also record `run_toksec_commit` from the
 run manifest when available. Input and evaluator hashes remain required evidence;

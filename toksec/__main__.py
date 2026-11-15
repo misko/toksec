@@ -63,7 +63,7 @@ def main(argv=None):
             result = campaign.initialize(args.campaign, args.budget_usd)
         elif args.command == 'status':
             result = campaign.status(args.campaign)
-            from toksec.stage10_campaign import status as stage10_status
+            from toksec.accounting.run_allocations import status as stage10_status
             result['stage10'] = stage10_status(args.campaign)
         elif args.command == 'upgrade':
             result = campaign.upgrade(args.campaign)

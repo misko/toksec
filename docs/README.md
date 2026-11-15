@@ -8,12 +8,11 @@ paths, and budgets; their examples must not be treated as current launch command
 | Document | Scope |
 |---|---|
 | [Repository map](repository-layout.md) | Code ownership, legacy isolation, and local data |
-| [CLI walkthrough](cli-walkthrough.md) | Stage 1–5 checking, preparation, grading, and publication |
+| [CLI walkthrough](cli-walkthrough.md) | Stage 1–5 and Stage 10 checking, preparation, grading, and publication |
 | [Stage layout](stage-layout.md) | Editable requirements, generated packets, and checker visibility |
 | [Result storage](result-storage.md) | Artifact schemas, publication, reports, figures, and migration |
 | [Visible and held-out tests](visible-and-held-out-tests.md) | Minimal builder feedback versus parent grading |
-| [v8 alignment](stages-3-5-v8.md) | Current Stage 3–5 protocol and calibration limitations |
-| [Stage 10 runtime](../stage10/README.md) | Experimental runtime and partial coverage |
+| [Stage 10 runtime](stage-10-runtime.md) | Experimental runtime and partial coverage |
 | [Stage 10 inputs](../stages/stage-10/README.md) | Active packet and frozen draft/readiness provenance |
 
 ## Designs and historical records
@@ -31,6 +30,7 @@ paths, and budgets; their examples must not be treated as current launch command
 | [System decisions](system-decisions.tsv) | Historical decision trail |
 | [Shared-stage design](shared-stage-design.md) | Earlier Stage 1–2 design |
 | [Shared-stage verification](shared-stage-verification.md) | Historical validation evidence |
+| [v8 alignment](stages-3-5-v8.md) | Historical protocol and calibration evidence |
 | [Stage 3–5 alignment plan](stages-3-5-alignment-plan.md) | v8 implementation plan |
 | [Sustained improvement plan](sustained-improvement-plan.md) | Earlier continuation-policy design |
 | [Tagged-release plan](tagged-release-plan.md) | Original release workflow design |

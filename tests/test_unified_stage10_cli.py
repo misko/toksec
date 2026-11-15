@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 from toksec import __main__ as cli, campaign, controller, runner
-from stage10 import runner as tls_runner
+from toksec.execution import counted as tls_runner
 from toksec.stage_dispatch import stage_of
 
 
@@ -38,7 +38,7 @@ class UnifiedStage10CliTests(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertIn('stage10', status)
             # Both public entry points must route through parent accounting.
-            with patch('toksec.stage10_campaign.run_loop', return_value={'finished': True}) as invoke:
+            with patch('toksec.accounting.run_allocations.run_loop', return_value={'finished': True}) as invoke:
                 runner.run_loop(run, object())
                 tls_runner.run_loop(run, object())
             self.assertEqual(invoke.call_count, 2)
