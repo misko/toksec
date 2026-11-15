@@ -291,7 +291,7 @@ def counted_prepare(run, language='cpp', wall_seconds=7200, budget='2.00', *, ru
         destination = run / 'builder-inputs' / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, destination)
-    shutil.copytree(ROOT / 'stages/stage-10/fixtures', run / 'builder-inputs/fixtures')
+    shutil.copytree(ROOT / 'stages/stage-10/inputs', run / 'builder-inputs/fixtures')
     write_artifact(run, 10, language)
     (run / 'launch-packet.md').write_text(prompt)
     inventory = {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()

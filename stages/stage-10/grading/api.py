@@ -9,7 +9,7 @@ from toksec.storage import atomic_json
 from toksec.sandbox import cgroup as sandbox
 
 ROOT = Path(__file__).resolve().parents[3]
-FIXTURES = ROOT / 'stages/stage-10/fixtures'
+FIXTURES = ROOT / 'stages/stage-10/inputs'
 
 
 def fixtures(destination, bootstrap=False):

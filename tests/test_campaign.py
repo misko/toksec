@@ -42,10 +42,54 @@ class CampaignTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.directory = Path(self.temporary.name) / 'campaign'
-        campaign.initialize(self.directory)
+        campaign.initialize(self.directory, import_ledger=Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json')
 
     def tearDown(self):
         self.temporary.cleanup()
+
+    def test_fresh_campaign_has_no_history_dependency(self):
+        destination = self.directory.parent / 'fresh'
+        with patch.object(Path, 'read_bytes', side_effect=AssertionError('historical input read')), patch('toksec.campaign.fingerprint', return_value='test'):
+            campaign.initialize(destination)
+        ledger = campaign.read(destination)
+        self.assertEqual(ledger['requests'], [])
+        self.assertEqual(ledger['dollar_limit'], '3')
+        self.assertEqual(campaign.status(destination)['used'], 0)
+        self.assertNotIn('imported_ledger_sha256', ledger)
+
+    def test_explicit_import_preserves_source_and_rejects_unsettled_charges(self):
+        import hashlib
+        source = Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json'
+        body = source.read_bytes()
+        imported = campaign.read(self.directory)
+        self.assertEqual(imported['imported_ledger_sha256'], hashlib.sha256(body).hexdigest())
+        self.assertEqual(imported['dollar_limit'], json.loads(body)['dollar_limit'])
+        destination = self.directory.parent / 'rejected'
+        with self.assertRaisesRegex(ValueError, 'not both'):
+            campaign.initialize(destination, '3', import_ledger=source)
+        bad = self.directory.parent / 'unsettled.json'
+        ledger = json.loads(body)
+        ledger['requests'][0]['state'] = 'reserved'
+        atomic_json(bad, ledger)
+        with self.assertRaisesRegex(ValueError, 'unresolved'):
+            campaign.initialize(destination, import_ledger=bad)
+        self.assertFalse(destination.exists())
+        self.assertEqual(source.read_bytes(), body)
+
+    def test_invalid_import_leaves_no_campaign(self):
+        source = Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json'
+        baseline = json.loads(source.read_text())
+        invalid = [{}, {**baseline, 'dollar_limit': 'NaN'},
+                   {**baseline, 'token_limit': True}, {**baseline, 'requests': {}},
+                   {**baseline, 'service_tier': 'priority'}]
+        for index, ledger in enumerate(invalid):
+            with self.subTest(index=index):
+                path = self.directory.parent / f'invalid-{index}.json'
+                destination = self.directory.parent / f'rejected-{index}'
+                atomic_json(path, ledger)
+                with self.assertRaises(ValueError):
+                    campaign.initialize(destination, import_ledger=path)
+                self.assertFalse(destination.exists())
 
     def test_imported_cost_and_shared_sequential_admission(self):
         status = campaign.status(self.directory)

@@ -11,13 +11,14 @@ RULES.md
 stages/
   common/                     Shared interfaces and artifact rules
     grading/                  Reusable API checks, workload helpers, and catalog
-      fixtures/               Host-only calibration probe
+      probes/                 Host-only calibration program
     smoke/                    Minimal development checks and ordinary fixtures
   capabilities/               Reusable requirements
   languages/                  Rust and C++ restrictions
   stage-01/ ... stage-05/      SPEC.md and profile.json
     grading/                  api.py and performance.py
-  stage-10/                   Stage 10 instructions, fixtures, packet assembly
+  stage-10/                   Stage 10 instructions and packet assembly
+    inputs/                   Supplied config, website files, and TLS material
     grading/                  api.py, checks.py, and performance.py
 .generated/packets/            Optional current previews, ignored by Git
 ```

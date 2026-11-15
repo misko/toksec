@@ -4,14 +4,13 @@ import hashlib
 import json
 import time
 import uuid
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from toksec import metering
 from toksec.storage import atomic_json
-from toksec.specification import ROOT, fingerprint
+from toksec.specification import fingerprint
 
-PILOT = ROOT / 'fixtures/accounting/legacy-pilot-ledger.json'
 RESERVED_TOKENS = metering.MODEL_CONTEXT_LIMIT + metering.MAX_OUTPUT
 RESERVED_USD = (Decimal(metering.MODEL_CONTEXT_LIMIT) * Decimal(metering.RATES['write_upper']) * 2
                 + Decimal(metering.MAX_OUTPUT) * Decimal(metering.RATES['output']) * Decimal('1.5')) / 1_000_000
@@ -45,23 +44,53 @@ def locked(directory, owner=False):
         yield
 
 
-def initialize(directory, budget_usd=None):
+def initialize(directory, budget_usd=None, *, import_ledger=None):
     directory = Path(directory).resolve()
-    directory.mkdir(parents=True, exist_ok=False)
-    ledger = json.loads(PILOT.read_text())
-    if budget_usd is not None:
-        budget = Decimal(str(budget_usd))
+    if import_ledger is not None:
+        if budget_usd is not None:
+            raise ValueError('choose a fresh budget or a historical ledger, not both')
+        source = Path(import_ledger).resolve()
+        body = source.read_bytes()
+        ledger = json.loads(body)
+        try:
+            budget = Decimal(str(ledger['dollar_limit']))
+            if not budget.is_finite() or budget <= 0:
+                raise ValueError('historical budget must be positive and finite')
+            if type(ledger['token_limit']) is not int or ledger['token_limit'] <= 0:
+                raise ValueError('historical token limit must be a positive integer')
+            if ledger['service_tier'] != 'default':
+                raise ValueError('historical ledger must use standard service')
+            if not isinstance(ledger['requests'], list):
+                raise ValueError('historical requests must be a list')
+            for entry in ledger['requests']:
+                if not isinstance(entry['id'], str) or not entry['id']:
+                    raise ValueError('historical request ID is required')
+                if entry['state'] != 'settled':
+                    raise ValueError('historical ledger has unresolved charges')
+                metering.tokens(entry['usage']['total'])
+                cost = Decimal(str(entry['usage']['cost_usd_upper_bound']))
+                if not cost.is_finite() or cost < 0:
+                    raise ValueError('historical charges must be nonnegative and finite')
+        except (KeyError, TypeError, InvalidOperation) as error:
+            raise ValueError('invalid historical ledger') from error
+        ledger.update(imported_ledger_sha256=hashlib.sha256(body).hexdigest(),
+                      imported_ledger_path=str(source),
+                      scope='Measured API calls including imported history; excludes framework preparation')
+        for entry in ledger['requests']:
+            entry.setdefault('run', 'historical-import')
+    else:
+        budget = Decimal(str(budget_usd if budget_usd is not None else '3'))
         if not budget.is_finite() or budget <= 0:
             raise ValueError('budget must be positive and finite')
-        ledger.update(requests=[], dollar_limit=str(budget))
-    if any(r['state'] != 'settled' for r in ledger['requests']):
-        raise ValueError('pilot has unresolved charges')
+        ledger = {'requests': [], 'dollar_limit': str(budget),
+                  'model': metering.MODEL, 'token_limit': metering.TOKEN_LIMIT,
+                  'service_tier': 'default', 'rates_usd_per_million': dict(metering.RATES),
+                  'price_source': metering.PRICE_SOURCE, 'price_verified_date': metering.PRICE_DATE,
+                  'scope': 'Fresh measured API campaign; excludes framework preparation'}
     ledger.update(schema_version=2, state='active', reason=None, fingerprint=fingerprint(),
-                  imported_ledger_sha256=hashlib.sha256(PILOT.read_bytes()).hexdigest(),
-                  scope=('Fresh measured API campaign; excludes framework preparation' if budget_usd is not None else 'Measured API calls including recorded pilot; excludes framework preparation'),
                   created_unix=time.time())
-    for entry in ledger['requests']:
-        entry['run'] = 'historical-python-pilot'
+    metering.totals(ledger)
+    directory.mkdir(parents=True, exist_ok=False)
     atomic_json(directory / 'ledger.json', ledger)
     (directory / 'runs').mkdir()
     return status(directory)

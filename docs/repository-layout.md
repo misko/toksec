@@ -22,7 +22,9 @@ stage instructions, and a generated artifact contract. The retired Python pilot 
 | `evaluate.py` | Shared standalone and tagged-grading CLI |
 | `scripts/` | Campaign orchestration, analysis, plotting, calibration, and publication commands |
 | `tests/` | Harness regression tests and test-only implementation fixtures |
-| `fixtures/` | Shared accounting test data |
+| `tests/fixtures/` | Sample implementations and historical accounting data for regression tests |
+| `stages/stage-10/inputs/` | Supplied configuration, website files, and TLS certificates |
+| `stages/common/grading/probes/` | Executable benchmark calibration probe |
 | `results/` | Curated implementations, instructions, accounting, and parent evaluations |
 | `references/` | Engineering reference implementations and their separate validation evidence |
 | `calibrations/` | Published calibration evidence about the measurement machinery |

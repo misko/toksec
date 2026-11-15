@@ -108,3 +108,15 @@ Runs record `toksec_commit` at preparation. Evaluations record their own
 `toksec_commit` and `toksec_dirty`, plus `run_toksec_commit` for tagged grading.
 The evaluator commit and the submitted server's `release.commit` are different.
 Historical records without commit provenance remain explicitly historical.
+
+## Fresh campaigns and historical import
+
+`python3 -m toksec init --campaign PATH --budget-usd 3` creates an empty ledger
+from current accounting defaults. Omitting the budget also starts a fresh $3
+campaign. No historical ledger is read.
+
+To carry forward recorded charges explicitly, use
+`python3 -m toksec init --campaign NEW_PATH --import-ledger LEDGER_PATH`.
+This retains the source budget, token limit, and settled charges, and records the
+source path and SHA-256. It rejects unresolved requests and cannot be combined
+with `--budget-usd`. The source ledger and existing campaigns remain unchanged.

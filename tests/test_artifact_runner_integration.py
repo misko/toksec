@@ -45,6 +45,13 @@ class ArtifactRunnerIntegrationTests(unittest.TestCase):
                     self.assertNotIn('grading', supplied.relative_to(run / 'builder-inputs').parts)
                 if kind == 'legacy':
                     self.assertEqual(prompt, packet(2, 'cpp'))
+                else:
+                    inputs = Path(__file__).resolve().parents[1] / 'stages/stage-10/inputs'
+                    expected = {str(p.relative_to(inputs)): p.read_bytes()
+                                for p in inputs.rglob('*') if p.is_file()}
+                    supplied = run / 'builder-inputs/fixtures'
+                    self.assertEqual(expected, {str(p.relative_to(supplied)): p.read_bytes()
+                                                for p in supplied.rglob('*') if p.is_file()})
 
     def test_both_runners_reject_tampered_contract_before_compilation(self):
         for kind in ('legacy', 'stage10'):

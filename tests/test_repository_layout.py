@@ -33,7 +33,7 @@ class RepositoryLayoutTests(unittest.TestCase):
 
     def test_old_root_modules_and_ambiguous_input_locations_are_gone(self):
         for name in ('capacity.py', 'controller.py', 'evaluator.py', 'metering.py',
-                     'probe.py', 'runner.py', 'evaluation', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
+                     'probe.py', 'runner.py', 'evaluation', 'fixtures', 'stage10', 'prompts', 'experiments', 'starters', 'proposals'):
             self.assertFalse((ROOT / name).exists(), name)
         self.assertTrue((ROOT / 'tests/fixtures/implementations/static.rs').is_file())
         self.assertFalse((ROOT / 'legacy').exists())
@@ -42,7 +42,11 @@ class RepositoryLayoutTests(unittest.TestCase):
         packet = ROOT / 'stages/stage-10'
         manifest = json.loads((packet / 'input-manifest.json').read_text())
         for entry in manifest['entries']:
-            source = packet / entry['path']
+            # The frozen manifest names the original packet paths.
+            relative = entry['path']
+            if relative.startswith('fixtures/'):
+                relative = 'inputs/' + relative.removeprefix('fixtures/')
+            source = packet / relative
             body = source.read_bytes()
             self.assertEqual(len(body), entry['bytes'], entry['path'])
             self.assertEqual(hashlib.sha256(body).hexdigest(), entry['sha256'], entry['path'])

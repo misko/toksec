@@ -1,7 +1,7 @@
 # Stage 10 inputs and specification
 
 This is the canonical input directory for the Stage 10 experiment. It contains
-stage-specific instructions and fixtures used by the
+stage-specific instructions and inputs used by the
 [regular runner’s Stage 10 backend](../../docs/stage-10-runtime.md). A Terra campaign has
 completed; its [implementation and partial evaluation](../../results/terra-stage10-cpp-20261115-2usd-recovery/README.md)
 are preserved. The full acceptance evaluator remains incomplete.
@@ -90,3 +90,9 @@ The experimental runner implements packet delivery, approved TLS compilation,
 process-tree enforcement, tagged releases, and partial API checks. Full
 configuration, TLS, and lifecycle coverage and calibrated performance drivers
 remain incomplete. See the runner README for the current supported profile.
+
+The host stores supplied data in `inputs/`. Preparation copies it into the run's
+`builder-inputs/fixtures/`, preserving the sandbox paths `/fixtures/config`,
+`/fixtures/tls`, and `/www`. The frozen `input-manifest.json` retains its original
+`fixtures/` paths; those map to `inputs/` in the current checkout. Its recorded
+file hashes and byte counts remain unchanged.

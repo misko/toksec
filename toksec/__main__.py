@@ -24,7 +24,9 @@ def main(argv=None):
         cmd = commands.add_parser(name)
         cmd.add_argument('--campaign', type=Path, required=True)
         if name == 'init':
-            cmd.add_argument('--budget-usd', default='3', help='Start a fresh campaign without importing historical charges')
+            source = cmd.add_mutually_exclusive_group()
+            source.add_argument('--budget-usd', help='Fresh campaign cap in USD (default: 3)')
+            source.add_argument('--import-ledger', type=Path, help='Import a settled historical ledger, retaining its budget and charges')
     prepare = commands.add_parser('prepare', help='Prepare an independent stage. No API call.')
     prepare.add_argument('--campaign', type=Path, required=True)
     prepare.add_argument('--stage', '--level', dest='stage', type=int, choices=SUPPORTED_STAGES, required=True)
@@ -60,7 +62,7 @@ def main(argv=None):
             publish(output, args.language, args.stage)
             result = {'published': str(output.resolve())}
         elif args.command == 'init':
-            result = campaign.initialize(args.campaign, args.budget_usd)
+            result = campaign.initialize(args.campaign, args.budget_usd, import_ledger=args.import_ledger)
         elif args.command == 'status':
             result = campaign.status(args.campaign)
             from toksec.accounting.run_allocations import status as stage10_status
