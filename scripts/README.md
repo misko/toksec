@@ -17,3 +17,8 @@ analysis scripts retain their historical timeline format and explicit output pat
 the publisher supports both. Preserve raw campaigns and use the original checkout
 for historical evaluator fingerprints. Do not copy source, reports, or figures by
 hand into published results; use the [artifact workflow](../docs/result-storage.md).
+
+`record_security_evaluation.py` freezes a parent security report and curated
+evidence against an exact tagged release. It makes no model calls and executes
+no evidence. Publish the resulting record with `publish_results.py`. See
+[security evaluations](../docs/result-storage.md#security-evaluations).

@@ -184,3 +184,78 @@ inventory contains Stage 1 and Stage 2 in Rust and C++, and Stage 5 and Stage 10
 C++. Historical raw campaigns remain in their original worktrees. Older published
 results also remain in Git history at `f61d564` and in the local backup at
 `/home/mouse9911/gits/toksec-archive/results-cleanup-20261114T190934Z/`.
+
+## Security evaluations
+
+Security analyses use `contracts/security-evaluation.schema.json` and
+`kind: "security"`. Existing API/performance records retain their original schema.
+The shared `validate_evaluation` entry point dispatches by kind.
+
+Store each analysis under `RAW_RUN/evaluation/security-<timestamp>-<suffix>/`.
+Publication preserves that ID at `results/<run-id>/evaluation/<evaluation-id>/`:
+
+```text
+evaluation.json       Release identity, analysis metadata, file hashes and sizes
+report.md             Parent analysis report
+evidence/             Selected logs, requests, reproductions, and supporting files
+figures/              Optional analysis figures
+```
+
+Each security record requires the run ID, release tag, exact server Git commit,
+source SHA-256, frozen artifact-contract SHA-256, evaluator SHA-256, current Toksec
+commit and dirty state, environment, scope, methods, limitations, and findings.
+`run_toksec_commit` remains null when historical preparation provenance is unknown.
+The evaluator hash identifies the analysis scripts or an analysis-method manifest;
+it is supplied by the analyst and is not a claim that Toksec verified the method.
+
+Statuses are `completed`, `partial`, or `error`. Completion describes the declared
+analysis, not proof that the server is secure. Findings have stable IDs, severity,
+confirmation status, descriptions, and references to inventoried evidence files.
+An empty findings list means no findings were recorded within the declared scope.
+Security evaluations carry no API pass counts or performance credit and do not
+replace those evaluations. Stage 10 coverage limitations remain unchanged.
+
+Prepare an analysis JSON containing these fields, for example:
+
+```json
+{
+  "evaluator_sha256": "<64 lowercase hex characters identifying the analysis method>",
+  "environment": {"os": "Linux", "tool": "manual review"},
+  "status": "partial",
+  "scope": "HTTP request parsing in release/000001",
+  "methods": ["Source review and malformed-request tests"],
+  "limitations": ["Concurrency behavior was not assessed"],
+  "findings": [{
+    "id": "SEC-001",
+    "title": "Observed parser discrepancy",
+    "severity": "low",
+    "status": "unconfirmed",
+    "description": "Describe the observation and its implications here.",
+    "evidence": ["evidence/parser.log"]
+  }]
+}
+```
+
+Replace the hash placeholder with the SHA-256 of your method manifest or tooling.
+Then record the analysis and publish through the existing workflow:
+
+```sh
+python3 scripts/record_security_evaluation.py --run RAW_RUN \
+  --tag release/000001 --analysis /path/to/analysis.json \
+  --report /path/to/report.md --evidence /path/to/curated-evidence \
+  --figures /path/to/figures
+python3 scripts/publish_results.py --run RAW_RUN
+```
+
+`--evidence` and `--figures` are optional. Findings must reference evidence when
+present. The recorder generates an ID, or accepts `--evaluation-id`, and resolves
+the tag to its commit and source hash. Supply the tag actually analyzed. It
+requires a raw run with its repository and frozen artifact contract; a historical
+publication without those cannot be given invented provenance.
+
+The recorder copies only the supplied report and curated evidence/figure trees.
+It inventories each file by relative path, SHA-256, and byte count. Recording and
+publishing never execute evidence or make model calls. Publication rejects changed
+bytes, missing or unlisted files, symlinks, unsafe paths, and mismatched release
+identity. Reports are append-only: use a new evaluation ID for a revised analysis.
+Existing evaluations and historical results are not rewritten.

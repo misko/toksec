@@ -2,7 +2,7 @@
 import hashlib
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 
 from toksec.storage import atomic_json
@@ -166,6 +166,29 @@ def validate_source(source, contract):
 
 
 def validate_evaluation(evaluation):
+    if isinstance(evaluation, dict) and evaluation.get('kind') == 'security':
+        _validated(evaluation, 'security-evaluation')
+        paths = []
+        for artifact in evaluation['artifacts']:
+            name = artifact['path']
+            path = PurePosixPath(name)
+            if (str(path) != name or path.is_absolute() or '\\' in name
+                    or any(part in ('.', '..') for part in path.parts)
+                    or any(ord(char) < 32 for char in name)
+                    or not (name == 'report.md' or len(path.parts) > 1
+                            and path.parts[0] in ('evidence', 'figures'))):
+                raise ValueError('invalid security artifact path')
+            paths.append(name)
+        if len(set(paths)) != len(paths) or 'report.md' not in paths:
+            raise ValueError('security artifacts require a unique report and paths')
+        identities = [finding['id'] for finding in evaluation['findings']]
+        if len(set(identities)) != len(identities):
+            raise ValueError('duplicate security finding ID')
+        for finding in evaluation['findings']:
+            if any(name not in paths or not name.startswith('evidence/')
+                   for name in finding['evidence']):
+                raise ValueError('security finding references missing evidence')
+        return evaluation
     _validated(evaluation, 'evaluation')
     api = evaluation['api']
     passed, total = api['passed'], api['total']

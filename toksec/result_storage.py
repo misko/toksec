@@ -61,13 +61,15 @@ def destination(results, record):
     return result
 
 
-def mapped(name, evaluation_id):
+def mapped(name, evaluation_id, security_paths=frozenset()):
     path = Path(name)
     if name.startswith('evaluation/'):
         parts = path.parts
         if len(parts) == 3 and parts[2] in ('evaluation.json', 'api.json', 'performance.json', 'report.md'):
             return name
         if len(parts) >= 4 and parts[2] == 'figures' and path.suffix in ('.png', '.svg', '.csv', '.json'):
+            return name
+        if name in security_paths:
             return name
         raise ValueError('unclassified parent evaluation artifact: ' + name)
     if name in ('run.json', 'README.md', 'sha256.json'):
@@ -145,6 +147,13 @@ def transform(snapshot, target):
     """Copy a legacy snapshot, preserving every original file byte and its mapping."""
     snapshot, target = Path(snapshot), Path(target)
     before = files(snapshot)
+    security_paths = set()
+    for envelope in (snapshot / 'evaluation').glob('*/evaluation.json'):
+        data = read(envelope)
+        if data.get('kind') == 'security':
+            from toksec.security_evaluations import verify_security_files
+            names = verify_security_files(envelope.parent, data)
+            security_paths.update(str(envelope.parent.relative_to(snapshot) / name) for name in names)
     record = read(snapshot / 'run.json')
     destination(target.parent, record)  # validate trusted identity fields
     if record.get('layout_version') == LAYOUT_VERSION:
@@ -156,7 +165,7 @@ def transform(snapshot, target):
     evaluation_id = 'imported-' + snapshot_hash[:16]
     mapping = {}
     for name, expected in before.items():
-        dest = mapped(name, evaluation_id)
+        dest = mapped(name, evaluation_id, security_paths)
         output = target / dest
         output.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(snapshot / name, output)
@@ -231,6 +240,19 @@ def verify(target):
     for entry in read(target / 'migration.json')['files'].values():
         if current.get(entry['path']) != entry['sha256']:
             raise ValueError('migrated artifact changed: ' + entry['path'])
+    for envelope in (target / 'evaluation').glob('*/evaluation.json'):
+        data = read(envelope)
+        if data.get('kind') == 'security':
+            from toksec.security_evaluations import verify_security_files
+            verify_security_files(envelope.parent, data)
+            run = read(target / 'run.json')
+            releases = read(target / 'implementation/releases.json')['releases']
+            expected = next((r for r in releases if r['tag'] == data['release']['tag']), None)
+            if (data['run_id'] != run.get('run_id', run['id']) or expected is None
+                    or any(data['release'][key] != expected.get(key)
+                           for key in ('commit', 'source_sha256'))
+                    or data['contract_sha256'] != digest(target / 'inputs/artifact.json')):
+                raise ValueError('security evaluation does not match published release')
     return current
 
 
@@ -478,10 +500,16 @@ def snapshot_run(run, snapshot):
                     or any(release[key] != expected.get(key) for key in ('commit', 'source_sha256'))):
                 raise ValueError('parent evaluation does not match a published release')
             selected = []
-            for name in files(directory):
-                if name in ('evaluation.json','api.json','performance.json','report.md') or (
-                        name.startswith('figures/') and Path(name).suffix in ('.png','.svg','.csv','.json')):
-                    selected.append(name)
+            if data.get('kind') == 'security':
+                from toksec.security_evaluations import verify_security_files
+                if data['contract_sha256'] != digest(run / 'artifact.json'):
+                    raise ValueError('security evaluation contract does not match run')
+                selected = verify_security_files(directory, data)
+            else:
+                for name in files(directory):
+                    if name in ('evaluation.json','api.json','performance.json','report.md') or (
+                            name.startswith('figures/') and Path(name).suffix in ('.png','.svg','.csv','.json')):
+                        selected.append(name)
             dest = snapshot / 'evaluation' / directory.name
             for name in selected:
                 target = dest / name
