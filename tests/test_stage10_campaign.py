@@ -123,7 +123,7 @@ class Stage10CampaignTests(unittest.TestCase):
     def test_rejects_unsupported_model_budget_and_profile_tampering(self):
         with self.assertRaises(ValueError):
             stage10_campaign.prepare(self.root, model='gpt-6-luna')
-        for amount in ('3', 'NaN', '-1', 'not-a-number'):
+        for amount in ('6', 'NaN', '-1', 'not-a-number'):
             with self.subTest(amount=amount), self.assertRaises(ValueError):
                 self.prepare(amount)
         run = self.prepare('1')
