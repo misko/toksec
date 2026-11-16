@@ -259,3 +259,16 @@ publishing never execute evidence or make model calls. Publication rejects chang
 bytes, missing or unlisted files, symlinks, unsafe paths, and mismatched release
 identity. Reports are append-only: use a new evaluation ID for a revised analysis.
 Existing evaluations and historical results are not rewritten.
+
+Supplementary and Markdown-only security reports use this same workflow. There
+is no direct-placement exception. A folder containing `report.md` without
+`evaluation.json` is unregistered; validation rejects it with recording guidance.
+Publishing alone does not register a file already copied into `results/`.
+
+For an existing unregistered report, preserve its bytes before reconciliation.
+Obtain the exact analyzed release and analysis metadata from its author, rather
+than infer them from a date or the latest tag. If report reading is prohibited,
+do not open it to fill metadata gaps. A historical run without its original
+artifact contract cannot use the current recorder; do not create a substitute
+contract in the historical run to bypass that requirement. Resolve provenance
+explicitly before publication, and leave the report intact while blocked.

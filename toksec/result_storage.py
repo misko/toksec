@@ -27,6 +27,18 @@ def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def require_evaluation_envelopes(root):
+    evaluations = Path(root) / 'evaluation'
+    if not evaluations.exists():
+        return
+    for directory in evaluations.iterdir():
+        if directory.is_dir() and (directory / 'report.md').exists() and not (directory / 'evaluation.json').is_file():
+            raise ValueError(
+                f'unregistered evaluation report: {directory}; missing evaluation.json. '
+                'For security reports, use scripts/record_security_evaluation.py against '
+                'the raw run, then scripts/publish_results.py. Preserve the report before reconciliation.')
+
+
 def files(root):
     root = Path(root)
     if root.is_symlink():
@@ -233,6 +245,7 @@ def transform(snapshot, target):
 
 def verify(target):
     target = Path(target)
+    require_evaluation_envelopes(target)
     current = files(target)
     for name, expected in read(target / 'sha256.json').items():
         if current.get(name) != expected:
@@ -487,6 +500,7 @@ def snapshot_run(run, snapshot):
                 atomic_json(snapshot / 'releases.json', {'releases': releases})
                 record['last_tag'] = tags[-1]
     if (run / 'evaluation').exists():
+        require_evaluation_envelopes(run)
         from toksec.artifacts import validate_evaluation
         release_records = {r['tag']: r for r in read(snapshot / 'releases.json')['releases']} if (snapshot / 'releases.json').exists() else {}
         for directory in sorted((run / 'evaluation').iterdir()):

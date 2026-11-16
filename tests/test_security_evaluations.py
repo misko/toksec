@@ -5,9 +5,10 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from toksec.artifacts import validate_evaluation, CONTRACTS
-from toksec.result_storage import publish_run, files
+from toksec.result_storage import publish_run, files, require_evaluation_envelopes, verify
 from toksec.security_evaluations import record_security_evaluation, verify_security_files
 from toksec.storage import atomic_json
 import test_result_storage
@@ -35,6 +36,26 @@ class SecurityEvaluationTests(unittest.TestCase):
         return record_security_evaluation(self.run, tag=self.release['tag'],
             analysis=self.analysis, report=self.report, evidence=self.evidence,
             evaluation_id=identity)
+
+    def test_report_only_folder_requires_registration_without_reading_report(self):
+        directory = self.run / 'evaluation/security-unregistered'
+        directory.mkdir(parents=True)
+        (directory / 'report.md').write_text('Unread report')
+        with patch.object(Path, 'read_bytes', side_effect=AssertionError('report read')):
+            with self.assertRaisesRegex(ValueError, 'record_security_evaluation.py'):
+                require_evaluation_envelopes(self.run)
+        with self.assertRaisesRegex(ValueError, 'missing evaluation.json'):
+            publish_run(self.run, self.root / 'results')
+
+    def test_published_report_only_folder_is_rejected(self):
+        self.record()
+        publish_run(self.run, self.root / 'results')
+        published = self.root / 'results' / self.run.name
+        directory = published / 'evaluation/security-unregistered'
+        directory.mkdir()
+        (directory / 'report.md').write_text('Unread report')
+        with self.assertRaisesRegex(ValueError, 'unregistered evaluation report'):
+            verify(published)
 
     def test_publishes_report_binary_evidence_and_exact_release(self):
         record = self.record()

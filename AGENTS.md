@@ -41,3 +41,23 @@ zero performance credit, not a measured throughput of zero.
 Preserve historical run packets and raw campaigns. Do not retrofit a generated
 artifact contract into an old builder's recorded inputs. A migrated inferred
 contract must be identified as migration metadata.
+
+## Security reports
+
+All security reports, including supplementary and Markdown-only reports, are
+parent evaluations. Do not create their folders directly under `results/`.
+Read `docs/result-storage.md` and use `scripts/record_security_evaluation.py`
+followed by `scripts/publish_results.py`. Each analysis gets its own evaluation ID.
+
+Obtain the exact analyzed tag or commit and analysis metadata from the analyst.
+Never infer the analyzed release from the latest tag, a report date, or its folder.
+Do not invent findings, evaluator hashes, or missing historical contracts. If the
+required provenance is unavailable, report the blocker before publication.
+Do not read report contents when the user prohibits it; copying and checksum
+verification can preserve the bytes without exposing their contents in chat.
+
+The recorder creates `RAW_RUN/evaluation/<id>/evaluation.json` and `report.md`,
+plus supplied evidence and figures. The publisher installs the corresponding
+`results/<run-id>/evaluation/<id>/` folder. Running the publisher alone does not
+register a report manually copied into `results/`. Preserve such a report before
+reconciling it; never overwrite an existing published evaluation ID.
