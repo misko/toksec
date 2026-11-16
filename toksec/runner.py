@@ -119,6 +119,7 @@ def run_loop(run, client):
     run = Path(run).resolve()
     manifest = controller.validate(run)
     directory = Path(manifest['campaign'])
+    bounded = campaign.read(directory).get('request_profile') == 'bounded-32k'
     with campaign.locked(directory, owner=True):
         check = preflight(run)
         if not check['launch_allowed']:
@@ -149,11 +150,19 @@ def run_loop(run, client):
                     request = {'model': model, 'input': history, 'tools': TOOLS}
                     options = campaign.profile(model)['prompt_cache_options']
                     timeout = min(120, capacity['seconds_remaining'] - 30)
-                    count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
-                    if count >= context.ROLLOVER_INPUT:
+                    if bounded:
+                        from toksec.accounting.counted_requests import validate_request, COUNT_FIELDS
+                        request.update(reasoning={'effort': 'medium'}, parallel_tool_calls=False,
+                                       tool_choice='required', truncation='disabled', max_output_tokens=metering.MAX_OUTPUT,
+                                       service_tier='default', store=False, prompt_cache_options=options)
+                        validate_request(request)
+                    count_request = {k: v for k, v in request.items() if k in COUNT_FIELDS} if bounded else request
+                    count = client.post('responses/input_tokens', count_request, min(60, timeout))['input_tokens']
+                    if count >= (24000 if bounded else context.ROLLOVER_INPUT):
                         history = context.checkpoint(run, text)
                         request['input'] = history
-                        count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
+                        count_request = {k: v for k, v in request.items() if k in COUNT_FIELDS} if bounded else request
+                        count = client.post('responses/input_tokens', count_request, min(60, timeout))['input_tokens']
                     if controller.capacity(run)['seconds_remaining'] <= 30:
                         reason = 'finalization reserve reached'
                         break
@@ -161,16 +170,22 @@ def run_loop(run, client):
                     generation = dict(request, reasoning={'effort': 'medium'})
                     if options is not None:
                         generation['prompt_cache_options'] = options
+                    if not bounded:
+                        generation['include'] = ['reasoning.encrypted_content']
                     response = client.post('responses', dict(generation, max_output_tokens=metering.MAX_OUTPUT,
                                            service_tier='default', store=False, parallel_tool_calls=False,
-                                           include=['reasoning.encrypted_content']),
+                                           ),
                                            min(120, controller.capacity(run)['seconds_remaining'] - 20))
                     atomic_json(run / ('response-' + identity + '.json'), response)
                     campaign.settle(directory, identity, response)
                     if campaign.read(directory)['state'] != 'active':
                         reason = 'usage or model response stopped the campaign'
                         break
-                    history.extend(response['output'])
+                    if bounded:
+                        visible = [item for item in response['output'] if item['type'] in ('message', 'function_call')]
+                        history.append({'role': 'assistant', 'content': json.dumps(visible)})
+                    else:
+                        history.extend(response['output'])
                     calls = [item for item in response['output'] if item['type'] == 'function_call']
                     if not calls:
                         if controller.capacity(run)['can_finish']:
@@ -192,7 +207,10 @@ def run_loop(run, client):
                     atomic_json(run / ('tool-' + identity + '.json'), {'name': call['name'], 'result': result})
                     if result.get('finished'):
                         break
-                    history.append({'type': 'function_call_output', 'call_id': call['call_id'], 'output': json.dumps(result)})
+                    if bounded:
+                        history.append({'role': 'user', 'content': json.dumps({'tool': call['name'], 'result': result})})
+                    else:
+                        history.append({'type': 'function_call_output', 'call_id': call['call_id'], 'output': json.dumps(result)})
         except (Exception, KeyboardInterrupt, CampaignDeadline) as error:
             reason = type(error).__name__ + ': ' + str(error)
         finally:

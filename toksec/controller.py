@@ -57,7 +57,7 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
     write_artifact(run, level, language)
     (run / 'launch-packet.md').write_text(packet(level, language))
     atomic_json(run / 'specification.json', specification(level, language))
-    atomic_json(run / 'manifest.json', {**provenance, 'run_id': run.name, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model), 'campaign': str(Path(directory).resolve()),
+    atomic_json(run / 'manifest.json', {**provenance, 'run_id': run.name, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model, campaign.read(directory).get('request_profile', 'legacy')), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(),

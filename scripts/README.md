@@ -22,3 +22,6 @@ hand into published results; use the [artifact workflow](../docs/result-storage.
 evidence against an exact tagged release. It makes no model calls and executes
 no evidence. Publish the resulting record with `publish_results.py`. See
 [security evaluations](../docs/result-storage.md#security-evaluations).
+
+`run_parallel.py prepare|run|status|finalize` operates independently budgeted
+Terra sandbox batches with disjoint CPU slots. See [parallel runs](../docs/parallel-runs.md).
