@@ -182,6 +182,51 @@
         ],
         "additionalProperties": false
       }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "live",
+            "historical_import"
+          ]
+        },
+        "release_metadata": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_provenance": {
+          "enum": [
+            "frozen",
+            "reconstructed_for_storage"
+          ]
+        },
+        "verified": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "author_attested": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

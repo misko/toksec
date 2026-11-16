@@ -243,6 +243,13 @@ def transform(snapshot, target):
     return record
 
 
+def _security_contract(target, envelope):
+    for candidate in (target / 'inputs/artifact.json', envelope / 'artifact.json'):
+        if candidate.is_file():
+            return candidate
+    raise ValueError('security evaluation contract is missing')
+
+
 def verify(target):
     target = Path(target)
     require_evaluation_envelopes(target)
@@ -260,11 +267,11 @@ def verify(target):
             verify_security_files(envelope.parent, data)
             run = read(target / 'run.json')
             releases = read(target / 'implementation/releases.json')['releases']
-            expected = next((r for r in releases if r['tag'] == data['release']['tag']), None)
+            expected = next((r for r in releases if r.get('tag') == data['release']['tag']), None)
             if (data['run_id'] != run.get('run_id', run['id']) or expected is None
                     or any(data['release'][key] != expected.get(key)
                            for key in ('commit', 'source_sha256'))
-                    or data['contract_sha256'] != digest(target / 'inputs/artifact.json')):
+                    or data['contract_sha256'] != digest(_security_contract(target, envelope.parent))):
                 raise ValueError('security evaluation does not match published release')
     return current
 
@@ -491,6 +498,11 @@ def snapshot_run(run, snapshot):
                     meta = json.loads(git(run, 'show', tag + ':release.json'))
                     if hashlib.sha256(source).hexdigest() != meta['source_sha256']:
                         raise ValueError('tag source hash mismatch')
+                    if 'tag' not in meta:
+                        # Historical release.json predates the tag field; the sealed
+                        # Git tag is authoritative and is recorded as such.
+                        meta['tag'] = tag
+                        meta['tag_provenance'] = 'git_tag'
                     meta['commit'] = git(run, 'rev-parse', tag + '^{commit}').strip()
                     (snapshot / (tag.replace('/', '-') + Path(source_name).suffix)).write_bytes(source)
                     releases.append(meta)
@@ -503,6 +515,9 @@ def snapshot_run(run, snapshot):
         require_evaluation_envelopes(run)
         from toksec.artifacts import validate_evaluation
         release_records = {r['tag']: r for r in read(snapshot / 'releases.json')['releases']} if (snapshot / 'releases.json').exists() else {}
+        # A historical packet may carry only a reconstructed contract; resolve it
+        # from the evaluation envelope that recorded it.
+        contract_file = run / 'artifact.json'
         for directory in sorted((run / 'evaluation').iterdir()):
             if directory.is_symlink() or not directory.is_dir():
                 raise ValueError('invalid evaluation directory')
@@ -516,7 +531,8 @@ def snapshot_run(run, snapshot):
             selected = []
             if data.get('kind') == 'security':
                 from toksec.security_evaluations import verify_security_files
-                if data['contract_sha256'] != digest(run / 'artifact.json'):
+                candidate = contract_file if contract_file.is_file() else directory / 'artifact.json'
+                if not candidate.is_file() or data['contract_sha256'] != digest(candidate):
                     raise ValueError('security evaluation contract does not match run')
                 selected = verify_security_files(directory, data)
             else:

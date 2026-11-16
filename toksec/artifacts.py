@@ -175,7 +175,7 @@ def validate_evaluation(evaluation):
             if (str(path) != name or path.is_absolute() or '\\' in name
                     or any(part in ('.', '..') for part in path.parts)
                     or any(ord(char) < 32 for char in name)
-                    or not (name == 'report.md' or len(path.parts) > 1
+                    or not (name in ('report.md', 'artifact.json') or len(path.parts) > 1
                             and path.parts[0] in ('evidence', 'figures'))):
                 raise ValueError('invalid security artifact path')
             paths.append(name)

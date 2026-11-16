@@ -253,6 +253,21 @@ the tag to its commit and source hash. Supply the tag actually analyzed. It
 requires a raw run with its repository and frozen artifact contract; a historical
 publication without those cannot be given invented provenance.
 
+Historical runs whose packet predates the frozen artifact contract use import
+mode. Pass `--artifact` pointing at the reconstructed contract; the recorder
+verifies its stage and language, hashes its bytes, and records
+`provenance.contract_provenance: reconstructed_for_storage` inside the envelope.
+Matching a generated contract does not establish that the original builder
+received it. The envelope also carries the contract itself, so publication and
+verification never depend on a historical packet that lacked the file. A
+historical `release.json` may omit its tag field; the recorder then resolves the
+existing Git tag, verifies it against the submitted source, and records that
+resolution instead of minting a tag or editing the packet. `run_toksec_commit`
+stays null for such runs. `provenance.mode` distinguishes `live` from
+`historical_import`; release identity and file hashes are mechanically verified,
+while methods, environment, and limitations remain author-attested and
+reconstructed afterward.
+
 The recorder copies only the supplied report and curated evidence/figure trees.
 It inventories each file by relative path, SHA-256, and byte count. Recording and
 publishing never execute evidence or make model calls. Publication rejects changed

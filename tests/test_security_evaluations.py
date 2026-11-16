@@ -37,6 +37,57 @@ class SecurityEvaluationTests(unittest.TestCase):
             analysis=self.analysis, report=self.report, evidence=self.evidence,
             evaluation_id=identity)
 
+    def test_historical_import_resolves_tag_without_release_json_tag(self):
+        import hashlib
+        import shutil
+        from toksec.artifacts import artifact_contract
+        from toksec.result_storage import publish_run, verify
+        from toksec.storage import atomic_json
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run, release = test_result_storage.RawPublicationTests().run_fixture(root)
+            repository = run / 'repository'
+            # Reconstruct the historical shape: no frozen contract and no tag field.
+            (run / 'artifact.json').unlink()
+            raw = json.loads((repository / 'release.json').read_text())
+            raw.pop('tag')
+            atomic_json(repository / 'release.json', raw)
+            git = lambda *a: __import__('subprocess').check_output(
+                ['git', '-C', str(repository), '-c', 'user.name=T', '-c', 'user.email=t@e.invalid',
+                 '-c', 'commit.gpgsign=false', *a], stderr=subprocess.DEVNULL)
+            git('add', 'release.json')
+            git('commit', '-m', 'strip tag for historical import test')
+            git('tag', '-f', 'release/000001')
+            release['commit'] = git('rev-parse', 'release/000001^{commit}').decode().strip()
+            reconstructed = root / 'reconstructed-artifact.json'
+            atomic_json(reconstructed, artifact_contract(1, 'cpp'))
+            report = root / 'report.md'
+            report.write_text('# Historical analysis\n')
+            evidence = root / 'evidence'
+            evidence.mkdir()
+            (evidence / 'probe.txt').write_text('output\n')
+            analysis = {'evaluator_sha256': 'f' * 64, 'environment': {'os': 'test'},
+                        'status': 'completed', 'scope': 'historical scope', 'methods': ['review'],
+                        'limitations': ['reconstructed metadata'],
+                        'findings': [{'id': 'H1', 'title': 'Historical finding', 'severity': 'low',
+                                      'status': 'confirmed', 'description': 'Observed.',
+                                      'evidence': ['evidence/probe.txt']}]}
+            record = record_security_evaluation(run, tag='release/000001', analysis=analysis,
+                report=report, evidence=evidence, evaluation_id='security-import',
+                artifact=reconstructed)
+            self.assertEqual(record['provenance']['mode'], 'historical_import')
+            self.assertEqual(record['provenance']['contract_provenance'], 'reconstructed_for_storage')
+            self.assertIn('omitted the tag', record['provenance']['release_metadata'])
+            self.assertIsNone(record['run_toksec_commit'])
+            self.assertEqual(record['release']['tag'], 'release/000001')
+            self.assertEqual(record['release']['commit'], release['commit'])
+            # The envelope carries its own contract for later verification.
+            self.assertTrue((run / 'evaluation/security-import/artifact.json').is_file())
+            publish_run(run, root / 'results')
+            verify(root / 'results' / run.name)
+            published = root / 'results' / run.name / 'evaluation/security-import'
+            self.assertEqual((published / 'report.md').read_bytes(), report.read_bytes())
+
     def test_report_only_folder_requires_registration_without_reading_report(self):
         directory = self.run / 'evaluation/security-unregistered'
         directory.mkdir(parents=True)

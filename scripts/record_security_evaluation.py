@@ -17,11 +17,14 @@ def main():
     parser.add_argument('--evidence', type=Path)
     parser.add_argument('--figures', type=Path)
     parser.add_argument('--evaluation-id')
+    parser.add_argument('--artifact', type=Path,
+        help='reconstructed artifact contract for a historical run without a frozen one')
     args = parser.parse_args()
     try:
         record = record_security_evaluation(args.run, tag=args.tag,
             analysis=json.loads(args.analysis.read_text()), report=args.report,
-            evidence=args.evidence, figures=args.figures, evaluation_id=args.evaluation_id)
+            evidence=args.evidence, figures=args.figures, evaluation_id=args.evaluation_id,
+            artifact=args.artifact)
     except (ValueError, OSError) as error:
         parser.exit(1, str(error) + '\n')
     print(json.dumps(record, indent=2))
