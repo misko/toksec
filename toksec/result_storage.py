@@ -223,7 +223,11 @@ def transform(snapshot, target):
     canonical = sorted((target / 'evaluation').glob('*/evaluation.json'))
     canonical = [p for p in canonical if p.parent.name != evaluation_id]
     latest_evaluation = str(max(canonical, key=lambda p: p.stat().st_mtime_ns).parent.relative_to(target)) if canonical else 'evaluation/' + evaluation_id
+    api_records = [read(path) for path in (target / 'evaluation').glob('*/evaluation.json')]
+    grading_status = ('reported' if any(value.get('api', {}).get('status') in ('passed', 'failed', 'error')
+                                      for value in api_records) else 'pending')
     record = dict(record, layout_version=LAYOUT_VERSION,
+                  grading_status=grading_status,
                   paths={'inputs': 'inputs', 'artifact_contract': artifact_path, 'implementation': 'implementation', 'accounting': 'accounting',
                          'evaluation': 'evaluation', 'latest_evaluation': latest_evaluation},
                   artifact_contract_provenance='reconstructed_for_storage' if 'artifact.json' not in before else 'supplied_to_builder')
@@ -233,6 +237,7 @@ def transform(snapshot, target):
     (target / 'README.md').write_text(
         f'# Stage {record["stage"]} — {record["language"]}\n\n'
         f'Run: `{record.get("id", "unknown")}`. Status: **{record.get("status", "unknown")}**.\n\n'
+        f'Independent grading: **{grading_status}**. Published source is not proof of API acceptance.\n\n'
         'The frozen submission and Git bundle are in [implementation/](implementation/).\n'
         f'Parent reports and figures are in [evaluation/]({latest_evaluation}/report.md).\n'
         'Supplied instructions are in `inputs/`; spending evidence is in `accounting/`.\n'

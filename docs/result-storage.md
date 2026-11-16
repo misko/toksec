@@ -287,3 +287,17 @@ do not open it to fill metadata gaps. A historical run without its original
 artifact contract cannot use the current recorder; do not create a substitute
 contract in the historical run to bypass that requirement. Resolve provenance
 explicitly before publication, and leave the report intact while blocked.
+
+## Publish implementations before grading
+
+A stopped builder can be published immediately with `publish_results.py --run
+RAW_RUN`, without invoking grading or making model calls. The Git bundle, tagged
+source, supplied inputs, and accounting are available under the usual run ID.
+`run.json` records `grading_status: pending`, the run README labels independent
+grading as pending, and the initial evaluation has API status `not_run`.
+
+After the parent grades that same release, publish the raw run again. The new
+report is appended under its evaluation ID and the grading status becomes
+`reported`; consult the report for pass/fail and coverage. Existing implementation
+bytes and earlier evaluation records remain unchanged. Publishing early does not
+mark a batch job complete or cause its scheduled grading to be skipped.

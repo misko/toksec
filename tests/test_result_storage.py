@@ -183,6 +183,28 @@ class RawPublicationTests(unittest.TestCase):
             self.assertEqual((published/'implementation/source/main.cpp').read_bytes(),(run/'repository/main.cpp').read_bytes())
             self.assertEqual(read(evidence/'evaluation.json')['release']['commit'],release['commit'])
 
+    def test_publish_before_grading_then_append_report_preserves_implementation(self):
+        from toksec.result_storage import publish_run, files, read, digest
+        from toksec.evaluation_artifacts import write_evaluation
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); run, release = self.run_fixture(root)
+            target = root / 'results' / run.name
+            first = publish_run(run, root / 'results')
+            self.assertEqual(first['grading_status'], 'pending')
+            self.assertIn('Independent grading: **pending**', (target / 'README.md').read_text())
+            before = files(target / 'implementation')
+            earlier = files(target / 'evaluation')
+            write_evaluation(run / 'evaluation/parent-grade', run_id=run.name, release=release,
+                contract_sha256=digest(run / 'artifact.json'), evaluator_sha256='a' * 64,
+                environment={}, coverage='full', result={'checks': {'passed': True,
+                    'cases': [{'id': 'test', 'passed': True}]}})
+            second = publish_run(run, root / 'results')
+            self.assertEqual(second['grading_status'], 'reported')
+            self.assertEqual(files(target / 'implementation'), before)
+            after = files(target / 'evaluation')
+            self.assertTrue(all(after.get(name) == checksum for name, checksum in earlier.items()))
+            self.assertEqual(read(target / 'evaluation/parent-grade/evaluation.json')['api']['status'], 'passed')
+
     def test_parent_grade_from_another_run_is_rejected(self):
         from toksec.result_storage import publish_run,digest
         from toksec.evaluation_artifacts import write_evaluation
