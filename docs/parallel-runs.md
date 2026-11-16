@@ -72,3 +72,27 @@ policies remain unchanged.
 For concurrent batches, launch preparation and execution with `taskset` on a CPU
 set disjoint from all other batches. The scheduler only coordinates its own
 slots; it does not discover or reserve other batches' CPUs.
+
+## Coordinating already-running batches
+
+`scripts/coordinate_batches.py` can adopt two or more live batch supervisors on
+this 24-CPU host and enforce one global worker limit. It validates supervisor and
+worker identities, pauses only the supervisors, saves a handoff record, then
+replaces them without restarting the active workers. Linux pidfds track adopted
+workers to completion. Only never-started jobs receive new CPU placements; their
+original manifests are retained as `manifest.before-coordination.json` and their
+execution placement is recorded explicitly. Paid run limits and ledgers do not
+change. All final grading waits for the coordinated builders to stop.
+
+```sh
+python3 scripts/coordinate_batches.py --batch BATCH_A --batch BATCH_B \
+  --state .runs/coordination.json --key-file ~/.codexapi \
+  --results results --parallel 3
+```
+
+The handoff intentionally kills only stopped supervisor processes, bypassing
+those supervisors' worker-cancellation handlers. It does not signal the active
+builder sessions. It refuses existing coordinator state, unknown process IDs,
+partially launched jobs, and attempts to restart already-started jobs. If it
+fails before handoff, it resumes the original supervisors. A failure after handoff
+requires inspection of the saved state and running workers, not a blind restart.
