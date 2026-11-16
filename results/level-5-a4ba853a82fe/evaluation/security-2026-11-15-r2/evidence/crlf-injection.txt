@@ -1,0 +1,30 @@
+CLIENT : b'GET /%70roxy/x%0D%0AX-Injected:%20yes'
+  reply: b'HTTP/1.1 504 Gateway Timeout'
+  UPSTREAM SAW: b'GET /x\r\nX-Injected: yes HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+  UPSTREAM SAW: b'GET /x\r\nX-Injected: yes HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+
+CLIENT : b'GET /%70roxy/x%20y'
+  reply: b'HTTP/1.1 504 Gateway Timeout'
+  UPSTREAM SAW: b'GET /x y HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+  UPSTREAM SAW: b'GET /x y HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+
+CLIENT : b'GET /%70roxy/x%0D%0A%0D%0AGET%20/smuggled%20HTTP/1.1%0D%0AHost:%20alpha.test'
+  reply: b'HTTP/1.1 504 Gateway Timeout'
+  UPSTREAM SAW: b'GET /x\r\n\r\nGET /smuggled HTTP/1.1\r\nHost: alpha.test HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+  UPSTREAM SAW: b'GET /x\r\n\r\nGET /smuggled HTTP/1.1\r\nHost: alpha.test HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+
+CLIENT : b'GET /proxy/x%0D%0AX-Raw:%20yes'
+  reply: b'HTTP/1.1 504 Gateway Timeout'
+  UPSTREAM SAW: b'GET /x%0D%0AX-Raw:%20yes HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+  UPSTREAM SAW: b'GET /x%0D%0AX-Raw:%20yes HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+
+CLIENT : b'GET /%70roxy/%2e%2e/x'
+  reply: b'HTTP/1.1 403 Forbidden'
+
+CLIENT : b'GET /%70roxy/x%09y'
+  reply: b'HTTP/1.1 504 Gateway Timeout'
+  UPSTREAM SAW: b'GET /x\ty HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+  UPSTREAM SAW: b'GET /x\ty HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive\r\n\r\n'
+
+--- log(0) ---
+
