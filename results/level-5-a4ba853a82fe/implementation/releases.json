@@ -1,3 +1,10 @@
 {
-  "releases": []
+  "releases": [
+    {
+      "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+      "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+      "tag": "release/000002",
+      "tag_provenance": "git_tag"
+    }
+  ]
 }

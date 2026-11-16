@@ -1,0 +1,11 @@
+=== A. negative Content-Length (HEAD, upstream CL > LLONG_MAX) ===
+HEAD /proxy/h                      b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+
+=== B. pooled-upstream stale-response poisoning (cross-client) ===
+client1 (attacker GET /proxy/a)    b'HTTP/1.1 200 OK\r\ncache-control: public, max-age=60\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nLEGIT'
+client2 (victim GET /proxy/victim) b'HTTP/1.1 200 OK\r\ncache-control: public, max-age=60\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nLEGIT'
+client3 (victim GET /proxy/victim) b'HTTP/1.1 200 OK\r\ncache-control: public, max-age=60\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nLEGIT'
+client3b (victim2 GET /proxy/other) b'HTTP/1.1 200 OK\r\ncache-control: public, max-age=60\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nLEGIT'
+upstream requests seen: ['HEAD /h HTTP/1.1', 'GET /a HTTP/1.1', 'GET /a HTTP/1.1', 'GET /victim HTTP/1.1', 'GET /other HTTP/1.1']
+--- server log(0) ---
+

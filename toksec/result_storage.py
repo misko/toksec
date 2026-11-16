@@ -319,7 +319,11 @@ def publish_snapshot(snapshot, results):
                         raise ValueError('run identity collision: ' + key)
                 old_inputs = files(dest / 'inputs')
                 new_inputs = files(staging / 'inputs')
-                if old_inputs != new_inputs:
+                # A historical migration may have preserved only a subset of the
+                # prepared inputs. Re-publishing from the raw run restores the
+                # missing files; every previously preserved file must match
+                # byte-for-byte, and nothing preserved may disappear.
+                if any(new_inputs.get(name) != expected for name, expected in old_inputs.items()):
                     raise ValueError('run identity collision: prepared inputs')
                 new_implementation = files(staging / 'implementation')
                 for name, expected in files(dest / 'implementation').items():
