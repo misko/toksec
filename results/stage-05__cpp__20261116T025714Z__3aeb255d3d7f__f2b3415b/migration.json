@@ -1,0 +1,98 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    "builder-inputs/RULES.md": {
+      "path": "inputs/builder-inputs/RULES.md",
+      "sha256": "ee58ec8cd7cc22a00fa44a5b95b180bde87599637122f44b77380668887d4aca"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    "builder-inputs/stages/capabilities/operations.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/operations.md",
+      "sha256": "a2a340135f27bd333bf137b9c584e85dff85e7be2dfa7a5cfeeeb0682c3c5e72"
+    },
+    "builder-inputs/stages/capabilities/persistence.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/persistence.md",
+      "sha256": "b486243711d574f37986de19ab593a3685078b8f57e3e0b194378f3c23ac05bd"
+    },
+    "builder-inputs/stages/capabilities/proxy.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/proxy.md",
+      "sha256": "f4e885afdccff4227fb2baaeb8b92737ddc0f576abdcc3823f09bba86583ca35"
+    },
+    "builder-inputs/stages/capabilities/routing.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/routing.md",
+      "sha256": "58619b71bca8f560d0b20e54ad9455f055a9c4a8f774598fb94aa16e82a29bd2"
+    },
+    "builder-inputs/stages/common/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/stages/common/ARTIFACTS.md",
+      "sha256": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629"
+    },
+    "builder-inputs/stages/common/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/stages/common/BENCHMARK.md",
+      "sha256": "4050c47fb4d5683daa242234046bae403bac19f182b3f8e3744b3114624b05db"
+    },
+    "builder-inputs/stages/common/HTTP.md": {
+      "path": "inputs/builder-inputs/stages/common/HTTP.md",
+      "sha256": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492"
+    },
+    "builder-inputs/stages/common/INTERFACE.md": {
+      "path": "inputs/builder-inputs/stages/common/INTERFACE.md",
+      "sha256": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f"
+    },
+    "builder-inputs/stages/languages/cpp.md": {
+      "path": "inputs/builder-inputs/stages/languages/cpp.md",
+      "sha256": "b5c60c21a2be86662f80ff700d7f212f94891738a983d053aa2b7a9c745f9a3d"
+    },
+    "builder-inputs/stages/stage-05/SPEC.md": {
+      "path": "inputs/builder-inputs/stages/stage-05/SPEC.md",
+      "sha256": "662bd1f7351fb9d0c75dc297b5e203d51629ba3d259452d835be09586c831f76"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "35d4e0eaf09f84b1ec347087315b3e319b248841e3d2cbb6a3bb5b1b2e8b62dc"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "5094670ef95ddd714a660db146b32c04efc9ea781a8ded14b76fa014c0175ab3"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "9e43fd0fd1787f13b2a658817807cc58b951e308616f308408637cf98deadb6b"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "19a4537b3aee07233741245279236a1c1e0fe9bd079ceea6a66172c68b7ac57d"
+    },
+    "release-000001-smoke.json": {
+      "path": "implementation/evidence/release-000001-smoke.json",
+      "sha256": "37dac1129b6d9625cef7352182a9ebf4c270cdb513addd138cf6d967a46392d0"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72"
+    },
+    "releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "15a34348dc1e18b65fb8dec0adc5df15bd068eeabf5e310c2051b2ce3cfbd57a"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "43832a847a287152bd1cac4764cfc513751e70ed1c3602013826e05b5e03b759"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "8e8c56b23ca546da0c25f635a3224245190b69b43539964d56155fe166192ae8"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "12f49909846762302f03eee5cb099038083b57f577892f4a1d1db693713b14b7"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "06e2a550788333f8f723ef793b1979434a2ee6eace38465e9271643a24d568d7"
+}
