@@ -31,8 +31,8 @@ def capture(cpus, *args):
     return json.loads(done.stdout)
 
 
-def plan(stages, replicas, parallel, budget, wall_seconds, language, cpus):
-    amount = Decimal(str(budget))
+def plan(stages, replicas, parallel, budget_usd, wall_seconds, language, cpus):
+    amount = Decimal(str(budget_usd))
     if not amount.is_finite() or not 0 < amount <= 2:
         raise ValueError('batch per-run budget must be positive and at most $2')
     if not stages or len(set(stages)) != len(stages) or any(s not in (1, 5, 10) for s in stages):

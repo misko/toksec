@@ -10,6 +10,22 @@ from toksec.accounting.counted_requests import validate_request, COUNT_FIELDS
 
 
 class BatchTests(unittest.TestCase):
+    def test_prepare_cli_creates_fresh_bounded_campaign_without_api_calls(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as tmp, contextlib.redirect_stdout(io.StringIO()):
+            directory = Path(tmp) / 'batch'
+            result = batch.main(['prepare', '--directory', str(directory), '--stages', '1',
+                                 '--replicas', '1', '--parallel', '1', '--budget-usd', '2'])
+            self.assertEqual(result, 0)
+            prepared = batch.read(directory / 'batch.json')
+            self.assertEqual(prepared['status'], 'prepared')
+            job = prepared['jobs'][0]
+            ledger = campaign.read(job['campaign'])
+            self.assertEqual(ledger['request_profile'], 'bounded-32k')
+            self.assertEqual(ledger['requests'], [])
+            self.assertIsNone(controller.read(job['run'], 'manifest.json')['started_unix'])
+
     def test_plan_has_independent_caps_and_disjoint_slots(self):
         plan = batch.plan([1, 5, 10], 3, 3, '2', 7200, 'cpp', list(range(24)))
         self.assertEqual(plan['total_cap_usd'], '18')
