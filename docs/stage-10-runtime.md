@@ -24,8 +24,9 @@ return 1. Performance first requires every implemented partial API check to pass
 then measures HTTP/HTTPS × 256/4096 clients with 4 KiB bodies. All measurements
 remain provisional and earn zero final performance credit.
 
-Stage 10 defaults to Terra, medium reasoning, standard service. Each run receives
-at most $2 from the enclosing campaign. Preparation does not reserve money; launch
+Stage 10 defaults to Terra, medium reasoning, standard service. Each run defaults
+to at most $2 from the enclosing campaign. An explicit `--spend-target-usd` can
+raise the allocation to $5, subject to the campaign balance. Preparation does not reserve money; launch
 reserves the full allocation in the parent ledger. Known child charges settle that
 hold and release unused funds. Uncertain charges retain the full hold and block
 further generation. The shared runner owns the model/tool lifecycle. Its counted-request loop uses
