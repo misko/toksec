@@ -1,0 +1,26 @@
+{
+  "budget_usd": "2",
+  "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
+  "framework": "15aae464dc224d99a083a920ab55c103d43aa92a627d402b68bde705416aac2b",
+  "id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "language": "cpp",
+  "last_tag": "release/000001",
+  "model": "gpt-6.1-terra",
+  "path": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "persisted_run_id": true,
+  "protocol": "toksec-1cfd33433d25",
+  "publication_version": 2,
+  "raw_run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-nine-20261116/stage-05-cpp-replica-02/runs/stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "stage": 5,
+  "started_unix": 1794796660.6089272,
+  "started_utc": "2026-11-16T02-37-40Z",
+  "status": "builder_finished",
+  "toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "wall_seconds": 7200
+}

@@ -1,0 +1,28 @@
+{
+  "api": {
+    "passed": null,
+    "status": "not_run",
+    "total": null
+  },
+  "contract_sha256": "3a4da56572df637df3f651075abadd44cb67e20540427a11f7626580f9371b14",
+  "coverage": "unknown",
+  "environment": {
+    "provenance": "Imported historical evidence; no tests rerun during migration"
+  },
+  "evaluator_sha256": "15aae464dc224d99a083a920ab55c103d43aa92a627d402b68bde705416aac2b",
+  "missing_evidence": [],
+  "performance": {
+    "credit": null,
+    "metrics": null,
+    "status": "not_run"
+  },
+  "provenance_status": "verified",
+  "release": {
+    "commit": "d2dcfdc2181a9cc9a602926d72e59036f0529dbc",
+    "source_sha256": "ecbb6892bdf95bc9ddd1590ee1a1989bee5c9ad6361a540da36a7b9cd67eec5d",
+    "tag": "release/000006"
+  },
+  "run_id": "stage-01__cpp__20261116T022713Z__1cfd33433d25__897596e5",
+  "schema_version": 1,
+  "status": "not_run"
+}

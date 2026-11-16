@@ -1,0 +1,169 @@
+{
+  "ended_unix": 1794796555.6989942,
+  "finished": true,
+  "last_feedback": {
+    "result": {
+      "text": "int count(Req const&r,string n){int z=0;for(auto &h:r.h)z+=h.first==n;return z;}\nbool hasToken(string v,string x){stringstream ss(lower(v));string t;while(getline(ss,t,','))if(trim(t)==x)return true;return false;}\nbool parseReq(string raw,Req &r){size_t p=raw.find(\"\\r\\n\");if(p==string::npos)return false;string line=raw.substr(0,p);auto a=line.find(' '),b=a==string::npos?string::npos:line.find(' ',a+1);if(a==string::npos||b==string::npos||line.find(' ',b+1)!=string::npos)return false;r.method=line.substr(0,a);r.target=line.substr(a+1,b-a-1);r.version=line.substr(b+1);if(!token(r.method)||(r.version!=\"HTTP/1.1\"&&r.version!=\"HTTP/1.0\")||r.target.empty())return false;p+=2;while(p<raw.size()){auto e=raw.find(\"\\r\\n\",p);if(e==string::npos)return false;if(e==p)return true;string l=raw.substr(p,e-p);auto c=l.find(':');if(c==string::npos||!token(l.substr(0,c)))return false;string v=trim(l.substr(c+1));for(unsigned char x:v)if((x<32&&x!='\\t')||x==127)return false;r.h.emplace_back(lower(l.substr(0,c)),v);p=e+2;}return false;}\nstring reason(int c){switch(c){case 200:return \"OK\";case 206:return \"Partial Content\";case 301:return \"Moved Permanently\";case 302:return \"Found\";case 304:return \"Not Modified\";case 307:return \"Temporary Redirect\";case 308:return \"Permanent Redirect\";case 400:return \"Bad Request\";case 403:return \"Forbidden\";case 404:return \"Not Found\";case 405:return \"Method Not Allowed\";case 413:return \"Content Too Large\";case 416:return \"Range Not Satisfiable\";case 417:return \"Expectation Failed\";case 431:return \"Request Header Fields Too Large\";case 502:return \"Bad Gateway\";case 503:return \"Service Unavailable\";case 504:return \"Gateway Timeout\";default:return \"Error\";}}\nbool sendhead(IO &io,int status,long long len,bool close,string extra=\"\"){string x=\"HTTP/1.1 \"+to_string(status)+\" \"+reason(status)+\"\\r\\n\"+extra;if(len>=0)x+=\"Content-Length: \"+to_string(len)+\"\\r\\n\";x+=string(\"Connection: \")+(close?\"close\":\"keep-alive\")+\"\\r\\n\\r\\n\";return io.wr(x);}\nbool utf8(string s){int rem=0;unsigned cp=0,mincp=0;for(unsigned char c:s){if(!rem){if(c<128)continue;if(c>=0xc2&&c<=0xdf){rem=1;cp=c&31;mincp=128;}else if(c>=0xe0&&c<=0xef){rem=2;cp=c&15;mincp=2048;}else if(c>=0xf0&&c<=0xf4){rem=3;cp=c&7;mincp=65536;}else return false;}else{if((c&0xc0)!=0x80)return false;cp=(cp<<6)|(c&63);if(!--rem&&(cp<mincp||cp>0x10ffff||(cp>=0xd800&&cp<=0xdfff)))return false;}}return !rem;}\nint pathnorm(string target,string &path,string &query){if(target.empty()||target[0]!='/'||target.find('#')!=string::npos)return 400;auto q=target.find('?');string a=target.substr(0,q);if(q!=string::npos)query=target.substr(q);string dec;for(size_t i=0;i<a.size();i++){unsigned char c=a[i];if(c=='%'){if(i+2>=a.size()||!isxdigit((unsigned char)a[i+1])||!isxdigit((unsigned char)a[i+2]))return 400;auto hex=[](char x){return isdigit((unsigned char)x)?x-'0':tolower(x)-'a'+10;};c=hex(a[i+1])*16+hex(a[i+2]);i+=2;}if(c==0||c=='\\\\')return 400;dec+=c;}if(!utf8(dec))return 400;bool trail=dec.size()>1&&dec.back()=='/';stringstream ss(dec);string part;path=\"/\";bool first=true;while(getline(ss,part,'/')){if(part==\"..\")return 403;if(part.empty()||part==\".\")continue;if(!first)path+='/';first=false;path+=part;}if(trail&&path.back()!='/')path+='/';return 0;}\nint selectServer(Endpoint &ep,Req&r){int cnt=count(r,\"host\");if(cnt==0)return r.version==\"HTTP/1.0\"?ep.def:-1;if(cnt!=1)return -1;string h=lower(geth(r,\"host\"));auto c=h.find(':');if(c!=string::npos){string p=h.substr(c+1);auto n=number(p);if(n<1||n>65535)return -1;h.resize(c);}if(!dns(h))return -1;for(int i:ep.servers)for(auto &n:cfg.servers[i].names)if(n==h)return i;return -1;}\nint openconfined(string root,string rel,struct stat &st){int fd=open(root.c_str(),O_RDONLY|O_DIRECTORY|O_CLOEXEC);if(fd<0)return -1;stringstream ss(rel);string x;vector<string> parts;while(getline(ss,x,'/'))if(!x.empty())parts.push_back(x);for(size_t i=0;i<parts.size();i++){int next=openat(fd,parts[i].c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC|(i+1<parts.size()?O_DIRECTORY:0));int e=errno;close(fd);if(next<0){errno=e;return -1;}fd=next;}if(fstat(fd,&st)){close(fd);return -1;}return fd;}\nvoid local(IO &io,Req &r,Location &l,string path,string query,bool closeconn){if(r.method!=\"GET\"&&r.method!=\"HEAD\"){sendhead(io,405,0,closeconn);return;}if(count(r,\"transfer-encoding\")||count(r,\"content-length\")>1||(count(r,\"content-length\")&&(number(geth(r,\"content-length\"))!=0))){sendhead(io,400,0,true);return;}if(l.ret){sendhead(io,l.ret,0,closeconn,\"Location: \"+l.dest+\"\\r\\n\");return;}string rel=l.alias.empty()?path:path.substr(l.path.size());string root=l.alias.empty()?l.st.root:l.alias;struct stat st{};int fd=openconfined(root,rel,st);if(fd<0){int code=(errno==ELOOP||errno==EACCES)?403:404;sendhead(io,code,0,closeconn);return;}if(S_ISDIR(st.st_mode)){if(path.back()!='/'){close(fd);sendhead(io,301,0,closeconn,\"Location: \"+path+\"/\"+query+\"\\r\\n\");return;}int found=-1;for(auto &name:l.st.index){int f=openat(fd,name.c_str(),O_RDONLY|O_NOFOLLOW|O_CLOEXEC);if(f>=0){struct stat t{};if(!fstat(f,&t)&&S_ISREG(t.st_mode)){found=f;st=t;rel+=name;break;}close(f);}}close(fd);fd=found;if(fd<0){sendhead(io,403,0,closeconn);return;}}else if(!S_ISREG(st.st_mode)||path.back()=='/'){close(fd);sendhead(io,403,0,closeconn);return;}string et=\"\\\"\"+to_string((long long)st.st_mtime)+\"-\"+to_string((long long)st.st_size)+\"\\\"\";string extra;if(l.st.etag){extra+=\"ETag: \"+et+\"\\r\\n\";string inm=geth(r,\"if-none-match\");if(inm==\"*\"||inm==et){close(fd);sendhead(io,304,0,closeconn,extra);return;}}string ext;auto dot=rel.find_last_of('.');if(dot!=string::npos)ext=lower(rel.substr(dot+1));string typ=l.st.types.count(ext)?l.st.types.at(ext):l.st.def;extra+=\"Content-Type: \"+typ+\"\\r\\n\";long long start=0,end=st.st_size-1;int code=200;string range=geth(r,\"range\");if(!range.empty()){bool bad=range.rfind(\"bytes=\",0)!=0||range.find(',')!=string::npos;string v=bad?\"\":range.substr(6);auto d=v.find('-');if(d==string::npos||v.find('-',d+1)!=string::npos)bad=true;string a=bad?\"\":v.substr(0,d),b=bad?\"\":v.substr(d+1);if((a.empty()&&b.empty())||(!a.empty()&&!digits(a))||(!b.empty()&&!digits(b)))bad=true;if(bad){close(fd);sendhead(io,400,0,true);return;}long long x=a.empty()?-1:number(a),y=b.empty()?-1:number(b);if((!a.empty()&&x<0)||(!b.empty()&&y<0)){close(fd);sendhead(io,400,0,true);return;}if(a.empty()){start=max(0LL,(long long)st.st_size-y);if(y==0)start=st.st_size;}else{start=x;if(!b.empty())end=min(end,y);}if(start>=st.st_size||start>end){close(fd);sendhead(io,416,0,closeconn,extra+\"Content-Range: bytes */\"+to_string(st.st_size)+\"\\r\\n\");return;}code=206;extra+=\"Content-Range: bytes \"+to_string(start)+\"-\"+to_string(end)+\"/\"+to_string(st.st_size)+\"\\r\\n\";}long long len=end-start+1;if(sendhead(io,code,len,closeconn,extra)&&r.method!=\"HEAD\"){lseek(fd,start,SEEK_SET);char buf[32768];while(len>0){ssize_t n=read(fd,buf,min((long long)sizeof(buf),len));if(n<=0||!io.wr(buf,n))break;len-=n;}}close(fd);}\nvoid proxy(IO &io,Req &r,Location &l,string path,string query,bool closeconn,string &pending){if(r.method!=\"GET\"&&r.method!=\"HEAD\"&&r.method!=\"POST\"){sendhead(io,405,0,closeconn);return;}if(count(r,\"content-length\")>1||count(r,\"transfer-encoding\")||number(geth(r,\"content-length\"),0)<0){sendhead(io,400,0,true);return;}long long body=number(geth(r,\"content-length\"),0);if(body>cfg.body){sendhead(io,413,0,true);return;}auto it=find_if(cfg.ups.begin(),cfg.ups.end(),[&](auto &u){return u.name==l.proxy;});if(it==cfg.ups.end()){sendhead(io,502,0,true);return;}int port=it->ports[it->next++%it->ports.size()];int fd=socket(AF_INET,SOCK_STREAM|SOCK_NONBLOCK|SOCK_CLOEXEC,0);if(fd<0){sendhead(io,502,0,true);return;}sockaddr_in a{};a.sin_family=AF_INET;a.sin_addr.s_addr=htonl(INADDR_LOOPBACK);a.sin_port=htons(port);int cr=connect(fd,(sockaddr*)&a,sizeof(a));if(cr<0&&errno==EINPROGRESS){if(!waitio(fd,POLLOUT)){close(fd);sendhead(io,504,0,true);return;}int error=0;socklen_t elen=sizeof(error);if(getsockopt(fd,SOL_SOCKET,SO_ERROR,&error,&elen)<0||error){close(fd);sendhead(io,502,0,true);return;}}else if(cr<0){close(fd);sendhead(io,502,0,true);return;}IO up{fd};string target=l.uri.empty()?r.target:l.uri+path.substr(l.path.size())+query;string h=r.method+\" \"+target+\" HTTP/1.1\\r\\nHost: 127.0.0.1:\"+to_string(port)+\"\\r\\nConnection: close\\r\\n\";string conn=geth(r,\"connection\");for(auto &v:r.h)if(v.first!=\"host\"&&v.first!=\"connection\"&&v.first!=\"proxy-connection\"&&v.first!=\"keep-alive\"&&v.first!=\"transfer-encoding\"&&v.first!=\"upgrade\"&&!hasToken(conn,v.first))h+=v.first+\": \"+v.second+\"\\r\\n\";h+=\"\\r\\n\";if(!up.wr(h)){close(fd);sendhead(io,502,0,true);return;}char buf[32768];while(body>0){if(!pending.empty()){size_t n=min((long long)pending.size(),body);if(!up.wr(pending.data(),n)){close(fd);return;}pending.erase(0,n);body-=n;}else{int n=io.rd(buf,min((long long)sizeof(buf),body));if(n<=0||!up.wr(buf,n)){close(fd);return;}body-=n;}}string head;while(head.find(\"\\r\\n\\r\\n\")==string::npos&&head.size()<(size_t)cfg.headerbytes){int n=up.rd(buf,sizeof(buf));if(n<=0){close(fd);sendhead(io,502,0,true);return;}head.append(buf,n);}auto p=head.find(\"\\r\\n\\r\\n\");if(p==string::npos){close(fd);sendhead(io,502,0,true);return;}string rest=head.substr(p+4),raw=head.substr(0,p+4);auto line=raw.find(\"\\r\\n\");int status=line==string::npos?0:number(raw.substr(9,3),0);if(status<200||status>599){close(fd);sendhead(io,502,0,true);return;}vector<pair<string,string>> fields;size_t off=line+2;long long len=-1;bool chunk=false;string ex;while(off<p){auto e=raw.find(\"\\r\\n\",off);string s=raw.substr(off,e-off);auto c=s.find(':');if(c==string::npos||!token(s.substr(0,c))){close(fd);sendhead(io,502,0,true);return;}string k=lower(s.substr(0,c)),v=trim(s.substr(c+1));fields.emplace_back(k,v);if(k==\"content-length\"){if(len!=-1||!digits(v)||(len=number(v))<0){close(fd);sendhead(io,502,0,true);return;}}if(k==\"transfer-encoding\")chunk=lower(v)==\"chunked\";off=e+2;}for(auto &kv:fields)if(kv.first!=\"content-length\"&&kv.first!=\"transfer-encoding\"&&kv.first!=\"connection\"&&kv.first!=\"keep-alive\")ex+=kv.first+\": \"+kv.second+\"\\r\\n\";bool bodyless=r.method==\"HEAD\"||status==204||status==304;if(chunk||len<0)closeconn=true;if(chunk)ex+=\"Transfer-Encoding: chunked\\r\\n\";if(!sendhead(io,status,status==204?-1:len,closeconn,ex)){close(fd);return;}if(!bodyless){if(len>=0){size_t n=min((long long)rest.size(),len);if(n&&!io.wr(rest.data(),n)){close(fd);return;}len-=n;while(len>0){int z=up.rd(buf,min((long long)sizeof(buf),len));if(z<=0||!io.wr(buf,z))break;len-=z;}}else{if(!rest.empty())io.wr(rest);int z;while((z=up.rd(buf,sizeof(buf)))>0)if(!io.wr(buf,z))break;}}close(fd);}\nvoid serve(int fd,Endpoint *ep){timeval tv{10,0};setsockopt(fd,SOL_SOCKET,SO_RCVTIMEO,&tv,sizeof(tv));setsockopt(fd,SOL_SOCKET,SO_SNDTIMEO,&tv,sizeof(tv));IO io{fd};if(ep->tls){io.ssl=SSL_new(cfg.servers[ep->def].ctx);SSL_set_fd(io.ssl,fd);for(;;){int x=SSL_accept(io.ssl);if(x==1)break;int e=SSL_get_error(io.ssl,x);if((e!=SSL_ERROR_WANT_READ&&e!=SSL_ERROR_WANT_WRITE)||!waitio(fd,e==SSL_ERROR_WANT_READ?POLLIN:POLLOUT,2000)){SSL_free(io.ssl);close(fd);return;}}}string pending;int requests=0;for(;;){while(pending.find(\"\\r\\n\\r\\n\")==string::npos){if(pending.size()>(size_t)cfg.headerbytes){sendhead(io,431,0,true);goto done;}char b[8192];int n=io.rd(b,sizeof(b));if(n<=0)goto done;pending.append(b,n);}size_t end=pending.find(\"\\r\\n\\r\\n\")+4;if(end>(size_t)cfg.headerbytes){sendhead(io,431,0,true);break;}Req r;if(!parseReq(pending.substr(0,end),r)){sendhead(io,400,0,true);break;}pending.erase(0,end);int si=selectServer(*ep,r);if(si<0){sendhead(io,400,0,true);break;}auto &s=cfg.servers[si];if(count(r,\"expect\")){sendhead(io,417,0,true);break;}string path,q;int err=pathnorm(r.target,path,q);if(err){sendhead(io,err,0,true);break;}Location *loc=nullptr;for(auto &l:s.locs){if(l.exact&&l.path==path){loc=&l;break;}if(!l.exact&&path.rfind(l.path,0)==0&&(!loc||l.path.size()>loc->path.size()))loc=&l;}if(!loc){sendhead(io,404,0,true);break;}bool cl=r.version==\"HTTP/1.0\"||hasToken(geth(r,\"connection\"),\"close\")||++requests>=loc->st.keep||loc->st.idle==0;if(loc->proxy.empty()&&(count(r,\"transfer-encoding\")||count(r,\"content-length\")>1||(count(r,\"content-length\")&&number(geth(r,\"content-length\"))!=0)))cl=true;if(loc->proxy.empty())local(io,r,*loc,path,q,cl);else {proxy(io,r,*loc,path,q,true,pending);cl=true;}if(cl)break;}done:if(io.ssl){SSL_shutdown(io.ssl);SSL_free(io.ssl);}close(fd);}\nvolatile sig_atomic_t stopping=0,reloadflag=0;void term(int){stopping=1;}void hup(int){reloadflag=1;}\nvoid fiberentry(uintptr_t ptr){Fiber *f=(Fiber*)ptr;serve(f->fd,f->ep);f->done=true;swapcontext(&f->ctx,&schedctx);}\nvoid worker(){signal(SIGTERM,term);signal(SIGHUP,SIG_IGN);signal(SIGPIPE,SIG_IGN);vector<unique_ptr<Fiber>> jobs;while(!stopping){vector<pollfd> pf;for(auto &e:cfg.endpoints)pf.push_back({e.fd,POLLIN,0});long long now=nowms();int timeout=200;for(auto &f:jobs){pf.push_back({f->waitfd,f->events,0});timeout=min(timeout,(int)max(0LL,f->until-now));}poll(pf.data(),pf.size(),timeout);for(size_t i=0;i<cfg.endpoints.size();i++)if(pf[i].revents&POLLIN){for(int k=0;k<64;k++){int fd=accept4(pf[i].fd,nullptr,nullptr,SOCK_CLOEXEC|SOCK_NONBLOCK);if(fd<0)break;if((int)jobs.size()>=min(cfg.workercon,cfg.maxconn)){close(fd);continue;}auto f=make_unique<Fiber>();f->fd=fd;f->ep=&cfg.endpoints[i];f->stack.resize(65536);getcontext(&f->ctx);f->ctx.uc_stack.ss_sp=f->stack.data();f->ctx.uc_stack.ss_size=f->stack.size();f->ctx.uc_link=&schedctx;makecontext(&f->ctx,(void(*)())fiberentry,1,(uintptr_t)f.get());current=f.get();swapcontext(&schedctx,&f->ctx);current=nullptr;if(!f->done)jobs.push_back(move(f));}}now=nowms();size_t base=cfg.endpoints.size();size_t old=pf.size()-base;for(size_t i=0;i<old;i++){auto &f=jobs[i];if(pf[base+i].revents||now>=f->until){current=f.get();swapcontext(&schedctx,&f->ctx);current=nullptr;}}jobs.erase(remove_if(jobs.begin(),jobs.end(),[](auto &f){return f->done;}),jobs.end());}for(auto &f:jobs)close(f->fd);_exit(0);}\nint main(int argc,char **argv){signal(SIGPIPE,SIG_IGN);if(argc!=3||(string(argv[1])!=\"--config\"&&string(argv[1])!=\"--check-config\")){fprintf(stderr,\"usage: server --config PATH\\n\");return 1;}try{parseconfig(argv[2]);if(string(argv[1])==\"--check-config\")return 0;for(auto &e:cfg.endpoints){if(e.tls)for(int i:e.servers){SSL_CTX_set_tlsext_servername_callback(cfg.servers[i].ctx,sni_cb);SSL_CTX_set_tlsext_servername_arg(cfg.servers[i].ctx,&e);SSL_CTX_set_alpn_select_cb(cfg.servers[i].ctx,alpn_cb,nullptr);}e.fd=socket(AF_INET,SOCK_STREAM|SOCK_CLOEXEC,0);int one=1;setsockopt(e.fd,SOL_SOCKET,SO_REUSEADDR,&one,sizeof(one));sockaddr_in a{};a.sin_family=AF_INET;a.sin_addr.s_addr=htonl(INADDR_LOOPBACK);a.sin_port=htons(e.port);if(bind(e.fd,(sockaddr*)&a,sizeof(a))||listen(e.fd,1024))fail(\"cannot bind listener\");}signal(SIGTERM,term);signal(SIGINT,term);signal(SIGHUP,hup);vector<pid_t> workers;auto spawn=[&](){pid_t p=fork();if(p==0)worker();if(p>0)workers.push_back(p);};for(int i=0;i<cfg.workers;i++)spawn();while(!stopping){int st;pid_t p=waitpid(-1,&st,WNOHANG);if(p>0){workers.erase(remove(workers.begin(),workers.end(),p),workers.end());spawn();}else usleep(100000);if(reloadflag){reloadflag=0;}}for(auto p:workers)kill(p,SIGTERM);for(auto p:workers)waitpid(p,nullptr,0);return 0;}catch(exception &e){fprintf(stderr,\"%s\\n\",e.what());return 1;}}"
+    },
+    "tool": "read_source"
+  },
+  "latest": "4577d72ae7304c00957537f16f53672a",
+  "notes": "",
+  "recent_actions": [
+    {
+      "arguments": {
+        "line_count": 58,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 120,
+        "start_line": 58
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 58,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 120,
+        "start_line": 58
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 65,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 65,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 65,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "edit_candidate"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    }
+  ],
+  "retained_reads": {
+    "builder/INTERFACE.md": {
+      "text": "# Source, process and fixture interface\n\nSubmit one UTF-8 main.cpp or main.rs, at most 1 MiB, through submit_candidate.\nThe controller compiles and runs it in a sandbox. No additional implementation\nfiles, downloaded dependencies, HTTP libraries or previous implementations are\nprovided. Approved OpenSSL is the sole TLS dependency exception. See your language\npolicy and TLS.md. Compiler and library identities belong in the run manifest.\n\nLaunch the master as `/candidate/server --config /fixtures/config/nginx.conf`.\n`--check-config PATH` validates configuration, includes, roots and TLS material,\nprints a diagnostic on failure, and exits without binding or forking workers.\nExit zero means valid; a nonzero exit means invalid. Diagnostics identify file\nand line where possible and never print private key contents.\n\nInitial startup must make all configured listeners serviceable within five seconds.\nThe master remains foreground; do not daemonize. SIGTERM to the master starts a\nbounded graceful drain. SIGHUP requests transactional configuration/certificate\nreload. OPERATIONS.md defines worker replacement and generation semantics.\n\nThe host mounts these fixture paths in each test sandbox:\n\n| Path | Access and use |\n|---|---|\n| /fixtures/config | Read-only to candidate; host may replace files for reload tests |\n| /fixtures/tls | Read-only test-only certificate chains, leaf private keys and CA certificate |\n| /www | Read-only immutable files, with alternate roots and aliases in tests |\n| /tmp | Private writable scratch, capped at 64 MiB by the host |\n| /candidate | Read-only source snapshot and executable |\n\nThe supplied sample files demonstrate inputs. Host fixtures vary names, content,\nports and limits within the contract. Do not hardcode sample values. No host\ncredentials, CA signing private key, reference server or hidden checker is mounted.\nUpstream fixture services are reachable only in the sandbox's private network.\n\nThe process tree receives 1, 2 or 4 CPUs as declared in each measurement profile,\n512 MiB aggregate charged memory, 16,384 total live file descriptors, and at most\none master plus four worker processes. The host includes mapped OpenSSL and\ncharged scratch/cache memory in the resource budget; it must publish the exact\nmemory-accounting method. Do not interpret per-process limits as separate budgets.\nCompile limits remain 4096 MiB address space, 60 CPU seconds and 120 wall seconds.\nAggregate enforcement must pass host preflight before any run is authorized.\n\nThe source may fork workers from itself but may not execute external programs or\ndelegate HTTP/TLS/configuration parsing to another executable. IPC, shared memory,\nthreads, POSIX/Linux I/O and the approved TLS C ABI are allowed. Worker thread\ncounts and descriptors remain inside the aggregate resource budget.\n\nController tools retain their existing names: budget_status, submit_candidate,\nrevalidate_candidate, run_tests, benchmark_candidate, init_repository,\nrelease_candidate and finish. Tests are your own standalone programs run in the\nsame isolation policy. They must create their own listeners and fixtures.\nThe controller owns compilation, Git initialization/tagging and release evidence.\nThese tool names describe the intended Stage 10 interface, not current support."
+    },
+    "builder/RULES.md": {
+      "text": "# Shared builder rules\n\nBuild a working, efficient HTTP server that satisfies the selected stage's English\ncontract. Each selected stage is an independent from-scratch assignment. No starter code,\nprevious implementation, or another run's conversation is supplied.\n\n## Freedom to work\n\nYou choose the architecture, order of work, debugging strategy, tests and\noptimizations. You may use the evaluator tools, supply your own tests, or\nreason about a change before testing it. There is no mandatory iteration sequence,\nnumber of experiments, journal entry, or implementation technique. Tool access,\nthe source/process interface, sandbox limits and the grading contract still apply.\nTesting correctness first, addressing failed requests before speed, and measuring\none change at a time are suggestions. The goal is a working and very efficient\nimplementation, not compliance with a prescribed development process.\n\n## Testing is part of your task\n\nYou are responsible for designing and running tests for your implementation.\nInfer what needs testing from the English contract; do not rely on the supplied\nchecks as a comprehensive test plan. Choose your own cases, tools and strategy.\nProviding only enough behavior to pass supplied examples does not satisfy the task.\n\nThe English requirements are authoritative. Supplied smoke checks demonstrate\nbasic API usage only; passing them is not evidence of full correctness. The host\nmay independently evaluate any behavior required by the contract. It must not\nintroduce undocumented requirements. No starter implementation is supplied.\n\nDevelop and retain your own correctness evidence before publishing releases.\nYou choose how much capacity to spend on tests versus implementation and\noptimization. Report what you tested and any known limitations honestly. Passing\na finite suite does not prove complete correctness or maximum performance.\n\n## Deliverable and Git releases\n\nSubmit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.\nThe shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution\noccur in sandboxes. Controller tools are your filesystem/execution interface;\nyou do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own\nfixtures and listeners; no candidate server is automatically running for them.\n\nYou can be stopped at any time. After your first working submission, call\ninit_repository to create a new private Git repository and its first release tag.\nUse release_candidate to publish periodic working milestones. Each numbered tag\ncontains the source file and controller-generated release.json evidence. The last completed\ntag is your final submission. Untagged edits do not replace it. No tag means no\nsubmission, and stopping before the first working tag can leave no deliverable.\nPublished releases must compile, pass bootstrap and preserve previously passing\nvisible smoke checks. Publication is explicit; submitting source alone does not publish it.\n\nYou receive partial credit for validated progress since the previous tag, even\nif you do not finish the target. Explain the before/after evidence in each release\nnote. New passing API checks, demonstrated reliability repairs and valid measured\nperformance improvements are progress. Duplicate source, cosmetic edits, repeated\nclaims and extra tags alone earn no additional credit. Do not deliberately split\nan easy solution to inflate the milestone count. Numeric milestone weights are\nnot yet defined.\n\n## Development feedback\n\nsubmit_candidate and, when available, revalidate_candidate run only the supplied smoke suite.\nIndependent host API checks are held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.\nbenchmark_candidate provides provisional ordinary-traffic performance feedback\nafter smoke acceptance. Such measurements do not establish final eligibility.\nRelease metadata and retained baselines contain development evidence only.\nThe selected stage declares whether independent API coverage is full or partial.\nPassing all available checks in a partial suite cannot establish full acceptance.\nAny performance diagnostics for such a stage remain provisional and earn no final\nperformance credit. Use only the tools actually supplied for the selected stage.\n\n## Grading\n\nThe host grader extracts the last tagged source and compiles it independently.\nAPI correctness is graded first. If compilation or any required API check fails,\nperformance is not tested and is graded as failed, with zero performance credit.\nFailed API checks reduce API credit; the performance credit is also forfeited.\nA fast incorrect implementation cannot recover those marks through throughput.\n\nIf all API checks pass, the host measures the declared workloads. It reports valid\ngoodput, latency, failures, timeouts, CPU and memory. Missing or ineligible\nmeasurements earn no demonstrated performance credit. Successful-request latency\nmust be read alongside failures. A saturated load generator is not evidence of a\nserver speedup. Reliability, then throughput and latency, are suggested priorities.\nThe controller's retained comparison baseline is diagnostic; your explicit last\ntag determines the final implementation.\n\n## Capacity\n\nThe frozen run manifest defines the campaign cap and builder wall-time ceiling. The controller reports the actual remaining\nshared dollars, tokens and wall time through budget_status and before each model\ncall. All model input, output, reasoning and final reporting consume that budget.\nCompilation and evaluation CPU are tracked separately. The strict worst-case\nreservation policy can stop admission before the authorized balance is fully spent.\n\nUse the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the\nfinalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall\nceilings regardless of that decision. Do not assume another call will be available\nfor publication. Record limitations and unmeasured claims honestly in your report."
+    },
+    "fixtures/config/bootstrap.conf": {
+      "text": "events {}\nhttp {\n    server {\n        listen 127.0.0.1:8080;\n        server_name alpha.test;\n        location / {\n            root /www;\n        }\n    }\n}"
+    },
+    "fixtures/config/conf.d/servers.conf": {
+      "text": "server {\n    listen 127.0.0.1:8080 default_server;\n    listen 127.0.0.1:8443 ssl default_server;\n    server_name alpha.test;\n    ssl_certificate /fixtures/tls/alpha-chain.pem;\n    ssl_certificate_key /fixtures/tls/alpha-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n    location = /old {\n        return 302 /hello.txt;\n    }\n}\nserver {\n    listen 127.0.0.1:8080;\n    listen 127.0.0.1:8443 ssl;\n    server_name beta.test;\n    root /www/beta;\n    ssl_certificate /fixtures/tls/beta-chain.pem;\n    ssl_certificate_key /fixtures/tls/beta-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n}"
+    },
+    "fixtures/config/nginx.conf": {
+      "text": "worker_processes 2;\nevents {\n    worker_connections 8192;\n}\nhttp {\n    root /www;\n    default_type application/octet-stream;\n    types {\n        text/html html;\n        text/plain txt;\n    }\n    client_max_body_size 64m;\n    keepalive_timeout 2s;\n    keepalive_requests 100;\n    toksec_upstream_active 64;\n    toksec_upstream_queue 8192;\n    toksec_cache_bytes 4m;\n    toksec_rate_per_second 0;\n\n    upstream backend {\n        server 127.0.0.1:8081;\n        server 127.0.0.1:8082;\n        keepalive 64;\n    }\n    include conf.d/servers.conf;\n}"
+    }
+  },
+  "stop_reason": "budget reservation capacity exhausted",
+  "tags": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "54002297da3c40e5af1b1f82f990b7e1",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1744608750,
+          "remaining_usd": 1.74460875,
+          "request_count": 9,
+          "spent_nanodollars": 255391250,
+          "spent_usd_upper_bound": 0.25539125
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "54002297da3c40e5af1b1f82f990b7e1",
+        "seconds_remaining": 7035.688138008118
+      },
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794796219.7974226,
+      "scope": "visible_smoke_only",
+      "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+      "tag": "release/000001"
+    }
+  ]
+}

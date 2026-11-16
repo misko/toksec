@@ -1,0 +1,47 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "4e7a4778992845cfae8bd4556048eb41",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1835585000,
+          "remaining_usd": 1.835585,
+          "request_count": 6,
+          "spent_nanodollars": 164415000,
+          "spent_usd_upper_bound": 0.164415
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "4e7a4778992845cfae8bd4556048eb41",
+        "seconds_remaining": 7040.972120285034
+      },
+      "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794796716.6649818,
+      "scope": "visible_smoke_only",
+      "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+      "tag": "release/000001"
+    }
+  ]
+}

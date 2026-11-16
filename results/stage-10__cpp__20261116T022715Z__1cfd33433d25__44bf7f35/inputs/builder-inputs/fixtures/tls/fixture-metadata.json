@@ -1,0 +1,51 @@
+{
+  "purpose": "public test credentials only",
+  "generated_utc": "2026-11-15T15:49:40.733196+00:00",
+  "openssl_observed": "OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)",
+  "certificates": [
+    {
+      "certificate": "alpha-chain.pem",
+      "key": "alpha-key.pem",
+      "hostname": "alpha.test",
+      "generation": 1,
+      "verification_passed": true,
+      "wrong_hostname_rejected": true,
+      "key_matches": true,
+      "validity": "notBefore=Nov 15 15:49:40 2026 GMT\nnotAfter=Nov 15 15:49:40 2027 GMT",
+      "sha256": "add0834722737c25d78405bd86ac2f15a5a396d9e66dfbbb2e51919eb3675fcd"
+    },
+    {
+      "certificate": "alpha-next-chain.pem",
+      "key": "alpha-next-key.pem",
+      "hostname": "alpha.test",
+      "generation": 2,
+      "verification_passed": true,
+      "wrong_hostname_rejected": true,
+      "key_matches": true,
+      "validity": "notBefore=Nov 15 15:49:40 2026 GMT\nnotAfter=Nov 15 15:49:40 2027 GMT",
+      "sha256": "b03df39470ccaabd71fa70f2116acf29b719d14c4c5231e4d47653672ec8041f"
+    },
+    {
+      "certificate": "beta-chain.pem",
+      "key": "beta-key.pem",
+      "hostname": "beta.test",
+      "generation": 1,
+      "verification_passed": true,
+      "wrong_hostname_rejected": true,
+      "key_matches": true,
+      "validity": "notBefore=Nov 15 15:49:40 2026 GMT\nnotAfter=Nov 15 15:49:40 2027 GMT",
+      "sha256": "5c2669d88f81046610baeeb841ca556e00b919712f7ca3fa62870371ce5ec5bb"
+    },
+    {
+      "certificate": "beta-next-chain.pem",
+      "key": "beta-next-key.pem",
+      "hostname": "beta.test",
+      "generation": 2,
+      "verification_passed": true,
+      "wrong_hostname_rejected": true,
+      "key_matches": true,
+      "validity": "notBefore=Nov 15 15:49:40 2026 GMT\nnotAfter=Nov 15 15:49:40 2027 GMT",
+      "sha256": "b1a0972959f78514ae796dc4eefd8a27dc38c9754682e2f2ae89405127353b64"
+    }
+  ]
+}

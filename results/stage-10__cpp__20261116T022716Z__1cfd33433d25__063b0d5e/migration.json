@@ -1,0 +1,182 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    "attempts/1/launch-packet.md": {
+      "path": "inputs/attempts/1/launch-packet.md",
+      "sha256": "86d71d5165ee73ebc798a1848a803ddb2333504bc9c61a57fdd9557655e3416b"
+    },
+    "attempts/1/manifest.json": {
+      "path": "inputs/attempts/1/manifest.json",
+      "sha256": "67bc8ff67eeef65fd8e235fbdd09a9eee87c7fea5f943ee93f49fdc3de1fca0a"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    "builder-inputs/builder/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/builder/ARTIFACTS.md",
+      "sha256": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629"
+    },
+    "builder-inputs/builder/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/builder/BENCHMARK.md",
+      "sha256": "3740f5c5af2d3183d57bc000bfeb6076588c6ac9980945fe4d53215ca9733ad4"
+    },
+    "builder-inputs/builder/CONFIGURATION.md": {
+      "path": "inputs/builder-inputs/builder/CONFIGURATION.md",
+      "sha256": "ace5aa94264894de4f2e1883f4c2bf674fe3a1aa87e21b582e9ec4f30a2b55e0"
+    },
+    "builder-inputs/builder/HTTP.md": {
+      "path": "inputs/builder-inputs/builder/HTTP.md",
+      "sha256": "4affda68920db867fcd16fd199d025cee9a1e2e763e2f68d63a9061f80ea5039"
+    },
+    "builder-inputs/builder/INTERFACE.md": {
+      "path": "inputs/builder-inputs/builder/INTERFACE.md",
+      "sha256": "68cb90082c46acb2800f2445bb107c9e8d9fc66a78a52106ba73f08c3ecc0946"
+    },
+    "builder-inputs/builder/OPERATIONS.md": {
+      "path": "inputs/builder-inputs/builder/OPERATIONS.md",
+      "sha256": "7ffb341c63dfc63eaf0618a38c9a458c838b57d97e0c15f1d8e0e6613766716c"
+    },
+    "builder-inputs/builder/RULES.md": {
+      "path": "inputs/builder-inputs/builder/RULES.md",
+      "sha256": "ee58ec8cd7cc22a00fa44a5b95b180bde87599637122f44b77380668887d4aca"
+    },
+    "builder-inputs/builder/SMOKE.md": {
+      "path": "inputs/builder-inputs/builder/SMOKE.md",
+      "sha256": "1d8ba20fc50924c4bc239e9b396f159a0b21c9ae5dd0a0855898aa98b5d9f513"
+    },
+    "builder-inputs/builder/START.md": {
+      "path": "inputs/builder-inputs/builder/START.md",
+      "sha256": "76d85038555e96d170e691618edc465b0e335bda955a9a754ab79beec3b70a62"
+    },
+    "builder-inputs/builder/TLS.md": {
+      "path": "inputs/builder-inputs/builder/TLS.md",
+      "sha256": "b3c4a2ce6111b589275b5dcdc458d9e9503ef39924d50012d7d642a2589ba440"
+    },
+    "builder-inputs/builder/languages/cpp.md": {
+      "path": "inputs/builder-inputs/builder/languages/cpp.md",
+      "sha256": "c652225bee9ca028fe17ad86c48c61d629caac3aac20f83a461f43cb59eb932e"
+    },
+    "builder-inputs/fixtures/config/bootstrap.conf": {
+      "path": "inputs/builder-inputs/fixtures/config/bootstrap.conf",
+      "sha256": "4fafbd9b957972b3e2f476b20982513cf6367e5dc21a9f652dc276fe1209dc74"
+    },
+    "builder-inputs/fixtures/config/conf.d/servers.conf": {
+      "path": "inputs/builder-inputs/fixtures/config/conf.d/servers.conf",
+      "sha256": "f0d76052e4117e2db0ce621bdc5a9579a0a41c9d1b65aba4b6f0969e6f737bbe"
+    },
+    "builder-inputs/fixtures/config/nginx.conf": {
+      "path": "inputs/builder-inputs/fixtures/config/nginx.conf",
+      "sha256": "d193a3cda6b066db159a8bfcc343e804cde62394b1da583b606e0b78982ce18e"
+    },
+    "builder-inputs/fixtures/tls/NOTICE.md": {
+      "path": "inputs/builder-inputs/fixtures/tls/NOTICE.md",
+      "sha256": "b74c4cb8315f7aebb9dd403459445bd5094367df42f3f35b1c8add7cfbeb277e"
+    },
+    "builder-inputs/fixtures/tls/alpha-chain.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/alpha-chain.pem",
+      "sha256": "add0834722737c25d78405bd86ac2f15a5a396d9e66dfbbb2e51919eb3675fcd"
+    },
+    "builder-inputs/fixtures/tls/alpha-key.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/alpha-key.pem",
+      "sha256": "79e2c456e506771195040af1509fb992aed0160fb7299ddd2066c02ff03a7dac"
+    },
+    "builder-inputs/fixtures/tls/alpha-next-chain.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/alpha-next-chain.pem",
+      "sha256": "b03df39470ccaabd71fa70f2116acf29b719d14c4c5231e4d47653672ec8041f"
+    },
+    "builder-inputs/fixtures/tls/alpha-next-key.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/alpha-next-key.pem",
+      "sha256": "da2541536d028195e6fe7d68431d0587f2ffc8781722c6647dc0dc932137a647"
+    },
+    "builder-inputs/fixtures/tls/beta-chain.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/beta-chain.pem",
+      "sha256": "5c2669d88f81046610baeeb841ca556e00b919712f7ca3fa62870371ce5ec5bb"
+    },
+    "builder-inputs/fixtures/tls/beta-key.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/beta-key.pem",
+      "sha256": "c4d38002188581fc01ff08e4f79766d9161979efc78d7e1c78515e07a6abfc09"
+    },
+    "builder-inputs/fixtures/tls/beta-next-chain.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/beta-next-chain.pem",
+      "sha256": "b1a0972959f78514ae796dc4eefd8a27dc38c9754682e2f2ae89405127353b64"
+    },
+    "builder-inputs/fixtures/tls/beta-next-key.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/beta-next-key.pem",
+      "sha256": "f33caf2bc633a13783f420b952d8e853bd141fce4db4b8a03eb4619b07379dff"
+    },
+    "builder-inputs/fixtures/tls/ca.pem": {
+      "path": "inputs/builder-inputs/fixtures/tls/ca.pem",
+      "sha256": "43d1a1d9ea816df78004201f0f09b70bb2161b7784287459efa34d33e1a66843"
+    },
+    "builder-inputs/fixtures/tls/fixture-metadata.json": {
+      "path": "inputs/builder-inputs/fixtures/tls/fixture-metadata.json",
+      "sha256": "e06675dd58a4a9b86fc14335de2cdbfbf53285b17c0a22256c05bd3ecf1ff73a"
+    },
+    "builder-inputs/fixtures/www/beta/hello.txt": {
+      "path": "inputs/builder-inputs/fixtures/www/beta/hello.txt",
+      "sha256": "805b52a2e1dceecfa80c08410f8dc3af1f5cd96dfa32dd24c29ba3d91dc2fe06"
+    },
+    "builder-inputs/fixtures/www/beta/index.html": {
+      "path": "inputs/builder-inputs/fixtures/www/beta/index.html",
+      "sha256": "4413455fc8335154c4d1971ad35d4a195dfdcd124186f38f26fac6db75904bd9"
+    },
+    "builder-inputs/fixtures/www/hello.txt": {
+      "path": "inputs/builder-inputs/fixtures/www/hello.txt",
+      "sha256": "11546891e370e644d9627b2978bd0a5665513c52df4e5c67013d326ecae4dd99"
+    },
+    "builder-inputs/fixtures/www/index.html": {
+      "path": "inputs/builder-inputs/fixtures/www/index.html",
+      "sha256": "6c6bec32bd0ed56fab641d0ff6ae3f0345b1d0be4e8115f232db464f909a59b8"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "8bee5132ea04f2150e07898a5311ad393d6edd1321b9c21031ff354f6c1ce1f6"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "86d71d5165ee73ebc798a1848a803ddb2333504bc9c61a57fdd9557655e3416b"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "b391e3e59ea50b35eddd6fa8dd3bb76ef955ca0bbcaa25c43c62670cd625b093"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "67bc8ff67eeef65fd8e235fbdd09a9eee87c7fea5f943ee93f49fdc3de1fca0a"
+    },
+    "release-000001-smoke.json": {
+      "path": "implementation/evidence/release-000001-smoke.json",
+      "sha256": "c77909005e71bb7b3b2115c55d83e853dab6b4014739f96b58e5da164b11329f"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "1ecc0c0e97e3d4c69bd62acebd45baee95d6e1cefae2d974754863173fe0d8fe"
+    },
+    "release-000002-smoke.json": {
+      "path": "implementation/evidence/release-000002-smoke.json",
+      "sha256": "d590ccf53d0101c3b164a2bccb2baa04d44b6f7751a94d5861fcb7ab12f511b5"
+    },
+    "release-000002.cpp": {
+      "path": "implementation/releases/release-000002.cpp",
+      "sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5"
+    },
+    "releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "7a036dc61c12fec5f7f71777cf7d201ffcdfac0a1237711c49098110c0bbaf38"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "db482ef45e5b39502ced6b62b7d39935ead721d0d8f4023a0bf0124c91b84ce8"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "871c91d8f88c8283688865eaf57281c1af25cf2d08a162e38142b1af25bdb9c4"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "b75d2bbfe044752944c58a5138b77ca63f4658dbb0cd9d595775f1bb0d635553"
+}

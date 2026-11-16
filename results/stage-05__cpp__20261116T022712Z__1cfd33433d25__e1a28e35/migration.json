@@ -1,0 +1,106 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    "builder-inputs/RULES.md": {
+      "path": "inputs/builder-inputs/RULES.md",
+      "sha256": "ee58ec8cd7cc22a00fa44a5b95b180bde87599637122f44b77380668887d4aca"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    "builder-inputs/stages/capabilities/operations.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/operations.md",
+      "sha256": "a2a340135f27bd333bf137b9c584e85dff85e7be2dfa7a5cfeeeb0682c3c5e72"
+    },
+    "builder-inputs/stages/capabilities/persistence.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/persistence.md",
+      "sha256": "b486243711d574f37986de19ab593a3685078b8f57e3e0b194378f3c23ac05bd"
+    },
+    "builder-inputs/stages/capabilities/proxy.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/proxy.md",
+      "sha256": "f4e885afdccff4227fb2baaeb8b92737ddc0f576abdcc3823f09bba86583ca35"
+    },
+    "builder-inputs/stages/capabilities/routing.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/routing.md",
+      "sha256": "58619b71bca8f560d0b20e54ad9455f055a9c4a8f774598fb94aa16e82a29bd2"
+    },
+    "builder-inputs/stages/common/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/stages/common/ARTIFACTS.md",
+      "sha256": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629"
+    },
+    "builder-inputs/stages/common/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/stages/common/BENCHMARK.md",
+      "sha256": "4050c47fb4d5683daa242234046bae403bac19f182b3f8e3744b3114624b05db"
+    },
+    "builder-inputs/stages/common/HTTP.md": {
+      "path": "inputs/builder-inputs/stages/common/HTTP.md",
+      "sha256": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492"
+    },
+    "builder-inputs/stages/common/INTERFACE.md": {
+      "path": "inputs/builder-inputs/stages/common/INTERFACE.md",
+      "sha256": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f"
+    },
+    "builder-inputs/stages/languages/cpp.md": {
+      "path": "inputs/builder-inputs/stages/languages/cpp.md",
+      "sha256": "b5c60c21a2be86662f80ff700d7f212f94891738a983d053aa2b7a9c745f9a3d"
+    },
+    "builder-inputs/stages/stage-05/SPEC.md": {
+      "path": "inputs/builder-inputs/stages/stage-05/SPEC.md",
+      "sha256": "662bd1f7351fb9d0c75dc297b5e203d51629ba3d259452d835be09586c831f76"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "83368c2167b38cd4e2745ece11639897375da297f3d014d52e62cf5bda2a5ccb"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "5094670ef95ddd714a660db146b32c04efc9ea781a8ded14b76fa014c0175ab3"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "c0fb44d892b22fffafc3fcd5834000de74b8d6e47295c93692e63e156a8deac8"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "2725c185f30083809bd46c27df9787b42b85e4556836476e3562f21b8be82bb1"
+    },
+    "release-000001-smoke.json": {
+      "path": "implementation/evidence/release-000001-smoke.json",
+      "sha256": "0ffdff572cb252c099c3812f379681dc9c34666f52d18e1eb82050b66b29bff0"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "cb7769ed1993cdcd19058c83ade72c44a54428fc3641f82925361a6037ff146e"
+    },
+    "release-000002-smoke.json": {
+      "path": "implementation/evidence/release-000002-smoke.json",
+      "sha256": "0e847b6c4d4835cf37d3b0e3859a94944a1d31b9c427fe2ea50208c484a786f6"
+    },
+    "release-000002.cpp": {
+      "path": "implementation/releases/release-000002.cpp",
+      "sha256": "b6ce041759ab2d60dfe76688c3a11977cfc4ad052389a7feae0bcef4bc5c4641"
+    },
+    "releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "dd7fe7b7fb83f2ca99216cd3dd8e73f3b8f6ff743badddf51231303e6ceee18b"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "6a0df1ad8aaba604a62975ca0c178ab22ee60ea8414c28ed9cea719a0d53491c"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "8e8c56b23ca546da0c25f635a3224245190b69b43539964d56155fe166192ae8"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "83cce75e6e622a465cf8519c988e829809db170fd088ef841def07ec7ddda30b"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "3a36a13ae0944ac26bd834cf73173695f3b2df94b417ff7ad27eef85897ff591"
+}

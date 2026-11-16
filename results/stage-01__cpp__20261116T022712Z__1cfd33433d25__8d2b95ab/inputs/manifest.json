@@ -1,0 +1,63 @@
+{
+  "artifact_sha256": "3a4da56572df637df3f651075abadd44cb67e20540427a11f7626580f9371b14",
+  "billing_profile": {
+    "input_limit": 32000,
+    "model": "gpt-6.1-terra",
+    "output_limit": 16000,
+    "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+    "price_verified_date": "2026-11-12",
+    "prompt_cache_options": {
+      "mode": "implicit",
+      "ttl": "30m"
+    },
+    "rates": {
+      "cached": "0.05",
+      "input": "1.00",
+      "output": "5.00",
+      "write_upper": "1.25"
+    },
+    "request_profile": "bounded-32k",
+    "reservation_usd": "0.200",
+    "reserved_tokens": 48000
+  },
+  "builder_evaluation_scope": "visible_smoke_only",
+  "campaign": "/home/mouse9911/gits/toksec-next/.runs/terra-nine-20261116/stage-01-cpp-replica-01",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "fingerprint": "15aae464dc224d99a083a920ab55c103d43aa92a627d402b68bde705416aac2b",
+  "input_sha256": {
+    "RULES.md": "ee58ec8cd7cc22a00fa44a5b95b180bde87599637122f44b77380668887d4aca",
+    "artifact.json": "3a4da56572df637df3f651075abadd44cb67e20540427a11f7626580f9371b14",
+    "stages/common/ARTIFACTS.md": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629",
+    "stages/common/BENCHMARK.md": "4050c47fb4d5683daa242234046bae403bac19f182b3f8e3744b3114624b05db",
+    "stages/common/HTTP.md": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492",
+    "stages/common/INTERFACE.md": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f",
+    "stages/languages/cpp.md": "b5c60c21a2be86662f80ff700d7f212f94891738a983d053aa2b7a9c745f9a3d",
+    "stages/stage-01/SPEC.md": "e7a8832b544a588222681d6f0763b272c63d0f0cf5253bee11cd7d9dbd263d10"
+  },
+  "language": "cpp",
+  "load_average": [
+    51.50830078125,
+    48.87841796875,
+    47.43798828125
+  ],
+  "model": "gpt-6.1-terra",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "prepared_unix": 1794796032.167779,
+  "reasoning_effort": "medium",
+  "run_id": "stage-01__cpp__20261116T022712Z__1cfd33433d25__8d2b95ab",
+  "spend_target_usd": null,
+  "stage": 1,
+  "started_unix": 1794796055.3815567,
+  "toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "toksec_dirty": false,
+  "toolchain": "/usr/bin/g++",
+  "wall_seconds": 7200
+}
