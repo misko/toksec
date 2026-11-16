@@ -150,7 +150,7 @@ def finalize(directory, batch, results):
                     done = subprocess.run(command(job['cpus'], 'grade', '--run', run, '--performance'),
                                           cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
                 job['grade_exit_code'] = done.returncode
-                if done.returncode not in (0, 2, 4):
+                if done.returncode not in (0, 2, 3, 4):
                     raise ValueError('parent grading failed; inspect parent-grading.log')
             with (run / 'publication.log').open('w') as log:
                 done = subprocess.run([sys.executable, str(ROOT / 'scripts/publish_results.py'),

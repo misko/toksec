@@ -42,6 +42,17 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(len(set(started)), 9)
         self.assertTrue(all(j['status'] == 'builder_stopped' for j in jobs))
 
+    def test_ineligible_performance_is_still_published(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp); run = directory / 'run'; run.mkdir()
+            value = {'jobs': [{'run': str(run), 'cpus': [0], 'status': 'builder_stopped'}]}
+            with patch('toksec.batch.capture', return_value={'releases': [{'tag': 'release/000001'}]}), patch(
+                    'toksec.batch.subprocess.run', side_effect=[SimpleNamespace(returncode=3), SimpleNamespace(returncode=0)]):
+                result = batch.finalize(directory, value, directory / 'results')
+            self.assertEqual(result['jobs'][0]['grade_exit_code'], 3)
+            self.assertEqual(result['jobs'][0]['status'], 'complete')
+
     def test_paid_resume_is_rejected_before_credentials_or_processes(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)
