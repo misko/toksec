@@ -31,30 +31,34 @@ def capture(cpus, *args):
     return json.loads(done.stdout)
 
 
-def plan(stages, replicas, parallel, budget_usd, wall_seconds, language, cpus):
-    amount = Decimal(str(budget_usd))
-    if not amount.is_finite() or not 0 < amount <= 2:
-        raise ValueError('batch per-run budget must be positive and at most $2')
+def plan(stages, replicas, parallel, budget_usd, wall_seconds, language, cpus, budgets_usd=None):
+    amounts = [Decimal(str(value)) for value in (budgets_usd if budgets_usd is not None else [budget_usd])]
+    if not amounts or any(not value.is_finite() or not 0 < value <= 5 for value in amounts):
+        raise ValueError('batch per-run budgets must be positive and at most $5')
+    if len(set(amounts)) != len(amounts):
+        raise ValueError('budget sweep values must be distinct')
     if not stages or len(set(stages)) != len(stages) or any(s not in (1, 5, 10) for s in stages):
         raise ValueError('choose distinct stages from 1, 5, and 10')
     if type(replicas) is not int or replicas < 1 or type(parallel) is not int or parallel < 1:
         raise ValueError('replicas and parallel must be positive integers')
     if not 120 <= wall_seconds <= 7200 or language not in ('cpp', 'rust'):
         raise ValueError('invalid wall limit or language')
-    slots = min(parallel, replicas * len(stages))
+    slots = min(parallel, replicas * len(stages) * len(amounts))
     if len(cpus) < slots * 6:
         raise ValueError(f'{slots * 6} distinct CPUs required for {slots} parallel slots')
     jobs = []
-    for replica in range(1, replicas + 1):
-        for stage in stages:
-            slot = len(jobs) % slots
-            jobs.append({'id': f'stage-{stage:02d}-{language}-replica-{replica:02d}',
-                         'stage': stage, 'replica': replica, 'slot': slot,
-                         'cpus': cpus[slot * 6:(slot + 1) * 6], 'budget_usd': str(amount),
-                         'status': 'planned'})
+    for amount in amounts:
+        for replica in range(1, replicas + 1):
+            for stage in stages:
+                slot = len(jobs) % slots
+                suffix = f'-usd-{format(amount.normalize(), "f")}' if budgets_usd is not None else ''
+                jobs.append({'id': f'stage-{stage:02d}-{language}-replica-{replica:02d}{suffix}',
+                             'stage': stage, 'replica': replica, 'slot': slot,
+                             'cpus': cpus[slot * 6:(slot + 1) * 6], 'budget_usd': str(amount),
+                             'status': 'planned'})
     return {'schema_version': 1, 'model': 'gpt-6.1-terra', 'reasoning_effort': 'medium',
             'service_tier': 'default', 'language': language, 'parallel': slots,
-            'wall_seconds': wall_seconds, 'total_cap_usd': str(amount * len(jobs)),
+            'wall_seconds': wall_seconds, 'total_cap_usd': str(sum((Decimal(j['budget_usd']) for j in jobs), Decimal(0))),
             'status': 'preparing', 'jobs': jobs}
 
 
@@ -72,9 +76,10 @@ def prepare(directory, **options):
             profile = 'legacy' if job['stage'] == 10 else 'bounded-32k'
             capture(job['cpus'], 'init', '--campaign', campaign, '--budget-usd', job['budget_usd'],
                     '--request-profile', profile)
+            allocation = ['--spend-target-usd', job['budget_usd']] if job['stage'] == 10 else []
             result = capture(job['cpus'], 'prepare', '--campaign', campaign,
                              '--stage', job['stage'], '--language', batch['language'],
-                             '--model', batch['model'], '--wall-seconds', batch['wall_seconds'])
+                             '--model', batch['model'], '--wall-seconds', batch['wall_seconds'], *allocation)
             job.update(run=result['run'], campaign=str(campaign), status='prepared')
             preflight = capture(job['cpus'], 'preflight', '--run', job['run'])
             if not preflight['launch_allowed']:
@@ -215,7 +220,9 @@ def main(argv=None):
     prepare_parser.add_argument('--stages', type=int, nargs='+', default=[1, 5, 10])
     prepare_parser.add_argument('--replicas', type=int, default=3)
     prepare_parser.add_argument('--parallel', type=int, default=3)
-    prepare_parser.add_argument('--budget-usd', required=True)
+    budgets = prepare_parser.add_mutually_exclusive_group(required=True)
+    budgets.add_argument('--budget-usd')
+    budgets.add_argument('--budgets-usd', nargs='+', help='One independent run per stage, replica, and budget')
     prepare_parser.add_argument('--wall-seconds', type=int, default=7200)
     prepare_parser.add_argument('--language', choices=('cpp', 'rust'), default='cpp')
     for name in ('run', 'status', 'finalize'):

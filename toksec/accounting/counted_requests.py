@@ -103,8 +103,8 @@ class BudgetLedger:
 
     def __init__(self, path, limit_usd="2", *, prices=None):
         amount = Decimal(str(limit_usd)) * 1_000_000_000
-        if not amount.is_finite() or amount <= 0 or amount > 2_000_000_000 or amount != int(amount):
-            raise BudgetError("limit must be positive, precise, and at most $2")
+        if not amount.is_finite() or amount <= 0 or amount > 5_000_000_000 or amount != int(amount):
+            raise BudgetError("limit must be positive, precise, and at most $5")
         if prices is not None and prices != PRICES:
             raise BudgetError("unverified price schedule")
         self.path = Path(path)

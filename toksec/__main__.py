@@ -34,7 +34,7 @@ def main(argv=None):
     prepare.add_argument('--model', choices=['gpt-6-luna', 'gpt-6.1-terra'], default=None, help='Defaults to Terra for Stage 10 and Luna for Stages 1–5')
     prepare.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     prepare.add_argument('--starter', type=Path)
-    prepare.add_argument('--spend-target-usd', help='Stages 1–5: soft settled-spend target (a call may cross it). Stage 10: hard run allocation, at most $2')
+    prepare.add_argument('--spend-target-usd', help='Stages 1–5: soft settled-spend target (a call may cross it). Stage 10: hard run allocation, at most $5')
     prepare.add_argument('--wall-seconds', type=int, default=7200)
     for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)

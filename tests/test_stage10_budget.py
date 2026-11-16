@@ -163,6 +163,17 @@ class Stage10BudgetTests(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(BudgetError):
                 ledger.execute({**request(), **change}, lambda _: self.fail("counted"), lambda _: self.fail("sent"))
 
+    def test_explicit_larger_caps_remain_fixed_and_bounded(self):
+        for cap in ('3', '4', '5'):
+            with tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / 'budget.sqlite'
+                ledger = BudgetLedger(path, cap)
+                self.assertEqual(ledger.report()['limit_nanodollars'], int(cap) * 1_000_000_000)
+                with self.assertRaises(BudgetError):
+                    BudgetLedger(path, '2')
+        with tempfile.TemporaryDirectory() as tmp, self.assertRaises(BudgetError):
+            BudgetLedger(Path(tmp) / 'budget.sqlite', '5.01')
+
     def test_ledger_limit_and_prices_cannot_change_on_reopen(self):
         BudgetLedger(self.path)
         with self.assertRaises(BudgetError):

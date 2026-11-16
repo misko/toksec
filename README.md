@@ -89,7 +89,7 @@ reported usage, and blocks further generation on uncertain charges. Strict
 reservations can stop a run before its entire dollar balance is spent. The
 [Stage 10 execution path](docs/stage-10-runtime.md) reserves a run allocation from that same
 campaign before launch, then uses its bounded-request ledger within the allocation.
-Stage 10 defaults to Terra and allows at most $2 per run. Successful partial API
+Stage 10 defaults to Terra and defaults to $2 per run and supports explicit allocations up to $5. Successful partial API
 checks and provisional performance diagnostics return exit code 4, never full acceptance.
 
 Builders choose their implementation and testing strategy. They publish working

@@ -25,8 +25,8 @@ def input_files(language):
 
 def packet(language='cpp', budget='2.00'):
     amount = Decimal(str(budget))
-    if not amount.is_finite() or amount <= 0 or amount > 2:
-        raise ValueError('Stage 10 request-budget profile requires a positive cap of at most $2')
+    if not amount.is_finite() or amount <= 0 or amount > 5:
+        raise ValueError('Stage 10 request-budget profile requires a positive cap of at most $5')
     sections = ['# Stage 10 implementation assignment', '']
     sections.extend(path.read_text() for path in input_files(language).values())
     sections.append(f'''Operational campaign notice, authoritative over draft availability statements:

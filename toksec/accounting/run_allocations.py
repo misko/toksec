@@ -22,7 +22,7 @@ from toksec.accounting.counted_requests import BudgetLedger, MODEL, PRICES
 
 BACKEND = 'stage10-counted-v1'
 NANODOLLARS = Decimal(1_000_000_000)
-MAX_BUDGET = Decimal('2.00')
+MAX_BUDGET = Decimal('5.00')
 # Settlement charges every input at cache-write price, with no cache discounts.
 MIN_TOKEN_DEBIT = min(PRICES['cache_write'], PRICES['output'])
 MIN_RUN_BUDGET = Decimal('0.08768')
@@ -77,7 +77,7 @@ def prepare(campaign_dir, language='rust', wall_seconds=7200, model=MODEL,
         ledger, _, eligible, maximum = _parent_available(campaign_dir)
         if not eligible:
             raise ValueError('campaign is unavailable or has unresolved reservations')
-        amount = maximum if spend_target_usd is None else _money(spend_target_usd)
+        amount = min(Decimal('2.00'), maximum) if spend_target_usd is None else _money(spend_target_usd)
         if amount < MIN_RUN_BUDGET or amount > maximum:
             raise ValueError(f'Stage 10 allocation must be between {MIN_RUN_BUDGET} and {maximum} USD')
         provenance = checkout(require_clean=True)

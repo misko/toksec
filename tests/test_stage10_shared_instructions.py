@@ -66,7 +66,7 @@ class Stage10SharedInstructionTests(unittest.TestCase):
             self.assertNotEqual(before, runner.counted_fingerprint())
 
     def test_invalid_language_budget_or_wall_limit_creates_no_run(self):
-        for options in ({'language': 'python'}, {'budget': '3'}, {'budget': '0'},
+        for options in ({'language': 'python'}, {'budget': '6'}, {'budget': '0'},
                         {'wall_seconds': 1}):
             with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary:
                 destination = Path(temporary) / 'run'

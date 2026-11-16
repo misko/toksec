@@ -28,7 +28,7 @@ reserves $0.200 at the pinned worst-case Terra rates before each request. Contex
 is compacted at 24,000 tokens; an oversized compacted request is rejected. It does
 not send encrypted reasoning, server-side history references, or hosted tools.
 Timeouts retain their reservation and block further admission. Stage 10 retains
-its existing counted-request ledger and $2 maximum allocation. These guarantees
+its existing counted-request ledger and a $2 default allocation; explicit allocations up to $5 are supported. These guarantees
 assume provider counting, pricing, and output-limit enforcement, as documented by
 the existing counted-request backend. Historical runs keep their original policy.
 
@@ -51,3 +51,24 @@ never represented as full acceptance. A run producing no tags is recorded as
 `no_tag`; success means a tagged artifact was published, not that it passed every
 API check. Consult each grade and its exit code. Results retain the usual
 `results/<run-id>/` structure and latest index; all nine runs remain available.
+
+## Budget sweeps
+
+To create one implementation per stage at each of three caps:
+
+```sh
+python3 scripts/run_parallel.py prepare --directory .runs/terra-budget-sweep \
+  --stages 1 5 10 --replicas 1 --parallel 1 --language cpp \
+  --budgets-usd 3 4 5 --wall-seconds 7200
+```
+
+This prepares nine independent campaigns with a combined maximum of $36.
+`--budget-usd` and `--budgets-usd` are mutually exclusive. All per-run caps must
+be positive and at most $5. The sweep uses explicit Stage 10 allocations so the
+requested $3/$4/$5 values are not silently reduced to its $2 default. Existing
+ledger limits cannot change when reopened. Request-size bounds and reservation
+policies remain unchanged.
+
+For concurrent batches, launch preparation and execution with `taskset` on a CPU
+set disjoint from all other batches. The scheduler only coordinates its own
+slots; it does not discover or reserve other batches' CPUs.

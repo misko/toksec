@@ -26,6 +26,28 @@ class BatchTests(unittest.TestCase):
             self.assertEqual(ledger['requests'], [])
             self.assertIsNone(controller.read(job['run'], 'manifest.json')['started_unix'])
 
+    def test_budget_sweep_has_nine_independent_jobs_and_explicit_stage10_caps(self):
+        import contextlib
+        import io
+        value = batch.plan([1, 5, 10], 1, 1, None, 7200, 'cpp', list(range(6)), budgets_usd=['3', '4', '5'])
+        self.assertEqual(value['total_cap_usd'], '36')
+        self.assertEqual(len({j['id'] for j in value['jobs']}), 9)
+        self.assertEqual({(j['stage'], j['budget_usd']) for j in value['jobs']},
+                         {(stage, budget) for stage in (1, 5, 10) for budget in ('3', '4', '5')})
+        with tempfile.TemporaryDirectory() as tmp, contextlib.redirect_stdout(io.StringIO()):
+            directory = Path(tmp) / 'batch'
+            result = batch.main(['prepare', '--directory', str(directory), '--stages', '10',
+                                 '--replicas', '1', '--parallel', '1', '--budgets-usd', '3', '4', '5'])
+            self.assertEqual(result, 0)
+            for job in batch.read(directory / 'batch.json')['jobs']:
+                manifest = controller.read(job['run'], 'manifest.json')
+                self.assertEqual(manifest['budget_usd'], job['budget_usd'])
+                self.assertEqual(campaign.read(job['campaign'])['requests'], [])
+        with self.assertRaises(ValueError):
+            batch.plan([1], 1, 1, None, 7200, 'cpp', list(range(6)), budgets_usd=['3', '3.0'])
+        with self.assertRaises(ValueError):
+            batch.plan([1], 1, 1, '5.01', 7200, 'cpp', list(range(6)))
+
     def test_plan_has_independent_caps_and_disjoint_slots(self):
         plan = batch.plan([1, 5, 10], 3, 3, '2', 7200, 'cpp', list(range(24)))
         self.assertEqual(plan['total_cap_usd'], '18')
