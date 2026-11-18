@@ -1,0 +1,196 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "/src/main.cpp: In function 'void worker()':\n/src/main.cpp:102:631: warning: ignoring return value of 'ssize_t write(int, const void*, size_t)' declared with attribute 'warn_unused_result' [-Wunused-result]\n  102 | static void worker(){UpConn pool;for(;;){Task task;{unique_lock<mutex>g(qm);qcv.wait(g,[]{return !queuework.empty();});task=move(queuework.front());queuework.pop_front();}Response z;Request&r=task.req;if(!cached(r,z)){unsigned long long gen=generation.load();size_t first=rr.fetch_add(1)%r.cfg->ups.size();bool ok=false,to=false;for(int k=0;k<(r.method==\"POST\"?1:2);k++){bool t=false;Response a;if(upstream_once(r,r.cfg->ups[(first+k)%r.cfg->ups.size()],a,t,pool)){z=move(a);ok=true;break;}to=t;}if(!ok)z=error(to?504:502);else storecache(r,z,gen);} {lock_guard<mutex>g(dm);dones.push_back({task.id,move(z)});}uint64_t one=1;write(wakefd,&one,sizeof(one));}}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~\n",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 4.038943870924413,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0003791600465774536
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.007320252247154713
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.0004716683179140091
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.00023275520652532578
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.00033516623079776764
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.0002441173419356346
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.0003322334960103035
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00034189503639936447
+    },
+    {
+      "id": "absolute-header-deadline",
+      "passed": true,
+      "seconds": 1.2014327878132463
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0004351288080215454
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 0.00018118787556886673
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.0002640252932906151
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.00032228510826826096
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.0001082252711057663
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.0086563704535365
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.0074502527713775635
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 0.00026076193898916245
+    },
+    {
+      "id": "hosts",
+      "passed": true,
+      "seconds": 0.00021882262080907822
+    },
+    {
+      "id": "routes-index-mime",
+      "passed": true,
+      "seconds": 0.00023300107568502426
+    },
+    {
+      "id": "etag",
+      "passed": true,
+      "seconds": 0.0002231961116194725
+    },
+    {
+      "id": "ranges",
+      "passed": true,
+      "seconds": 0.0002664942294359207
+    },
+    {
+      "id": "routing-interactions",
+      "passed": true,
+      "seconds": 0.0006633782759308815
+    },
+    {
+      "id": "proxy-get-and-post",
+      "passed": true,
+      "seconds": 0.009380324743688107
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "passed": true,
+      "seconds": 0.00601047370582819
+    },
+    {
+      "error": "AssertionError: upstream connections not reused",
+      "id": "proxy-pool-and-errors",
+      "passed": false,
+      "seconds": 0.010610540397465229
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "passed": true,
+      "seconds": 0.0033311285078525543
+    },
+    {
+      "id": "proxy-fragmented-upload",
+      "passed": true,
+      "seconds": 0.0027474286034703255
+    },
+    {
+      "id": "cache",
+      "passed": true,
+      "seconds": 1.2344879088923335
+    },
+    {
+      "id": "cache-byte-limit",
+      "passed": true,
+      "seconds": 0.3417180860415101
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "passed": true,
+      "seconds": 0.6040205787867308
+    },
+    {
+      "error": "AssertionError: listener remained open after SIGTERM",
+      "id": "graceful-stop",
+      "passed": false,
+      "seconds": 2.7798293344676495
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.3021602099761367
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.1026947982609272
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.1205534115433693
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.23787359427660704
+    }
+  ],
+  "summary": {
+    "passed": 33,
+    "status": "failed",
+    "total": 35
+  },
+  "unimplemented_requirements": []
+}

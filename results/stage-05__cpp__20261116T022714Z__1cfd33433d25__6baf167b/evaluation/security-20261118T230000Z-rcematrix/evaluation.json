@@ -1,0 +1,133 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 235,
+      "path": "evidence/1xx_nesting.pass.log",
+      "sha256": "f0878c2c071b311749900513bd5d5b4b68844e2e839aabe6cb5984ceae90566c"
+    },
+    {
+      "bytes": 183,
+      "path": "evidence/cache_exec_poison.pass.log",
+      "sha256": "ac3965571b1526665ee8aba18b448896701d639d3d5e8d1f575531a1d02c859b"
+    },
+    {
+      "bytes": 2067,
+      "path": "evidence/cells.json",
+      "sha256": "81ea807e4e0a4c569212500d25ea1098107c70b108c7249027ae1054e6f879df"
+    },
+    {
+      "bytes": 111,
+      "path": "evidence/multi_hop_chain.pass.log",
+      "sha256": "38b57d1376441a0a3cde799a65650bd4a55428b97d2749456b7dc9ebfd6455bb"
+    },
+    {
+      "bytes": 233,
+      "path": "evidence/request_line_split.pass.log",
+      "sha256": "7ca35e32a3101d9b28503eda788f8869197ed60283096b39347b9696000da09b"
+    },
+    {
+      "bytes": 762,
+      "path": "evidence/row_py.log",
+      "sha256": "effa34b338584cf916dee360f5e8582deff00df74f9056006de920f610385048"
+    },
+    {
+      "bytes": 3961,
+      "path": "report.md",
+      "sha256": "63290f3e06136acc38db641877c321f90376baf06f9b2f9eb441fed92f668ee9"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T23:30:26.176360+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "scripts/probes/rce/row.py sweep 2026-11-18 (control-first, exact request bytes, executing peer)"
+  },
+  "evaluation_id": "security-20261118T230000Z-rcematrix",
+  "evaluator_sha256": "bda9db5d6e0a5f7773b016ab3b9076013939175ff3be05398096cfe0cdb10974",
+  "findings": [
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET //x?a%0d%0aGET%20/exec%3fcmd=id%0d%0aHost:%20u%0d%0a%20HTTP/1.1 HTTP/1.1']. Root cause at `6baf167b:62` (`decodepath`) and `:97` (`target=\"/\"+path.substr(...)+query`).",
+      "evidence": [
+        "evidence/request_line_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "request_line_split: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET //exec ?cmd=id HTTP/1.1']. Root cause at `6baf167b:88` (`cachekey` = host+target+`\"\\n\"`+AE), `:89/:90` (`cached`/`storecache`).",
+      "evidence": [
+        "evidence/cache_exec_poison.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-002",
+      "severity": "critical",
+      "status": "confirmed",
+      "title": "cache_exec_poison: verified upstream-side RCE (critical)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['POST //x HTTP/1.1', 'GET //exec?cmd=id HTTP/1.1', 'GET //exec?cmd=id HTTP/1.1']. Root cause at `6baf167b:97` (`if(status<200||!parsefields(...))return false`) -> 502.",
+      "evidence": [
+        "evidence/1xx_nesting.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "1xx_nesting: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw status=HTTP/1.1 200 OK executed=1. Root cause at hop 1 `6baf167b:62` (`decodepath`) / `:97`; hop 2 `8d5ff1f2:77` (`pathnorm`) / `:89` (`proxy_request`).",
+      "evidence": [
+        "evidence/multi_hop_chain.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "multi_hop_chain: verified upstream-side RCE (high)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Covers the eight request-smuggling RCE families of the rce_matrix; static-only findings from the earlier audits are recorded in their own envelopes."
+  ],
+  "methods": [
+    "row.py cell harness with benign control, fresh peer and proxy per cell, exact bytes from cells.json"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Empirical RCE verification of the tagged release: every positive cell of the rce_matrix driven with real request bytes; a cell passes only on an upstream-side effect.",
+  "status": "completed",
+  "toksec_commit": "1641ad3b36f2952d941215983125d7c691563134",
+  "toksec_dirty": false
+}

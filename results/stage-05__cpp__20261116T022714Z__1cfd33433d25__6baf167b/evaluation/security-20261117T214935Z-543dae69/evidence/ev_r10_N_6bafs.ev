@@ -1,0 +1,181 @@
+# lane N evidence: build 6bafs
+# config + client-BIN marker below
+# cfg: listen=127.0.0.1:37047
+# cfg: root=/tmp/r10_www_N/alpha
+# cfg: max_connections=32
+# cfg: header_bytes=16384
+# cfg: header_timeout_ms=2000
+# cfg: idle_timeout_ms=5000
+# cfg: write_timeout_ms=5000
+# cfg: max_requests=100
+# cfg: pipeline_depth=16
+# cfg: default_host=alpha.test
+# cfg: host_root=beta.test:/tmp/r10_www_N/beta
+# cfg: alias=/al:/tmp/r10_www_N/aliasdir
+# cfg: redirect=/go:/target
+# cfg: index=index.html
+# cfg: proxy_prefix=/api
+# cfg: upstreams=127.0.0.1:42769
+# cfg: upstream_timeout_ms=3000
+# cfg: body_bytes=1048576
+# cfg: cache_ttl_ms=1000
+# cfg: cache_bytes=4096
+# cfg: rate_per_second=0
+# cfg: rate_burst=100
+# cfg: drain_timeout_ms=1000
+## ev_r10_N_6bafs_sweep.json
+{
+ "tag": "6bafs",
+ "port": 37047,
+ "res": {
+  "S01_ctl_alias": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S02_PA": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S03_PB": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S04_PC": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S05_PD": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S06_PE1": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S07_PE2": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S08_ESC": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 150
+  },
+  "S09_ESC2": {
+   "status": "HTTP/1.1 403 Forbidden",
+   "body": "",
+   "rawlen": 64
+  },
+  "S10_ESCpct": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 150
+  },
+  "S11_UNCH": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-SUBX",
+   "rawlen": 150
+  },
+  "S12_PG": {
+   "status": "HTTP/1.1 404 Not Found",
+   "body": "",
+   "rawlen": 64
+  },
+  "S13_VHbeta_alias": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 151
+  },
+  "S14_VHbeta_esc": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 150
+  }
+ }
+}
+## ev_r10_N_6bafs_bound.json
+{
+ "tag": "6bafs",
+ "port": 37047,
+ "res": {
+  "K1_noSep": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-hello",
+   "rawlen": 151
+  },
+  "K2_noSep_rootctl": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-alpha-hello.txt",
+   "rawlen": 152
+  },
+  "K3_al_only": {
+   "status": "HTTP/1.1 301 Moved Permanently",
+   "body": "",
+   "rawlen": 88
+  },
+  "K4_alx_sub": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-SUBX",
+   "rawlen": 150
+  },
+  "K5_pct_alias_pad": {
+   "status": "HTTP/1.1 403 Forbidden",
+   "body": "",
+   "rawlen": 64
+  }
+ }
+}
+## ev_r10_N_6bafv_vhost.bin  (Host: beta.test, /b.txt -> served, proves vhost root works)
+HTTP/1.1 200 OK
+ETag: "46-15049755-5-1794893575-703945887"
+Content-Type: text/plain
+Content-Length: 5
+Connection: close
+
+beta
+
+## ev_r10_N_6bafv_vhost2.bin (Host: alpha.test, /b.txt -> 404, alpha has no b.txt)
+HTTP/1.1 404 Not Found
+Content-Length: 0
+Connection: close
+
+
+## ev_r10_N_6bafw_depth.json (escape depth + cross-vhost read via /al../)
+{
+ "tag": "6bafw",
+ "port": 37060,
+ "res": {
+  "DEP1_1up": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 150
+  },
+  "DEP2_2up": {
+   "status": "HTTP/1.1 403 Forbidden",
+   "body": "",
+   "rawlen": 64
+  },
+  "CROSS_beta": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-beta-x.txt",
+   "rawlen": 147
+  },
+  "CROSS_hostroot": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-HOSTROOT",
+   "rawlen": 145
+  },
+  "CROSS_from_beta": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-alpha-x.txt",
+   "rawlen": 148
+  }
+ }
+}

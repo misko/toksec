@@ -1,0 +1,72 @@
+{
+ "build": "1cfd33433d25__6baf167b",
+ "source_line": "line 45 (keys) / line 54 (pipeline_depth)",
+ "claim": "cache branch is live and cache_bytes is an exact in/out boundary (body<=cache_bytes stores, body>cache_bytes never stores); the separate cache_waiters/cache_entries keys do not exist in the 23-key list at all, and pipeline_depth is parsed into c.depth but has zero read sites",
+ "control": {
+  "cfg": "ev_r14_D_cfg_51010.conf",
+  "port": 51010,
+  "result": "cache off, every GET hits upstream"
+ },
+ "payload": {
+  "cache_bytes2_3req": "3 upstream hits, no store",
+  "cache_bytes3_3req": "0 hits, stored",
+  "cache_bytes8_3req": "0 hits",
+  "patch_depth1": "identical to default"
+ },
+ "raw": {
+  "cache_bytes2_hits_3req": 3,
+  "cache_bytes3_hits_3req": 0,
+  "cache_bytes8_hits_3req": 0
+ },
+ "raw_pred": {
+  "plain": {
+   "hits": 1,
+   "cc": [
+    "cache-control: public, max-age=60"
+   ]
+  },
+  "nostore": {
+   "hits": 3,
+   "cc": [
+    "cache-control: public, max-age=60, no-store"
+   ]
+  },
+  "private": {
+   "hits": 3,
+   "cc": [
+    "cache-control: private, max-age=60"
+   ]
+  },
+  "nopub": {
+   "hits": 3,
+   "cc": [
+    "cache-control: max-age=60"
+   ]
+  },
+  "noage": {
+   "hits": 3,
+   "cc": [
+    "cache-control: public"
+   ]
+  },
+  "vary": {
+   "hits": 3,
+   "cc": [
+    "cache-control: public, max-age=60"
+   ]
+  },
+  "zeroage": {
+   "hits": 3,
+   "cc": [
+    "cache-control: public, max-age=0"
+   ]
+  }
+ },
+ "raw_ctl": {
+  "request_hex": "474554202f6170692f706c61696e5f35303036306520485454502f312e310d0a486f73743a20616c7068612e746573740d0a0d0a",
+  "ctl_hex": "485454502f312e3120323030204f4b0d0a782d75702d6c696e653a20474554202f2f706c61696e5f35303036306520485454502f312e310d0a782d75702d746f6b656e733a20330d0a636f6e74656e742d747970653a20746578742f706c61696e0d0a63616368652d636f6e74726f6c3a207075626c69632c206d61782d6167653d36300d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a6f6b0a",
+  "ctl_hits": 1,
+  "reuse_hex": "485454502f312e3120323030204f4b0d0a782d75702d6c696e653a20474554202f2f706c61696e5f35303036306520485454502f312e310d0a782d75702d746f6b656e733a20330d0a636f6e74656e742d747970653a20746578742f706c61696e0d0a63616368652d636f6e74726f6c3a207075626c69632c206d61782d6167653d36300d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a6f6b0a",
+  "reuse_hits": 0
+ }
+}

@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_6baf_apiq.hex",
+      "sha256": "3da471f0f42fd5c90134b0f10c1ec947af20544141e422a034d5585363e1b2b9"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_root_6baf_apixq.hex",
+      "sha256": "19adf0f0987b5ce7aed4f113705450372d354ed211ff87f5bd91f2c103b2d655"
+    },
+    {
+      "bytes": 265,
+      "path": "evidence/ev_r17_D_root_6baf_slashq.hex",
+      "sha256": "439c0d3aea45bd929ca0218c80190e55ae75d94220c3ba9c7b6abf9caacacc76"
+    },
+    {
+      "bytes": 1723,
+      "path": "report.md",
+      "sha256": "15e1ec1586aa9cf123e1f4446e6bce33db591b9ed6e61fbc7001a35725bbc62c"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:40.980953+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131240Z-e3e14cfe",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The built-in exact-key build (cachekey = host+target+'\\n'+AE, line 88) behaves identically on these depth probes: /api?x, /api/?x and /?x refetch, /?x serves the local static index. Its only cache-key divergence from the other three is the missing wildcard arm on Accept-Encoding, confirmed separately below.",
+      "evidence": [
+        "evidence/ev_r17_D_root_6baf_apiq.hex",
+        "evidence/ev_r17_D_root_6baf_apixq.hex",
+        "evidence/ev_r17_D_root_6baf_slashq.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Negative contrast: 6baf167b exact key including Accept-Encoding also never widens to a prefix"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

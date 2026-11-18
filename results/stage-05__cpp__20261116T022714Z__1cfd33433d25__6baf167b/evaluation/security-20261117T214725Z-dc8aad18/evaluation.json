@@ -1,0 +1,79 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 76,
+      "path": "evidence/ev_r10_O_1cfd33433d25_6baf167b_P2.hex",
+      "sha256": "0ed3a34d331498f566c6356b549dfe2ac7ce2cd987821af3f1846e0c67cd2ebb"
+    },
+    {
+      "bytes": 1800,
+      "path": "report.md",
+      "sha256": "113224437ff32d86bc04b817444efab471c5eb07a9e11a2dbec24ae3bfc6b40a"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:47:25.956299+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw hex request bytes, exact-token peer plus an independent naive concatenating upstream"
+  },
+  "evaluation_id": "security-20261117T214725Z-dc8aad18",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`:109` tests `c.req.proxy` and enters the proxy path without any `..` check; `local()` at `:80` is only reached when the location is not a proxy. Moving the check into the decode (as the other sixteen builds do) closes it.",
+      "evidence": [
+        "evidence/ev_r10_O_1cfd33433d25_6baf167b_P2.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Dispatch order is the root cause: the proxy branch is taken before `local()` can run the guard"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "The proxy never executes; all RCE is on the upstream host",
+    "Absolute-form findings are negatives and need nothing but a proxied prefix location"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first on the same config",
+    "Hex-exact single request per shape",
+    "Two independent upstreams for the one positive"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 6baf167b, round 10 lane O: dispatch order versus guard placement.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

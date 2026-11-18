@@ -1,0 +1,22 @@
+LANE V — 6baf167b predicate and the 8-mode refusal set.
+Build 1cfd33433d25__6baf167b, source ...6baf167b.cpp, cfg ev_r12_V_cfg_6baf.conf.
+
+grep -n safe_header 1cfd33433d25__6baf167b.cpp
+  67: static bool safe_header(const string&s){for(unsigned char c:s)if(c=='\r'||c=='\n'||!c)return false;return true;}
+  68: wire(): for(auto&p:r.h)if(safe_header(p.first)&&safe_header(p.second))o+=p.first+": "+p.second+"\r\n";
+
+The parse predicate is stricter still (`:59 parsefields` refuses `c==0||c=='\r'||c=='\n'||(c<32&&c!='\t')||c==127`),
+so on this build the parser and the emitter share one verdict and neither can ever disagree: a
+value that survives parsing always satisfies safe_header.
+
+Measured consequence — 8 of 15 modes are 502 with an empty body and a single Content-Length: 0:
+  bareLF, bareLFmid, nul, dupCL, dupCLfirst, dupCLlast, dupCLdiffer, clTE, obsfold, foldHdr, foldCL
+  sample client_received_hex (all eleven identical in shape):
+  485454502f312e31203530322042616420476174657761790d0a436f6e74656e742d4c656e6774683a20300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+Passed modes: trailSpace (X-Sp trailing space trimmed by `trim(v)` before storage, both fields
+arrive), noReason, http10, clSurplus, dupCL? no — dupCL* are refused, clShort is refused.
+
+6baf is the only build whose *emitter* re-checks at all; every other build emits what it stored.
+Here that is a defence (no malformed field escapes) bought with a total refusal, so it is a
+pure negative for field loss and a framing negative too (see ev_r12_V_6baf_clShort.txt).
+Every one of the 15 controls passed 200 HELLO on this config.

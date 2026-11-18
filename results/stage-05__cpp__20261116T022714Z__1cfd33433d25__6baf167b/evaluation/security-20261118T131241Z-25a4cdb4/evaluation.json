@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 675,
+      "path": "evidence/ev_r17_D_cmd_6baf_attack.hex",
+      "sha256": "ebb7ccd6cc2cc0f7882602a976bc2a9b2e8f7fb61fed398578cd5715467a9daa"
+    },
+    {
+      "bytes": 507,
+      "path": "evidence/ev_r17_D_cmd_6baf_attack_pwd.hex",
+      "sha256": "af355b0395ebdf143a653eed1616fdf522deddd90c212ccb06ebad2f22abd701"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cmd_6baf_victim1.hex",
+      "sha256": "9bcf328fdd0b5926c1d12303789944986b0aca831bb45d15de72aeb34d9c007f"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cmd_6baf_victim2.hex",
+      "sha256": "9bcf328fdd0b5926c1d12303789944986b0aca831bb45d15de72aeb34d9c007f"
+    },
+    {
+      "bytes": 1775,
+      "path": "report.md",
+      "sha256": "2e6fb7ff67e489af3e4e53c5f58a1e348fbd6b938f8142abf763adbcb9421948"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:41.425058+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131241Z-25a4cdb4",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The exact-key build shows the same overwrite behavior with attacker-chosen commands, confirming that command choice in the entry is generic to these caches and that the wildcard builds' extra reach (cross-AE victim) is the only divergence, not the overwrite mechanism itself.",
+      "evidence": [
+        "evidence/ev_r17_D_cmd_6baf_attack.hex",
+        "evidence/ev_r17_D_cmd_6baf_attack_pwd.hex",
+        "evidence/ev_r17_D_cmd_6baf_victim1.hex",
+        "evidence/ev_r17_D_cmd_6baf_victim2.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Negative contrast: 6baf167b also overwrites on the exact key, no wildcard involved"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}
