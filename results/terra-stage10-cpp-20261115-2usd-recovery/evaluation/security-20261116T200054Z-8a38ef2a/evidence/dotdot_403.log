@@ -1,0 +1,6 @@
+# hard 403 on any dot-dot segment; normalizepath returns false (line 74) instead of resolving
+/sub/./a.txt           -> HTTP/1.1 404 Not Found
+/sub/../hello.txt      -> HTTP/1.1 403 Forbidden
+# reference nginx
+/sub/./a.txt           -> HTTP/1.1 200 OK
+/sub/../hello.txt      -> HTTP/1.1 200 OK

@@ -1,0 +1,4 @@
+client single write: b'POST /api/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 51\r\nConnection: keep-alive\r\n\r\nGET /api/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\n\r\nGET /api/hello HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+responses: 3 statuses: [b'405 Method Not ', b'200 OK\r\nContent', b'200 OK\r\nContent']
+upstream heads: [b'GET /exec?cmd=id HTTP/1.0', b'GET /hello HTTP/1.0']
+uid returned: True

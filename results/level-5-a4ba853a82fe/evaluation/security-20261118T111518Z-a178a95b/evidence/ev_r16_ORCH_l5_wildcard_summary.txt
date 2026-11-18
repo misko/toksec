@@ -1,0 +1,8 @@
+# Orchestrator spot-check, level-5-a4ba853a82fe, release/000001
+# fresh peer, fresh server, exact UP fetch counter
+ctl fetch=1 (200)
+attack(Accept-Encoding: identity) fetch=2 EXEC
+victim1(Accept-Encoding: gzip) fetch=2 EXEC  <-- ZERO new fetches, different AE
+victim2(no Accept-Encoding)      fetch=2 EXEC  <-- ZERO new fetches    
+victim3(Authorization) fetch=3 EXEC
+victim4(extra trailing slash) fetch=4 EXEC (different key, refetch)

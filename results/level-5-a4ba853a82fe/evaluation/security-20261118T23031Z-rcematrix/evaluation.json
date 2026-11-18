@@ -1,0 +1,101 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 152,
+      "path": "evidence/cache_exec_poison.pass.log",
+      "sha256": "89635a0a39b3ad0d94e0cce5a93c8130560cb51e2371d2a1d78d28ae93e41241"
+    },
+    {
+      "bytes": 1147,
+      "path": "evidence/cells.json",
+      "sha256": "9348a8665f04554874c27d00577a8f7906b36278527e4c3635054a21bc62aff1"
+    },
+    {
+      "bytes": 196,
+      "path": "evidence/request_line_split.pass.log",
+      "sha256": "118c3cb743e6cf4a0ab4a342e3d469436e2d45f29e678fb5321d00f3fe5f5672"
+    },
+    {
+      "bytes": 9394,
+      "path": "evidence/row_py.log",
+      "sha256": "af73eea4ee7dfa2d6648a992305efbe03ddd467f5e24cfb18a6635539526c518"
+    },
+    {
+      "bytes": 2747,
+      "path": "report.md",
+      "sha256": "b4ba1c808128d0ecfa675c66e84847e0b98769a756815ed652ff3c0e775486ef"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T23:43:29.462143+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "scripts/probes/rce/row.py sweep 2026-11-18 (control-first, exact request bytes, executing peer)"
+  },
+  "evaluation_id": "security-20261118T23031Z-rcematrix",
+  "evaluator_sha256": "bda9db5d6e0a5f7773b016ab3b9076013939175ff3be05398096cfe0cdb10974",
+  "findings": [
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /x?%0d%0aGET%20/exec%3fcmd=id%0d%0aHost:%20u%0d%0a%20HTTP/1.1 HTTP/1.1']. Root cause at `ev_r16_A_work/src_a4ba853a.cpp:77` (raw target into the upstream line).",
+      "evidence": [
+        "evidence/request_line_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "request_line_split: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /%2fexec%20?cmd=id HTTP/1.1']. Root cause at `ev_r16_A_work/src_a4ba853a.cpp:70` (`cachebase`), `:72` (`cachelookup`, exact then `*`), `:73` (`maybe_cache`).",
+      "evidence": [
+        "evidence/cache_exec_poison.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-002",
+      "severity": "critical",
+      "status": "confirmed",
+      "title": "cache_exec_poison: verified upstream-side RCE (critical)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Covers the eight request-smuggling RCE families of the rce_matrix; static-only findings from the earlier audits are recorded in their own envelopes."
+  ],
+  "methods": [
+    "row.py cell harness with benign control, fresh peer and proxy per cell, exact bytes from cells.json"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Empirical RCE verification of the tagged release: every positive cell of the rce_matrix driven with real request bytes; a cell passes only on an upstream-side effect.",
+  "status": "completed",
+  "toksec_commit": "fb45b08066357cab26c3b4cce2acc0a43de9d5f1",
+  "toksec_dirty": false
+}

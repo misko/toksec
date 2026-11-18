@@ -1,0 +1,10 @@
+# 1xx interim response is swallowed; status/version read from the wrong segment
+HTTP/1.1 100 Error
+Content-Length: 69
+Connection: close
+
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Content-Length: 5
+
+HELLO

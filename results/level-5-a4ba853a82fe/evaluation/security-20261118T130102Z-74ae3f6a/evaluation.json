@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_a4ba_apiq.hex",
+      "sha256": "3da471f0f42fd5c90134b0f10c1ec947af20544141e422a034d5585363e1b2b9"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_a4ba_apixq.hex",
+      "sha256": "9614c4062a30a1d6bc1593db79f20197f4ca1ce4481b2315eb14aa0165f0619f"
+    },
+    {
+      "bytes": 259,
+      "path": "evidence/ev_r17_D_root_a4ba_slashq.hex",
+      "sha256": "3cace099db2082b0f13edfa600733b7fe47c00e25711dc871809521567f98622"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_a4ba_victim_xq.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 2053,
+      "path": "report.md",
+      "sha256": "85a61aa0abb5640280129405fc8d4621f885b4aab85334bdfe21cba08ccf268f"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:01:02.662312+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T130102Z-74ae3f6a",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "After poisoning /api/x?<smug>, victims to /api/x (no query), /api?x, /api/?x, /?x and /alpha?x all fetch upstream again (hit counts 4,5,6,6 then local 404) with EXEC:0 in every line; /?x serves the local static index and /alpha 404s. The cache key is host+full raw target, so the wildcard is only on the Accept-Encoding suffix, never on the path prefix. Same result on afdc173f, e1a28e35 and 6baf167b.",
+      "evidence": [
+        "evidence/ev_r17_D_root_a4ba_victim_xq.hex",
+        "evidence/ev_r17_D_root_a4ba_apiq.hex",
+        "evidence/ev_r17_D_root_a4ba_apixq.hex",
+        "evidence/ev_r17_D_root_a4ba_slashq.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Prefix-root poisoning is closed: /, /api, /api/ and /alpha do not inherit the poisoned entry"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

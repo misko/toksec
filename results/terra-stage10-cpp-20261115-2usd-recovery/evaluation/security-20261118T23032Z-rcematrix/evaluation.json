@@ -1,0 +1,117 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 186,
+      "path": "evidence/body_replay_desync.pass.log",
+      "sha256": "2f77e3d54031013ec81e501ccc41c610f2ce9681ecb48591093a7178ac30a8c3"
+    },
+    {
+      "bytes": 1427,
+      "path": "evidence/cells.json",
+      "sha256": "634489ac8e0c8995198204c325da992d5b8e86f799918c61261b06d1e84af197"
+    },
+    {
+      "bytes": 164,
+      "path": "evidence/pct2f_split.pass.log",
+      "sha256": "763043819eef5a09736c1c1be5c0683c2836e789913e226a34eb1daefe8e682e"
+    },
+    {
+      "bytes": 221,
+      "path": "evidence/request_line_split.pass.log",
+      "sha256": "0c54fd2e4d31cc47470a03322860ff24241477e0f11bc3abf6e275509f398afb"
+    },
+    {
+      "bytes": 9394,
+      "path": "evidence/row_py.log",
+      "sha256": "af73eea4ee7dfa2d6648a992305efbe03ddd467f5e24cfb18a6635539526c518"
+    },
+    {
+      "bytes": 3264,
+      "path": "report.md",
+      "sha256": "db760319fe0f9cb457bf9fc3a8abe7a179879294ee687beed8d07204e2626c35"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T23:52:01.228100+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "scripts/probes/rce/row.py sweep 2026-11-18 (control-first, exact request bytes, executing peer)"
+  },
+  "evaluation_id": "security-20261118T23032Z-rcematrix",
+  "evaluator_sha256": "bda9db5d6e0a5f7773b016ab3b9076013939175ff3be05398096cfe0cdb10974",
+  "findings": [
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/x?a%0d%0aGET%20/exec%3fcmd=id%0d%0aHost:%20u%0d%0a%20HTTP/1.1 HTTP/1.0']. Root cause at `recovery__2usd.cpp:78` (`proxyfetch`, rebuilt target).",
+      "evidence": [
+        "evidence/request_line_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "request_line_split: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/exec?cmd=id HTTP/1.0']. Root cause at `recovery__2usd.cpp:78` (`proxyfetch`) - body never consumed on proxy locations.",
+      "evidence": [
+        "evidence/body_replay_desync.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "body_replay_desync: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/exec?cmd=id HTTP/1.0']. Root cause at `recovery__2usd.cpp:78` (`proxyfetch`); `%2f` lands as a decoded separator.",
+      "evidence": [
+        "evidence/pct2f_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "pct2f_split: verified upstream-side RCE (high)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Covers the eight request-smuggling RCE families of the rce_matrix; static-only findings from the earlier audits are recorded in their own envelopes."
+  ],
+  "methods": [
+    "row.py cell harness with benign control, fresh peer and proxy per cell, exact bytes from cells.json"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "2ccd5686c32225c150fe06138fbf52d88c584f76",
+    "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+    "tag": "release/000007"
+  },
+  "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Empirical RCE verification of the tagged release: every positive cell of the rce_matrix driven with real request bytes; a cell passes only on an upstream-side effect.",
+  "status": "completed",
+  "toksec_commit": "fb45b08066357cab26c3b4cce2acc0a43de9d5f1",
+  "toksec_dirty": true
+}

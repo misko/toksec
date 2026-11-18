@@ -1,0 +1,36 @@
+# fixture manifest, terra stage-10 release/000007 (srv built from release-000007.cpp)
+chunkup.py
+contup.py
+drip.py
+dripcheck.py
+echo.py
+echo2.py
+endurance.py
+slowloris.py
+slowup.py
+smug.py
+drip.conf
+drip2w.conf
+f1.conf
+f2.conf
+g4.conf
+h1.conf
+multi.conf
+multi2.conf
+ng_chunked.conf
+ng_locup.conf
+ng_nocl.conf
+ng_status999.conf
+nginx.conf
+one.conf
+one2.conf
+one3.conf
+s1.conf
+s2.conf
+s3.conf
+ss.conf
+two2.conf
+two3.conf
+
+# srv sha256
+a4a94adb70ef4908b64cc0c3cbdb381d35fbf44b76392291bf6cc35782f345cf  srv

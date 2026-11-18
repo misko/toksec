@@ -1,0 +1,7 @@
+# %%20 defeats the CRLF guard by splitting the upstream request line into 4 tokens
+# decode() blocks <32 (line 73) but 0x20 passes; query is never decoded at all
+LINE=[GET /q X HTTP/1.0]
+LINE=[GET /qAX HTTP/1.0]
+# real resource with a space in its name: direct=200, through proxy=400
+HTTP/1.0 200 OK
+HTTP/1.1 400 Bad Request

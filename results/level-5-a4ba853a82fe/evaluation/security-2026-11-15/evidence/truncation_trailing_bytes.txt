@@ -1,0 +1,9 @@
+== l5
+  trail=0 (2097152, None) (2097152, None) (2097152, None)
+  trail=1024 (2097152, None) (2097152, None) (2097152, None)
+  trail=4090 (2097152, None) (2097152, None) (2097152, None)
+  trail=4096 (2097152, None) (2097152, None) (2097152, None)
+  trail=8192 (2097152, None) (2097152, None) (2097152, None)
+  trail=16384 (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError') (2097152, 'ConnectionResetError')
+  trail=32768 (2080575, 'ConnectionResetError') (127860, 'ConnectionResetError') (1175871, 'ConnectionResetError')
+  trail=65536 (2097152, 'ConnectionResetError') (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError')

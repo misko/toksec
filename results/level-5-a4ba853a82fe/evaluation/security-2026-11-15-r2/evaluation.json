@@ -6,6 +6,11 @@
       "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
     },
     {
+      "bytes": 15410,
+      "path": "evidence/FINDINGS.md",
+      "sha256": "bb8adb8ae7a386cd024ddd654e4eb5789e55d5bb8b6443cb4b238e28f3ca1939"
+    },
+    {
       "bytes": 579,
       "path": "evidence/cache-key-collision.txt",
       "sha256": "109a44ed5260a95a99e7dc0954bb3a189850ec2edd631b8eee6019a0b1890572"
@@ -14,6 +19,11 @@
       "bytes": 1002,
       "path": "evidence/cache-poison.txt",
       "sha256": "925982e9f680c9728fe0bf325ba5b5f6def9022bdf42c2f1ed298f76fca082d4"
+    },
+    {
+      "bytes": 526,
+      "path": "evidence/cfg5single",
+      "sha256": "b10e630791a1414d23d7b413f409d85534b7251ee7c567ac2b25655e1cadb78b"
     },
     {
       "bytes": 1664,
@@ -56,9 +66,59 @@
       "sha256": "ccaa540877570656aeca2331ccbed7cd3a399da00575c89af6d43df1a4c13598"
     },
     {
+      "bytes": 27809,
+      "path": "evidence/s5.cpp",
+      "sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee"
+    },
+    {
+      "bytes": 3023,
+      "path": "evidence/s5absorb.py",
+      "sha256": "45a6c0fddf32dac0ce620bd63b9d7ff9e1d4fae64a484dc889ee12d2c53d6a88"
+    },
+    {
+      "bytes": 2784,
+      "path": "evidence/s5crlf.py",
+      "sha256": "6d3c4c70de807cba8363c59fddfdf9b5050a9a5e7cd5924d297db162b7e39abe"
+    },
+    {
+      "bytes": 3931,
+      "path": "evidence/s5desync.py",
+      "sha256": "57661d64c0216bf4c46af380750849c07d000cc4bdf0d75c1f57ef0bfbbbc20d"
+    },
+    {
+      "bytes": 3211,
+      "path": "evidence/s5final.py",
+      "sha256": "fc256a67d0691beb28e98bbd4fd0b8f04f52f8e7efc84b6dc0451d90073792d4"
+    },
+    {
+      "bytes": 2831,
+      "path": "evidence/s5frame.py",
+      "sha256": "8d6569dc466f6d358262c8dad272d27f1f04e700bf06caf27c70537204bb4775"
+    },
+    {
+      "bytes": 164896,
+      "path": "evidence/s5o3",
+      "sha256": "e48bc83fc18355d81b13da1f74f47591a01c42acebceace7a7229f5e06ce28ba"
+    },
+    {
+      "bytes": 3200,
+      "path": "evidence/s5rce_demo.py",
+      "sha256": "8c42034afc8e43422341ff50cf0f1e686e0014389af7e830822c07b1b2f5df4e"
+    },
+    {
       "bytes": 3371,
       "path": "evidence/s5rce_file_read.py",
       "sha256": "2762efbf4f1cf494cd676413f666dbc14f7119da0df88d50a03c50dfd116a0c0"
+    },
+    {
+      "bytes": 3288,
+      "path": "evidence/s5smuggle.py",
+      "sha256": "78e317dfa6916186d72db5f3505dc1933c1510b5c6c204c1273fb3b7fe9c37db"
+    },
+    {
+      "bytes": 7781296,
+      "path": "evidence/s5ub",
+      "sha256": "3e2a70b3cb7ba20315389d0096b2e90ec027b85826b04565ec51fb8c57e4a995"
     },
     {
       "bytes": 194,
@@ -71,13 +131,18 @@
       "sha256": "2ee3998faf008c25436bcfb4439870a15b2964a26a0cd044e86d914dc64135e2"
     },
     {
-      "bytes": 23948,
+      "bytes": 655,
+      "path": "evidence/truncation_trailing_bytes.txt",
+      "sha256": "dca3ff95a686ff6165639778cbeecc7c99674146e5163349fbaa2767949dabdb"
+    },
+    {
+      "bytes": 27372,
       "path": "report.md",
-      "sha256": "897e0b6093db8a2e9030b0bfcb5f1b57277e44c3c827e5bc630410645a2cc0ec"
+      "sha256": "457d9095369f99081486959dcea0294b50e417c6cb728d0545df2d8596b2cfcc"
     }
   ],
   "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
-  "created_utc": "2026-11-16T02:22:36.318218+00:00",
+  "created_utc": "2026-11-17T01:20:50.100116+00:00",
   "environment": {
     "analyst_provenance": "author-attested; reconstructed at recording time, not captured during the original run",
     "arch": "x86_64",
@@ -188,6 +253,16 @@
       "severity": "low",
       "status": "confirmed",
       "title": "Pre-body upstream pooling desync"
+    },
+    {
+      "description": "== l5\n  trail=0 (2097152, None) (2097152, None) (2097152, None)\n  trail=1024 (2097152, None) (2097152, None) (2097152, None)\n  trail=4090 (2097152, None) (2097152, None) (2097152, None)\n  trail=4096 (2097152, None) (2097152, None) (2097152, None)\n  trail=8192 (2097152, None) (2097152, None) (2097152, None)\n  trail=16384 (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError') (2097152, 'ConnectionResetError')\n  trail=32768 (2080575, 'ConnectionResetError') (127860, 'ConnectionResetError') (1175871, 'ConnectionResetError')\n  trail=65536 (2097152, 'ConnectionResetError') (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError')\n",
+      "evidence": [
+        "evidence/truncation_trailing_bytes.txt"
+      ],
+      "id": "SEC-010",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Undrained bytes behind the header terminator reset the socket and truncate the body"
     }
   ],
   "kind": "security",
@@ -196,7 +271,8 @@
     "The demonstrated RCE requires an upstream endpoint that executes code, implemented in testing as /exec via /bin/sh -c",
     "Two-upstream round-robin parity control was reasoned about but not exhaustively re-run",
     "Cache-key collision and SIGHUP crash probes are timing and state sensitive",
-    "Analyst and environment metadata were reconstructed at recording time rather than captured during the original run"
+    "Analyst and environment metadata were reconstructed at recording time rather than captured during the original run",
+    "Truncation is timing dependent in magnitude (127,860-2,097,152 of 2,097,152 observed) but the 16 KiB threshold truncated in 3/3 on every build tested"
   ],
   "methods": [
     "Manual source review of all 84 lines, tracing every attacker-controlled value from parse to sink",
@@ -206,7 +282,8 @@
     "Black-box protocol battery: framing, ranges, ETag, cache, routing, limits",
     "Targeted desync probes using percent-encoded CRLF in the proxy target",
     "DoS measurement via /proc/<pid>/stat CPU accounting of the listener process",
-    "Reproduction on both sanitizer and production -O3 builds"
+    "Reproduction on both sanitizer and production -O3 builds",
+    "Trailing-byte truncation sweep: 0/1024/4090/4096/8192/16384/32768/65536 bytes written after the header terminator against a 2 MiB file, three trials per row, Connection: close"
   ],
   "provenance": {
     "author_attested": [
@@ -234,6 +311,6 @@
   "schema_version": 1,
   "scope": "Full manual and dynamic security analysis of the toksec stage-5 C++ HTTP proxy at release/000002, covering request parsing, upstream proxying, response framing, cache behavior, reload handling, and connection lifecycle; includes prior stage-1 and stage-2 DoS context.",
   "status": "completed",
-  "toksec_commit": "b90a24e404fdf6babfc073b74ed279e471c0534d",
-  "toksec_dirty": true
+  "toksec_commit": "ea1fbc980866c10b2273ce4d2f67b3cd509a2a38",
+  "toksec_dirty": false
 }

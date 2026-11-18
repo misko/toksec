@@ -1,0 +1,5 @@
+probe 0: 4.0s BLOCKED (TimeoutError)
+probe 1: 4.0s BLOCKED (TimeoutError)
+probe 2: 4.0s BLOCKED (TimeoutError)
+probe 3: 4.0s BLOCKED (TimeoutError)
+RESULT served=0/4 with 0 in-flight drip requests

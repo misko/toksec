@@ -1,17 +1,13 @@
 {
+  "api_coverage": "partial",
   "artifact_contract_provenance": "reconstructed_for_storage",
   "budget_usd": "2.00",
-  "comparison_policy": "Experimental partial grader; do not pool with Stage 1\u20135 protocols. No performance grade.",
-  "final_grade_eligible": false,
+  "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
   "framework": "f02ed71d055cb6d8d98df193fde15b7908ca67140b478e431c0a9e355612c5e0",
-  "historical_ids": [
-    "2026-11-15T17-26-37Z__stage-10__cpp__gpt-6.1-terra__stage10-experimental__f02ed71d"
-  ],
-  "historical_path": "stage-10/cpp",
+  "grading_status": "reported",
   "id": "terra-stage10-cpp-20261115-2usd-recovery",
   "input_policy": {
     "feedback": "visible_smoke_only",
-    "recovery_retained_prior_fixture_reads": true,
     "starter": false
   },
   "inventory_management": "preserved_snapshot",
@@ -26,17 +22,19 @@
     "evaluation": "evaluation",
     "implementation": "implementation",
     "inputs": "inputs",
-    "latest_evaluation": "evaluation/imported-5f9296aa8f1d8927"
+    "latest_evaluation": "evaluation/security-20261118T23032Z-rcematrix"
   },
+  "performance_scope": "provisional",
   "persisted_run_id": false,
   "protocol": "stage10-experimental",
   "publication_version": 2,
   "raw_run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_budget_usd": "1.69790875",
   "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
-  "run_id_provenance": "Recorded historical raw run ID; original inputs and reports are unchanged",
   "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-stage10-cpp-20261115-2usd-recovery",
   "stage": 10,
+  "started_unix": 1794763597.1601098,
   "started_utc": "2026-11-15T17-26-37Z",
   "status": "partially_graded",
-  "wall_seconds": 7200
+  "wall_seconds": 7100
 }

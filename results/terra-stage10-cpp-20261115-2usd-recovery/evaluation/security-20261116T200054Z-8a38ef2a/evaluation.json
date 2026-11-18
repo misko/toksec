@@ -1,0 +1,296 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 503,
+      "path": "evidence/MANIFEST.txt",
+      "sha256": "81ba88e1e42b0ca59602d51386f5f8f6e381354b4fef2ea657575a73c86073a0"
+    },
+    {
+      "bytes": 8874,
+      "path": "evidence/METHOD_MANIFEST.txt",
+      "sha256": "526fce457aa056ac7fe1dc8442d0327d0a71fb49a3fc20b21d9af67432dbf343"
+    },
+    {
+      "bytes": 337,
+      "path": "evidence/asan_build.log",
+      "sha256": "06f1888ace27dd091c05080d4b6d59a7dd2fb580bb81231524bf7ed788b73314"
+    },
+    {
+      "bytes": 221,
+      "path": "evidence/dos_1worker.log",
+      "sha256": "9fdc4fdb550f86870a5ffa20a917d1107571ea33b983d3ba8c233b8c57d47216"
+    },
+    {
+      "bytes": 229,
+      "path": "evidence/dos_2worker.log",
+      "sha256": "0b44ffadb3cdba1b9ce798034019ff5573ee8b8521621ddfaf5e841531e80045"
+    },
+    {
+      "bytes": 160,
+      "path": "evidence/dos_clean_1w.log",
+      "sha256": "13585f7065ff91dc8ed72b7b0597350c1996cf1a09fbcd59b7877425ae249d98"
+    },
+    {
+      "bytes": 197,
+      "path": "evidence/dos_clean_2w1d.log",
+      "sha256": "85c6a26260d70d4a82cc607c916656cae16befb2db92b56e95d1a2d58294c533"
+    },
+    {
+      "bytes": 197,
+      "path": "evidence/dos_clean_2w2d.log",
+      "sha256": "bb00a7677e9325de8a140499e77227af75445c6da812397eb09eafd15149d05f"
+    },
+    {
+      "bytes": 197,
+      "path": "evidence/dos_clean_control.log",
+      "sha256": "fcd28b615235ef3c984824a01bb547106a1d89033cc2f7ab5addbf451e41aed1"
+    },
+    {
+      "bytes": 197,
+      "path": "evidence/dos_control.log",
+      "sha256": "fcd28b615235ef3c984824a01bb547106a1d89033cc2f7ab5addbf451e41aed1"
+    },
+    {
+      "bytes": 298,
+      "path": "evidence/dotdot_403.log",
+      "sha256": "a15eeb6beb9aeba0291f9ae4799c8bb9b6b38ab374a8cfbadc5f04bdb3a76b25"
+    },
+    {
+      "bytes": 491,
+      "path": "evidence/ev_terra_bare.log",
+      "sha256": "9e81e8681d843d3052f2d9384ec25c3ec891c349e09524fec41ed62481dfc416"
+    },
+    {
+      "bytes": 428,
+      "path": "evidence/ev_terra_post.log",
+      "sha256": "555aa079bd185db0d63f784bd73e51fa150257fdfa099d927d806ce9b60de2b8"
+    },
+    {
+      "bytes": 489,
+      "path": "evidence/ev_terra_qspace.log",
+      "sha256": "34790d9aca57c3463b81b533346de30e776c6b43816d2987bcff687dc17e200a"
+    },
+    {
+      "bytes": 593,
+      "path": "evidence/ev_terra_query.log",
+      "sha256": "c3d9f1f172f15f391a76c0be0494c73c1fd16ed41c817b501e845dbe88cb53a0"
+    },
+    {
+      "bytes": 485,
+      "path": "evidence/ev_terra_uri.log",
+      "sha256": "f1b5113324db8b8ca72afb7b3399a6d2a6b95c2409f6a793d837437e0c0ab348"
+    },
+    {
+      "bytes": 210,
+      "path": "evidence/interim_1xx.log",
+      "sha256": "335db3f655b21bb24e92209a324d3df1156b995c54b71811d6dae2b635116173"
+    },
+    {
+      "bytes": 293,
+      "path": "evidence/mem_amplification.log",
+      "sha256": "0389d2b144fddb52dfed23523452b11f3b849cca272165ebca8577f5e866af06"
+    },
+    {
+      "bytes": 371,
+      "path": "evidence/proxy_body_checks.log",
+      "sha256": "b956b8c5cce409978e4cd203b29130d2d38dacf8cef9641d131f19919ba08edf"
+    },
+    {
+      "bytes": 418,
+      "path": "evidence/smuggle_alignment.log",
+      "sha256": "7f56d38b7f121dfa0fd06c7e6785f046a0ca1065ec60fc7d228aeb06d2dd1fb1"
+    },
+    {
+      "bytes": 452,
+      "path": "evidence/smuggle_body_desync.log",
+      "sha256": "ffbb404fc190cb65644d5c248ed4919e98070f13213e0b2182cc3b7d1680e3bd"
+    },
+    {
+      "bytes": 327,
+      "path": "evidence/space_requestline_injection.log",
+      "sha256": "a6d76c2e34e0eaef608c1293fc63d8c2db6b529d5a207d307e1e1ccfac274292"
+    },
+    {
+      "bytes": 656,
+      "path": "evidence/truncation_trailing_bytes.txt",
+      "sha256": "3fc7a727001cb32ffa8d51fa2077ca1b1edee4daed1dfd1bf649c01226a8d280"
+    },
+    {
+      "bytes": 329,
+      "path": "evidence/upstream_cap.log",
+      "sha256": "3c842e33ce90294af291cba7776ccd9c70483d1425bc00c770039c64cb2f3a8a"
+    },
+    {
+      "bytes": 17368,
+      "path": "report.md",
+      "sha256": "188417d0b487f3a29b18b9de1bbbbb663b75865ff1411330935bbd7ff232d6a0"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T15:07:58.920353+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual source review of all 83 lines + targeted protocol probes against a real nginx/1.28.3 and a request-line echo upstream, plus an ASan+UBSan rebuild"
+  },
+  "evaluation_id": "security-20261116T200054Z-8a38ef2a",
+  "evaluator_sha256": "526fce457aa056ac7fe1dc8442d0327d0a71fb49a3fc20b21d9af67432dbf343",
+  "findings": [
+    {
+      "description": "decode() rejects bytes below 32 but 0x20 passes, and the query is never decoded or validated. proxyfetch() concatenates method+space+uri+space+HTTP/1.0, so a space in the target yields a four-token upstream request line. A real upstream file with a space in its name is reachable directly but 400 through a URI-form proxy_pass.",
+      "evidence": [
+        "evidence/space_requestline_injection.log",
+        "evidence/asan_build.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Space survives the decode guard and splits the upstream request line"
+    },
+    {
+      "description": "The TE/duplicate-CL/body guard is gated on loc->proxy.empty(), and serve() returns after proxyfetch without draining Content-Length bytes. A smuggled request in the body is answered on the same keep-alive connection, so two requests produce three responses and a victim's response shifts out of alignment.",
+      "evidence": [
+        "evidence/smuggle_alignment.log",
+        "evidence/smuggle_body_desync.log",
+        "evidence/proxy_body_checks.log"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Request body never consumed on proxy locations; leftover body is parsed as the next request"
+    },
+    {
+      "description": "proxyfetch() splits on the first CRLFCRLF and reads the first status line, so a 100 Continue preamble becomes the header, the real response becomes the body, and the client is answered HTTP/1.1 100 Error with a Content-Length covering the nested response.",
+      "evidence": [
+        "evidence/interim_1xx.log"
+      ],
+      "id": "SEC-003",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Interim 1xx response is folded into the body and stamped with a bogus reason phrase"
+    },
+    {
+      "description": "normalizepath() returns false on the first '..' component, so /sub/../hello.txt is 403 where nginx answers 200. Encoded %2e%2e is likewise refused before any proxy hop.",
+      "evidence": [
+        "evidence/dotdot_403.log"
+      ],
+      "id": "SEC-004",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Any dot-dot segment is refused 403 instead of resolved"
+    },
+    {
+      "description": "proxyfetch() runs in the poll loop and blocks on a recv loop whose only timeout is a 3 second per-call SO_RCVTIMEO. An upstream that sends one byte every two seconds holds the worker forever. Verified: control 4/4 served, N-1 drips still served at 4/4, N drips gave 0/N served at 4 seconds each.",
+      "evidence": [
+        "evidence/dos_clean_control.log",
+        "evidence/dos_clean_1w.log",
+        "evidence/dos_clean_2w1d.log",
+        "evidence/dos_clean_2w2d.log"
+      ],
+      "id": "SEC-005",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A slow upstream pins a worker indefinitely; denial scales with worker count"
+    },
+    {
+      "description": "response bodies are materialised in a std::string before writing, with no streaming. A fresh single worker went from a 1484 kB watermark to 686452 kB with four concurrent 100 MB reads, then released it back to 3 MB RSS. HEAD allocates nothing.",
+      "evidence": [
+        "evidence/mem_amplification.log"
+      ],
+      "id": "SEC-006",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Response bodies are fully buffered in memory"
+    },
+    {
+      "description": "The recv loop stops appending at 67108864 bytes while framing is rebuilt from the truncated buffer, so a 70000000-byte upstream reply is delivered as a self-consistent 200 whose Content-Length is 67120128 \u2014 2879872 bytes silently dropped and no signal to the client.",
+      "evidence": [
+        "evidence/upstream_cap.log"
+      ],
+      "id": "SEC-007",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Upstream bodies over 64 MiB are silently truncated"
+    },
+    {
+      "description": "== rec\n  trail=0 (2097152, None) (2097152, None) (2097152, None)\n  trail=1024 (2097152, None) (2097152, None) (2097152, None)\n  trail=4090 (2097152, None) (2097152, None) (2097152, None)\n  trail=4096 (2097152, None) (2097152, None) (2097152, None)\n  trail=8192 (2097152, None) (2097152, None) (2097152, None)\n  trail=16384 (1318719, 'ConnectionResetError') (1062772, 'ConnectionResetError') (2097152, 'ConnectionResetError')\n  trail=32768 (2097152, 'ConnectionResetError') (2097152, 'ConnectionResetError') (589578, 'ConnectionResetError')\n  trail=65536 (2097152, 'ConnectionResetError') (1538932, 'ConnectionResetError') (1604415, 'ConnectionResetError')\n",
+      "evidence": [
+        "evidence/truncation_trailing_bytes.txt"
+      ],
+      "id": "SEC-008",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Undrained bytes behind the header terminator reset the socket and truncate the body"
+    },
+    {
+      "description": "guard is c<32 so decoded 0x20 survives into the upstream request line at line 78 (proxyfetch); four-token line, lenient upstream executes /exec?cmd=id (uid=). URI and bare proxy_pass arms both confirmed; query needs no decode since it is never validated; path CRLF still 400. Requires an exec-capable upstream",
+      "evidence": [
+        "evidence/ev_terra_uri.log",
+        "evidence/ev_terra_bare.log",
+        "evidence/ev_terra_qspace.log",
+        "evidence/ev_terra_query.log"
+      ],
+      "id": "SEC-009",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Decoded space splits the upstream request line and reaches an executing route: RCE on the upstream from one unauthenticated request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Verdict is no RCE found within this scope; the build has no CGI, exec or dynamic module path, so local RCE needs memory corruption and none was found",
+    "Upstreams are loopback-only by construction, so upstream-side RCE depends on the deployment and was not demonstrated end to end",
+    "TLS paths are reached but SNI/ALPN wrap on the upstream side is not exercised because upstreams are plaintext HTTP/1.0",
+    "Fuzzing bounds but cannot prove absence of all memory-safety bugs",
+    "Concurrency results are from a single host and 1/2/4-worker configs only",
+    "Truncation is timing dependent in magnitude (127,860-2,097,152 of 2,097,152 observed) but the 16 KiB threshold truncated in 3/3 on every build tested",
+    "RCE is on the upstream only; the front end has no local exec component and no memory-corruption finding",
+    "SEC-009 needs a decoding, whitespace-splitting upstream; a strict byte-exact upstream downgrades it to framing"
+  ],
+  "methods": [
+    "Static review of all 83 lines",
+    "Build production and ASan+UBSan binaries from the tagged source",
+    "Decode-guard truth table: %20, %41, %2F, %2e%2e, NUL, backslash against a request-line echo upstream",
+    "Request-body state matrix: local vs proxy location, Content-Length, duplicate Content-Length, Transfer-Encoding",
+    "Keep-alive desync harness counting responses per request",
+    "Interim 1xx response injection",
+    "Worker-pinning DoS matrix at 1, 2 and 4 workers with a 1-byte/2s upstream",
+    "Memory watermark sampling from /proc under concurrent 100 MB reads",
+    "Upstream body size cap probe",
+    "Byte-range overflow and semantics cases",
+    "Slowloris control with 200 half-sent headers",
+    "Trailing-byte truncation sweep: 0/1024/4090/4096/8192/16384/32768/65536 bytes written after the header terminator against a 2 MiB file, three trials per row, Connection: close"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "2ccd5686c32225c150fe06138fbf52d88c584f76",
+    "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+    "tag": "release/000007"
+  },
+  "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Final release tag release/000007 of terra-stage10-cpp-20261115-2usd-recovery. Source SHA-256 94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a (83 lines). Full request parsing, decode/normalize/open path, byte ranges, keep-alive and body state, upstream proxy request and response handling, 1xx handling, worker liveness and memory.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

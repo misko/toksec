@@ -1,11 +1,11 @@
-# Stage 5 / cpp
+# Stage 5 — cpp
 
-Run: `level-5-a4ba853a82fe`. Status: **running**.
+Run: `level-5-a4ba853a82fe`. Status: **partially_graded**.
 
-The submitted source and Git history are in [implementation/](implementation/).
-Original reports and figures are in [evaluation/](evaluation/).
-Instructions and accounting are in `inputs/` and `accounting/`.
+Independent grading: **reported**. Published source is not proof of API acceptance.
 
-This historical publication moved from `stage-05/cpp`. Its reports, figures, inputs and implementation are unchanged. No server tests were rerun and no missing framework commit was inferred.
-
-Original publication metadata is in [provenance/run-id-migration/original/](provenance/run-id-migration/original/). The [checksum mapping](provenance/run-id-migration.json) accounts for every original file. Historical evaluation run IDs are retained as aliases in `run.json`.
+The frozen submission and Git bundle are in [implementation/](implementation/).
+Parent reports and figures are in [evaluation/](evaluation/security-20261118T23031Z-rcematrix/report.md).
+Supplied instructions are in `inputs/`; spending evidence is in `accounting/`.
+Migration preserved the original evidence without running new tests.
+See `run.json` for protocol identity and `migration.json` for byte-preservation mappings.

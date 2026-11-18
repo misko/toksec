@@ -1,0 +1,19 @@
+# RCE-shaped request smuggling: unconsumed body becomes the next request
+# proxy locations accept Content-Length; serve() never drains the body (line 80)
+RESPONSES: 2 | bytes: 284
+HTTP/1.1 200 OK
+Content-Length: 13
+Content-Type: text/plain
+Server: nginx/1.28.3
+Date: Mon, 16 Nov 2026 19:42:35 GMT
+Connection: keep-alive
+
+NGINX-SAW /x
+HTTP/1.1 200 OK
+Content-Length: 11
+Content-Type: text/plain
+ETag: "1794855996-11"
+Connection: keep-alive
+
+HELLO-ROOT
+

@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1688,
+      "path": "evidence/ev_r16_F_a4ba853a_ce_clientstream.txt",
+      "sha256": "b00270662cf68d6da0de8f2beafbd13b3f64fc288afe0670c2363d60fed80e4a"
+    },
+    {
+      "bytes": 32,
+      "path": "evidence/ev_r16_F_a4ba853a_ce_summary.txt",
+      "sha256": "17d09ae9590f29ff176b9b8819db26a947acf8bf73439db84b1451be02b47528"
+    },
+    {
+      "bytes": 1648,
+      "path": "report.md",
+      "sha256": "5c55d0e696898007eddc1358916838de64da6a56fbddc785548d2f0abdfe4658"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T11:15:18.459997+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111518Z-dfc94a41",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The store copies response headers verbatim, so an upstream gzip body stored under |* arrives with Content-Encoding: gzip at a victim that sent no Accept-Encoding. Same on all three wildcard builds; 6baf167b never does it because it stores only exact keys. Cosmetic-to-breaking depending on the client.",
+      "evidence": [
+        "evidence/ev_r16_F_a4ba853a_ce_clientstream.txt",
+        "evidence/ev_r16_F_a4ba853a_ce_summary.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A wildcard entry carrying Content-Encoding: gzip is served to clients that never advertised gzip"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

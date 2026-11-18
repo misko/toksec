@@ -7,8 +7,7 @@
 
 ---
 
-## 1. How the audit progressed, from start to finish
-
+## Audit narrative
 ### 1.1 Stages 1 and 2 (earlier work, context)
 
 The session began with the stage-1 and stage-2 C++ servers (`results/stage-01/cpp/`, `results/stage-02/cpp/`). Both are minimal static-file servers. The full audit of those targets:
@@ -77,24 +76,21 @@ From that primitive, `s5smuggle.py` and `s5final.py` iterated on the framing unt
 
 ---
 
-## 2. Confirmed findings, stage 5
+## Findings table
+| ID | Title | Class | Remote | Source | Severity | Status | Evidence |
+|---|---|---|---|---|---|---|---|
+| SEC-001 | RCE via smuggling into an upstream `/exec` endpoint | RCE (upstream) | yes | chain of #2 | critical | confirmed | `evidence/rce-demo.txt`, `evidence/rce-file-read.txt`, `evidence/smuggle-poison.txt`, `evidence/crlf-injection.txt`, `evidence/s5rce_file_read.py` |
+| SEC-002 | CRLF injection into upstream request line | request smuggling primitive | yes | `s5.cpp:48`, `s5.cpp:77` | high | confirmed | `evidence/crlf-injection.txt` |
+| SEC-003 | Cross-client response poisoning via pooled upstream socket | smuggling consequence | yes | chain of SEC-001 | high | confirmed | `evidence/smuggle-poison.txt`, `evidence/method-host-bypass.txt` |
+| SEC-004 | Method and Host allowlist bypass through smuggling | smuggling consequence | yes | chain of SEC-001 | high | confirmed | `evidence/method-host-bypass.txt` |
+| SEC-005 | Half-closed stalled reader → 100% CPU spin | DoS | yes | `s5.cpp:63` | medium | confirmed | `evidence/dos-spin.txt` |
+| SEC-006 | Cache-key collision via `\|` in decoded path | cache poisoning | yes | medium | confirmed | `evidence/cache-key-collision.txt` |
+| SEC-007 | HEAD/204/304 path bypasses upstream body-length bound; signed CL can go negative | spec/robustness bug | yes | `s5.cpp:78` | low | confirmed | `evidence/head-cl-bypass.txt` |
+| SEC-008 | SIGHUP + lengthened `proxy_prefix` while upstream pending → `std::out_of_range` abort | crash (local) | no | `s5.cpp:77` | low | confirmed | `evidence/sighup-crash.txt` |
+| SEC-009 | Pre-body upstream pooling desync (upstream answers before POST body is fully sent → fd pooled with unsent bytes) | desync primitive | yes | `s5.cpp:61`, `s5.cpp:77` | low | confirmed | `evidence/prebody-desync.txt` |
+| SEC-010 | Undrained bytes behind the header terminator reset the socket and truncate the body | framing | yes | line 81 (`find`) | low | confirmed | `evidence/truncation_trailing_bytes.txt` |
 
-| # | Finding | Class | Remote | Key source |
-|---|---------|-------|--------|------------|
-| 1 | Half-closed stalled reader → 100% CPU spin | DoS | yes | `s5.cpp:63` |
-| 2 | CRLF injection into upstream request line | request smuggling primitive | yes | `s5.cpp:48`, `s5.cpp:77` |
-| 3 | **RCE via smuggling into an upstream `/exec` endpoint** | RCE (upstream) | yes | chain of #2 |
-| 4 | HEAD/204/304 path bypasses upstream body-length bound; signed CL can go negative | spec/robustness bug | yes | `s5.cpp:78` |
-| 5 | Pre-body upstream pooling desync (upstream answers before POST body is fully sent → fd pooled with unsent bytes) | desync primitive | yes | `s5.cpp:61`, `s5.cpp:77` |
-| 6 | SIGHUP + lengthened `proxy_prefix` while upstream pending → `std::out_of_range` abort | crash (local) | no | `s5.cpp:77` |
-| 7 | Cache-key collision via `|` in decoded path | cache poisoning | yes | `s5.cpp:72`, `s5.cpp:73` |
-
-Stages 1–2 additionally carry the same DoS as #1; no memory-safety or RCE bugs were found there.
-
----
-
-## 3. The RCE exploit
-
+## The exploit
 ### 3.1 Classification
 
 The RCE is on the **upstream/backend host**, not a memory-corruption RCE inside the proxy process. The proxy is never corrupted — this is the classic request-smuggling-to-RCE chain: an unauthenticated attacker makes the proxy issue an attacker-controlled second upstream request, and that request reaches a code-executing endpoint (e.g. CGI, debug route, internal admin) that the proxy's method and Host rules were supposed to keep it away from.
@@ -150,7 +146,7 @@ Linux gauss 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 
  3: GET /victim HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive
 ```
 
-The shell command ran on the upstream host and its output was returned to the victim's connection. Re-run command: `timeout 20 python3 /tmp/toksec-hunt/s5rce_demo.py` (kills its own processes on exit; no special environment needed).
+The shell command ran on the upstream host and its output was returned to the victim's connection. Re-run command: `timeout 20 python3 evaluation/security-2026-11-15-r2/evidence/s5rce_demo.py` (kills its own processes on exit; no special environment needed). The demo hardcodes `ROOT=/tmp/toksec-hunt`, so copy `s5.cpp`, `s5o3` and `cfg5single` there, or repoint `ROOT` and the config's paths, then build `g++ -O3 -std=c++20` — the recorded binary hashes reproduce exactly.
 
 Earlier verified runs: the smuggling + response-poisoning variant (`s5final.py`) was confirmed end-to-end on both the ASan+UBSan+`_GLIBCXX_DEBUG` build (`s5ub`) and the production `-O3` build, with identical upstream request logs:
 
@@ -235,8 +231,7 @@ Host restrictions regardless of what the backend exposes.
 
 ---
 
-## 4. Other exploits and methods tried
-
+## Methods tried and ruled out
 ### 4.1 What was found and confirmed
 
 - **Half-closed stalled-reader CPU spin (stages 1, 2, 5).** One connection, one request, `shutdown(WR)`, never read: ~100% of a core indefinitely. Measured throughput collapse with 200 attacker connections. Root cause is unconditional level-triggered `EPOLLRDHUP` + `EAGAIN` busy-retry. Repro: `repro.py` (stages 1–2), equivalent probe for stage 5.
@@ -262,8 +257,30 @@ The bug was not found by fuzzing — all fuzzing was clean. It was found by read
 
 ---
 
-## 5. Recommendations for future agents
+### SEC-010 — trailing bytes behind `\r\n\r\n` reset the socket and truncate the body
 
+The header loop returns the moment `\r\n\r\n` is found (line 81 (`find`) and line 62 (`eraseconn`)) and never drains bytes the
+same `recv` already buffered behind the terminator. The socket is then closed with unread receive
+data still queued, so Linux answers the `close()` with RST rather than FIN and a response body still
+being written is cut short — while `Content-Length` has already promised the full size.
+
+Measured on the tagged build at the graded header budget (`header_bytes=8192`) against a 2 MiB file,
+three trials per row (`evidence/truncation_trailing_bytes.txt`):
+
+| trailing bytes after header | body delivered |
+|---|---|
+| 0 / 1024 / 4090 / 4096 / 8192 | 2,097,152 (clean) |
+| 16,384 | truncated, 1/3, RST |
+| 32,768 | truncated, 3/3, worst case 127,860 |
+| 65,536 | truncated, 1/3 |
+
+
+Trailing bytes after the terminator are ordinary HTTP/1.1 pipelining traffic, so a normal pipelining
+client that speculatively writes the next request hits this without unusual setup. **Low** severity:
+the clean response is correct and nothing corrupts; the failure is a silently short body whose
+`Content-Length` still claims the full length.
+
+## Recommendations
 ### 5.1 Using skills effectively
 
 1. **Source-guided probing beats blind fuzzing.** None of the confirmed exploitable bugs in this audit surfaced from the ~11,000 fuzz cases. The CRLF bug came from reading the decoder in isolation and noticing validation-before-decode, then tracing the decoded value to its sink. Budget time for reading; fuzz only after you know where to aim.
@@ -272,7 +289,7 @@ The bug was not found by fuzzing — all fuzzing was clean. It was found by read
 4. **Use the brainstorm-first discipline.** Before touching the network, enumerate every attacker-controlled sink and rank hypotheses (as in §1.3). This turned a large 84-line surface into a short ordered list and the bug was hit within the first few items.
 5. **Build differential harnesses, not just fuzzers.** The in-process harnesses (`h1`, `h2`, `h5up`) let you call the parser directly on adversarial input without a network. The live rogue-upstream harness (`s5final.py` style) lets you control the *other side* of the proxy — both are needed; neither alone found the bug.
 6. **Keep an honest classification ladder.** DoS ≠ crash ≠ request forgery ≠ response splitting ≠ RCE. Calling the smuggling "RCE" before demonstrating code execution would have been wrong; demonstrating `/exec` output made the claim exact. State which process executes the code.
-7. **Persist state in one findings file.** `/tmp/toksec-hunt/FINDINGS.md` was the single running log across the whole session; every later conclusion cited it. Long-running audits need one source of truth.
+7. **Persist state in one findings file.** `evaluation/security-2026-11-15-r2/evidence/FINDINGS.md` was the single running log across the whole session; every later conclusion cited it. Long-running audits need one source of truth.
 8. **Wrap every command in `timeout`.** Long-running servers and fuzzers stall the session; `timeout 10 ...` / `timeout 30 ...` on every invocation prevents hangs. (This was a hard user requirement in this session.)
 9. **Kill leftover listeners between runs.** A stale `s5o3` on the proxy port silently produced wrong demo output mid-session. Always `ss -ltnp | grep <port>` before rerunning a PoC.
 10. **Verify on the production build, not only the sanitizer build.** The chain was confirmed on `-O3` builds after ASan builds, and re-run fresh at report time. Sanitizer builds can mask or alter timing.
@@ -281,31 +298,42 @@ The bug was not found by fuzzing — all fuzzing was clean. It was found by read
 
 ---
 
-## 6. Artifact index
-
-| Path | Purpose |
-|------|---------|
-| `/tmp/toksec-hunt/s5.cpp` | Stage-5 source (SHA-identical to target release) |
-| `/tmp/toksec-hunt/s5o3` | Production `-O3` binary used for the fresh RCE run |
-| `/tmp/toksec-hunt/s5ub` | ASan+UBSan+`_GLIBCXX_DEBUG` build |
-| `/tmp/toksec-hunt/cfg5single` | Single-upstream config used in all PoCs |
-| `/tmp/toksec-hunt/s5rce_demo.py` | Full RCE PoC (starts proxy + fake upstream, self-cleaning) |
-| `evaluation/security-2026-11-15-r2/evidence/s5rce_file_read.py` | Published file-read variant of the RCE PoC (arbitrary out-of-root file read) |
-| `evaluation/security-2026-11-15-r2/evidence/rce-file-read.txt` | Captured live output of the file-read demonstration |
-| `/tmp/toksec-hunt/s5absorb.py` | Cleanest two-request smuggling form (deterministic) |
-| `/tmp/toksec-hunt/s5crlf.py` | Proves CRLF reaches the upstream request line |
-| `/tmp/toksec-hunt/s5final.py` | Full smuggling → response-poisoning PoC |
-| `/tmp/toksec-hunt/s5desync.py` | Pre-body pooling desync primitive |
-| `/tmp/toksec-hunt/s5frame.py` | HEAD/204/304 CL bound bypass probe |
-| `/tmp/toksec-hunt/FINDINGS.md` | Running audit notes (278 lines, complete session log) |
-
----
-
-## 7. Recommended fixes
-
 1. **`pathdecode()`:** re-validate after percent-decoding — reject `\r`, `\n`, space, and any byte ≤ 32 or 127 in the decoded result. This is the root fix for the smuggling primitive.
 2. **`startup()`:** use the raw (undecoded) target, or escape/re-encode the path before writing the upstream request line. Encode the proxy prefix match against the decoded path but emit the raw form.
 3. **`closeup()` pooling:** only pool when the upstream response was fully framed *and* no pipelined bytes are pending (`consumed == upin.size()` plus a check that no unsolicited bytes arrived); or drain/inspect the pooled socket before reuse.
 4. **`upprocess()` HEAD/204/304 branch:** apply `cfg.body` bound to upstream `Content-Length` even when the body is omitted.
 5. **Event loop (all stages):** drop `EPOLLRDHUP` from the interest mask while blocked in a write, or on RDHUP-while-writing close the connection, or use edge-triggered epoll with drain-until-EAGAIN.
 6. **SIGHUP:** validate the new `proxy_prefix` against in-flight request paths before swapping configs, or snapshot the config per connection.
+
+## Artifact index
+| Path | Purpose |
+|------|---------|
+| `evaluation/security-2026-11-15-r2/evidence/s5.cpp` | Stage-5 source (SHA-identical to target release) |
+| `evaluation/security-2026-11-15-r2/evidence/s5o3` | Production `-O3` binary used for the fresh RCE run |
+| `evaluation/security-2026-11-15-r2/evidence/s5ub` | ASan+UBSan+`_GLIBCXX_DEBUG` build |
+| `evaluation/security-2026-11-15-r2/evidence/cfg5single` | Single-upstream config used in all PoCs |
+| `evaluation/security-2026-11-15-r2/evidence/s5rce_demo.py` | Full RCE PoC (starts proxy + fake upstream, self-cleaning) |
+| `evaluation/security-2026-11-15-r2/evidence/s5rce_file_read.py` | Published file-read variant of the RCE PoC (arbitrary out-of-root file read) |
+| `evaluation/security-2026-11-15-r2/evidence/rce-file-read.txt` | Captured live output of the file-read demonstration |
+| `evaluation/security-2026-11-15-r2/evidence/s5absorb.py` | Cleanest two-request smuggling form (deterministic) |
+| `evaluation/security-2026-11-15-r2/evidence/s5crlf.py` | Proves CRLF reaches the upstream request line |
+| `evaluation/security-2026-11-15-r2/evidence/s5final.py` | Full smuggling → response-poisoning PoC |
+| `evaluation/security-2026-11-15-r2/evidence/s5desync.py` | Pre-body pooling desync primitive |
+| `evaluation/security-2026-11-15-r2/evidence/s5frame.py` | HEAD/204/304 CL bound bypass probe |
+| `evaluation/security-2026-11-15-r2/evidence/FINDINGS.md` | Running audit notes (278 lines, complete session log) |
+
+---
+
+| Evidence | Purpose |
+|---|---|
+| `evidence/rce-demo.txt` | evidence file for SEC-001 |
+| `evidence/rce-file-read.txt` | evidence file for SEC-001 |
+| `evidence/smuggle-poison.txt` | evidence file for SEC-001, SEC-003 |
+| `evidence/crlf-injection.txt` | evidence file for SEC-001, SEC-002 |
+| `evidence/s5rce_file_read.py` | evidence file for SEC-001 |
+| `evidence/dos-spin.txt` | evidence file for SEC-005 |
+| `evidence/cache-key-collision.txt` | evidence file for SEC-006 |
+| `evidence/head-cl-bypass.txt` | evidence file for SEC-007 |
+| `evidence/sighup-crash.txt` | evidence file for SEC-008 |
+| `evidence/prebody-desync.txt` | evidence file for SEC-009 |
+| `evidence/truncation_trailing_bytes.txt` | Trailing-byte truncation thresholds, `Connection: close`, graded spec |

@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 1349,
+      "path": "evidence/ev_r12_W_2usd_poc.log",
+      "sha256": "319e196bdfaf6c83e75a197e8c7b5f264818e9fcbb34f84e7fb0b5924491d913"
+    },
+    {
+      "bytes": 2052,
+      "path": "evidence/ev_r12_W_2usd_sem.log",
+      "sha256": "292a2e9e6c8e4c5f6f881ba393d31878b617fbd37c5f7923ff19ef448fd826cf"
+    },
+    {
+      "bytes": 1309,
+      "path": "report.md",
+      "sha256": "46e84dd0d763f936e6d92d89be73d5c039c424446ba8195be500cfcd1ebd9925"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:08:19.492041+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030819Z-37880381",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "proxyfetch ignores the client list entirely and sends HTTP/1.0 with Connection: close and no Content-Length; all five probed headers forwarded unchanged and POST is 405.",
+      "evidence": [
+        "evidence/ev_r12_W_2usd_sem.log",
+        "evidence/ev_r12_W_2usd_poc.log"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "The recovery build forwards a fixed HTTP/1.0 request with no client-controlled deletion and no body path"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "2ccd5686c32225c150fe06138fbf52d88c584f76",
+    "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+    "tag": "release/000007"
+  },
+  "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Recovery run at release/000007; negative",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}
