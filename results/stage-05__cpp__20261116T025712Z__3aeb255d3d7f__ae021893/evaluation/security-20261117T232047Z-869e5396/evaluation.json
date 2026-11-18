@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1482,
+      "path": "evidence/ev_r11_R_ae02.iso.txt",
+      "sha256": "005db196c694d8871d96f314b2d4f8fb5a61ff07fcffc2cac48d8bb680b13f96"
+    },
+    {
+      "bytes": 8105,
+      "path": "evidence/ev_r11_R_ae02.shift.txt",
+      "sha256": "9ee6d8841d0b54c7ae4f98853fe85809c90f4fbc04fefacc89aa6fa543971e35"
+    },
+    {
+      "bytes": 1912,
+      "path": "report.md",
+      "sha256": "61bcb33c916fedb2abda0c56acb40f291960a0df53e2ef8db93f1d2f51b178a2"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:20:47.988644+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T232047Z-869e5396",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The status window rejects only outside 100-599, so the `100` becomes the client's response: `HTTP/1.1 100 Error`, `Content-Length: 0`, `Connection: keep-alive` (reason phrase is the generic `Error`). The body is still re-parsed and executed 2/2, so the client receives a success-shaped head with no body and cannot distinguish it from a real one. Same precondition as the other interim findings: a proxy location and a 100-emitting upstream.",
+      "evidence": [
+        "evidence/ev_r11_R_ae02.iso.txt",
+        "evidence/ev_r11_R_ae02.shift.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "This build accepts 1xx as terminal, relays `100 Error` to the client as the whole response, and executes the body as a second request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e5b20e4a4c8a92c5166e843922fced3e2968d73d",
+    "source_sha256": "f4096e4c2c6bb6348f7a5b0722474d5836a36f82e632308b4694e1ee159fba21",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025712Z__3aeb255d3d7f__ae021893",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run ae021893, round 11 lane R: `(status>=100&&status<200)` sets `len=0` and the interim frame is relayed.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

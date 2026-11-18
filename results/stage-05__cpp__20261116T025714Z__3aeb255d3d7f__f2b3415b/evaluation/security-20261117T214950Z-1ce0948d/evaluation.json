@@ -1,0 +1,79 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 2220,
+      "path": "evidence/ev_r10_N_f2bs.ev",
+      "sha256": "dbeb7841c020863b8d8c9922d8b3ecff56eb8dc34ff15af7d468e5387fa224b6"
+    },
+    {
+      "bytes": 1895,
+      "path": "report.md",
+      "sha256": "f0caba0549834c6483d46eb4fc62fb810905877562b3e4867606e7c62c0102e2"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:49:50.399163+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; distinct per-file marker content so the opened file is unambiguous, service-side slice arithmetic recomputed by hand"
+  },
+  "evaluation_id": "security-20261117T214950Z-1ce0948d",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The only build where the slice is computed correctly and then discarded by the component guard. Shows the defect is the *walk*, not the subtraction, and that the two are independent.",
+      "evidence": [
+        "evidence/ev_r10_N_f2bs.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Negative: the slice does produce `../x.txt` but `openpath` rejects the `..` component"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Filesystem read only; all RCE remains on the upstream host",
+    "Alias must be configured; several builds additionally need a slashless location"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Plain alias control and root control first on the same cold server",
+    "Marker text proves which file opened, never the status code",
+    "Every payload re-run 3x"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 10 lane N: alias slice against a strict component walk.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

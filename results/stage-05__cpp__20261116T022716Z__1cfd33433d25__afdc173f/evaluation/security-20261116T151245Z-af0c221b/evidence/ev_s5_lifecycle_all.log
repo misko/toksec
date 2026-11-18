@@ -1,0 +1,54 @@
+Stage-05 lifecycle audit — SIGTERM drain and SIGHUP reload
+Harness: local socket upstream, upstream delay as noted, one client request issued,
+SIGTERM delivered at t+0.3 s. Every command wrapped in `timeout`.
+Spec: stages/capabilities/operations.md:6-7
+  "On SIGHUP reread the entire configuration atomically. An invalid reload retains the
+   previous configuration. ... On SIGTERM stop accepting new connections, finish in-flight
+   responses up to drain_timeout_ms, then exit."
+=====================================================================
+
+A. DRAIN, upstream delay 5.0 s, drain_timeout_ms 2000
+   build     body_delivered  client_closed  master
+   e1a28e35  0/10            +2.01s         exited +2.11s      deadline honoured, body lost
+   afdc173f  0/10            +2.01s         exited +2.11s      deadline honoured, body lost
+   f2b3415b  0/10            +2.01s         exited +2.11s      deadline honoured, body lost
+   6baf167b  0/10            NEVER          NEVER_EXITED (also at 30 s)  *** hard hang
+   ae021893  0/10            NEVER          NEVER_EXITED (also at 30 s)  *** hard hang
+   Reproduced 3/3 for 6baf167b and ae021893, 2/2 for the other three.
+
+B. IDLE SERVER, drain_timeout_ms 500, observation 30 s
+   6baf167b  NEVER_EXITED after 30.0 s
+   ae021893  NEVER_EXITED after 30.0 s
+   e1a28e35  exited +0.50 s  (correct)
+   So the hang does not need traffic at all.
+
+C. WHY THE HANG — thread parking at the exit path (6baf167b)
+   `worker()` is `for(;;)` with no exit condition:
+     line 102  static void worker(){UpConn pool;for(;;){Task task;{unique_lock<mutex>g(qm);
+               qcv.wait(g,[]{return !queuework.empty();});...}}
+   the pool is started once, detached:
+     line 110  ...i<workers...i++)thread(worker).detach()
+   The main loop breaks correctly on the deadline:
+     line 110  }if(draining&&(clients.empty()||Clock::now()>=drainend))break
+   but process exit then has to tear down the live threads, which are parked in
+   `futex_do_wait` inside the condition-variable wait and are never signalled.
+   /proc observation 2 s after SIGTERM (ev_s5_hang_threads.log): 33 threads, every one in
+   state S with wchan futex_do_wait, main thread included; listener fd already closed so the
+   broker really did reach its exit path.
+
+D. THE MEASURED SOCIAL COST (6baf167b, 5 s upstream delay, drain 1000 ms)
+   at +2.5 s: master alive, fds 7, 2 sockets, 1 upstream accept, client path OPEN
+   client read: TimeoutError at +32.6 s — no EOF, no bytes, ever
+   So a stopped-but-hanging instance holds the client socket and the upstream socket open
+   indefinitely while giving the client no signal at all.
+
+E. RELOAD (SIGHUP) — correctness baseline is good
+   e1a28e35 / 6baf167b / afdc173f / ae021893 / f2b3415b (cache on for f2b3415b):
+     before=ALPHA after=BETA reloaded=YES master_alive=True
+   All five switch the root on SIGHUP while the master survives, satisfying
+   operations.md:6.  No reload defect found on stage-05.
+
+F. FILES THAT MUST BE PRESENT (so a replay with a short config starts)
+   All keys are mandatory (INTERFACE.md: "All keys listed in the stage configuration are
+   required"); additionally host_root, alias and redirect must all be present and resolvable,
+   and f2b3415b requires cache_ttl_ms/cache_bytes non-zero and an exact key set.

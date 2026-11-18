@@ -3,7 +3,7 @@
   "budget_usd": "4",
   "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
   "framework": "19e7860e3980ab51d8ac42533bfa84ef391cfb72dbff0e806877cc7bdf559f3c",
-  "grading_status": "pending",
+  "grading_status": "reported",
   "id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
   "input_policy": {
     "feedback": "visible_smoke_only",
@@ -20,7 +20,7 @@
     "evaluation": "evaluation",
     "implementation": "implementation",
     "inputs": "inputs",
-    "latest_evaluation": "evaluation/imported-06e2a550788333f8"
+    "latest_evaluation": "evaluation/security-20261118T23014Z-rcematrix"
   },
   "persisted_run_id": true,
   "protocol": "toksec-3aeb255d3d7f",

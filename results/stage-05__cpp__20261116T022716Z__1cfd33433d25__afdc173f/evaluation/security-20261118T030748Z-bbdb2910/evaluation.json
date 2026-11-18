@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1727,
+      "path": "evidence/ev_r12_W_afdc173f_rng.log",
+      "sha256": "3105a746be1e0381d98293f887ba8907c0cd89691560f82d781996635ebff51a"
+    },
+    {
+      "bytes": 2444,
+      "path": "evidence/ev_r12_W_afdc173f_sem.log",
+      "sha256": "6fe0346e81101ab43bf19f0b4a162b707bc64b5d749a41db7a75579932a594cf"
+    },
+    {
+      "bytes": 1232,
+      "path": "report.md",
+      "sha256": "bbf9d79a1c06e56158db9470895516d70b3499c464deb7b4bbe2768a167f201f"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T03:07:48.648857+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030748Z-bbdb2910",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Client-controlled deletion over the union list with an unconditional re-add; same observable 304/206 to 200 changes as the other client-driven builds.",
+      "evidence": [
+        "evidence/ev_r12_W_afdc173f_sem.log",
+        "evidence/ev_r12_W_afdc173f_rng.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "All five client-nominated headers are deletable; framing re-added unconditionally"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run afdc173f; proxy location",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

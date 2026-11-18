@@ -1,0 +1,241 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 792,
+      "path": "evidence/ev_1xx_1cfd33433d25__afdc173f.log",
+      "sha256": "9fae415eb5bc32624fe09afa2deb1e997b276527d998ae8994b18762aa09ab11"
+    },
+    {
+      "bytes": 327,
+      "path": "evidence/ev_cache_rce_afdc173f.log",
+      "sha256": "19142334533bd4b4d3c9e277d5a36df36107875fbdd4efdbaa71b819dfa7ef6b"
+    },
+    {
+      "bytes": 304,
+      "path": "evidence/ev_expect_1cfd33433d25__afdc173f.log",
+      "sha256": "d629a6c2495cdee8da1d8dfcb7cbb8446b4496fc696732601a5a65d7ca1bcc64"
+    },
+    {
+      "bytes": 1847,
+      "path": "evidence/ev_qkv_1cfd33433d25__afdc173f.log",
+      "sha256": "e99a58bcab969f5068ae1d08665e0231532120941ce59d44f3f1320fe70124f8"
+    },
+    {
+      "bytes": 508,
+      "path": "evidence/ev_s5_hang_threads.log",
+      "sha256": "778630f0967b5b0f3176ed59369a76c83a4c05c3be201ccd17362566b658417c"
+    },
+    {
+      "bytes": 3311,
+      "path": "evidence/ev_s5_lifecycle_all.log",
+      "sha256": "d698c4dd05e43dee1895a318fef81f59147f3a7a055d4916813769079d77399a"
+    },
+    {
+      "bytes": 973,
+      "path": "evidence/ev_space_afdc173f.log",
+      "sha256": "1a64491fd5f245390c8e395bef8c5de0a68ba391c96f8c5eecd65913e89bff9d"
+    },
+    {
+      "bytes": 4103,
+      "path": "evidence/ev_techain_all2.log",
+      "sha256": "f65985f81b03fa8610851ab67cd34cd61ae82b5c81cbf703ef37ef197d99ee28"
+    },
+    {
+      "bytes": 322,
+      "path": "evidence/isolation_probe.log",
+      "sha256": "82f85396e076f9c8c99f3b5caff37a5afb367c7f0e181f5910e67486bdbb2bba"
+    },
+    {
+      "bytes": 2640,
+      "path": "evidence/rce_probe.log",
+      "sha256": "30d7f8a6df0f6bc7569f50e26592e15cae954b025e83752e1f23d1f63e8b5edd"
+    },
+    {
+      "bytes": 2636,
+      "path": "evidence/rce_probe_prod.log",
+      "sha256": "f9f56f0dcb1922c726bb233d0a0dd7aa17559ae113a11faeab07392b606ddd95"
+    },
+    {
+      "bytes": 739,
+      "path": "evidence/smuggle_probe.log",
+      "sha256": "f20477c6f212cf5217f193b09b66e75fcbd1714a3a2a8f50f7a73af3486611fc"
+    },
+    {
+      "bytes": 260,
+      "path": "evidence/split_negative.log",
+      "sha256": "e482ea573b3769a271c8bc8ed91a667b0f979ff6f75aff898c28dfaea5e339ab"
+    },
+    {
+      "bytes": 710,
+      "path": "evidence/truncation_trailing_bytes.txt",
+      "sha256": "a49122dcfbfc5d456ff53638ae37877ae01c1b01c2fdedc1be561f90e8a46a79"
+    },
+    {
+      "bytes": 1786,
+      "path": "evidence/upstream_malformed.log",
+      "sha256": "cac79e9c50eea385fb1e1144c2fde73ff81db6439b5555b4878f5e75453af6cb"
+    },
+    {
+      "bytes": 22192,
+      "path": "report.md",
+      "sha256": "f307b1ae628ae356c7bb8253cd6d9565b9328f301f0cc9cc3959cf319ffdff64"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T15:16:45.432039+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual source review + targeted probes + fuzzing under ASan/UBSan/_GLIBCXX_DEBUG"
+  },
+  "evaluation_id": "security-20261116T151245Z-af0c221b",
+  "evaluator_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+  "findings": [
+    {
+      "description": "`reason()` (\u00a7 status-phrase table) has no `case 204`, so a proxied 204 No Content from an upstream is re-emitted as `HTTP/1.1 204 Error` because the switch falls through to `default:return \"Error\"`. Status code and framing stay correct (no body is sent for 204, Content-Length omitted), so this is cosmetic and every client behaves; only the reason phrase is wrong. Same defect family as the stage-10 `206 Error` case: the table is maintained by hand and a status the proxy can forward was never added to it. Any upstream-returned status absent from the table inherits the default phrase.",
+      "evidence": [
+        "evidence/upstream_malformed.log"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Missing 204 in the status-phrase table emits `204 Error`"
+    },
+    {
+      "description": "== s-stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f\n  trail=0 (2097152, None) (2097152, None) (2097152, None)\n  trail=1024 (2097152, None) (2097152, None) (2097152, None)\n  trail=4090 (2097152, None) (2097152, None) (2097152, None)\n  trail=4096 (2097152, None) (2097152, None) (2097152, None)\n  trail=8192 (2097152, None) (2097152, None) (2097152, None)\n  trail=16384 (2097152, 'ConnectionResetError') (2080575, 'ConnectionResetError') (2032959, 'ConnectionResetError')\n  trail=32768 (1300852, 'ConnectionResetError') (2097152, 'ConnectionResetError') (1652031, 'ConnectionResetError')\n  trail=65536 (1586548, 'ConnectionResetError') (2080575, 'ConnectionResetError') (127860, 'ConnectionResetError')\n",
+      "evidence": [
+        "evidence/truncation_trailing_bytes.txt"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Undrained bytes behind the header terminator reset the socket and truncate the body"
+    },
+    {
+      "description": "A decoded 0x20 in the proxy path passes the c<32 guard and produces a four-token upstream request line; a whitespace-splitting upstream executes the smuggled query.",
+      "evidence": [
+        "evidence/ev_space_afdc173f.log"
+      ],
+      "id": "SEC-003",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Space in the path defeats the `c<32` guard and splits the upstream request line"
+    },
+    {
+      "description": "query sliced from raw target at line 56 before decoding; path guard c<32/127 never applies; %0d%0a in query splits upstream line and execs /exec?cmd=id (uid= returned); bare-LF equivalent; path CRLF control still 400",
+      "evidence": [
+        "evidence/ev_qkv_1cfd33433d25__afdc173f.log"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Query string is forwarded undecoded and unvalidated, so `%0d%0a` in the query splits the upstream request line where the path guard would reject it"
+    },
+    {
+      "description": "same bodyless treatment, plus the header block is rebuilt after the body so the relayed header order is torn",
+      "evidence": [
+        "evidence/ev_1xx_1cfd33433d25__afdc173f.log"
+      ],
+      "id": "SEC-005",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "An interim (1xx) upstream response is emitted as terminal with no body, and the real response is discarded"
+    },
+    {
+      "description": "Expect is not special-cased; the stalled body trips the read deadline and yields 408; the waiting client receives no interim response",
+      "evidence": [
+        "evidence/ev_expect_1cfd33433d25__afdc173f.log"
+      ],
+      "id": "SEC-006",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "`Expect: 100-continue` is not special-cased, and the client waiting for 100 is finally answered 408"
+    },
+    {
+      "description": "SIGTERM honours drain_timeout_ms exactly but writes 0 body bytes for the in-flight proxied response, truncating any slow upstream.",
+      "evidence": [
+        "evidence/ev_s5_lifecycle_all.log",
+        "evidence/ev_s5_hang_threads.log"
+      ],
+      "id": "SEC-007",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The drain deadline truncates the in-flight proxied response at zero body bytes"
+    },
+    {
+      "description": "The request parser compares the complete Transfer-Encoding value to the literal `chunked`, so RFC-legal coding chains (`gzip, chunked` and `chunked, gzip`) are rejected with 400 before the upstream is contacted. All 8 single-token control forms forward 200 on the same build. Evidence: ev_techain_all2.log.",
+      "evidence": [
+        "evidence/ev_techain_all2.log"
+      ],
+      "id": "SEC-008",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "TE coding chain gzip, chunked rejected: whole-value comparison to chunked"
+    },
+    {
+      "description": "cache key is raw host+target+encoding; storecache accepts the smuggled 200 public,max-age=60 and cached() replays it, so one request installs the exec output for all later clients; 1 upstream hit across two identical requests, all three cache builds",
+      "evidence": [
+        "evidence/ev_cache_rce_afdc173f.log"
+      ],
+      "id": "SEC-009",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The smuggled exec response is cached under the attacker's own key, so one request installs a server-generated page served to every later client"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "RCE verdict is none found within the audited scope",
+    "Concurrent multi-thread cache/race conditions were exercised lightly",
+    "Upstream responses are fully parsed by this build; that parser was exercised here, but the upstream itself is trusted to be reachable and well-framed",
+    "Only 204 was confirmed missing from the status-phrase table; other unlisted codes were not enumerated",
+    "Truncation is timing dependent in magnitude (127,860-2,097,152 of 2,097,152 observed) but the 16 KiB threshold truncated in 3/3 on every build tested",
+    "The query-smuggling RCE needs an upstream that percent-decodes the request line and then splits it; a byte-exact upstream that never decodes sees one long token and does not split",
+    "cached RCE persistence needs the response cache enabled with a non-zero TTL"
+  ],
+  "methods": [
+    "Static source review of all 82 lines",
+    "Alias/path targeted probes (8 cases)",
+    "Stress: 30-50 rapid connect+request cycles under ASan",
+    "ASan+UBSan+_GLIBCXX_DEBUG build, all reports empty",
+    "Live malicious-upstream target probe: 9 target-encoding cases recording emitted upstream bytes",
+    "Smuggling probe with a strict upstream that parses the byte stream into request lines (6 cases)",
+    "Control-vs-vulnerable probe against a code-executing upstream: ordinary forward control plus 3 smuggling cases",
+    "Live malformed-upstream probe: 32 hand-built responses (bad status line, NUL in a value, duplicate and conflicting framing, over-long headers, 2000 headers, non-CRLF endings, truncated body, bad chunk sizes/extensions, trailer without colon, obs-fold)",
+    "Upstream-response mutation fuzzing: 4-6 seeds per build, 600-1200 iterations per seed, run against the ASan+UBSan build with the sanitizer stream checked after each batch",
+    "Upstream truncation test: declared Content-Length larger than the bytes sent, on both a close-delimited and a keep-alive request, to check for body/length desync",
+    "Trailing-byte truncation sweep: 0/1024/4090/4096/8192/16384/32768/65536 bytes written after the header terminator against a 2 MiB file, three trials per row, Connection: close"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final release tag release/000001 of stage-05 run stage-05. Source SHA-256 00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3. Full HTTP parsing, aliases, redirect, cache, upstream proxy structure.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,93 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1918,
+      "path": "evidence/ev_r12_X_ev_afdc_pipe3_execfail.txt",
+      "sha256": "d2a03fa3b28d3cc69bcdab3d7c95cba7a4488ebf753f0ebc664f8709e833a122"
+    },
+    {
+      "bytes": 1001,
+      "path": "evidence/ev_r12_X_ev_afdc_pipe_postget.txt",
+      "sha256": "5d57c46101e3d63573ff475137dd9fcbf3c461fcb7e40debad142c26a3284012"
+    },
+    {
+      "bytes": 332,
+      "path": "evidence/ev_r12_X_ev_afdc_post.txt",
+      "sha256": "0c8d6b117beadca8c9c8f0ee3ccc8484da34abae6a85c8d7446d04b823c39132"
+    },
+    {
+      "bytes": 332,
+      "path": "evidence/ev_r12_X_ev_afdc_postctl.txt",
+      "sha256": "8d2036241faa912e2d3ffe7b25810b99e673f5106e45e6fc74ef070810204809"
+    },
+    {
+      "bytes": 1434,
+      "path": "report.md",
+      "sha256": "73c5c93b7a2458f69150f37f2d65e5cfbc83f6a4bc7919f6f169fd7b32a30f2b"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T00:54:44.679023+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T005444Z-fd55cc2c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The attempt counter is loop-local, and three pipelined GETs against always-failing peers produced exactly six connections and six executions (2+2+2), never 2+1+0 or 2+3+2. No spent retry crosses a request boundary.",
+      "evidence": [
+        "evidence/ev_r12_X_ev_afdc_pipe3_execfail.txt",
+        "evidence/ev_r12_X_ev_afdc_pipe_postget.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Retry budget is per-request, so pipelining neither leaks nor grants extra attempts"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run afdc173f; three pipelined requests on one connection, always-failing peers",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

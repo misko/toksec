@@ -1,0 +1,134 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 103,
+      "path": "evidence/ev_r8_H_f2b_bound.log",
+      "sha256": "87d88311fe3059249fc02a6efe9268642caf72d83c5cb77c4b9a1d0cb4bbac11"
+    },
+    {
+      "bytes": 1436,
+      "path": "evidence/ev_r8_H_f2b_crossvhost.log",
+      "sha256": "144c5e8a932d61e9dd781418f4df91a63aede9631d9ffb1b27240f3c69514a2c"
+    },
+    {
+      "bytes": 957,
+      "path": "evidence/ev_r8_H_f2b_delay2.log",
+      "sha256": "c740559b9de3ce8e38222912f73b510c2c8cb62fa66e115ca1d57304a8cbbdfb"
+    },
+    {
+      "bytes": 1169,
+      "path": "evidence/ev_r8_H_f2b_peek.log",
+      "sha256": "ade2bd6076037269cd7debc20e64e79dbe6c389db8f8951db04c7e4220c88546"
+    },
+    {
+      "bytes": 196,
+      "path": "evidence/ev_r8_H_f2b_peekrace_hit.txt",
+      "sha256": "c688aca321dc8afa24987d4a5d3be20fa0289e7f08d53a2989edbb6abf76b31c"
+    },
+    {
+      "bytes": 1227,
+      "path": "evidence/ev_r8_H_f2b_poison2.txt",
+      "sha256": "ac7d3f06378d17f3b1661c0f00a2a927b6626fe84d89aafc2e183f5bee6bc88d"
+    },
+    {
+      "bytes": 133,
+      "path": "evidence/ev_r8_H_f2b_straybyte.txt",
+      "sha256": "705b80ccedea6e85a01f02ef8d92c615d94ac39445829d2ee0116e61847d1ebd"
+    },
+    {
+      "bytes": 4022,
+      "path": "report.md",
+      "sha256": "f19cd1474ae2a038423b90f3803403c3370eb1f0d4acebab8553d455ed35c3ab"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T20:01:54.358918+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client and strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T200154Z-53bca06e",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "startup() pops a pooled fd and treats a single recv(fd,&x,1,MSG_PEEK|MSG_DONTWAIT) returning >=0 as proof the socket is idle, then reuses it for the new request. An upstream that writes its response slowly straddles that check: the peek sees the first byte of a still-live response, the proxy still sends the new request on the same socket, and the parser reads the old response as the answer. Result is either a 502 mid-stream or a full response belonging to another client, with the peer log proving both requests were really served. Precondition: pooled upstream reuse and a slow upstream.",
+      "evidence": [
+        "evidence/ev_r8_H_f2b_poison2.txt",
+        "evidence/ev_r8_H_f2b_peekrace_hit.txt",
+        "evidence/ev_r8_H_f2b_peek.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Pool liveness is one MSG_PEEK byte, so an upstream byte arriving in the peek-to-send window makes the next client receive the previous client's response"
+    },
+    {
+      "description": "respond() increments the connection request counter and compares it against cfg.maxreq; the pool index comes from a global round-robin with no Host component, so requests for different host_root values land on the same pooled fd and share that counter. A burst on one vhost therefore ends the keep-alive of a connection another vhost believes is its own. Precondition: pooled reuse with more than one vhost.",
+      "evidence": [
+        "evidence/ev_r8_H_f2b_bound.log",
+        "evidence/ev_r8_H_f2b_crossvhost.log"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "max_requests is enforced on a per-connection counter but the pool ignores Host, so a bound reached on one vhost retires a socket another vhost is using"
+    },
+    {
+      "description": "Same window, other outcome: when only part of a header arrives, the peek succeeds but the new request's response parse starts mid-header, and responseparse fails the client with 502 rather than reuse. Precondition: pooled reuse and an upstream that dribbles bytes.",
+      "evidence": [
+        "evidence/ev_r8_H_f2b_straybyte.txt",
+        "evidence/ev_r8_H_f2b_delay2.log"
+      ],
+      "id": "SEC-003",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A stray upstream byte in the peek window turns the next request into a 502 instead of a substituted body"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "The substitution is racy; hit rate was about 10 in 30 across two clients",
+    "Needs a pooled build and two upstreams for the cross-vhost case"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request on the same config first",
+    "Drove the state axis with a raw socket client and a logging peer",
+    "Compared client bytes and the peer log"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 8 lane H: the 1-byte MSG_PEEK pool liveness check and the pooled/round-robin upstream choice.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

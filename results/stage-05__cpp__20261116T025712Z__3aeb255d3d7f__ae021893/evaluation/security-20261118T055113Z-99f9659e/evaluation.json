@@ -1,0 +1,119 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1508,
+      "path": "evidence/ev_r13_A_61cc738c_auth_forbid.log",
+      "sha256": "db3a6d48e159ebaf2f99fc93a304ccf8c6d4e7634ba1f7a12db2ac107a847b28"
+    },
+    {
+      "bytes": 1530,
+      "path": "evidence/ev_r13_A_61cc738c_auth_plain.log",
+      "sha256": "3233f738021542694fc51801ec4be7cde50fc7b3322f646b13cd8a8d6b9dcc57"
+    },
+    {
+      "bytes": 2125,
+      "path": "evidence/ev_r13_A_61cc738c_auth_split.log",
+      "sha256": "c91f1f84c626a67fbe5a1e55e1a08b93cfc07f2c77c4b2e172c6ca027c637d16"
+    },
+    {
+      "bytes": 1399,
+      "path": "evidence/ev_r13_A_61cc738c_expect.log",
+      "sha256": "4006c7392525adac832a01bd622b4d11cd89dc06780439af1d1a675bcb8c10eb"
+    },
+    {
+      "bytes": 694,
+      "path": "evidence/ev_r13_A_61cc738c_plain.log",
+      "sha256": "80dcdf187bdd9705322b4d6da1826e37461c00f9b30b484b6afc9ab0c2d6e62f"
+    },
+    {
+      "bytes": 4643,
+      "path": "evidence/ev_r13_A_drive.py",
+      "sha256": "2f468cdafeb262ad553dc45aad786e5d2aee189d06f13f710c355d2ae07df8e0"
+    },
+    {
+      "bytes": 149047,
+      "path": "evidence/ev_r13_A_peer.log",
+      "sha256": "1576093045916037b64b4b9abfd4f4706ac9bf44d252f34428a10c57075360c2"
+    },
+    {
+      "bytes": 3223,
+      "path": "evidence/ev_r13_A_peer.py",
+      "sha256": "63cbc0413525df009f456c5ff9b664591e7f006fe0dc5cea7a11d59fa94580e9"
+    },
+    {
+      "bytes": 1835,
+      "path": "report.md",
+      "sha256": "f2305f2bb30018133b6393ef6ffc01e3be4967e2d5f9ac24fa7903d6b6fb6ab1"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T05:51:13.731594+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T055113Z-99f9659e",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Connection: authorization strips Authorization; Connection: expect strips Expect before forwarding, allowing the split-line RCE on a strict upstream.",
+      "evidence": [
+        "evidence/ev_r13_A_peer.py",
+        "evidence/ev_r13_A_drive.py",
+        "evidence/ev_r13_A_peer.log",
+        "evidence/ev_r13_A_61cc738c_plain.log",
+        "evidence/ev_r13_A_61cc738c_auth_plain.log",
+        "evidence/ev_r13_A_61cc738c_auth_split.log",
+        "evidence/ev_r13_A_61cc738c_auth_forbid.log",
+        "evidence/ev_r13_A_61cc738c_expect.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Same precondition-removal on ae021893"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e5b20e4a4c8a92c5166e843922fced3e2968d73d",
+    "source_sha256": "f4096e4c2c6bb6348f7a5b0722474d5836a36f82e632308b4694e1ee159fba21",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025712Z__3aeb255d3d7f__ae021893",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Remote code execution precondition analysis; RCE occurs on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

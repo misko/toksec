@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_afdc_apiq.hex",
+      "sha256": "96bb3bdf8c7ca84e5621c00c5760de24ac5d737d121c19867cd91ce5e3da9c2d"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_root_afdc_apixq.hex",
+      "sha256": "52126d9b4bdb084c60ebb00d749cab50f42d5c64a27d9ade2c4bd1000c44cf7e"
+    },
+    {
+      "bytes": 265,
+      "path": "evidence/ev_r17_D_root_afdc_slashq.hex",
+      "sha256": "1047ed3f79ea5b02ceb2008be7c7c5238783e4b69eed0b377c3f24bc026e938e"
+    },
+    {
+      "bytes": 1807,
+      "path": "report.md",
+      "sha256": "fce21a4a034b4eb86b16d6bc06425a5551ab6d3360c31114826907468663be04"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:40.575200+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131240Z-69b4dff4",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "afdc173f checks the wildcard arm first and stores the response under base|*, but the base is still the full raw target: /api?x, /api/?x and /?x all miss and refetch, /?x hits the local static handler. This is the depth contrast for the build whose store arm is always the wildcard: the wildcard saves the attacker only one AE dimension, not path breadth.",
+      "evidence": [
+        "evidence/ev_r17_D_root_afdc_apiq.hex",
+        "evidence/ev_r17_D_root_afdc_apixq.hex",
+        "evidence/ev_r17_D_root_afdc_slashq.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "afdc173f confirms the same key width: exact raw target, wildcard only on the encoding arm"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

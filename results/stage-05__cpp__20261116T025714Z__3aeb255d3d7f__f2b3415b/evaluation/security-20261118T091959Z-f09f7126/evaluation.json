@@ -1,0 +1,77 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 894,
+      "path": "evidence/ev_r15_G_f2b_conncl.log",
+      "sha256": "b6274c5b68935ccf6b112a9ab5b31d0aaee425b090c62a3875196d725dda05d8"
+    },
+    {
+      "bytes": 949,
+      "path": "report.md",
+      "sha256": "1d2d96d2ffa806efe6684528c663f2fc04d45e73004f614e4d81295fb42e1fc3"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T09:19:59.636105+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T091959Z-f09f7126",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "1 connection, body framed by CL; no replay on the Connection: token shape.",
+      "evidence": [
+        "evidence/ev_r15_G_f2b_conncl.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Body is framed normally, so the preamble body does not escape the frame"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Body framing across the request boundary: what the upstream actually receives, and whether a replayed body executes on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

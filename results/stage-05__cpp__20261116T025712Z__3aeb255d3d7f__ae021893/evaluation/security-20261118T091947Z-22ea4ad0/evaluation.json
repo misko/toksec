@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 10389,
+      "path": "evidence/ev_r15_F_nginx_verdict.json",
+      "sha256": "e6a6a4193e72b91b4711428892bb24e9e0514729c2df67e4b1d29abe2e5efdea"
+    },
+    {
+      "bytes": 7911,
+      "path": "evidence/ev_r15_F_pairs_ae.json",
+      "sha256": "d3abba5f26817d2bf2543e344b1313b962154b80cddcbe0816be1a013fd38afe"
+    },
+    {
+      "bytes": 1485,
+      "path": "report.md",
+      "sha256": "2f6c2e7d8a372886595a3b41dc0990a786957bf4f44eab202cdfff7d1dabf8be"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T09:19:47.505028+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T091947Z-22ea4ad0",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Pairs driven on the decoded branch. Of nine pairs only LF-bearing ones are parsed at all, and only as HTTP/0.9 with a lossy target; HTAB-bearing pairs 400. nginx 1.28.3 is the reference consumer. Primitive, not a second-request smuggle.",
+      "evidence": [
+        "evidence/ev_r15_F_pairs_ae.json",
+        "evidence/ev_r15_F_nginx_verdict.json"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Decoded pair backslash-x0a-backslash-x0d reaches the upstream request line and demotes the upstream parse to HTTP/0.9"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e5b20e4a4c8a92c5166e843922fced3e2968d73d",
+    "source_sha256": "f4096e4c2c6bb6348f7a5b0722474d5836a36f82e632308b4694e1ee159fba21",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025712Z__3aeb255d3d7f__ae021893",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Response-header sink and paired control-byte separators; execution, where present, is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

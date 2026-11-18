@@ -1,0 +1,11 @@
+target=target-san port=18851 upstream=19895
+  plain           client=HTTP/1.1 504 Gateway T   upstream_requests=1 expect>=1 PASS
+        line=b'GET //x HTTP/1.1'
+        raw=b'GET //x HTTP/1.1\r\nHost: 127.0.0.1:19895\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+  hdr-inject      client=HTTP/1.1 400 Bad Reque   upstream_requests=0 expect>=1 PASS
+  smuggle-exec    client=HTTP/1.1 400 Bad Reque   upstream_requests=0 expect>=2 PASS
+  smuggle-post    client=HTTP/1.1 400 Bad Reque   upstream_requests=0 expect>=2 PASS
+  smuggle-cache   client=HTTP/1.1 400 Bad Reque   upstream_requests=0 expect>=2 PASS
+  smuggle-delete  client=HTTP/1.1 400 Bad Reque   upstream_requests=0 expect>=2 PASS
+--- srvlog: 0 bytes
+SMUGGLE_RESULT PASS

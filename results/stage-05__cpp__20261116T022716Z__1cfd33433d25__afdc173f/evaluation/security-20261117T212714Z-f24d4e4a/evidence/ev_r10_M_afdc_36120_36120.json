@@ -1,0 +1,356 @@
+{
+ "build": "1cfd33433d25__afdc173f",
+ "port": 36120,
+ "up": 36121,
+ "steps": [
+  {
+   "listening": true,
+   "step": "start"
+  },
+  {
+   "status": 200,
+   "body": "PLAIN#2:|GET //ctl_plain.txt HTTP/1.1",
+   "is_plain": true,
+   "step": "control_plain"
+  },
+  {
+   "first_gz": true,
+   "second_gz": false,
+   "second_n": 4,
+   "first_n": 3,
+   "second_replayed": false,
+   "ce_to_identity": false,
+   "step": "control_gzipvary"
+  },
+  {
+   "status": 200,
+   "n": 5,
+   "exec_ran": true,
+   "body": "EXEC#5:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(",
+   "step": "seed_A"
+  },
+  {
+   "status": 200,
+   "n": 6,
+   "exec_ran": true,
+   "body": "EXEC#6:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(",
+   "step": "seed_B"
+  },
+  {
+   "status": 400,
+   "n": null,
+   "exec_ran": false,
+   "body": "",
+   "step": "seed_C"
+  },
+  {
+   "status": 200,
+   "n": 7,
+   "exec_ran": true,
+   "body": "EXEC#7:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(",
+   "step": "seed_D"
+  },
+  {
+   "status": 200,
+   "n": 8,
+   "exec_ran": true,
+   "body": "EXEC#8:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(",
+   "step": "seed_E"
+  },
+  {
+   "status": 404,
+   "n": null,
+   "exec_ran": false,
+   "body": "",
+   "step": "seed_F"
+  },
+  {
+   "status": 200,
+   "n": 9,
+   "exec_ran": true,
+   "body": "EXEC#9:|GET //exec ?cmd=id/ HTTP/1.1",
+   "step": "seed_G"
+  },
+  {
+   "status": 200,
+   "n": 10,
+   "exec_ran": true,
+   "body": "PLAIN#10:|GET ///exec ?cmd=id HTTP/1.1",
+   "step": "seed_H"
+  },
+  {
+   "status": 200,
+   "n": 5,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "EXEC#5:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c2_identity_A"
+  },
+  {
+   "status": 200,
+   "n": 6,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "EXEC#6:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c2_identity_B"
+  },
+  {
+   "status": 400,
+   "n": null,
+   "replayed": false,
+   "gz_to_identity": false,
+   "body": "",
+   "step": "c2_identity_C"
+  },
+  {
+   "status": 200,
+   "n": 7,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "EXEC#7:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c2_identity_D"
+  },
+  {
+   "status": 200,
+   "n": 8,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "EXEC#8:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c2_identity_E"
+  },
+  {
+   "status": 404,
+   "n": null,
+   "replayed": false,
+   "gz_to_identity": false,
+   "body": "",
+   "step": "c2_identity_F"
+  },
+  {
+   "status": 200,
+   "n": 9,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "EXEC#9:|GET //exec ?cmd=id/ HTTP/1.1",
+   "step": "c2_identity_G"
+  },
+  {
+   "status": 200,
+   "n": 10,
+   "replayed": true,
+   "gz_to_identity": false,
+   "body": "PLAIN#10:|GET ///exec ?cmd=id HTTP/1.1",
+   "step": "c2_identity_H"
+  },
+  {
+   "status": 200,
+   "n": 5,
+   "gz_body": false,
+   "body": "EXEC#5:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c4_noae_A"
+  },
+  {
+   "status": 200,
+   "n": 6,
+   "gz_body": false,
+   "body": "EXEC#6:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c4_noae_B"
+  },
+  {
+   "status": 400,
+   "n": null,
+   "gz_body": false,
+   "body": "",
+   "step": "c4_noae_C"
+  },
+  {
+   "status": 200,
+   "n": 7,
+   "gz_body": false,
+   "body": "EXEC#7:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c4_noae_D"
+  },
+  {
+   "status": 200,
+   "n": 8,
+   "gz_body": false,
+   "body": "EXEC#8:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),",
+   "step": "c4_noae_E"
+  },
+  {
+   "status": 404,
+   "n": null,
+   "gz_body": false,
+   "body": "",
+   "step": "c4_noae_F"
+  },
+  {
+   "status": 200,
+   "n": 9,
+   "gz_body": false,
+   "body": "EXEC#9:|GET //exec ?cmd=id/ HTTP/1.1",
+   "step": "c4_noae_G"
+  },
+  {
+   "status": 200,
+   "n": 10,
+   "gz_body": false,
+   "body": "PLAIN#10:|GET ///exec ?cmd=id HTTP/1.1",
+   "step": "c4_noae_H"
+  },
+  {
+   "nx": 5,
+   "ny": 6,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_A_to_B"
+  },
+  {
+   "nx": 5,
+   "ny": 7,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_A_to_D"
+  },
+  {
+   "nx": 5,
+   "ny": 8,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_A_to_E"
+  },
+  {
+   "nx": 6,
+   "ny": 5,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_B_to_A"
+  },
+  {
+   "nx": 7,
+   "ny": 5,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_D_to_A"
+  },
+  {
+   "nx": 8,
+   "ny": 5,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_E_to_A"
+  },
+  {
+   "nx": 5,
+   "ny": null,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 404,
+   "step": "cross_A_to_F"
+  },
+  {
+   "nx": 9,
+   "ny": 5,
+   "same_key_hit": false,
+   "x_status": 200,
+   "y_status": 200,
+   "step": "cross_G_to_A"
+  },
+  {
+   "n1": 5,
+   "n2": 5,
+   "replayed": true,
+   "gz_body": false,
+   "status": 200,
+   "step": "second_client_same_A"
+  },
+  {
+   "n1": 6,
+   "n2": 6,
+   "replayed": true,
+   "gz_body": false,
+   "status": 200,
+   "step": "second_client_same_B"
+  },
+  {
+   "status": 200,
+   "n": 11,
+   "gz_magic": true,
+   "ce": true,
+   "body": "\u001f\u008b\b\u0000\u0000\u0000\u0000\u0000\u0002\u00ffm\u008b\u00b1\n\u00c20\u0014\u0000w\u00bf\" \u00c8\u000b\u0004\u009b\u00a7\u00c5R!8H\u00d0\u00d1!\u0083k\u00e9\u000b%",
+   "step": "execgz_seed"
+  },
+  {
+   "status": 200,
+   "n": 11,
+   "replayed": true,
+   "gz_body": true,
+   "ce": true,
+   "step": "execgz_identity"
+  },
+  {
+   "status": 200,
+   "n": 11,
+   "replayed": true,
+   "gz_body": true,
+   "ce": true,
+   "step": "execgz_noae"
+  },
+  {
+   "n_empty": 12,
+   "n_bare": 12,
+   "aliased": true,
+   "bare_gz": true,
+   "bare_ce": true,
+   "step": "emptyae_alias"
+  },
+  {
+   "status": 200,
+   "n": 13,
+   "gz_magic": true,
+   "ce": true,
+   "vary_hdr": false,
+   "step": "vary_seed_gzipnovary"
+  },
+  {
+   "status": 200,
+   "n": 13,
+   "replayed": true,
+   "gz_body": true,
+   "ce": true,
+   "step": "vary_identity_read"
+  },
+  {
+   "status": 200,
+   "n": 13,
+   "replayed": true,
+   "gz_body": true,
+   "ce": true,
+   "step": "vary_noae_read"
+  },
+  {
+   "code": "200",
+   "rc": 0,
+   "step": "curl_compressed"
+  },
+  {
+   "reloaded": true,
+   "step": "evict_reload"
+  },
+  {
+   "n": 5,
+   "step": "evict_pre"
+  },
+  {
+   "n": 5,
+   "replayed": true,
+   "step": "evict_post"
+  }
+ ]
+}

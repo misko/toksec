@@ -1,0 +1,90 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 2003,
+      "path": "evidence/alias_bypass.log",
+      "sha256": "168cf3192d61c303ed42a03c2a1f7f45168f24e465ac59c622d0b33fda5ddc7c"
+    },
+    {
+      "bytes": 2925,
+      "path": "report.md",
+      "sha256": "373c53a9237d67a30f0adfd60dc94c91a2cb3203903e7c9ed7a417ac7dff50b3"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T18:39:43.090962+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual review of the release tag + live compiled binary against a two-root kv config"
+  },
+  "evaluation_id": "security-20261117T183943Z-15c30d7a",
+  "evaluator_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+  "findings": [
+    {
+      "description": "The local branch picks root from the vhost pair then replaces it with the alias root when the decoded path matches the alias prefix. Host validation is already finished, so nothing re-checks the alias root against the winning vhost. Controls: alpha root 200 and an alpha-only file 404 on the beta vhost; then GET /alias/hello.txt on the beta vhost returns the alias file. Read-scope bypass; RCE-adjacent if the alias root holds an executable the upstream would run.",
+      "evidence": [
+        "evidence/alias_bypass.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The alias branch overwrites the vhost-selected document root after host validation, so a confined vhost reads the alias root"
+    },
+    {
+      "description": "GET /alias%2fhello.txt returns the same file because the compare is on the decoded path. Anything inspecting the raw URL first sees an unrelated prefix.",
+      "evidence": [
+        "evidence/alias_bypass.log"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The alias prefix is matched on the decoded path, so the %2f spelling reaches the same alias root and defeats a raw-prefix check in front of the proxy"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Read-scope only on this build",
+    "No executor in the alias root here",
+    ".. guarded, no escape"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Marked distinct content in alpha, beta and alias roots",
+    "Confirmed beta confinement with an alpha-only file",
+    "Drove alias plainly and with %2f from the beta vhost",
+    "Recorded a .. negative"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Second pass on release/000001 of run afdc173f: host_root/alias ordering with confined-vhost controls, plain and %2f spellings.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

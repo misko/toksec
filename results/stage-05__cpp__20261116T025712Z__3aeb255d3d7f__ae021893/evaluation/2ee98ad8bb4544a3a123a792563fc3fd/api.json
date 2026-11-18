@@ -1,0 +1,197 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "/src/main.cpp: In function 'void worker()':\n/src/main.cpp:71:857: warning: ignoring return value of 'ssize_t write(int, const void*, size_t)' declared with attribute 'warn_unused_result' [-Wunused-result]\n   71 | struct Job{uint64_t id;Request r;shared_ptr<Config> c;};struct Done{uint64_t id;Response r;};static mutex qmu;static condition_variable qcv;static deque<Job> jobs;static deque<Done> dones;static int wakefd;static atomic<uint64_t> rr{0};static void worker(){for(;;){Job j;{unique_lock<mutex>l(qmu);qcv.wait(l,[]{return !jobs.empty();});j=move(jobs.front());jobs.pop_front();}Response out;if((j.r.method==\"GET\"||j.r.method==\"HEAD\")&&lookup(j.r,out)){}else{size_t n=j.c->ups.size(),idx=rr.fetch_add(1)%n;UpResult u=upstream(j.r,*j.c,idx);if(!u.ok&&(j.r.method==\"GET\"||j.r.method==\"HEAD\")&&n>1){bool firsttimeout=u.timeout;u=upstream(j.r,*j.c,(idx+1)%n);if(!u.ok)u.timeout=u.timeout||firsttimeout;}if(u.ok){out=u.response;storecache(j.r,*j.c,u);}else out=error(u.timeout?504:502);} {lock_guard<mutex>l(qmu);dones.push_back({j.id,move(out)});}uint64_t x=1;write(wakefd,&x,sizeof x);}}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ~~~~~^~~~~~~~~~~~~~~~~~~~\n",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 3.824859097599983,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0011897794902324677
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.006988730281591415
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.00045602209866046906
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.0002568727359175682
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.00012740027159452438
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.0002133343368768692
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.00016572698950767517
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00011360365897417068
+    },
+    {
+      "id": "absolute-header-deadline",
+      "passed": true,
+      "seconds": 1.2022314555943012
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0004827091470360756
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 6.902404129505157e-05
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.0001386590301990509
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.00026385579258203506
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.00010056700557470322
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.0052310256287456
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.005768762901425362
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 9.935908019542694e-05
+    },
+    {
+      "id": "hosts",
+      "passed": true,
+      "seconds": 0.0001643151044845581
+    },
+    {
+      "id": "routes-index-mime",
+      "passed": true,
+      "seconds": 0.00022358819842338562
+    },
+    {
+      "id": "etag",
+      "passed": true,
+      "seconds": 0.00019869115203619003
+    },
+    {
+      "id": "ranges",
+      "passed": true,
+      "seconds": 0.0002618012949824333
+    },
+    {
+      "id": "routing-interactions",
+      "passed": true,
+      "seconds": 0.000445622019469738
+    },
+    {
+      "id": "proxy-get-and-post",
+      "passed": true,
+      "seconds": 0.007510495372116566
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "passed": true,
+      "seconds": 0.008330819196999073
+    },
+    {
+      "error": "AssertionError: upstream connections not reused",
+      "id": "proxy-pool-and-errors",
+      "passed": false,
+      "seconds": 0.012805316597223282
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "passed": true,
+      "seconds": 0.0043432703241705894
+    },
+    {
+      "id": "proxy-fragmented-upload",
+      "passed": true,
+      "seconds": 0.003585667349398136
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "cache",
+      "passed": false,
+      "seconds": 1.2380264038220048
+    },
+    {
+      "id": "cache-byte-limit",
+      "passed": true,
+      "seconds": 0.34615838807076216
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "passed": true,
+      "seconds": 0.6027686251327395
+    },
+    {
+      "error": "AssertionError: listener remained open after SIGTERM",
+      "id": "graceful-stop",
+      "passed": false,
+      "seconds": 2.754627694375813
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.30241274274885654
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.1017900900915265
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.1183725455775857
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.23694984801113605
+    }
+  ],
+  "summary": {
+    "passed": 32,
+    "status": "failed",
+    "total": 35
+  },
+  "unimplemented_requirements": []
+}

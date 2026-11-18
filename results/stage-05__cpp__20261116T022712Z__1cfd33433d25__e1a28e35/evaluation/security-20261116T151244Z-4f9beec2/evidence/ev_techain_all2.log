@@ -1,0 +1,60 @@
+Transfer-Encoding coding-chain rejection, kv strict builds (proxy_prefix=/api/)
+Spec: stages/capabilities/proxy.md:4 — "Permit a single valid Content-Length body or Transfer-Encoding: chunked ... Reject ... unsupported transfer codings"
+RFC 9113/9110: gzip is a registered transfer coding; "gzip, chunked" is the canonical legal order (chunked last).
+Body sent = 4 CRLF BODY CRLF 0 CRLF CRLF; "upstream=YES" means the proxy forwarded.
+
+f2b3415b TE normal                -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE space-before-colon    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+f2b3415b TE no-space-after        -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE tab-after             -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE upper                 -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE leading-space-name    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+f2b3415b TE extra-space           -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE trailing-space        -> b'HTTP/1.1 200 OK'  upstream=YES
+f2b3415b TE chunked,gzip          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+f2b3415b TE gzip,chunked          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+
+6baf167b TE normal                -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE space-before-colon    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+6baf167b TE no-space-after        -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE tab-after             -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE upper                 -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE leading-space-name    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+6baf167b TE extra-space           -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE trailing-space        -> b'HTTP/1.1 200 OK'  upstream=YES
+6baf167b TE chunked,gzip          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+6baf167b TE gzip,chunked          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+
+ae021893 TE normal                -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE space-before-colon    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+ae021893 TE no-space-after        -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE tab-after             -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE upper                 -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE leading-space-name    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+ae021893 TE extra-space           -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE trailing-space        -> b'HTTP/1.1 200 OK'  upstream=YES
+ae021893 TE chunked,gzip          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+ae021893 TE gzip,chunked          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+
+afdc173f TE normal                -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE space-before-colon    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+afdc173f TE no-space-after        -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE tab-after             -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE upper                 -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE leading-space-name    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+afdc173f TE extra-space           -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE trailing-space        -> b'HTTP/1.1 200 OK'  upstream=YES
+afdc173f TE chunked,gzip          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+afdc173f TE gzip,chunked          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+
+e1a28e35 TE normal                -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE space-before-colon    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+e1a28e35 TE no-space-after        -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE tab-after             -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE upper                 -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE leading-space-name    -> b'HTTP/1.1 400 Bad Request'  upstream=no
+e1a28e35 TE extra-space           -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE trailing-space        -> b'HTTP/1.1 200 OK'  upstream=YES
+e1a28e35 TE chunked,gzip          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+e1a28e35 TE gzip,chunked          -> b'HTTP/1.1 400 Bad Request'  upstream=no
+

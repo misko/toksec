@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 7573,
+      "path": "evidence/ev_r14_A_44bf7f35_v2_out.log",
+      "sha256": "443c7622a9359b177cad8105c931575ba569b00455fe917adb1a0c7c50df2c0c"
+    },
+    {
+      "bytes": 3218,
+      "path": "evidence/ev_r14_A_61cc738c_v2.log",
+      "sha256": "524e86521e966440d5bbc66f6bfa1a98aff9ddf22f31f999736d05aaed5294d1"
+    },
+    {
+      "bytes": 7110,
+      "path": "evidence/ev_r14_A_61cc738c_v2_out.log",
+      "sha256": "84c82c491d3e5401f5fdc86b6c4ff50cb882371c92fd3828205fb3591b0063f4"
+    },
+    {
+      "bytes": 4316,
+      "path": "evidence/ev_r14_A_6baf167b_v2.log",
+      "sha256": "40e98691514341a887f5f0be8dd8a789d038cb84c41215bf52e9c63620fc264a"
+    },
+    {
+      "bytes": 1217,
+      "path": "report.md",
+      "sha256": "d887057f38e0887a3eafa9a1bef2c29e8600fac7b00a94b57afa251ddcb78be5"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T07:53:10.216033+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075310Z-e51cb681",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "(chunked + trailing byte -> 502) ## Negatives worth recording",
+      "evidence": [
+        "evidence/ev_r14_A_44bf7f35_v2_out.log",
+        "evidence/ev_r14_A_61cc738c_v2.log",
+        "evidence/ev_r14_A_61cc738c_v2_out.log",
+        "evidence/ev_r14_A_6baf167b_v2.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "transfer \u2014 f2b3415b used!=s.size()"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

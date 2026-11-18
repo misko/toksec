@@ -1,0 +1,98 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 633,
+      "path": "evidence/ev_r12_X_ev_afdc_chunkedget.txt",
+      "sha256": "bb7e801756ac3ab3d3dea127fa6ad26b4e49a65a0ce37874a4737d55b3620784"
+    },
+    {
+      "bytes": 349,
+      "path": "evidence/ev_r12_X_ev_afdc_chunkedpost.txt",
+      "sha256": "6f9daca71846caa14919856fd1dc7c2cff61118834242278fa348e555eaef8a2"
+    },
+    {
+      "bytes": 576,
+      "path": "evidence/ev_r12_X_ev_afdc_close.txt",
+      "sha256": "b733523b060e5162f27b496128b90dbf9312efb10432742e18d46661c8b4ea01"
+    },
+    {
+      "bytes": 279,
+      "path": "evidence/ev_r12_X_ev_afdc_control.txt",
+      "sha256": "aa78860580ddbb2c244f048f5bf787d1adc03548520b77cd28c2c361c0cc0610"
+    },
+    {
+      "bytes": 593,
+      "path": "evidence/ev_r12_X_ev_afdc_execfail.txt",
+      "sha256": "17cf2bcccc1d48cd88b53476b8bd6045f04ddec66e26cb45952737e11c1e2143"
+    },
+    {
+      "bytes": 1823,
+      "path": "report.md",
+      "sha256": "feda7e92f7e066e7e0a404159c5de7c9de7f3b43fe7af3667827c6347dfcf66a"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T00:54:44.287700+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T005444Z-9f624778",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Transfer-Encoding does not enter the retry guard, which tests the method string only. The proxy de-chunks and re-frames the body with a Content-Length before forwarding, so the upstream does real work, but on failure the request is not retried, the body is lost and the client gets 502 with a healthy peer available. A chunked GET is the contrast: it retries and the de-chunked body replays verbatim.",
+      "evidence": [
+        "evidence/ev_r12_X_ev_afdc_chunkedpost.txt",
+        "evidence/ev_r12_X_ev_afdc_chunkedget.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A chunked POST is still POST, so the failover guard gives it one attempt and the re-framed body is lost"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run afdc173f; two upstreams with the first failing; chunked request body",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

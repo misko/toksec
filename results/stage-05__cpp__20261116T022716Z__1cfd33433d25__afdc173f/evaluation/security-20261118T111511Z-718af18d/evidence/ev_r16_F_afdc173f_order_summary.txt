@@ -1,0 +1,3 @@
+tag=afdc173f_order
+fetch_counter=2
+afdc173f_order exactEntry(fetch,mode,hit,exec)=[2, ('vary', 2, True)] wildcardEntry(fetch,mode,hit,exec)=[2, ('none', 2, True)] victim_identity(fetch,modeServed,hit,exec)=[2, ('none', 2, True)]

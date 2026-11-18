@@ -1,0 +1,79 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 2268,
+      "path": "evidence/ev_r10_N_ae021s.ev",
+      "sha256": "5ceffc3ebc3e6362bf2a3c4c5cb62d52e0a0569819b87d0c6f5083956537b4a8"
+    },
+    {
+      "bytes": 2138,
+      "path": "report.md",
+      "sha256": "9390c3781d679d6bc3f693b20994884ad3545360d1d64cf33acac3746a69993f"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:49:35.988285+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; distinct per-file marker content so the opened file is unambiguous, service-side slice arithmetic recomputed by hand"
+  },
+  "evaluation_id": "security-20261117T214935Z-4d4cdd46",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /al../x.txt` with alias `/al:/tmp/r10_www_N/aliasdir`. Decoded `/al../x.txt` is 10 chars, the alias is 3, `substr(3)` yields `../x.txt`; `openat` walks `aliasdir`, then `..` per the open loop's component walk and opens `/tmp/r10_www_N/x.txt` = **MARKER-PARENT-ESCAPE** (200), one level above the alias root. The plain `/al/x.txt` control returns MARKER-ALIASDIR-x.txt and `/x.txt` returns MARKER-alpha-x.txt on the same cold server, so the marker is not a default.",
+      "evidence": [
+        "evidence/ev_r10_N_ae021s.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The alias slice wins over the `substr(1)` default, so a slice-produced `..` escapes the alias root"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Filesystem read only; all RCE remains on the upstream host",
+    "Alias must be configured; several builds additionally need a slashless location"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Plain alias control and root control first on the same cold server",
+    "Marker text proves which file opened, never the status code",
+    "Every payload re-run 3x"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e5b20e4a4c8a92c5166e843922fced3e2968d73d",
+    "source_sha256": "f4096e4c2c6bb6348f7a5b0722474d5836a36f82e632308b4694e1ee159fba21",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025712Z__3aeb255d3d7f__ae021893",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run ae021893, round 10 lane N: alias slice versus the plain `substr(1)` path.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}
