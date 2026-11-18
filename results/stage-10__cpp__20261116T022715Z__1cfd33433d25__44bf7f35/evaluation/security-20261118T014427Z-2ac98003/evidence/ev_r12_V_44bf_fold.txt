@@ -1,0 +1,23 @@
+LANE V — 44bf7f35, obs-fold handling. Build 1cfd33433d25__44bf7f35, source ...44bf7f35.cpp, cfg ev_r12_V_cfg_44bf.conf.
+Modes foldHdr and foldCL. Every exchange preceded by a passing control (200, x-ctl: k, HELLO).
+
+foldHdr upstream, per header line the proxy is supposed to copy:
+  X-Obs: a
+  <TAB>b                 <- continuation line, no colon
+  X-After: z
+  Content-Length: 5
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d4f62733a20610d0a09620d0a582d41667465723a207a0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e3120323030204f4b0d0a782d6f62733a20610d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  decoded: "HTTP/1.1 200 OK\r\nx-obs: a\r\nContent-Length: 5\r\nConnection: close\r\n\r\nHELLO"
+
+`X-Obs` loses its continuation ("a" survives, " b" does not) AND `X-After` — the header after the
+fold — is gone entirely. A security header placed after any obs-fold silently disappears.
+
+foldCL (fold line then Content-Length: 500, body 5):
+  upstream_wrote_hex   ...0d0a436f6e74656e742d4c656e6774683a203530300d0a...
+  client_received_hex 485454502f312e3120323030204f4b0d0a782d6f62733a20610d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+The 500 is never read; the emitted CL falls back to the body size (5), so the truncation stays hidden
+instead of surfacing as a framing mismatch.
+
+Body is intact in both modes because it is taken from the post-terminator buffer, not from the
+header loop. 5/5 cold is the same bytes for both modes; all 10 controls passed.

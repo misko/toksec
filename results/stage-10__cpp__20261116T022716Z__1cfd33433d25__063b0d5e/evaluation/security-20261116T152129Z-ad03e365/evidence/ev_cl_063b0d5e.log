@@ -1,0 +1,36 @@
+build        : 1cfd33433d25__063b0d5e
+claim        : line 53 evaluates h.count("transfer-encoding") AFTER h["transfer-encoding"].size()
+               has already default-inserted the key, so the count is always 1 and the third
+               clause (count && !content-length.empty()) fires for every request that has any
+               Content-Length - including `0`. The proxy branch returns straight after, so a
+               400 is sent and no upstream connection is ever opened.
+
+note         : the same line also gates the static branch (line 61), so CL is fatal there too.
+
+--- control, no CL (proxied)
+client: b'GET /api/x HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+status: HTTP/1.1 200 OK
+upstream connections: 1
+  upstream: b'GET /api/api/x HTTP/1.1'
+
+--- Content-Length: 0
+client: b'GET /api/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+status: HTTP/1.1 400 Bad Request
+upstream connections: 0
+
+--- Content-Length: 5 + body
+client: b'GET /api/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+status: HTTP/1.1 400 Bad Request
+upstream connections: 0
+
+--- static file, Content-Length: 5
+client: b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+status: HTTP/1.1 400 Bad Request
+upstream connections: 0
+
+--- POST, no CL, body is a request
+client: b'POST /api/x HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\nGET /api/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+status: HTTP/1.1 200 OK
+upstream connections: 1
+  upstream: b'POST /api/api/x HTTP/1.1'
+

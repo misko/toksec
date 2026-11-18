@@ -1,0 +1,10 @@
+# config: location /al { alias .../www/alias; }  /  location / { root .../www/alpha; }
+# distinct marker files: www/alpha/hello.txt = ALPHA ; www/alias/hello.txt = ALIASFILE
+# CTL: the plain root serves its own marker, proving the two roots are distinct.
+CTL GET /hello.txt          -> 200 body=ALPHA
+GET /al/hello.txt           -> 200 body=ALIASFILE      (alias root, as declared)
+GET /al%2fhello.txt         -> 200 body=ALIASFILE      (%2f decodes to one byte, slice still measures the config length)
+GET /al/../hello.txt        -> 403                       (any '..' refused on the local branch)
+GET /al/hello.txt/          -> 403                       (trailing slash on a regular file refused)
+# Source: line 90 openconfined - base=loc->s.alias, sub=path.substr(loc->path.size()), per-component
+# openat with O_NOFOLLOW. Decoded path, raw config length: the slice is not re-measured after decode.

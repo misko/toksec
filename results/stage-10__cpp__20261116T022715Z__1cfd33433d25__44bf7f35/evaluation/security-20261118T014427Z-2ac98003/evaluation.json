@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1652,
+      "path": "evidence/ev_r12_V_44bf_fold.txt",
+      "sha256": "7ddad2033e79b94dcbd0f66ffe5a2af82a278621cb77dfe141763e3fc238b41c"
+    },
+    {
+      "bytes": 89,
+      "path": "evidence/ev_r12_V_44bf_foldCL.txt",
+      "sha256": "de14ea06954c6436664b1f090ec031fe39d1bee85b8e09bdc0a97280db8b61f3"
+    },
+    {
+      "bytes": 90,
+      "path": "evidence/ev_r12_V_44bf_foldHdr.txt",
+      "sha256": "ea81ff0603db05245b67789f38dec296503b90f2efa4c89d6a591518eac39026"
+    },
+    {
+      "bytes": 1685,
+      "path": "report.md",
+      "sha256": "7c9cc66a3127a1de12170778cc30a493fe66daee571c40de306386d6e3eab0ed"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T01:44:27.837950+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T014427Z-2ac98003",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The relay loop reads the folded line as a field of its own, so `X-A: one` followed by a space-continued ` two` loses the tail and the second half is not emitted at all. When the folded field is the Content-Length the proxy falls back to the body size, so the emitted length and the upstream's intent diverge.",
+      "evidence": [
+        "evidence/ev_r12_V_44bf_fold.txt",
+        "evidence/ev_r12_V_44bf_foldCL.txt",
+        "evidence/ev_r12_V_44bf_foldHdr.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "An obs-folded upstream header truncates the value and silently drops the field after the fold"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Upstream using obs-fold continuation; client-side, upstream-driven",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,6 @@
+status relay: upstream status -> proxy status line
+  upstream 204 No Content         -> proxy 'HTTP/1.1 204 Service Unavailable\r'
+  upstream 205 Reset Content      -> proxy 'HTTP/1.1 205 Service Unavailable\r'
+  upstream 304 Not Modified       -> proxy 'HTTP/1.1 304 Not Modified\r'
+  upstream 203 Non-Authoritative  -> proxy 'HTTP/1.1 203 Service Unavailable\r'
+  upstream 599 out-of-table       -> proxy 'HTTP/1.1 599 Service Unavailable\r'

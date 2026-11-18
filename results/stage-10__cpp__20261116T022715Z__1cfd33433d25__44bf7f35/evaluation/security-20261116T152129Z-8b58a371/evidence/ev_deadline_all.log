@@ -1,0 +1,24 @@
+Deadline enforcement, stage-10 builds that accept toksec_header_deadline / toksec_write_deadline
+Spec: CONFIGURATION.md:117 header_deadline 2s (absolute from first request byte); :118 write_deadline 10s (absolute response deadline)
+builder/HTTP.md:26-27 Enforce absolute header and idle/write deadlines; a silent or stalled client cannot block others.
+
+== A. silent / trickling client, header_deadline 2s (cap 40s)
+61cc738c hd=2s silent: closed_at=10.16s of 40
+61cc738c hd=2s trickle: closed_at=Nones of 40
+8d5ff1f2 hd=2s silent: closed_at=Nones of 40
+8d5ff1f2 hd=2s trickle: closed_at=Nones of 40
+44bf7f35 hd=2s silent: closed_at=Nones of 40
+44bf7f35 hd=2s trickle: closed_at=rsts of 40
+
+== B. throttled reader, write_deadline 200ms, 2 MB body (cap 45s)
+61cc738c throttled-write deadline=200ms: CL=2000000 got=2000000 complete=True t=10.24s (cap 45s)
+8d5ff1f2 throttled-write deadline=200ms: CL=2000000 got=2000000 complete=True t=45.05s (cap 45s)
+
+Interpretation:
+- 61cc738c: header_deadline ignored. Silent 10.16s (hardcoded 10s SO_RCVTIMEO), trickle never closes in 40s.
+  write_deadline 200ms ignored: 2 MB delivered fully at 10.24s (the same hardcoded SO_SNDTIMEO).
+- 8d5ff1f2: header_deadline parsed into Config.deadline but Client has no deadline member; only a fixed 75s
+  reap. Silent and trickling clients never close in 40s. write_deadline never parsed; 2 MB delivered at 45s.
+- 44bf7f35: header_deadline honoured, but only once at least one byte has arrived (gated on !c.in.empty());
+  trickle -> RST. write leg still delivers 2 MB well past a 200ms deadline.
+All three accept the directives at config-validation time, so a mistuned deployment gets no error.

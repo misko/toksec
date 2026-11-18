@@ -1,0 +1,17 @@
+### 8d5ff1f2 (release/000002, tag verified) header-injection family; raw bytes captured with python; curl cross-check
+
+== A: %20 in a dir -> raw space in Location (e1a28e35 too)
+{"status": "HTTP/1.1 301 Moved Permanently", "headers": {"location": "/d space/", "content-length": "0", "connection": "keep-alive"}, "head_bytes": 98, "body_len": 0, "body_preview": "", "raw_head": "HTTP/1.1 301 Moved Permanently\r\nLocation: /d space/\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n"}
+
+== B: injected extra header (CRLF) on 200 file
+{"status": "HTTP/1.1 200 OK", "headers": {"etag": "\"15036546-2-1794940941-228846526\"", "content-type": "text/plain", "content-length": "2", "connection": "keep-alive"}, "head_bytes": 129, "body_len": 2, "body_preview": "AB", "raw_head": "HTTP/1.1 200 OK\r\nETag: \"15036546-2-1794940941-228846526\"\r\nContent-Type: text/plain\r\nContent-Length: 2\r\nConnection: keep-alive\r\n\r\n"}
+
+== C: duplicate Content-Length on 301 -> curl client error
+HTTP/1.1 301 Moved Permanently
+Location: /cl
+curl: (8) Invalid Content-Length: value
+curl_rc=8
+
+== D: CRLFCRLF -> forged end-of-headers, real tail becomes body
+{"status": "HTTP/1.1 301 Moved Permanently", "headers": {"location": "/split"}, "head_bytes": 52, "body_len": 54, "body_preview": "FORGED/\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n", "raw_head": "HTTP/1.1 301 Moved Permanently\r\nLocation: /split\r\n\r\n"}
+

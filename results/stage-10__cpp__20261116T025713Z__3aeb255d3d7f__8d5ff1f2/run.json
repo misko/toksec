@@ -4,7 +4,7 @@
   "budget_usd": "3",
   "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
   "framework": "1dbd992b5bfd6359f837c96aa5e9632d7426bb34c103915889c02ac1324da606",
-  "grading_status": "pending",
+  "grading_status": "reported",
   "id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
   "input_policy": {
     "feedback": "visible_smoke_only",
@@ -22,7 +22,7 @@
     "evaluation": "evaluation",
     "implementation": "implementation",
     "inputs": "inputs",
-    "latest_evaluation": "evaluation/imported-c6b0fbd3debd7d42"
+    "latest_evaluation": "evaluation/security-20261118T23024Z-rcematrix"
   },
   "performance_scope": "provisional",
   "persisted_run_id": true,

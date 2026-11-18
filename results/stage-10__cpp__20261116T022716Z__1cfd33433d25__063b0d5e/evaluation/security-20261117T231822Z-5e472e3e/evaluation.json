@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 13414,
+      "path": "evidence/ev_r11_T_evE_063.json",
+      "sha256": "7cbfec518690607595644c559ad0c2d4ea677c3349b823435b0fca2d3ed3c3dd"
+    },
+    {
+      "bytes": 4516,
+      "path": "evidence/ev_r11_T_rep_063b0d5e.json",
+      "sha256": "9262130f38570ddeb0e2cb7589cfb39f19128035d24840929d413fe65a72b9c5"
+    },
+    {
+      "bytes": 2399,
+      "path": "report.md",
+      "sha256": "cc44945f8808ac55a724289a3c671e7372f9397caf9e6af4dc8a79241a92939f"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T23:18:22.001169+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231822Z-5e472e3e",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /api%2fexec%3fcmd=id HTTP/1.1` has zero `?` in the client request line; the upstream receives `GET /api%2fexec%20exec?cmd=id HTTP/1.1` with exactly one `?` and 3 whitespace tokens, and the peer runs `id`. 3/3 from cold servers. Guard and location matcher both see the decoded `/api/exec?cmd=id`; the emitted line is a splice of a config literal plus `path.substr(min(path.size(), loc->path.size()))`, and nothing re-measures the separator after the guard runs. Decoded `#` and `?` also reach the local `openconfined` path (`/hash%23name.txt`, `/q%3fname.txt` both 200). A decoded `?` inside the location prefix 404s, since config locations may not contain `?`.",
+      "evidence": [
+        "evidence/ev_r11_T_evE_063.json",
+        "evidence/ev_r11_T_rep_063b0d5e.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A percent-encoded `?` in the path decodes to a real query on the upstream line, so exec runs with no `?` and no bare space in the client request line"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 11 lane T: decode-only query injection through the `loc->uri` splice.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

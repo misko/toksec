@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 87,
+      "path": "evidence/ev_r12_V_61cc_clTE.txt",
+      "sha256": "40f50aaf6bdb4d85008c14f114ad102077d9fb803d8478ec56466a99c44a8e58"
+    },
+    {
+      "bytes": 2115,
+      "path": "evidence/ev_r12_V_61cc_clTE_headline.txt",
+      "sha256": "c7fa39c15a299c3c8fe5ebe81c420104f6d911e5ba7d6c94acc4b4d2c483ac23"
+    },
+    {
+      "bytes": 88,
+      "path": "evidence/ev_r12_V_61cc_dupCL.txt",
+      "sha256": "ab4b06695dee7c51e4cbbbe5fc8a65d8af9e5dbba2f31ec3514fd418061c3c13"
+    },
+    {
+      "bytes": 2236,
+      "path": "report.md",
+      "sha256": "fed07a0ff291df518584610ae67637daf547322b0ffcfebe35de29469a564199"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T01:44:27.351080+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T014427Z-4b23628c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The upstream sends `Content-Length: 5` and `Transfer-Encoding: chunked` with a 15-byte chunk stream. The proxy relays the chunk framing verbatim but sizes its own emitted body from the Content-Length, so only the first 5 bytes of the chunk stream reach the client. A client that honours Transfer-Encoding reads a chunk size of 5 and then receives `HE` with no CRLF and no terminating zero chunk; the payload tail and the terminator never arrive. Silent under Connection: close, five of five cold replicates byte-identical with passing controls.",
+      "evidence": [
+        "evidence/ev_r12_V_61cc_clTE_headline.txt",
+        "evidence/ev_r12_V_61cc_clTE.txt",
+        "evidence/ev_r12_V_61cc_dupCL.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A relayed response with both Transfer-Encoding: chunked and Content-Length is cut at the Content-Length while still chunk-framed"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Upstream that emits both framing headers with a chunk stream longer than its Content-Length; client-side framing, upstream-driven",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,20 @@
+# build=3aeb255d3d7f__8d5ff1f2 listen=37214
+control ok
+bytes=9223372036854775807-                   HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=9223372036854775808-                   HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=18446744073709551615-                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=18446744073709551616-                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0-9223372036854775807                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0-9223372036854775808                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0-18446744073709551615                 HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0-18446744073709551616                 HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=-9223372036854775807                   HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=-9223372036854775808                   HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=-18446744073709551615                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=-18446744073709551616                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0000000001-2                           HTTP/1.1 206 Partial Content             CL=2      act=2
+bytes=000000000000000001-2                   HTTP/1.1 206 Partial Content             CL=2      act=2
+bytes=0000000000000000001-2                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+bytes=0-000000000000000005                   HTTP/1.1 206 Partial Content             CL=6      act=6
+bytes=0-0000000000000000005                  HTTP/1.1 400 Bad Request                 CL=0      act=0
+# port 37214 clear

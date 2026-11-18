@@ -1,0 +1,9 @@
+LANE V — 8d5f1f2, NUL inside an upstream header value. Build 3aeb255d3d7f__8d5ff1f2, source ...8d5ff1f2.cpp, cfg ev_r12_V_cfg_8d5f.conf.
+Control passed (200 HELLO) immediately before.
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d4e756c3a206100620d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e3120323030204f4b0d0a782d6e756c3a206100620d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+
+`h.find('\0')` exists in this build but only on the *config* decoder, not on the response header
+loop at `:85`, so a NUL in a relayed value is invisible to it and is passed. Same truncation effect
+as 61cc and 44bf.

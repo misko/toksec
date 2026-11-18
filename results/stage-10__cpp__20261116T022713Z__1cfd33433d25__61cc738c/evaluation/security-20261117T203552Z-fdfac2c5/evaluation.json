@@ -1,0 +1,74 @@
+{
+  "artifacts": [
+    {
+      "bytes": 10428,
+      "path": "evidence/ev_r9_K_61cc738c_fulllog.log",
+      "sha256": "23aea8cdb8eb2e04926548a2a3a5a54894ad883cba4431e1b71b36d289c8f5a2"
+    },
+    {
+      "bytes": 2095,
+      "path": "report.md",
+      "sha256": "37639c6405e61dc53ad8dda1892660240df16771f7e03e99453f0658cc9c85c3"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:35:52.131322+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact bytes, verbatim client-head capture"
+  },
+  "evaluation_id": "security-20261117T203552Z-fdfac2c5",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The head builder appends Transfer-Encoding: chunked when the upstream was chunked and separately appends Content-Length from its parse, so the client head carries both. The body then consists of the upstream's raw chunk bytes cut at the Content-Length, so neither a TE client nor a CL client gets a well-framed body, and every chunked response is truncated. Precondition: any chunked upstream response.",
+      "evidence": [
+        "evidence/ev_r9_K_61cc738c_fulllog.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A chunked upstream response is forwarded with both Transfer-Encoding: chunked and a recomputed Content-Length, and the raw chunk bytes are then truncated to that length"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Upstream-host execution only",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first",
+    "Scripted peer emitted each response shape on its own path",
+    "Captured the client head verbatim and re-requested on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 61cc738c, round 9 lane K: the client-facing response head the proxy rebuilds.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

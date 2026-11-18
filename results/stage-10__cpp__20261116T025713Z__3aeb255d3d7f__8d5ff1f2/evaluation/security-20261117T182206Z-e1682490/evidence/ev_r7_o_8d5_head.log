@@ -1,0 +1,9 @@
+# config: location /api { proxy_pass "http://backend/exec "; }  (quoted trailing space)
+# CTL: GET /hello.txt -> 200 ALPHA (file root, not the proxy)
+CTL GET /hello.txt -> 200 body=ALPHA
+# HEAD carries the same first line as GET on every build; it fires exec and the proxy sends 0 body bytes.
+UPSTREAM_LINE=b'HEAD /exec  HTTP/1.1' TOKS=4
+   EXEC_CMD='id' OUT=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n'
+UPSTREAM_LINE=b'GET /exec  HTTP/1.1' TOKS=4
+   EXEC_CMD='id' OUT=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n'
+# client saw: HEAD -> 200 Content-Length but 0 bytes; following GET -> 200 with the uid output

@@ -1,0 +1,19 @@
+== cold control-first script ==
+CTL1 exec-only: HTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: close\r\n\r\nSEQ:1 TOK:4 id-out\n
+CTL2 b.txt-only: HTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: close\r\n\r\nSEQ:2 TOK:3 HELLO\n
+CTL3 ten.txt-only: HTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: close\r\n\r\nSEQ:3 TOK:3 HELLO\n
+CONTROL3 two requests without the trick:
+  heads=2 HTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: keep-alive\r\n\r\nSEQ:4 TOK:3 HELLO\nHTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: keep-alive\r\n\r\nSEQ:5 TOK:3 HELLO\n
+PAYLOAD run1: client sent 3 -> heads=4 frames=3
+   frame1 b'HTTP/1.1 100 Error' body=b'HTTP/1.1 200 OK\r\nContent-Length: 19\r\nX-R'
+   frame2 b'HTTP/1.1 200 OK' body=b'SEQ:7 TOK:3 HELLO\n'
+   frame3 b'HTTP/1.1 200 OK' body=b'SEQ:8 TOK:3 HELLO\n'
+PAYLOAD run2: client sent 3 -> heads=4 frames=3
+   frame1 b'HTTP/1.1 100 Error' body=b'HTTP/1.1 200 OK\r\nContent-Length: 19\r\nX-R'
+   frame2 b'HTTP/1.1 200 OK' body=b'SEQ:10 TOK:3 HELLO\n'
+   frame3 b'HTTP/1.1 200 OK' body=b'SEQ:11 TOK:3 HELLO\n'
+PAYLOAD run3: client sent 3 -> heads=4 frames=3
+   frame1 b'HTTP/1.1 100 Error' body=b'HTTP/1.1 200 OK\r\nContent-Length: 20\r\nX-R'
+   frame2 b'HTTP/1.1 200 OK' body=b'SEQ:13 TOK:3 HELLO\n'
+   frame3 b'HTTP/1.1 200 OK' body=b'SEQ:14 TOK:3 HELLO\n'
+FULL(hex saved): HTTP/1.1 100 Error\r\nContent-Length: 60\r\nConnection: keep-alive\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 20\r\nX-Real: 1\r\n\r\nSEQ:12 TOKHTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:13 TOK:3 HELLO\nHTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:14 TOK:3 HELLO\n

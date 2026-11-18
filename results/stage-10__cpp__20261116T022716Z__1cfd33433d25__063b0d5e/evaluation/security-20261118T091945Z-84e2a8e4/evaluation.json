@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7117,
+      "path": "evidence/ev_r15_F_build_1cfd33433d25__063b0d5e.txt",
+      "sha256": "f74caeceec2614843a591302d4cababf8d6f8266288419836bf03635a722572f"
+    },
+    {
+      "bytes": 1379,
+      "path": "report.md",
+      "sha256": "5b22f8a80389a2343b2c2b4bde02a4b5408dfeeb91ca83bf50f5572b95ba05c6"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T09:19:45.806628+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T091945Z-84e2a8e4",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "All 32 bytes 0x01-0x1f and 0x7f driven; only 0x09 survives. The same loop that copies the value runs the predicate (c<32&&c!=\t)||c==127 and calls upstream_fail(c,502), discarding the peer header. Control on the same config returns 200 with the header.",
+      "evidence": [
+        "evidence/ev_r15_F_build_1cfd33433d25__063b0d5e.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Upstream response-header value collapses to 502 on any control byte except HTAB"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Response-header sink and paired control-byte separators; execution, where present, is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

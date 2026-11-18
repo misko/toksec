@@ -1,0 +1,96 @@
+{
+  "artifacts": [
+    {
+      "bytes": 3318,
+      "path": "evidence/ev_r9_I_client_063b0d5e.txt",
+      "sha256": "0de2c3377b3e206be98a1abec7bda2d59ad5aa87892d1229eb9b07217c62a78e"
+    },
+    {
+      "bytes": 167,
+      "path": "evidence/ev_r9_I_poc_c20_c20.hex",
+      "sha256": "2f52be686b2f1f58bcc52bfd08c088280e56c60fbdd27e453e94db60d8e4e96a"
+    },
+    {
+      "bytes": 125,
+      "path": "evidence/ev_r9_I_poc_ctl_c20.hex",
+      "sha256": "d764131f8b688e7a134c04a08f3b1e44762f9fa296ec3a1cc545ce697897368a"
+    },
+    {
+      "bytes": 3119,
+      "path": "report.md",
+      "sha256": "f1689d354c458ea9ad504562bfd76637245b51bd716e097ca1a9ab29d6206484"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:21:29.018276+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact response bytes, hexdump of client output"
+  },
+  "evaluation_id": "security-20261117T202129Z-0773060a",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The 1xx branch loops back to parse a second head, but respleft from the interim head is left live; when the real 200 arrives its body is emitted only up to the interim length, and the interim head is stamped with that same Content-Length. An upstream that sends 100 with Content-Length: 100 replaces the client's HELLO with whatever bytes follow, and the client sees a Content-Length that does not describe its body. Precondition: an attacker-influenced upstream and a proxied location.",
+      "evidence": [
+        "evidence/ev_r9_I_poc_c20_c20.hex",
+        "evidence/ev_r9_I_poc_ctl_c20.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "An interim head's Content-Length is applied to the real response body, so the upstream chooses the bytes the client receives"
+    },
+    {
+      "description": "The loop continues as soon as a head parses and never consumes bytes belonging to the interim response, so any interim that carries a body desynchronises the parse and the client gets 502. Concretely 101 with Upgrade, 100 followed by body bytes, and nine consecutive interims were each 502 on this build. Precondition: an attacker-influenced upstream.",
+      "evidence": [
+        "evidence/ev_r9_I_client_063b0d5e.txt"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The interim loop never skips an interim body, so 101, a 100 carrying a body, and a ninth interim are all 502"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first on the same config",
+    "Scripted peer emitted one interim shape per path",
+    "Captured client bytes as hex and diffed against the control",
+    "Sent a follow-up request on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 9 lane I: the interim (1xx) upstream response state machine.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

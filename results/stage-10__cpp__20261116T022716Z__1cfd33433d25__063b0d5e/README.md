@@ -2,10 +2,10 @@
 
 Run: `stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e`. Status: **builder_finished**.
 
-Independent grading: **pending**. Published source is not proof of API acceptance.
+Independent grading: **reported**. Published source is not proof of API acceptance.
 
 The frozen submission and Git bundle are in [implementation/](implementation/).
-Parent reports and figures are in [evaluation/](evaluation/imported-b75d2bbfe0447529/report.md).
+Parent reports and figures are in [evaluation/](evaluation/security-20261118T23023Z-rcematrix/report.md).
 Supplied instructions are in `inputs/`; spending evidence is in `accounting/`.
 Migration preserved the original evidence without running new tests.
 See `run.json` for protocol identity and `migration.json` for byte-preservation mappings.

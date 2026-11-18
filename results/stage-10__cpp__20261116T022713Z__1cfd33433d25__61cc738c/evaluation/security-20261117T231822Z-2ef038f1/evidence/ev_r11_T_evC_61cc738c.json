@@ -1,0 +1,102 @@
+{
+ "cfg": "worker_processes 1;\nevents { worker_connections 128; }\nhttp {\n  toksec_header_bytes 16384;\n  upstream backend { server 127.0.0.1:43201; }\n  server {\n    listen 127.0.0.1:43200;\n    server_name alpha.test;\n    root /tmp/r11_www_T/alpha;\n    location /api/ { proxy_pass http://backend/api%2fexec%20; }\n    location / { root /tmp/r11_www_T/alpha; }\n  }\n}\n",
+ "listen": 43200,
+ "peer": 43201,
+ "client": {
+  "/api/hello.txt": {
+   "client_hex": "474554202f6170692f68656c6c6f2e74787420485454502f312e310d0a486f73743a20616c7068612e746573740d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+   "client": "GET /api/hello.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n",
+   "resp_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203137360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a544f4b337c474554202f6170692532666578656325323068656c6c6f2e74787420485454502f312e317c455845433a7569643d31303030286d6f7573653939313129206769643d31303030286d6f75736539393131292067726f7570733d31303030286d6f75736539393131292c342861646d292c3234286364726f6d292c3237287375646f292c333028646970292c343628706c7567646576292c313030287573657273292c313031286c7864290a",
+   "resp": "HTTP/1.1 200 OK\r\nContent-Length: 176\r\nConnection: close\r\n\r\nTOK3|GET /api%2fexec%20hello.txt HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n",
+   "status": "HTTP/1.1 200 OK",
+   "body": "TOK3|GET /api%2fexec%20hello.txt HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  },
+  "/api%2fexec%09?cmd=id": {
+   "client_hex": "474554202f617069253266657865632530393f636d643d696420485454502f312e310d0a486f73743a20616c7068612e746573740d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+   "client": "GET /api%2fexec%09?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n",
+   "resp_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203137390d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a544f4b337c474554202f6170692532666578656325323065786563093f636d643d696420485454502f312e317c455845433a7569643d31303030286d6f7573653939313129206769643d31303030286d6f75736539393131292067726f7570733d31303030286d6f75736539393131292c342861646d292c3234286364726f6d292c3237287375646f292c333028646970292c343628706c7567646576292c313030287573657273292c313031286c7864290a",
+   "resp": "HTTP/1.1 200 OK\r\nContent-Length: 179\r\nConnection: close\r\n\r\nTOK3|GET /api%2fexec%20exec\t?cmd=id HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n",
+   "status": "HTTP/1.1 200 OK",
+   "body": "TOK3|GET /api%2fexec%20exec\t?cmd=id HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  },
+  "/api%2fexec%0a?cmd=id": {
+   "client_hex": "474554202f617069253266657865632530613f636d643d696420485454502f312e310d0a486f73743a20616c7068612e746573740d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+   "client": "GET /api%2fexec%0a?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n",
+   "resp_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203137390d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a544f4b337c474554202f61706925326665786563253230657865630a3f636d643d696420485454502f312e317c455845433a7569643d31303030286d6f7573653939313129206769643d31303030286d6f75736539393131292067726f7570733d31303030286d6f75736539393131292c342861646d292c3234286364726f6d292c3237287375646f292c333028646970292c343628706c7567646576292c313030287573657273292c313031286c7864290a",
+   "resp": "HTTP/1.1 200 OK\r\nContent-Length: 179\r\nConnection: close\r\n\r\nTOK3|GET /api%2fexec%20exec\n?cmd=id HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n",
+   "status": "HTTP/1.1 200 OK",
+   "body": "TOK3|GET /api%2fexec%20exec\n?cmd=id HTTP/1.1|EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  }
+ },
+ "upstream": [
+  {
+   "client_latin1": "GET /api%2fexec%20hello.txt HTTP/1.1\r\nHost: 127.0.0.1:43201\r\nConnection: close\r\n\r\n",
+   "line_hex": "474554202f6170692532666578656325323068656c6c6f2e74787420485454502f312e31",
+   "line": "GET /api%2fexec%20hello.txt HTTP/1.1",
+   "decoded_line": "GET /api/exec hello.txt HTTP/1.1",
+   "tokens": 3,
+   "decoded_tokens": 3,
+   "qmarks_raw_line": 0,
+   "tok_latin1": [
+    "GET",
+    "/api%2fexec%20hello.txt",
+    "HTTP/1.1"
+   ],
+   "decoded_tok": [
+    "GET",
+    "/api/exec hello.txt",
+    "HTTP/1.1"
+   ],
+   "strict_exec": false,
+   "appsim_exec": true,
+   "exec_cmd": "id",
+   "exec_out": "uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  },
+  {
+   "client_latin1": "GET /api%2fexec%20exec\t?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:43201\r\nConnection: close\r\n\r\n",
+   "line_hex": "474554202f6170692532666578656325323065786563093f636d643d696420485454502f312e31",
+   "line": "GET /api%2fexec%20exec\t?cmd=id HTTP/1.1",
+   "decoded_line": "GET /api/exec exec\t?cmd=id HTTP/1.1",
+   "tokens": 3,
+   "decoded_tokens": 3,
+   "qmarks_raw_line": 1,
+   "tok_latin1": [
+    "GET",
+    "/api%2fexec%20exec\t?cmd=id",
+    "HTTP/1.1"
+   ],
+   "decoded_tok": [
+    "GET",
+    "/api/exec exec\t?cmd=id",
+    "HTTP/1.1"
+   ],
+   "strict_exec": false,
+   "appsim_exec": true,
+   "exec_cmd": "id",
+   "exec_out": "uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  },
+  {
+   "client_latin1": "GET /api%2fexec%20exec\n?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:43201\r\nConnection: close\r\n\r\n",
+   "line_hex": "474554202f61706925326665786563253230657865630a3f636d643d696420485454502f312e31",
+   "line": "GET /api%2fexec%20exec\n?cmd=id HTTP/1.1",
+   "decoded_line": "GET /api/exec exec\n?cmd=id HTTP/1.1",
+   "tokens": 3,
+   "decoded_tokens": 3,
+   "qmarks_raw_line": 1,
+   "tok_latin1": [
+    "GET",
+    "/api%2fexec%20exec\n?cmd=id",
+    "HTTP/1.1"
+   ],
+   "decoded_tok": [
+    "GET",
+    "/api/exec exec\n?cmd=id",
+    "HTTP/1.1"
+   ],
+   "strict_exec": false,
+   "appsim_exec": true,
+   "exec_cmd": "id",
+   "exec_out": "uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n"
+  }
+ ]
+}

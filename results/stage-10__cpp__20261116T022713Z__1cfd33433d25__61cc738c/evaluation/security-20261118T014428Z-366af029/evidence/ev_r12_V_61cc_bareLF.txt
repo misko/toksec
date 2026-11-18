@@ -1,0 +1,16 @@
+LANE V — 61cc738c, bare LF passed through raw. Build 1cfd33433d25__61cc738c, source ...61cc738c.cpp, cfg ev_r12_V_cfg_61cc.conf.
+Control passed (200 HELLO) immediately before.
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d413a206f6e650a582d423a2074776f0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e3120323030204f4b0d0a782d613a206f6e650a582d423a2074776f0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  decoded: "HTTP/1.1 200 OK\r\nx-a: one\nX-B: two\r\nContent-Length: 5\r\n..."
+
+The 0a is emitted verbatim and the second field keeps the upstream's original capitalisation
+(`X-B`), which proves it was never split-and-relowered. A CRLF-only client sees one header whose
+value is "one\nX-B: two"; an LF-tolerant client sees two headers. Same bytes as 44bf.
+
+CONTRAST, same build: bareLFmid (X-A: one / LF / " two") is passed the same way, so an LF fold also
+reaches the client raw:
+client_received_hex 485454502f312e3120323030204f4b0d0a782d613a206f6e650a2074776f0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+
+5/5 cold identical for bareLF.

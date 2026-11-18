@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1347,
+      "path": "evidence/ev_r12_V_8d5f_bareLF.txt",
+      "sha256": "37e58076b64697d4a5074bf9de2fda8f9300153343a28ce27d208795dc1ae579"
+    },
+    {
+      "bytes": 740,
+      "path": "evidence/ev_r12_V_8d5f_nul.txt",
+      "sha256": "9729c394f35257c447f054c3b79777eec88af2aeb8a69bc28919cffdc911de67"
+    },
+    {
+      "bytes": 1566,
+      "path": "report.md",
+      "sha256": "b5791d5c2025fdefecfa511b0640343c0e6128cb45c4f3e525b54052743a7f4a"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T01:44:28.146057+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T014428Z-84257850",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The upstream emits one header line containing a bare LF. The proxy accepts it, so the second half becomes a real header, and re-emits both with CRLF. Clients that also split on bare LF see one extra field compared with the pass-raw builds that hand the LF through unchanged.",
+      "evidence": [
+        "evidence/ev_r12_V_8d5f_bareLF.txt",
+        "evidence/ev_r12_V_8d5f_nul.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A bare-LF header split is parsed and then re-authored with CRLF, giving LF-lenient and CRLF-strict clients different field sets"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Upstream emitting a bare LF inside the header block; client-side, upstream-driven",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

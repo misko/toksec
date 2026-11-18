@@ -1,0 +1,14 @@
+workers=4 pid=2720301
+after    600 requests  rss=17508kB
+after   1200 requests  rss=18768kB
+after   1800 requests  rss=19332kB
+after   2400 requests  rss=19832kB
+after   3000 requests  rss=20304kB
+after   3600 requests  rss=20336kB
+after   4200 requests  rss=20348kB
+after   4800 requests  rss=20372kB
+after   5400 requests  rss=20372kB
+after   6000 requests  rss=20420kB
+growth first->mid 2828kB ; mid->last 84kB
+LEAK_JUDGEMENT saturated
+--- srvlog: 0 bytes

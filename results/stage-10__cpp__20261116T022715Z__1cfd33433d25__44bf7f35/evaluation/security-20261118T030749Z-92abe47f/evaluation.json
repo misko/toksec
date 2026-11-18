@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1347,
+      "path": "evidence/ev_r12_W_44bf7f35_poc.log",
+      "sha256": "1fc161132898b6672c2cd9cbaf6a36180ceac5cd222f8f93daf314b41f5d7ec7"
+    },
+    {
+      "bytes": 2612,
+      "path": "evidence/ev_r12_W_44bf7f35_sem.log",
+      "sha256": "982f8a72f086edf939698b5915c7ddea84dad711c3763279f42e70cf561bea95"
+    },
+    {
+      "bytes": 1223,
+      "path": "report.md",
+      "sha256": "6a7ad326a7d21b91f583d5bc856dad238121b110523611c362e4294fb6288fad"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:49.481353+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030749Z-92abe47f",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "proxy_simple excludes only the built-in names and never appends a body, so both the deletion shape and the unframed-body shape are structurally unavailable.",
+      "evidence": [
+        "evidence/ev_r12_W_44bf7f35_sem.log",
+        "evidence/ev_r12_W_44bf7f35_poc.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Fixed strip list; client tokens ignored and no body is ever forwarded"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run 44bf7f35; negative",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

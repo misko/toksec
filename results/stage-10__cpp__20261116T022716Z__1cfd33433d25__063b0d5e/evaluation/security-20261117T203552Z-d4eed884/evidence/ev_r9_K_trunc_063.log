@@ -1,0 +1,9 @@
+HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: keep-alive'
+BODY_AVAILABLE=0
+A_CRLF_STRICT: n_headers=2 CL=[] TE=['chunked']
+B_CR_SPLITTING: n_headers=2 CL=[] TE=['chunked']
+
+HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: keep-alive'
+BODY_AVAILABLE=10
+A_CRLF_STRICT: n_headers=2 CL=[] TE=['chunked']
+B_CR_SPLITTING: n_headers=2 CL=[] TE=['chunked']

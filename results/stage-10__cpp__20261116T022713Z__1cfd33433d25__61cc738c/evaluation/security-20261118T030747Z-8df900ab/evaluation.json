@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2124,
+      "path": "evidence/ev_r12_W_61cc738c_poc.log",
+      "sha256": "a4428edc607678c1c6418e6d06d33d463cf1e0d64239f93af69ed8b751a951af"
+    },
+    {
+      "bytes": 2316,
+      "path": "evidence/ev_r12_W_61cc738c_sem.log",
+      "sha256": "5897985a143e73a7b8548d004359d251265b7da1d08a0929ec4e5905af0057a0"
+    },
+    {
+      "bytes": 1820,
+      "path": "report.md",
+      "sha256": "df0b0e0dccaf6c23017a4751b0d8876df4abd3b88adbfcf5861d5aaf06f85b7c"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:47.652999+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030747Z-8df900ab",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "This build has no fixed hop list: every forwarded header is filtered by hasToken against the client's own Connection value, and no Content-Length is ever re-added. A POST whose body carries the upstream exec line therefore leaves the proxy with no framing, and the upstream answers the POST, then reads the body as a fresh request and executes it. One client request, one execution, no encoding.",
+      "evidence": [
+        "evidence/ev_r12_W_61cc738c_poc.log",
+        "evidence/ev_r12_W_61cc738c_sem.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Connection: content-length forwards the POST body unframed, so the upstream parses the body as a second request and executes it"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run 61cc738c; proxy location; execution is on the upstream host",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

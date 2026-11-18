@@ -1,0 +1,11 @@
+# Powered by peer1xx.py: answers 100 Continue + 200 OK(Set-Cookie) in one write.
+# config: location /api { proxy_pass "http://backend/exec"; }
+# CTL: the same server serves the static root, so 400s are not a harness fault.
+CTL GET /hello.txt                  -> 200 body=ALPHA
+GET /api?cmd=whoami (upstream 1xx)  -> 100 Error, CL 99, body is the whole nested 200 response:
+
+HTTP/1.1 100 Error\r\nContent-Length: 99\r\nConnection: close\r\n\r\n
+HTTP/1.1 200 OK\r\nContent-Length: 22\r\nSet-Cookie: a=b\r\nConnection: close\r\n\r\nINNER-BODY-FROM-UPSTREAM
+
+# The proxy does not skip the 1xx: it adopts it as the final status, relabels the reason
+# phrase Error, and delivers the real response as body text. Source: line 85 status<100 bound.

@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 12850,
+      "path": "evidence/ev_r11_T_evE_44bf.json",
+      "sha256": "b5db0b26dc2025286afea90070e0c6ba881822f0df68fea83b214f7e6f782dc1"
+    },
+    {
+      "bytes": 4556,
+      "path": "evidence/ev_r11_T_evZL3_44bf.json",
+      "sha256": "d24e9175f34a8b8ad6612b47a0414ac59be51ae57c3d02a97742d08caeeef348"
+    },
+    {
+      "bytes": 4516,
+      "path": "evidence/ev_r11_T_rep_44bf7f35.json",
+      "sha256": "8f5c106b4490d56f2a9b00232b45952c431f48bf553b464736794f9b89dec0d4"
+    },
+    {
+      "bytes": 2034,
+      "path": "report.md",
+      "sha256": "6c51287f7d720f00c0260871730219474a2cf1829be507b591902217aee98388"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T23:18:22.547261+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231822Z-b0f48d81",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /api%2fexec%3fcmd=id` is 200 with exactly one `?` upstream, 3/3 cold, exec runs. With `location /apiZ/exec` and `/apiZ%2fexec%3fcmd=id` the decoded `?` falls before the `min()` cut and is dropped, leaving `GET /apiZ%2fexec%20?cmd=id` \u2014 exec target present but no `exec` path token and only `query` carrying the command. Two decoded `?` survive as `GET /apiZ%2fexec%20?a?cmd=id` (two `?` on the line), which any first-`?`-only parser mis-splits.",
+      "evidence": [
+        "evidence/ev_r11_T_evE_44bf.json",
+        "evidence/ev_r11_T_evZL3_44bf.json",
+        "evidence/ev_r11_T_rep_44bf7f35.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Same guard-versus-sink split, plus a lossy `min()` splice that drops a decoded `?` before the cut and passes two `?` through"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 44bf7f35, round 11 lane T: `normpath` decodes then `starts_with` matches on the decoded string; `:87` splices a `min()`-bounded slice with the raw `query`.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

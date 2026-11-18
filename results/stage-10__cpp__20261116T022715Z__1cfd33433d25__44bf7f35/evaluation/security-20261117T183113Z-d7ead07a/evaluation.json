@@ -1,0 +1,76 @@
+{
+  "artifacts": [
+    {
+      "bytes": 454,
+      "path": "evidence/e44_exact.log",
+      "sha256": "0f05018a150feb535fa76c87c41a20bc503dea559bad0e35c93b30cccfe875bd"
+    },
+    {
+      "bytes": 2349,
+      "path": "report.md",
+      "sha256": "5441b7993d0afc7d7d339b1c657593717eb55b1c2ef2db46b72fed4201354311"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T18:31:13.041651+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual review of release/000001 + live compiled binary with strict exec peer"
+  },
+  "evaluation_id": "security-20261117T183113Z-d7ead07a",
+  "evaluator_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+  "findings": [
+    {
+      "description": "Target is t.substr(slash)+path.substr(min(path.size(), loc.path.size()))+query. The clamp empties the remainder on an exact match, so GET /api?cmd=whoami emits GET /exec?cmd=whoami HTTP/1.1, three tokens, and a strict parser runs whoami; bare GET /api runs id. No encoding. Requires a URI naming the route with no trailing space, an exact location match and a strict reader.",
+      "evidence": [
+        "evidence/e44_exact.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The min()-clamped slice leaves the URI intact on an exact match, so an attacker query alone executes a chosen command in a 3-token line, with no encoding"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "One build",
+    "Needs a strict 3-token reader and exact match",
+    "Upstream-side RCE",
+    "No fuzzing"
+  ],
+  "methods": [
+    "Read release/000001 from the tag",
+    "Built exact release and confirmed --check-config",
+    "Strict peer, verbatim line, token count, exact 3-token exec",
+    "GET /hello.txt control",
+    "Bare and query-bearing exact-match probes"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Second pass on release/000001 of run 44bf7f35: exact-match URI with the min()-clamped slice, driven with a static control.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

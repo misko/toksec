@@ -1,0 +1,11 @@
+LANE V — 61cc738c, NUL inside an upstream header value. Build 1cfd33433d25__61cc738c, source ...61cc738c.cpp, cfg ev_r12_V_cfg_61cc.conf.
+Control passed (200 HELLO) immediately before.
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d4e756c3a206100620d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  note "582d4e756c3a206100620d0a" = "X-Nul: a\0b\r\n"
+client_received_hex 485454502f312e3120323030204f4b0d0a782d6e756c3a206100620d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+
+The NUL is relayed, so a client using a C-string header value sees "a" and loses "b". 44bf and
+8d5f behave the same; on 6baf and e1a2 and ae02 the NUL is caught by the parser and the whole
+response is a 502 instead — so the same upstream byte means "silently shortened field" on three
+builds and "502" on three.

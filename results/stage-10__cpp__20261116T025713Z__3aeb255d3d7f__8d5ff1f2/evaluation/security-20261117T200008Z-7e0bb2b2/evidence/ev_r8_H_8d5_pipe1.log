@@ -1,0 +1,12 @@
+=== RUN 19:15:48 port=32100 ["/tmp/H_pipe2.json", "ev_r8_H_8d5_pipe1.log"]
+CONNECT-FAIL ConnectionRefusedError(111, 'Connection refused')
+=== RUN 19:16:06 port=32100 ["/tmp/H_pipe2.json", "ev_r8_H_8d5_pipe1.log"]
+CONNECT-FAIL ConnectionRefusedError(111, 'Connection refused')
+=== RUN 19:16:28 port=32100 ["/tmp/H_pipe2.json", "ev_r8_H_8d5_pipe1.log"]
+--- SEND 0: b'GET /one/p1 HTTP/1.1\r\nHost: alpha.test\r\n\r\nGET /one/p2 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 4\r\nContent-Length: 44\r\nConnection: close\r\n\r\n'
+RESP-CONNHDR: close
+RESP-BODY: b'PORT:32101\nLINE:GET /one/p1 HTTP/1.1\nTOKS:3\n'
+=== end resp 0
+PROBE-AFTER-0: CLOSED 
+=== END RUN

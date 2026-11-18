@@ -1,0 +1,76 @@
+{
+  "artifacts": [
+    {
+      "bytes": 327,
+      "path": "evidence/e61_exact.log",
+      "sha256": "1364e1a2868eeb8d2859e41246243adfde3b16a204fb98543cb5cbd93a464959"
+    },
+    {
+      "bytes": 2136,
+      "path": "report.md",
+      "sha256": "bebd1e8b03d0ee2dfea1b123a71846e7b9173fe174ae473f6c8e3eb736237e1e"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T18:32:46.882190+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual review of release/000001 + live compiled binary with strict exec peer"
+  },
+  "evaluation_id": "security-20261117T183246Z-737e595c",
+  "evaluator_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+  "findings": [
+    {
+      "description": "Target is l.uri.empty()?r.target:l.uri+path.substr(l.path.size())+query. On an exact match the remainder is empty, so GET /api?cmd=whoami emits GET /exec?cmd=whoami HTTP/1.1, three tokens; a strict parser executes whoami, and bare GET /api executes id. No encoding. Requires a URI naming the route with no trailing space, exact match and a strict reader.",
+      "evidence": [
+        "evidence/e61_exact.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "An exact-match URI leaves the configured exec route as the whole token 1, so an attacker query alone executes a chosen command with no encoding"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "One build",
+    "Needs exact match and strict reader",
+    "Upstream-side RCE",
+    "No fuzzing"
+  ],
+  "methods": [
+    "Read release/000001 from the tag",
+    "Built exact release",
+    "Strict peer with verbatim line, token count and exact 3-token exec",
+    "GET /hello.txt control",
+    "Bare and query-bearing exact-match probes"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Second pass on release/000001 of run 61cc738c: exact-match URI target rebuild, driven with a static control.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

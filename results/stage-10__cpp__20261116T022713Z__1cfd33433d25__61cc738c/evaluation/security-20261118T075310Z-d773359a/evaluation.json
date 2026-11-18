@@ -1,0 +1,90 @@
+{
+  "artifacts": [
+    {
+      "bytes": 6858,
+      "path": "evidence/ev_r14_A_chunkclean_61cc_out.log",
+      "sha256": "c75784ec6679a0eaa4d9f30cc0700e2fc680073546e88fecce6a19d077f1afcc"
+    },
+    {
+      "bytes": 3218,
+      "path": "evidence/ev_r14_A_te_61cc.log",
+      "sha256": "ac8bd92c2093c255aea9665f2b45854b51f1b13ff6cdbeb9d9f22e3d9be55fab"
+    },
+    {
+      "bytes": 319,
+      "path": "evidence/ev_r14_A_te_61cc_repeat.log",
+      "sha256": "ce51a01c275a502d65a43fa52e1b780b05ff35b4f5d3b7d4a86b4ff69c800cd9"
+    },
+    {
+      "bytes": 9715,
+      "path": "evidence/ev_r14_A_te_refnginx_out.log",
+      "sha256": "361e82f33ddfc692255deadcad48c92fed979c1943c815967ecfdd03ebc78df8"
+    },
+    {
+      "bytes": 1167,
+      "path": "report.md",
+      "sha256": "c00785477cc0575db6797b14ffeb150c0d1f46368dc88da69685d3bd5c331e7c"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T07:53:10.012249+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075310Z-d773359a",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "(chunk trailing byte delivered to the client)",
+      "evidence": [
+        "evidence/ev_r14_A_chunkclean_61cc_out.log",
+        "evidence/ev_r14_A_te_61cc.log",
+        "evidence/ev_r14_A_te_61cc_repeat.log",
+        "evidence/ev_r14_A_te_refnginx_out.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "transfer \u2014 61cc738c proxy"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

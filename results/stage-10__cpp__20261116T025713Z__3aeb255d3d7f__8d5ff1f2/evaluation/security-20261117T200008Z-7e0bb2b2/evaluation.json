@@ -1,0 +1,123 @@
+{
+  "artifacts": [
+    {
+      "bytes": 113,
+      "path": "evidence/ev_r8_H_8d5_eats_pipeline.txt",
+      "sha256": "783502b4f694f33bb175e95703fe5e9889c6f290cb8914c6dce39298daa4a6e8"
+    },
+    {
+      "bytes": 949,
+      "path": "evidence/ev_r8_H_8d5_idle.log",
+      "sha256": "b09c2f0dcd1799d032267d90216f48283a4e96e976bfc77bf08677e8186eafa3"
+    },
+    {
+      "bytes": 452,
+      "path": "evidence/ev_r8_H_8d5_kr1.log",
+      "sha256": "29d376436a16f45f2a36f1cc5b40ec9ec361ec32c98bf04436ed5b90b229ef5a"
+    },
+    {
+      "bytes": 656,
+      "path": "evidence/ev_r8_H_8d5_krhuge.log",
+      "sha256": "d4418a15335726fd03c8346afd42dedebdb00c992fb57fefb3deea4c1d8ebcba"
+    },
+    {
+      "bytes": 689,
+      "path": "evidence/ev_r8_H_8d5_pipe1.log",
+      "sha256": "c39b22ed26b900b6f03b3a80649de03a77bb68c715caa5bbfe0f0a8fa837c151"
+    },
+    {
+      "bytes": 1031,
+      "path": "evidence/ev_r8_H_8d5_shared3.log",
+      "sha256": "9341136065533c833f241adbcbeda9043447a61df04b42ea34dbf57f35a785b4"
+    },
+    {
+      "bytes": 3918,
+      "path": "report.md",
+      "sha256": "ce0d9949476f08991024aa4f5721c901a2392a01db778002bbccb2e8b73c6b75"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:00:08.801622+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client and strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T200008Z-7e0bb2b2",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "close is computed as ++c.count>=loc->s.keepreq where c.count lives on the Client and the limit comes from whichever location this request resolved to. Visiting /one/ (keepalive_requests 1) and then a /two/ request on the same connection still sees count reach the low limit and closes, and vice versa a high-limit location lets the counter run past a sibling's configured limit. One request is enough to observe: after the counter meets the low limit the response carries Connection: close. Precondition: two locations with different keepalive_requests.",
+      "evidence": [
+        "evidence/ev_r8_H_8d5_kr1.log",
+        "evidence/ev_r8_H_8d5_shared3.log",
+        "evidence/ev_r8_H_8d5_krhuge.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "keepalive_requests is compared against a counter shared by every location on the connection, so a low-limit location closes the connection for a different one"
+    },
+    {
+      "description": "apply() stores keepalive_timeout into s.keepsec and the close expression consults it only through !loc->s.keepsec (zero vs non-zero), never as a duration. The enforced idle deadline is the literal if(time(nullptr)-c.last>75) in the poll loop, so a configured keepalive_timeout 2s still leaves the socket alive for 75s and a configured large value does not extend past 75s. Precondition: none beyond a keepalive connection.",
+      "evidence": [
+        "evidence/ev_r8_H_8d5_idle.log"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "keepalive_timeout is parsed into keepsec and never read; the real idle deadline is a hardcoded 75 seconds"
+    },
+    {
+      "description": "The close decision is taken before the pipelined tail is processed, and the processed tail is only re-run after the write completes and only when close is false. Sending two requests in one packet where the first hits a keepalive_requests 1 location returns only the first response; the second is dropped with no error to the client. Precondition: a low keepalive_requests location and a pipelined packet.",
+      "evidence": [
+        "evidence/ev_r8_H_8d5_eats_pipeline.txt",
+        "evidence/ev_r8_H_8d5_pipe1.log"
+      ],
+      "id": "SEC-003",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A pipelined second request is eaten when the first response closes the connection"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Needs a proxied location that sets a low keepalive_requests",
+    "The build dials a fresh upstream per request, so no pool poisoning here"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request on the same config first",
+    "Drove the state axis with a raw socket client and a logging peer",
+    "Compared client bytes and the peer log"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 8 lane H: keepalive counter, idle deadline, and eaten pipelined request behind a closing response.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

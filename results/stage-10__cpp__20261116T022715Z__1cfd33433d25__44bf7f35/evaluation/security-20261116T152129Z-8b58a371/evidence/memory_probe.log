@@ -1,0 +1,19 @@
+binary=target workers=4 ok=20000/20000
+    4000 rss=3104kB
+    8000 rss=3104kB
+   12000 rss=3104kB
+   16000 rss=3104kB
+   20000 rss=3104kB
+growth_after_warmup=0kB over 12000 connections
+MEM_VERDICT flat
+--- srvlog: 0 bytes
+
+binary=target-san workers=4 ok=20000/20000
+    4000 rss=24128kB
+    8000 rss=27656kB
+   12000 rss=29292kB
+   16000 rss=32068kB
+   20000 rss=34540kB
+growth_after_warmup=6884kB over 12000 connections
+MEM_VERDICT growing(6884kB)
+--- srvlog: 0 bytes

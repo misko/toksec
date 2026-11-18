@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 152,
+      "path": "evidence/ev_r9_K_hang_063z4.log",
+      "sha256": "db37e17e69feffa90808ff544b5757f394aa54b95039c1a4c13cb8c474cfa646"
+    },
+    {
+      "bytes": 390,
+      "path": "evidence/ev_r9_K_trunc_063.log",
+      "sha256": "edc926b32e43ad2288eec0107067b3f74a2d4234e8a7294825feeda5d253d33c"
+    },
+    {
+      "bytes": 1947,
+      "path": "report.md",
+      "sha256": "603439a9212b07ec77190ea3aa0af4c47aace43218932e8441c48941c21e1d0a"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:35:52.313997+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact bytes, verbatim client-head capture"
+  },
+  "evaluation_id": "security-20261117T203552Z-d4eed884",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Re-chunking is correct for the bytes it forwards, but when the chunk-size line is not yet buffered beyond 1024 bytes the path gives up and the client keeps a Connection: keep-alive chunked stream with no 0-terminator, so the client blocks until its own timeout. Precondition: a chunked upstream whose chunk-size line straddles the buffer.",
+      "evidence": [
+        "evidence/ev_r9_K_trunc_063.log",
+        "evidence/ev_r9_K_hang_063z4.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A chunked response is abandoned mid-stream on a keep-alive connection without a terminating chunk"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Upstream-host execution only",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first",
+    "Scripted peer emitted each response shape on its own path",
+    "Captured the client head verbatim and re-requested on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 9 lane K: the client-facing response head the proxy rebuilds.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

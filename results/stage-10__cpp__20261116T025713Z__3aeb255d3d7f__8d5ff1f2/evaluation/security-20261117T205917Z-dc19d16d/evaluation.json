@@ -1,0 +1,74 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1808,
+      "path": "evidence/ev_r9_J_num_3aeb255d3d7f__8d5ff1f2.log",
+      "sha256": "2907f606cd7ac367e41acf7209bf9c4c267e91f8c31e1130d79c58799de96918"
+    },
+    {
+      "bytes": 2203,
+      "path": "report.md",
+      "sha256": "8fa2388eab8c6a8549674b17aee4f45f9048748f54609f4bf3797fd6e628740d"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:59:17.656093+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket range matrix with measured byte counts"
+  },
+  "evaluation_id": "security-20261117T205917Z-dc19d16d",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "330 shapes with zero Content-Length versus received-byte mismatches, zero Content-Range span versus CL mismatches, zero out-of-file spans and zero HEAD-versus-GET disagreements. The digits parser is a local lambda with an explicit overflow bound and the trusted length is the same variable the header is built from. The single oddity is the cosmetic 206 Error status line from the shared reason table. Recorded as the clean contrast build.",
+      "evidence": [
+        "evidence/ev_r9_J_num_3aeb255d3d7f__8d5ff1f2.log"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Range arithmetic is exact on every driven shape; the only anomaly is the shared bogus reason phrase on a 206"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Static build, nothing executes",
+    "Cap findings need a file at or over 64 MiB"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first",
+    "330 range shapes per build with measured received bytes",
+    "HEAD-versus-GET pairs and 64 MiB boundary files"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 9 lane J: static byte-range arithmetic and the trusted length.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

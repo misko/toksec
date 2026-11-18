@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 3488,
+      "path": "evidence/ev_r9_L_8d5ff1f2_expect_bodyloss.ev",
+      "sha256": "157693a53424461fc94ea4201b51a69df38c6923f822b11d4724ed03a1f14b2a"
+    },
+    {
+      "bytes": 7532,
+      "path": "evidence/ev_r9_L_8d5ff1f2_expect_tokenizer_host.ev",
+      "sha256": "93f1d0ffdbb154b0df63fd30a76cf20994f9bb3b5fffae6de7da12b1a010fd05"
+    },
+    {
+      "bytes": 1634,
+      "path": "report.md",
+      "sha256": "fd66688e750d696f5801bd0aa924ec6befc449fcad55910023fe841153eed35d"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:17:55.926473+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client, strict-token peer"
+  },
+  "evaluation_id": "security-20261117T201755Z-0168619c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`if(expect){fail(417)` at line 86: line 86 (`if(expect){fail(417)`).",
+      "evidence": [
+        "evidence/ev_r9_L_8d5ff1f2_expect_bodyloss.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "line 86 (`if(expect){fail(417)`)"
+    },
+    {
+      "description": "`sp1=first.find(' ')` at line 86: line 86 (`sp1=first.find(' ')`).",
+      "evidence": [
+        "evidence/ev_r9_L_8d5ff1f2_expect_tokenizer_host.ev"
+      ],
+      "id": "SEC-002",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "line 86 (`sp1=first.find(' ')`)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Expect 417 is availability/correctness, not execution"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first",
+    "Drove Expect, tokenizer and Host matrices with a raw socket client",
+    "Captured status and the verbatim upstream request line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 9 lane L: Expect handling, request-line tokenizer delta and Host port parsing.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

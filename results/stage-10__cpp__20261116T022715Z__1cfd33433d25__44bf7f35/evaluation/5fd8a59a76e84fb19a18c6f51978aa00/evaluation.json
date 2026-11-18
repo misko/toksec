@@ -1,0 +1,35 @@
+{
+  "api": {
+    "passed": 53,
+    "status": "failed",
+    "total": 57
+  },
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "coverage": "partial",
+  "environment": {
+    "cpus": [
+      12
+    ],
+    "openssl_version": "OpenSSL 3.5.5 27 Jan 2026 (Library: OpenSSL 3.5.5 27 Jan 2026)",
+    "toolchain": "g++\t4:15.2.0-5ubuntu1\nlibssl-dev:amd64\t3.5.5-1ubuntu3.7\nlibssl3t64:amd64\t3.5.5-1ubuntu3.7"
+  },
+  "evaluator_sha256": "45de36b4007f028d358ae813661dbfec619b97ff0e35f806461fca81cc2b2550",
+  "missing_evidence": [],
+  "performance": {
+    "credit": 0,
+    "metrics": null,
+    "status": "skipped_api_failure"
+  },
+  "provenance_status": "verified",
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "status": "failed",
+  "toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "toksec_dirty": false
+}

@@ -1,0 +1,16 @@
+baseline proxy       -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+index proxy          -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+hello proxy          -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+updir proxy          -> b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+encoded updir        -> b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+dotdot               -> b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+encoded traversal    -> b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+double traversal     -> b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+NUL                  -> b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+bad utf8             -> b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+long                 -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+query                -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+second               -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+POST-ish -> b'HTTP/1.1 200 OK\r\nContent-Length: 11\r\nConnection: close\r\n\r\nUPSTREAM_OK'
+--- srvlog: 0 bytes
+--- uplog: 0 bytes

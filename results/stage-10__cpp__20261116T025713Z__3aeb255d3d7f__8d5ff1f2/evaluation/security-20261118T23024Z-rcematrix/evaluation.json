@@ -1,0 +1,165 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 171,
+      "path": "evidence/1xx_nesting.pass.log",
+      "sha256": "c2c8ed6a85a9c3c553766f01eccb5ceb0f4c59433a5d01f0e569891d9446970f"
+    },
+    {
+      "bytes": 208,
+      "path": "evidence/body_replay_desync.pass.log",
+      "sha256": "1966a5cbd73533902d19df29dbf9d890128fd54b7a53c9d1d46485dff2de7d51"
+    },
+    {
+      "bytes": 2547,
+      "path": "evidence/cells.json",
+      "sha256": "d7a4125280cca60d399143634f3b4931f62444cccc918424bf364acc2fc45481"
+    },
+    {
+      "bytes": 184,
+      "path": "evidence/config_quoted_space.pass.log",
+      "sha256": "bcf8f2a5ccef666f156f02ebaff77bd8a4ab3e070d47214e18528eec4c2b97af"
+    },
+    {
+      "bytes": 111,
+      "path": "evidence/multi_hop_chain.pass.log",
+      "sha256": "037ba4e8caa9ea12f3297f645eb5d3eb63d1d543933a677b1528d4fcb64e353c"
+    },
+    {
+      "bytes": 179,
+      "path": "evidence/pct2f_split.pass.log",
+      "sha256": "8e1f428c2c47dabb825815afefa7ca0b0282ddf0bcbdda3e734740982adfb958"
+    },
+    {
+      "bytes": 236,
+      "path": "evidence/request_line_split.pass.log",
+      "sha256": "049f94289b5e9c4bc7e8d5626645e0d89570aeeff5e1aac7b167fe737acc3f1a"
+    },
+    {
+      "bytes": 9394,
+      "path": "evidence/row_py.log",
+      "sha256": "af73eea4ee7dfa2d6648a992305efbe03ddd467f5e24cfb18a6635539526c518"
+    },
+    {
+      "bytes": 5127,
+      "path": "report.md",
+      "sha256": "8c8fae8a911577b573a8208540c3ab365a07d2a82943304ccdf01162d7b89f76"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T23:42:09.903660+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "scripts/probes/rce/row.py sweep 2026-11-18 (control-first, exact request bytes, executing peer)"
+  },
+  "evaluation_id": "security-20261118T23024Z-rcematrix",
+  "evaluator_sha256": "bda9db5d6e0a5f7773b016ab3b9076013939175ff3be05398096cfe0cdb10974",
+  "findings": [
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/x?a%0d%0aGET%20/exec%3fcmd=id%0d%0aHost:%20u%0d%0a%20HTTP/1.1 HTTP/1.1']. Root cause at `8d5ff1f2:77` (`pathnorm`) and `:85` (`proxy_request`, `req=method+\" \"+target`).",
+      "evidence": [
+        "evidence/request_line_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "request_line_split: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/x HTTP/1.1', 'GET /api/exec?cmd=id HTTP/1.1']. Root cause at `8d5ff1f2:85` (`Content-Length: 0` consumes only the head).",
+      "evidence": [
+        "evidence/body_replay_desync.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "body_replay_desync: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/x HTTP/1.1']. Root cause at `8d5ff1f2:85` (`status<100||status>599` accepts 1xx; real response becomes the body).",
+      "evidence": [
+        "evidence/1xx_nesting.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "1xx_nesting: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /api/exec?cmd=id HTTP/1.1']. Root cause at `8d5ff1f2:77` (`pathnorm` decodes `%2f`).",
+      "evidence": [
+        "evidence/pct2f_split.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "pct2f_split: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw ['GET /exec ?cmd=id HTTP/1.1']. Root cause at `8d5ff1f2:85` (`proxy_request` splices the quoted URI raw).",
+      "evidence": [
+        "evidence/config_quoted_space.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-005",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "config_quoted_space: verified upstream-side RCE (high)"
+    },
+    {
+      "description": "Driven by scripts/probes/rce/row.py against the tagged release. Observed: control 200, upstream saw status=HTTP/1.1 200 OK executed=1. Root cause at hop 1 `6baf167b:62` (`decodepath`) / `:97`; hop 2 `8d5ff1f2:77` (`pathnorm`) / `:89` (`proxy_request`).",
+      "evidence": [
+        "evidence/multi_hop_chain.pass.log",
+        "evidence/cells.json"
+      ],
+      "id": "SEC-006",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "multi_hop_chain: verified upstream-side RCE (high)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Covers the eight request-smuggling RCE families of the rce_matrix; static-only findings from the earlier audits are recorded in their own envelopes."
+  ],
+  "methods": [
+    "row.py cell harness with benign control, fresh peer and proxy per cell, exact bytes from cells.json"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Empirical RCE verification of the tagged release: every positive cell of the rce_matrix driven with real request bytes; a cell passes only on an upstream-side effect.",
+  "status": "completed",
+  "toksec_commit": "3ca37c78b021f91fe4d9f01ad2197dbff687454e",
+  "toksec_dirty": true
+}

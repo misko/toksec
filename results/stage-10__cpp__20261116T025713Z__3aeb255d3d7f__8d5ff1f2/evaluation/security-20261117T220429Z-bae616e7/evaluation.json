@@ -1,0 +1,92 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 581,
+      "path": "evidence/ev_r10_P_shift_8d5.hex",
+      "sha256": "75b0c0c7f3b02e40fb5bac0269d2dfead14f2dd36351af4ffccc5255440567ed"
+    },
+    {
+      "bytes": 1662,
+      "path": "evidence/ev_r10_P_shift_8d5.log",
+      "sha256": "7e4bd5889ad0c7a1ee5b33c61fb3ed52ec3cfbe893cce501d53c8211c61a7ef9"
+    },
+    {
+      "bytes": 325,
+      "path": "evidence/ev_r10_P_shift_8d5.txt",
+      "sha256": "15901ae029e656bc20acaed60869f89ba25291171d1cdae8713a7ac084ef306b"
+    },
+    {
+      "bytes": 2904,
+      "path": "report.md",
+      "sha256": "fc0a6cd65abc20ef122d56dffb1ffcad00a7af23f87a8c9877acb6f7aef1cb68"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T22:04:29.990153+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; one client socket per composition, strict-token peer with a monotonic SEQ counter echoed into the body, hex-exact client capture"
+  },
+  "evaluation_id": "security-20261117T220429Z-bae616e7",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /api%2fexec%20?cmd=id&mode=sub%20n=60` plus two pipelined followers. Client bytes: `HTTP/1.1 100 Error` + `Content-Length: 60`, then the real `200` head as body, `SEQ:1 TOK:` truncated at exactly 60 bytes, then the followers' two responses. Each response carries the previous request's SEQ, so an innocent pipeliner reads executed bytes as the body of a response it did ask for, and its own last response is orphaned. Boundary: an interim CL below the body leaves `HTTP/1HTTP/1.1 200 OK` in the window and the client parser breaks; an interim CL above everything plus a follower is a flat 502, so the usable window is interim-CL between the real body and the following head.",
+      "evidence": [
+        "evidence/ev_r10_P_shift_8d5.hex",
+        "evidence/ev_r10_P_shift_8d5.txt",
+        "evidence/ev_r10_P_shift_8d5.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "An interim 100 carrying a Content-Length becomes a terminal head; the real head is absorbed as its body and every later answer on the socket shifts one request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Intra-connection only; no cross-client leak was found",
+    "Needs an attacker-influenced upstream and a pipelining client",
+    "All RCE is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Exec control and follower control first in the same script",
+    "Both request and response direction captured verbatim",
+    "N=6 cold repeats per positive"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 10 lane P: int1xx-as-terminal composed with a pipelined follower.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

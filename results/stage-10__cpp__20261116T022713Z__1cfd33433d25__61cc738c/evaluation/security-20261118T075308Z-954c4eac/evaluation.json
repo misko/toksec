@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7110,
+      "path": "evidence/ev_r14_A_61cc738c_v2_out.log",
+      "sha256": "84c82c491d3e5401f5fdc86b6c4ff50cb882371c92fd3828205fb3591b0063f4"
+    },
+    {
+      "bytes": 1338,
+      "path": "report.md",
+      "sha256": "447096ba8e1d9a7ade644f7887f1f3c3592062026e4d9e474163d8293d4d4e4b"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T07:53:08.048649+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075308Z-954c4eac",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "(417, reference sends 100) Same shape and control (`ev_r14_A_61cc738c_v2_out.log`), identical client bytes to \u00a73.\nSource line: **line 68 (`serve`)** \u2014 `if(count(r,\"expect\")){sendhead(io,417,0,true);break;}`.\nPrecondition: same as \u00a73. Evidence: `ev_r14_A_61cc738c_v2_out.log`. Known family.",
+      "evidence": [
+        "evidence/ev_r14_A_61cc738c_v2_out.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "negative for `Expect` \u2014 61cc738c serve"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

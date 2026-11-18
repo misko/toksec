@@ -1,0 +1,149 @@
+## build=1cfd33433d25__61cc738c listen=38331 upstream=34427 date=2026-11-17T20:27:05Z
+## CONTROL
+### build=1cfd33433d25__61cc738c listen=38331 upstream=34427
+[/api/c0] req=b'GET /api/c0 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/c0] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/c0] BODY=b'HELLO' len=5
+[/api/c0] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/c0] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+## CASES
+### build=1cfd33433d25__61cc738c listen=38331 upstream=34427
+[/api/k1] req=b'GET /api/k1 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k1] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/k1] BODY=b'HELLO' len=5
+[/api/k1] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k1] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k2] req=b'GET /api/k2 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k2] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/k2] BODY=b'5\r\nHELLO\r\n0\r\n\r\n' len=15
+[/api/k2] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k2] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k3] req=b'GET /api/k3 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k3] HEAD=b'HTTP/1.1 200 OK\r\ntrailer: X-Sum\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/k3] BODY=b'5\r\nHELLO\r\n0\r\nX-Sum: 9\r\n\r\n' len=25
+[/api/k3] HEX=485454502f312e3120323030204f4b0d0a747261696c65723a20582d53756d0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k3] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k4a] req=b'GET /api/k4a HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k4a] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/k4a] BODY=b'HELLO' len=5
+[/api/k4a] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k4a] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k4b] req=b'GET /api/k4b HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k4b] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/k4b] BODY=b'HELLO' len=5
+[/api/k4b] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k4b] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k5] req=b'GET /api/k5 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k5] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/k5] BODY=b'HELLO' len=5
+[/api/k5] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k5] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k7] req=b'GET /api/k7 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k7] HEAD=b'HTTP/1.1 204 Error\r\nConnection: close\r\n\r\n'
+[/api/k7] BODY=b'' len=0
+[/api/k7] HEX=485454502f312e3120323034204572726f720d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k7] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/k7b] req=b'GET /api/k7b HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/k7b] HEAD=b'HTTP/1.1 304 Not Modified\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/k7b] BODY=b'' len=0
+[/api/k7b] HEX=485454502f312e3120333034204e6f74204d6f6469666965640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/k7b] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/s2] req=b'GET /api/s2 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/s2] HEAD=b'HTTP/1.1 204 Error\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/s2] BODY=b'' len=0
+[/api/s2] HEX=485454502f312e3120323034204572726f720d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/s2] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/s3] req=b'GET /api/s3 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/s3] HEAD=b'HTTP/1.1 304 Not Modified\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/s3] BODY=b'' len=0
+[/api/s3] HEX=485454502f312e3120333034204e6f74204d6f6469666965640d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/s3] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/d1] req=b'GET /api/d1 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/d1] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/d1] BODY=b'HELLO' len=5
+[/api/d1] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/d1] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/d2] req=b'GET /api/d2 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/d2] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/d2] BODY=b'HELLO' len=5
+[/api/d2] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/d2] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/d5] req=b'GET /api/d5 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/d5] HEAD=b'HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n'
+[/api/d5] BODY=b'HEAD-IN-REASON' len=14
+[/api/d5] HEX=485454502f312e3120323030204f4b0d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/d5] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/z1] req=b'GET /api/z1 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/z1] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/z1] BODY=b'zz\r\nHELLO\r\n0\r\n\r\n' len=16
+[/api/z1] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/z1] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/z3] req=b'GET /api/z3 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/z3] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/z3] BODY=b'3\r\nABC\r\n0\r\n\r\nLEFTOVER' len=21
+[/api/z3] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/z3] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/y1] req=b'GET /api/y1 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/y1] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Length: 99\r\nConnection: close\r\n\r\n'
+[/api/y1] BODY=b'5\r\nHELLO\r\n0\r\n\r\n' len=15
+[/api/y1] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a2039390d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/y1] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/y2] req=b'GET /api/y2 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/y2] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/y2] BODY=b'5\r\nHE' len=5
+[/api/y2] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/y2] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/y3] req=b'GET /api/y3 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/y3] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/y3] BODY=b'HELLO' len=5
+[/api/y3] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/y3] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/y4] req=b'GET /api/y4 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/y4] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/y4] BODY=b'64\r\nA' len=5
+[/api/y4] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/y4] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/y5] req=b'GET /api/y5 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/y5] HEAD=b'HTTP/1.1 200 OK\r\ntrailer: X-A\r\nTransfer-Encoding: chunked\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+[/api/y5] BODY=b'64\r\nA' len=5
+[/api/y5] HEX=485454502f312e3120323030204f4b0d0a747261696c65723a20582d410d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/y5] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/w1] req=b'GET /api/w1 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/w1] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/w1] BODY=b'1\r\nA\r\n1\r\nB\r\n0\r\n\r\n' len=17
+[/api/w1] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/w1] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/w3] req=b'GET /api/w3 HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/w3] HEAD=b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n'
+[/api/w3] BODY=b'5\r\nHELLO\r\n0\r\nTrailer-X: 1\r\n\r\n' len=29
+[/api/w3] HEX=485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/w3] SECOND_WELLFORMED=None SECOND_BYTES=b''
+
+[/api/local.txt] req=b'GET /api/local.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: keep-alive\r\n\r\n'
+[/api/local.txt] HEAD=b'HTTP/1.1 200 OK\r\nContent-Length: 8\r\nConnection: close\r\n\r\n'
+[/api/local.txt] BODY=b'UPSTREAM' len=8
+[/api/local.txt] HEX=485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20380d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+[/api/local.txt] SECOND_WELLFORMED=None SECOND_BYTES=b''
+

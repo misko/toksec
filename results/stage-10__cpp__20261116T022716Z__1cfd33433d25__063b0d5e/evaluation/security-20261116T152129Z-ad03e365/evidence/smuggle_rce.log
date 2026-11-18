@@ -1,0 +1,6 @@
+--- control GET /hello.txt
+    HTTP/1.1 200 OK | x-saw: GET /hello.txt HTTP/1.1<CR><LF>Host: 127.0.0.1:19503<CR><LF>Connection: close | Content-Length: 11 | Connection: keep-alive |  | UPSTREAM_OK
+--- Form A: encoded-CRLF header injection, exec on the request line
+    HTTP/1.1 400 Bad Request | Content-Length: 0 | Connection: close |  | 
+--- Form B: injected second request after a real CRLFCRLF
+    HTTP/1.1 400 Bad Request | Content-Length: 0 | Connection: close |  | 

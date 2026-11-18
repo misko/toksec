@@ -1,0 +1,208 @@
+===== CONTROL /api/ctl =====
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/ctl =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c1 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c2 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c3 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4s =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4z =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c4t =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c5 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c6 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c7 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c8 =====
+client-bytes-len 81
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Connection: close
+
+5
+HELLO
+0
+
+
+===== CASE /api/c8i =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c9i =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c11 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4n =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c18 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c19 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c20 =====
+client-bytes-len 83
+HTTP/1.1 200 OK
+x-from-real-head: 1
+Content-Length: 5
+Connection: close
+
+FORGE
+===== CASE /api/c21 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c22 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c23 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c30 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c31 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/cx =====
+client-bytes-len 223
+HTTP/1.1 200 OK
+x-up: exec
+Transfer-Encoding: chunked
+Connection: close
+
+86
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+0
+
+
+===== KEEPALIVE first=/api/c1 second=/hello.txt =====
+--first (67)--
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: keep-alive
+
+HELLO
+--second (125)--
+HTTP/1.1 200 OK
+ETag: "15045555-6-1794918730"
+Content-Type: text/plain
+Content-Length: 6
+Connection: keep-alive
+
+ALPHA
+
