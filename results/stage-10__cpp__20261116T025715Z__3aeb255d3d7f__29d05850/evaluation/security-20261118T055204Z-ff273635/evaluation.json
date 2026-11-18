@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 129,
+      "path": "evidence/ev_r13_C_29d.headfail.client.hex",
+      "sha256": "eb0a378a8534e67545dd489d3b48fe7ae12e1d91a2791619d9c544e0dec2e4ad"
+    },
+    {
+      "bytes": 79,
+      "path": "evidence/ev_r13_C_29d.pipe_ctl.u2.hex",
+      "sha256": "70a6f670fd9ca12adc713fd399af0e3b2569c02f36a4cc5315aa9bd46d219bbf"
+    },
+    {
+      "bytes": 66,
+      "path": "evidence/ev_r13_C_29d.pipe_headfail.client.hex",
+      "sha256": "c958655a9070f02d9ea25d77739857745752184d6bd18f76ac2446dd834e2156"
+    },
+    {
+      "bytes": 1222,
+      "path": "report.md",
+      "sha256": "bd14fdc2a1efa2c747b28d80092b827d7672d7d48bbf67d1bd33f77bb0c325a6"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T05:52:04.514165+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T055204Z-ff273635",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Failed upstream kills connection with no retry and no cross-request buffer reuse.",
+      "evidence": [
+        "evidence/ev_r13_C_29d.headfail.client.hex",
+        "evidence/ev_r13_C_29d.pipe_ctl.u2.hex",
+        "evidence/ev_r13_C_29d.pipe_headfail.client.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Negative: clean epoll pipeline semantics on 29d05850"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Remote code execution precondition analysis; RCE occurs on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

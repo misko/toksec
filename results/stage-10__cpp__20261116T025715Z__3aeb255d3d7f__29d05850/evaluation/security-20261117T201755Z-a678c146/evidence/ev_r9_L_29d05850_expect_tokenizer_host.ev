@@ -1,0 +1,266 @@
+[ss pre] LISTEN 0      32                                  127.0.0.1:39611      0.0.0.0:*    users:(("python3",pid=3938225,fd=3)) | LISTEN 0      1024                                127.0.0.1:39601      0.0.0.0:*    users:(("3aeb255d3d7f__2",pid=3938232,fd=3),("3aeb255d3d7f__2",pid=3938230,fd=3))
+### CTL_exec
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+CONTROL_PASS True
+### E0_ctl_post_nobody
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 405 Method Not Allowed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E1_cont
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E2_cont_foo
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue, foo\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E3_foo
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: foo\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E4_empty
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: \r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E5_capital
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-Continue\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E6_cont_nobody_prox
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E7_cont_static_get
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### E8_cont_static_post
+REQ b'POST /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+CLIENTBYTES 73
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### T1_two_before_ver
+REQ b'GET /exec?cmd=id  HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T2_tab_method
+REQ b'GET\t/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T3_lead_space
+REQ b' GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T4_trail_space
+REQ b'GET /exec?cmd=id HTTP/1.1 \r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T5_two_trail
+REQ b'GET /exec?cmd=id HTTP/1.1  \r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T6_dbl_both
+REQ b'GET  /exec?cmd=id  HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### T7_tab_before_ver
+REQ b'GET /exec?cmd=id\tHTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 307
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=N"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+EOF True
+
+### H0_ctl
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 120
+BODY b'ALPHA\n'
+UPSTREAM NONE
+EOF True
+
+### H1_port0
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:0\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H2_65535
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:65535\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 120
+BODY b'ALPHA\n'
+UPSTREAM NONE
+EOF True
+
+### H3_65536
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:65536\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H4_007
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:007\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 120
+BODY b'ALPHA\n'
+UPSTREAM NONE
+EOF True
+
+### H5_upper
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: ALPHA.TEST\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 120
+BODY b'ALPHA\n'
+UPSTREAM NONE
+EOF True
+
+### H6_traildot
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test.\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H7_dbl_dot
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha..test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H8_hostempty
+REQ b'GET /hello.txt HTTP/1.1\r\nhost:\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H9_space_colon
+REQ b'GET /hello.txt HTTP/1.1\r\nHost : alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H10_dup
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H11_trailsp_val
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:80 \r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 120
+BODY b'ALPHA\n'
+UPSTREAM NONE
+EOF True
+
+### H12_two_colon
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:80:90\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H13_80x
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:80x\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H14_ipv6
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: [::1]\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+
+### H15_nohost
+REQ b'GET /hello.txt HTTP/1.1\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+EOF True
+

@@ -1,0 +1,18 @@
+build        : 3aeb255d3d7f__29d05850
+upstream     : line-oriented lenient router; execs any well-formed /exec?cmd= line
+claim        : the header block is erased from the parse buffer, then the method is rejected 405
+               for a non-GET on a proxy location. The body is never drained, so it stays in the
+               buffer and the loop parses it as the NEXT request - one client write, two requests.
+
+single client write (bytes):
+b'POST /api/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 51\r\nConnection: keep-alive\r\n\r\nGET /api/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\n\r\nGET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+
+responses received: 3
+statuses: ['405 Method Not Allowed', '200 OK', '200 OK']
+upstream connections: 2
+  upstream #1 line0: b'GET /api/api/exec?cmd=id HTTP/1.1'
+  upstream #1 decisions: ['line0: EXEC /api/api/exec?cmd=id', 'line1: 2 tokens', 'line2: 2 tokens']
+  upstream #2 line0: b'GET /api/hello.txt HTTP/1.1'
+  upstream #2 decisions: ['line0: request GET /api/hello.txt', 'line1: 2 tokens', 'line2: 2 tokens']
+
+uid returned: True

@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 192,
+      "path": "evidence/ev_r16_A_cap_6fb186ed_exec09crlf.log",
+      "sha256": "e56b642ec078c50d116a855f0555e574f1831a06124baafe190a159f34cc089d"
+    },
+    {
+      "bytes": 16569,
+      "path": "evidence/ev_r16_A_final_6fb186ed.txt",
+      "sha256": "c071bb16e40914e3c63f7304b55968961682084380f6e16e2a08aa22918d0d55"
+    },
+    {
+      "bytes": 1519,
+      "path": "report.md",
+      "sha256": "10ebafe4bf3f6615cd30949f34641559640d789b7c28f971f77bb6eb9f3abd58"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T11:15:09.871795+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111509Z-5a183ea5",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "decodepath at 62 has no <32 arm, so the decoded separator survives. On stock nginx the /exec suffix is still an anchored exec route and the command runs, with the 0.9 reply surfacing as 502 to the caller. Node returns 400 so the shape is consumer-dependent.",
+      "evidence": [
+        "evidence/ev_r16_A_cap_6fb186ed_exec09crlf.log",
+        "evidence/ev_r16_A_final_6fb186ed.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Third armed decoder; extensionless anchor plus a passed control byte executes on stock nginx"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

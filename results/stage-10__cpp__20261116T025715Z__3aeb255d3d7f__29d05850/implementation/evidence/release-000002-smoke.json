@@ -1,0 +1,57 @@
+{
+  "cases": [
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0006
+    },
+    {
+      "explanation": "--check-config exit status 0",
+      "id": "config",
+      "passed": true
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "http-get",
+      "passed": true,
+      "seconds": 0.0023
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "https-get",
+      "passed": true,
+      "seconds": 0.0481
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "https-persistent",
+      "passed": true,
+      "seconds": 0.0863
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "proxy",
+      "passed": true,
+      "seconds": 0.0026
+    }
+  ],
+  "final_grade_eligible": false,
+  "passed": true,
+  "scope": "visible_smoke",
+  "unimplemented_requirements": [
+    "All configurable routing, alias, MIME, etag-off and keepalive-limit combinations",
+    "Atomic valid/invalid reload, certificate rotation and old-generation reservation/limiter behavior",
+    "Cache byte/entry/waiter limits, coalescing, cancellation and all bypass/variant/revalidation combinations",
+    "Complete configuration grammar, include bounds, diagnostics, inheritance and invalid TLS material matrix",
+    "Filesystem symlink/nonregular confinement and binary/empty/large fixture matrix",
+    "Full upstream malformed/truncated/informational/bodyless framing and timeout matrix",
+    "Global rate/connection limits, FIFO queue saturation/expiry, retry/cooldown/probe fairness",
+    "TLS cipher/group exclusions, session resumption, fragmented handshake, close_notify and handshake admission bounds",
+    "Upload progress handshake, slow-reader resource bounds and all absolute deadlines",
+    "Worker count/replacement, SIGTERM draining, process-tree resource and sustained leak accounting",
+    "complete Stage 10 API gate and calibrated performance matrix",
+    "complete configuration matrix",
+    "worker/reload/global-resource behavior"
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 4110,
+      "path": "evidence/6fb186ed.log",
+      "sha256": "62b0bbcc94a9eeb35f46630b511d57a7a9cd6600ac81e6e4c4e623e4a94de894"
+    },
+    {
+      "bytes": 1894,
+      "path": "evidence/6fb186ed.up.json",
+      "sha256": "402629115ba676ebbb2f79e2833650834c415e3828d04613ff7572731a361d5a"
+    },
+    {
+      "bytes": 2592,
+      "path": "report.md",
+      "sha256": "4a65445fff95e0de32782b8af1d51ee178f9849b0516344161c45fc8d59b8c04"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T19:22:47.228035+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary, strict-token upstream peer, TLS via openssl s_client"
+  },
+  "evaluation_id": "security-20261117T192247Z-8d1705ed",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "decodepath decodes the target and admits the decoded space; the rebuilt upstream target keeps it, so the upstream request line gains a fourth whitespace token and the second token is exactly /exec. Over TLS the captured upstream line is byte-identical to the cleartext one: GET /exec ?cmd=id HTTP/1.1, 4 tokens, and the peer executes id. Control /api/hello.txt gives a 3-token line and no exec on both transports. Execution is sh -c on the upstream host.",
+      "evidence": [
+        "evidence/6fb186ed.log",
+        "evidence/6fb186ed.up.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The %20-escaped space split of the upstream request line reproduces byte-identically over TLS"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "RCE is on the upstream host, not local",
+    "Needs the TLS listener and a proxy_pass location whose prefix can be consumed"
+  ],
+  "methods": [
+    "Read release/000004 main.cpp",
+    "Verified the staged source is byte-identical to the tag",
+    "Compiled and ran the build against a strict-token peer",
+    "TLS control /api/hello.txt then payload /api/exec%20?cmd=id over TLS",
+    "Diffed the TLS upstream capture against the cleartext capture"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 7 lane A: the confirmed cleartext %20 split driven over the TLS listener.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

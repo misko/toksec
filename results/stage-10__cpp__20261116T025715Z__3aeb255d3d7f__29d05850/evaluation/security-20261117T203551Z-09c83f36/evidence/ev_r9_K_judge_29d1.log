@@ -1,0 +1,8 @@
+HEAD=b'HTTP/1.1 200 OK\rContent-Length: 999\r\nContent-Length: 5\r\nConnection: keep-alive'
+BODY_AVAILABLE=67
+A_CRLF_STRICT: n_headers=3 CL=['5'] TE=[]
+A_CRLF_STRICT: first CL=5, available=67 -> satisfied
+A_CRLF_STRICT: leftover starts b'HTTP/1.1 200 OK\r\nConte' -> next response aligned
+B_CR_SPLITTING: n_headers=3 CL=['999', '5'] TE=[]
+B_CR_SPLITTING: first CL=999, available=67 -> STARVES (would block on a live socket)
+C_NAIVE_FIRST_CL: takes 999 -> STARVES

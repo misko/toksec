@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 748,
+      "path": "evidence/ev_r12_U_6fb186ed_d5.txt",
+      "sha256": "5664dbfaadffa386058ed08f7f5f60513e03c9ce3019e51d9c982e4a70c797ec"
+    },
+    {
+      "bytes": 1194,
+      "path": "evidence/ev_r12_U_6fb186ed_d6.txt",
+      "sha256": "5f5ab1552e2c93a14ad06ab345ccf9090bac9bc85790f3654011a7a6d940fb44"
+    },
+    {
+      "bytes": 1071,
+      "path": "evidence/ev_r12_U_ctl_6fb186ed.txt",
+      "sha256": "a5ee0d72c0164024ab68a3127e47c251c0f86e93e6cce5976e2fd8b9b0d2736c"
+    },
+    {
+      "bytes": 1751,
+      "path": "report.md",
+      "sha256": "fd10f8b0a110065239f8892d74ca3ef363528fede7d19e0af2eea7113bc2c110"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T00:51:47.918374+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T005147Z-8f355fab",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Same sink as 8d5ff1f2: the 301 Location is concatenated from the decoded path with no re-check, so a directory name carrying CRLF and a full status line yields two responses in one client stream, including the attacker body. The decoder at line 62 rejects only NUL and backslash, while the config validator on the same build rejects bytes below 32.",
+      "evidence": [
+        "evidence/ev_r12_U_6fb186ed_d5.txt",
+        "evidence/ev_r12_U_ctl_6fb186ed.txt",
+        "evidence/ev_r12_U_6fb186ed_d6.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Decoded CRLF in a directory name splits the 301 response into a complete forged 200"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final tag of run 6fb186ed, proxy build, CRLF-named directory in the doc root; client-side",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

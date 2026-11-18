@@ -1,0 +1,134 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7113,
+      "path": "evidence/ev_r9_L_6fb186ed_expect_tokenizer_host.ev",
+      "sha256": "a1832102a90c66b3e0281e10c2e4602fef577dbf8d729d944f2d41858152b1d2"
+    },
+    {
+      "bytes": 3302,
+      "path": "evidence/ev_r9_L_6fb186ed_hostport.ev",
+      "sha256": "8b7aa7d7c98d2259cfdfa1950691eb9da0ff9304728b9070854a84de529ecd0c"
+    },
+    {
+      "bytes": 546,
+      "path": "evidence/ev_r9_L_6fb_emptyhost_shared.ev",
+      "sha256": "dbc68a60384ae440f958e3678b6bb5471dccffe695ca427dfada34e9925f40e5"
+    },
+    {
+      "bytes": 2483,
+      "path": "evidence/ev_r9_L_6fb_tab_exec_delta.ev",
+      "sha256": "2f0aa5edc4d82135a45e56e51ccc67403b644752e40bda6cc75ac87c2e184156"
+    },
+    {
+      "bytes": 2308,
+      "path": "evidence/ev_r9_L_6fb_tab_rewrite_loc.ev",
+      "sha256": "da572dc3f7a823090b28c878ac297c03b9f119505ca91eae1756aa200f3953e3"
+    },
+    {
+      "bytes": 2699,
+      "path": "report.md",
+      "sha256": "0f54aa55e74efc2e7502eafa1e16ed8c485dcfb9208c2082c76b4bf8715b1b87"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:17:55.511410+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client, strict-token peer"
+  },
+  "evaluation_id": "security-20261117T201755Z-d20bfca7",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`first.find(' ')` at line 64: line 64 (`first.find(' ')`).",
+      "evidence": [
+        "evidence/ev_r9_L_6fb_tab_exec_delta.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "line 64 (`first.find(' ')`)"
+    },
+    {
+      "description": "`string uri=target;` at line 68: line 68 (`string uri=target;`).",
+      "evidence": [
+        "evidence/ev_r9_L_6fb_tab_rewrite_loc.ev"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "line 68 (`string uri=target;`)"
+    },
+    {
+      "description": "`host.resize(host.find(':'))` at line 65: line 65 (`host.resize(host.find(':'))`).",
+      "evidence": [
+        "evidence/ev_r9_L_6fb186ed_hostport.ev"
+      ],
+      "id": "SEC-003",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "line 65 (`host.resize(host.find(':'))`)"
+    },
+    {
+      "description": "`host.resize(host.find(':'))` at line 65: line 65 (`host.resize(host.find(':'))`).",
+      "evidence": [
+        "evidence/ev_r9_L_6fb_emptyhost_shared.ev"
+      ],
+      "id": "SEC-004",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "line 65 (`host.resize(host.find(':'))`)"
+    },
+    {
+      "description": "`headers.count(\"expect\")` at line 65: line 65 (`headers.count(\"expect\")`).",
+      "evidence": [
+        "evidence/ev_r9_L_6fb186ed_expect_tokenizer_host.ev"
+      ],
+      "id": "SEC-005",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "line 65 (`headers.count(\"expect\")`)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Expect 417 is availability/correctness, not execution"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first",
+    "Drove Expect, tokenizer and Host matrices with a raw socket client",
+    "Captured status and the verbatim upstream request line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 9 lane L: Expect handling, request-line tokenizer delta and Host port parsing.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

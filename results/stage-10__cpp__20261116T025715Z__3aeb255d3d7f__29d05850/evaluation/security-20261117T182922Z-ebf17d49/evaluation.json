@@ -1,0 +1,91 @@
+{
+  "artifacts": [
+    {
+      "bytes": 327,
+      "path": "evidence/e29_exact.log",
+      "sha256": "4b8233d15f28bf611e70c9f968e19c76cbe82106e2c45337437ac5ad7f941553"
+    },
+    {
+      "bytes": 248,
+      "path": "evidence/e29_qs.log",
+      "sha256": "ff41ac8ec5babf2243539d0b907b48f93f55053b11abcf39b3c4a593cf6fc747"
+    },
+    {
+      "bytes": 2803,
+      "path": "report.md",
+      "sha256": "df45a1f6f2fd02fa3bc7cdf1957ac50709a4e261f51af2b65668b60e7b58de51"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T18:29:22.365010+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual review of release/000002 + live compiled binary against strict exec peer"
+  },
+  "evaluation_id": "security-20261117T182922Z-ebf17d49",
+  "evaluator_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+  "findings": [
+    {
+      "description": "Target is v.substr(slashpos)+norm.substr(l->path.size())+query. An exact location match empties the remainder, so GET /api?cmd=whoami emits GET /exec?cmd=whoami HTTP/1.1, three tokens; a strict parser runs whoami. Bare GET /api runs id. No encoding client-side. Requires a URI naming the route with no trailing space and a strict 3-token reader.",
+      "evidence": [
+        "evidence/e29_exact.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Exact-match URI without a trailing space keeps a 3-token line, so an attacker query alone executes a chosen command on a strict parser"
+    },
+    {
+      "description": "A quoted trailing space makes bare GET /api emit GET /exec  HTTP/1.1, four tokens; a whitespace-splitting upstream runs the default command. Requires the quoted space and that upstream shape.",
+      "evidence": [
+        "evidence/e29_qs.log"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A quoted space in the proxy_pass URI is the separator, so a bare GET /api executes the upstream default command with no encoding"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "One build only",
+    "Different upstream reader needed per finding, stated",
+    "Upstream-side RCE only",
+    "No fuzzing"
+  ],
+  "methods": [
+    "Read release/000002 from the tag",
+    "Built exact release, confirmed --check-config",
+    "Strict peer, verbatim line + token count, exact 3-token exec fire",
+    "GET /hello.txt control per config",
+    "Exact-match URI and quoted-space URI probes"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Second pass on final release release/000002 of stage-10 run 29d05850: config-shape axis of the proxy target rebuild, driven with a static control.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

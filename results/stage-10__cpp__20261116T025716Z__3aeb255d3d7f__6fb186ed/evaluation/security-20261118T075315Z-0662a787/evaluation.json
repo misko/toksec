@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 345,
+      "path": "evidence/ev_r14_B_6fb186ed_spacecolon_client.hex",
+      "sha256": "6419d6a0b4d4a4feaeeeed0c290e9fa49b67454c88998b62b1d52a96532ac9fd"
+    },
+    {
+      "bytes": 281,
+      "path": "evidence/ev_r14_B_6fb186ed_spacecolon_ctl.hex",
+      "sha256": "abab56f8338892de5587a7afa554d0fddfb087892ef08890595c15a9f05fab1f"
+    },
+    {
+      "bytes": 301,
+      "path": "evidence/ev_r14_B_6fb186ed_spacecolon_req.hex",
+      "sha256": "3453d438bb163acb26b61dc6571efb2696b7b044c01de3a63ce5275990e0c7c5"
+    },
+    {
+      "bytes": 1465,
+      "path": "report.md",
+      "sha256": "a24843817665263a70772e25e610bdeb454b78a8e138f270cd509b64b911bce4"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T07:53:15.984404+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075315Z-0662a787",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Upstream reply in `spacecolon` mode: proxy forwards bytes nginx does not, mis-frames the body, or refuses. Client request is an ordinary GET; the upstream is attacker-controlled.",
+      "evidence": [
+        "evidence/ev_r14_B_6fb186ed_spacecolon_client.hex",
+        "evidence/ev_r14_B_6fb186ed_spacecolon_req.hex",
+        "evidence/ev_r14_B_6fb186ed_spacecolon_ctl.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "upstream response mode `spacecolon` diverges from nginx"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

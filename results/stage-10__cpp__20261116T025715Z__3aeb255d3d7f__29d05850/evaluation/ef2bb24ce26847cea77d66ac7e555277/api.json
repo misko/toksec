@@ -1,0 +1,379 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 7.908507825806737,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0021
+    },
+    {
+      "explanation": "--check-config exit status 0",
+      "id": "config",
+      "passed": true
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "http-get",
+      "passed": true,
+      "seconds": 0.0015
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "https-get",
+      "passed": true,
+      "seconds": 0.0461
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "https-persistent",
+      "passed": true,
+      "seconds": 0.0911
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "proxy",
+      "passed": true,
+      "seconds": 0.017
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "https-pipeline",
+      "passed": true,
+      "seconds": 0.15
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "parse-missing-host",
+      "passed": true,
+      "seconds": 0.0004
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "parse-duplicate-host",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "TimeoutError: timed out",
+      "id": "parse-bare-lf",
+      "passed": false,
+      "seconds": 3.0025
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "parse-folded-header",
+      "passed": true,
+      "seconds": 0.0007
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "parse-invalid-header-token",
+      "passed": true,
+      "seconds": 0.0003
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "parse-nul-value",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "host-unknown.test",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "host-alpha.test.",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "host-127.0.0.1",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "host-alpha.test:0",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "host-normalization",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "http10-default",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "unknown-method",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "expect",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/%zz",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/%ff",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/hello.txt#x",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/%00",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/%5c",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/../hello.txt",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/%2e%2e/hello.txt",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-http://alpha.test/",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-/does-not-exist",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "path-normalization",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "framing-duplicate-length",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "framing-nonzero-local-body",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "framing-local-chunked",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "framing-ambiguous-proxy",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "local-zero-length",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "head",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "range-bytes=1-3",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "range-bytes=-4",
+      "passed": true,
+      "seconds": 0.0002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "range-bytes=99999-",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "range-bytes=0-1,3-4",
+      "passed": true,
+      "seconds": 0.0001
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "conditional-before-range",
+      "passed": true,
+      "seconds": 0.0004
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-alpha.test-TLSv1_2",
+      "passed": true,
+      "seconds": 0.0038
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-alpha.test-TLSv1_3",
+      "passed": true,
+      "seconds": 0.0444
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-beta.test-TLSv1_2",
+      "passed": true,
+      "seconds": 0.0058
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-beta.test-TLSv1_3",
+      "passed": true,
+      "seconds": 0.0441
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "sni-host-independent",
+      "passed": true,
+      "seconds": 0.046
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-no-alpn",
+      "passed": true,
+      "seconds": 0.0444
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "tls-reject-h2-only",
+      "passed": true,
+      "seconds": 0.002
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "proxy-uri-query",
+      "passed": true,
+      "seconds": 0.0028
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "proxy-chunked-response",
+      "passed": true,
+      "seconds": 0.0031
+    },
+    {
+      "explanation": "AssertionError: expected 200, received 405",
+      "id": "proxy-chunked-upload",
+      "passed": false,
+      "seconds": 0.0006
+    },
+    {
+      "explanation": "AssertionError: unexpected upstream fetch count",
+      "id": "cache-hit-one-worker",
+      "passed": false,
+      "seconds": 0.0042
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "cache-etag-revalidation",
+      "passed": true,
+      "seconds": 1.1048
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "proxy-download-progress",
+      "passed": true,
+      "seconds": 0.0064
+    },
+    {
+      "explanation": "Observed expected wire behavior",
+      "id": "service-after-malformed",
+      "passed": true,
+      "seconds": 0.0005
+    },
+    {
+      "explanation": "checker reported failure or exited nonzero",
+      "id": "api-runtime",
+      "passed": false
+    }
+  ],
+  "summary": {
+    "passed": 54,
+    "status": "failed",
+    "total": 57
+  },
+  "unimplemented_requirements": [
+    "All configurable routing, alias, MIME, etag-off and keepalive-limit combinations",
+    "Atomic valid/invalid reload, certificate rotation and old-generation reservation/limiter behavior",
+    "Cache byte/entry/waiter limits, coalescing, cancellation and all bypass/variant/revalidation combinations",
+    "Complete configuration grammar, include bounds, diagnostics, inheritance and invalid TLS material matrix",
+    "Filesystem symlink/nonregular confinement and binary/empty/large fixture matrix",
+    "Full upstream malformed/truncated/informational/bodyless framing and timeout matrix",
+    "Global rate/connection limits, FIFO queue saturation/expiry, retry/cooldown/probe fairness",
+    "TLS cipher/group exclusions, session resumption, fragmented handshake, close_notify and handshake admission bounds",
+    "Upload progress handshake, slow-reader resource bounds and all absolute deadlines",
+    "Worker count/replacement, SIGTERM draining, process-tree resource and sustained leak accounting",
+    "complete Stage 10 API gate and calibrated performance matrix",
+    "complete configuration matrix",
+    "worker/reload/global-resource behavior"
+  ]
+}

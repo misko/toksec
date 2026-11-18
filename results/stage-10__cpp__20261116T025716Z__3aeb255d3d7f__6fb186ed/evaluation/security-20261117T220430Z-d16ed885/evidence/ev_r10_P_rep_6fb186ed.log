@@ -1,0 +1,15 @@
+run1 heads=1 ex=False fol=True body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:25 TOK:3 HELLO\n'
+run2 heads=1 ex=False fol=True body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:27 TOK:3 HELLO\n'
+run3 heads=1 ex=False fol=True body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:29 TOK:3 HELLO\n'
+run4 heads=1 ex=False fol=True body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:31 TOK:3 HELLO\n'
+run5 heads=1 ex=False fol=True body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:33 TOK:3 HELLO\n'
+run6 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:35 TOK:3 HELLO\n'
+TOTAL {'exec_seen': 0, 'follower_seen': 5, 'heads2': 0, 'lost_exec': 6}
+### kind=c2z N=6
+run1 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:37 TOK:3 HELLO\n'
+run2 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:39 TOK:3 HELLO\n'
+run3 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:41 TOK:3 HELLO\n'
+run4 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:43 TOK:3 HELLO\n'
+run5 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:45 TOK:3 HELLO\n'
+run6 heads=1 ex=False fol=False body=b'nt-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:47 TOK:3 HELLO\n'
+TOTAL {'exec_seen': 0, 'follower_seen': 0, 'heads2': 0, 'lost_exec': 6}

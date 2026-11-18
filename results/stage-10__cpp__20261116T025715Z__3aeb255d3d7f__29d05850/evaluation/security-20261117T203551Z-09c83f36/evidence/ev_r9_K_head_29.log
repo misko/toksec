@@ -1,0 +1,4 @@
+GET s1 -> b'HTTP/1.1 304 Not Modified\r\netag: "abc"\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\n'
+HEAD s1 -> b'HTTP/1.1 304 Not Modified\r\netag: "abc"\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'
+b'GET k1 -> HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\nHELLO'
+b'HEAD k1 -> HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\n'

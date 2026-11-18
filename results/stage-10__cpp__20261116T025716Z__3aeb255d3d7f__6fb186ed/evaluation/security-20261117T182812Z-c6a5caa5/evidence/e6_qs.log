@@ -1,0 +1,8 @@
+# build 3aeb255d3d7f__6fb186ed  config: location /api { proxy_pass "http://backend/exec "; }
+CTL GET /hello.txt          -> 200 body=ALPHA
+GET /api                    -> 200, client body 140 bytes   (no query: config space alone splits)
+POST /api (CL:0)            -> 200, same line               (CL 0 is accepted here)
+UPSTREAM: LINE=b'GET /exec  HTTP/1.1' TOKS=4
+          LINE=b'POST /exec  HTTP/1.1' TOKS=4
+   EXEC_CMD='id' OUT=b'uid=1000(mouse9911)...'
+# two spaces = config space + request-line space -> 4 tokens -> whitespace-splitting upstream executes.

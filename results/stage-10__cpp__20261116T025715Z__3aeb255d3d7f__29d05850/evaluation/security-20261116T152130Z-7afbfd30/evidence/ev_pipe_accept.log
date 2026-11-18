@@ -1,0 +1,8 @@
+== directive acceptance: does --check-config notice?
+toksec_pipeline_depth 1   -> rc=0 ''
+toksec_pipeline_depth 8   -> rc=0 ''
+toksec_pipeline_depth 64  -> rc=0 ''
+
+== controls: a should-be-rejected name, on this build and on 61cc738c (which has a list)
+3aeb255d3d7f__29d05850 bogus_directive_xyz -> rc=0 ''
+1cfd33433d25__61cc738c bogus_directive_xyz -> rc=1 '/tmp/acc2.conf:4: unknown directive bogus_directive_xyz'

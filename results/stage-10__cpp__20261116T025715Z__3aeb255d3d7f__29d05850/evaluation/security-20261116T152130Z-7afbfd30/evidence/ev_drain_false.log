@@ -1,0 +1,35 @@
+Drain / shutdown directive acceptance and true effect
+====================================================
+1) `totally_bogus_zzz 1s;` inside http{} — is unknown-directive validation present?
+   61cc738c  rc=1  /tmp/tb.conf:2: unknown directive totally_bogus_zzz
+   44bf7f35  rc=1  config: /tmp/tb.conf:2: unknown http directive totally_bogus_zzz
+   063b0d5e  rc=0  ******** silently accepted
+   8d5ff1f2  rc=0  ******** silently accepted
+   29d05850  rc=0  ******** silently accepted
+   6fb186ed  rc=0  ******** silently accepted
+
+2) `toksec_drain_timeout 5s;` in http{} — accepted by all six (spec scope), so acceptance
+   is not evidence of implementation.
+
+3) Source use of the value:
+   063b0d5e  grep toksec_drain_timeout -> 0 hits
+   29d05850  grep toksec_drain_timeout -> 0 hits
+   6fb186ed  grep toksec_drain_timeout -> 0 hits
+   8d5ff1f2  1 hit, line 67, inside the "allowed names" set only:
+             "toksec_drain_timeout" appears in the string set that validates the spelling;
+             no further reference exists in the file.
+
+4) Shutdown path in all four is a fixed worker SIGTERM followed by an unbounded waitpid,
+   with the configured deadline never consulted:
+   8d5ff1f2 line 98   for(auto p:workers)kill(p,SIGTERM);
+                      for(auto p:workers)waitpid(p,nullptr,0)
+   29d05850 line 60   for(pid_t p:workers)kill(p,SIGTERM);
+                      for(pid_t p:workers)waitpid(p,nullptr,0)
+   6fb186ed line 75   for(pid_t p:kills)kill(p,SIGTERM);   (kids)
+                      for(pid_t p:kids)waitpid(p,nullptr,0)
+   063b0d5e line 82   for(auto p:children)kill(p,SIGTERM);
+                      while(waitpid(-1,nullptr,0)>0){}
+
+5) Behaviour with `toksec_drain_timeout 5s;` set and a 2.0 s upstream delay:
+   all of 8d5ff1f2 / 29d05850 / 6fb186ed returned EOF at +0.00 s with 0 of 10 body bytes,
+   master exited at +0.25 s — a 5 s deadline never used.

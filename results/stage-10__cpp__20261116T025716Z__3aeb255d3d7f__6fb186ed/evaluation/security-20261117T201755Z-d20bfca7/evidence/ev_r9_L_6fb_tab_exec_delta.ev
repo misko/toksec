@@ -1,0 +1,42 @@
+### V0_ctl_nested_exec
+REQ b'GET /exec/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 181
+BODY b"PLINE=b'GET /exec/exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''"
+UPSTREAM PLINE=b'GET /exec/exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''
+
+### V1_tab_nested_exec
+REQ b'GET /exec/\texec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 183
+BODY b"PLINE=b'GET /exec/\\texec?cmd=id HTTP/1.1' | LNTOK=4 SPTOK=3 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''"
+UPSTREAM PLINE=b'GET /exec/\texec?cmd=id HTTP/1.1' | LNTOK=4 SPTOK=3 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''
+
+### V2_pct20_nested_exec
+REQ b'GET /exec/%20exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 182
+BODY b"PLINE=b'GET /exec/ exec?cmd=id HTTP/1.1' | LNTOK=4 SPTOK=4 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''"
+UPSTREAM PLINE=b'GET /exec/ exec?cmd=id HTTP/1.1' | LNTOK=4 SPTOK=4 EXEC=b'' | CLEN=None BODYLEN=0 BODY=b''
+
+### V3_tab_in_query
+REQ b'GET /exec?cmd=id\tx HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 310
+BODY b"PLINE=b'GET /exec?cmd=id\\tx HTTP/1.1' | LNTOK=4 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLE"
+UPSTREAM PLINE=b'GET /exec?cmd=id\tx HTTP/1.1' | LNTOK=4 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### V4_tab_in_version
+REQ b'GET /exec?cmd=id HTTP/1.\t1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+CLIENTBYTES 66
+BODY b''
+UPSTREAM NONE
+
+### V5_pct09_in_query
+REQ b'GET /exec?cmd=id%09x HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+CLIENTBYTES 311
+BODY b"PLINE=b'GET /exec?cmd=id%09x HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CL"
+UPSTREAM PLINE=b'GET /exec?cmd=id%09x HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+

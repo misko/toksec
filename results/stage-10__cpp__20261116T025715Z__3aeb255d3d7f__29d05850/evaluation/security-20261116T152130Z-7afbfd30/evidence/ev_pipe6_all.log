@@ -1,0 +1,6 @@
+29d05850 pipelined  n=20 got=20 elapsed=1.9s per=95.23ms
+29d05850 sequential n=20 got=20 elapsed=0.78s per=39.07ms
+6fb186ed pipelined  n=20 got=20 elapsed=1.9s per=95.21ms
+6fb186ed sequential n=20 got=20 elapsed=0.0s per=0.03ms
+063b0d5e pipelined  n=20 got=20 elapsed=0.0s per=0.02ms
+063b0d5e sequential n=20 got=20 elapsed=0.0s per=0.02ms

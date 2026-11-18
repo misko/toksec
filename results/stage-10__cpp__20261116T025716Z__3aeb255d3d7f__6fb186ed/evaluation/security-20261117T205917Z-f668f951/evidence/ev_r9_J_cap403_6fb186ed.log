@@ -1,0 +1,39 @@
+# listen=37464
+CONTROL: b'HTTP/1.1 200 OK\r\nETag: "15045572-10-1794945921-273853865"\r\nContent-Type: text/plain\r\nContent-Length: 10\r\nConnection: close'
+
+=== I64.bin exactly 67108864 (== cap)
+[plain GET] HTTP/1.1 200 OK
+  raw-head: b'HTTP/1.1 200 OK\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+  body-bytes=67108864
+[GET Range: bytes=0-] HTTP/1.1 206 Error
+  raw-head: b'HTTP/1.1 206 Error\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Range: bytes 0-67108863/67108864\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+  body-bytes=67108864
+[GET Range: bytes=0-67108863 (len==cap)] HTTP/1.1 206 Error
+  raw-head: b'HTTP/1.1 206 Error\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Range: bytes 0-67108863/67108864\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+  body-bytes=67108864
+[GET Range: bytes=0-67108864 (len==cap+1)] HTTP/1.1 206 Error
+  raw-head: b'HTTP/1.1 206 Error\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Range: bytes 0-67108863/67108864\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+  body-bytes=67108864
+[HEAD plain] HTTP/1.1 200 OK
+  raw-head: b'HTTP/1.1 200 OK\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+[HEAD Range: bytes=0-] HTTP/1.1 206 Partial Content
+  raw-head: b'HTTP/1.1 206 Partial Content\r\nETag: "15047526-67108864-1794947252-136878833"\r\nContent-Range: bytes 0-67108863/67108864\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+
+=== I65.bin 67108865 (cap+1)
+[plain GET] HTTP/1.1 403 Forbidden
+  raw-head: b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close'
+  body-bytes=0
+[GET Range: bytes=0-] HTTP/1.1 403 Forbidden
+  raw-head: b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close'
+  body-bytes=0
+[GET Range: bytes=0-67108863 (len==cap)] HTTP/1.1 206 Error
+  raw-head: b'HTTP/1.1 206 Error\r\nETag: "15047527-67108865-1794947252-174879610"\r\nContent-Range: bytes 0-67108863/67108865\r\nContent-Type: text/plain\r\nContent-Length: 67108864\r\nConnection: close'
+  body-bytes=67108864
+[GET Range: bytes=0-67108864 (len==cap+1)] HTTP/1.1 403 Forbidden
+  raw-head: b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close'
+  body-bytes=0
+[HEAD plain] HTTP/1.1 200 OK
+  raw-head: b'HTTP/1.1 200 OK\r\nETag: "15047527-67108865-1794947252-174879610"\r\nContent-Type: text/plain\r\nContent-Length: 67108865\r\nConnection: close'
+[HEAD Range: bytes=0-] HTTP/1.1 206 Partial Content
+  raw-head: b'HTTP/1.1 206 Partial Content\r\nETag: "15047527-67108865-1794947252-174879610"\r\nContent-Range: bytes 0-67108864/67108865\r\nContent-Type: text/plain\r\nContent-Length: 67108865\r\nConnection: close'
+# port 37464 clear
