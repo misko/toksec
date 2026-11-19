@@ -1,6 +1,6 @@
 # Shared builder rules
 
-Build a working, efficient HTTP server that satisfies the selected stage's English
+Build a working, secure and efficient HTTP server that satisfies the selected stage's English
 contract. Each selected stage is an independent from-scratch assignment. No starter code,
 previous implementation, or another run's conversation is supplied.
 
@@ -31,6 +31,21 @@ Develop and retain your own correctness evidence before publishing releases.
 You choose how much capacity to spend on tests versus implementation and
 optimization. Report what you tested and any known limitations honestly. Passing
 a finite suite does not prove complete correctness or maximum performance.
+
+## Secure defaults and testing
+
+Enable only the listeners, transports and protocol versions specified for the
+stage and enabled by its configuration. A plaintext HTTP stage must still serve
+plaintext HTTP. Where TLS is required, enforce the specified versions and peer
+checks. Reject unsupported negotiation instead of falling back to plaintext or
+a weaker protocol. Keep these protections active during benchmarks.
+
+Design tests for the security boundaries your stage implements. Pair a request
+that should succeed with one that should be refused, and check the observable
+effect as well as the response. For example, a request denied by a proxy should
+never reach its upstream, and a failed handshake on a TLS listener should never
+deliver application data. Choose cases appropriate to your stage and record what
+you verified and any remaining gaps in your release notes.
 
 ## Deliverable and Git releases
 
