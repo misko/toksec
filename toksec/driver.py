@@ -19,7 +19,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--stage', '--level', dest='stage', type=int, required=True)
     parser.add_argument('--fixtures', type=Path, required=True)
-    parser.add_argument('--private', type=Path)
+    parser.add_argument('--private', type=Path, help='parent-only directory for fixture controls')
     parser.add_argument('--pid', type=int, required=True)
     parser.add_argument('--server-cpu', type=int, required=True)
     parser.add_argument('--mode', choices=('check', 'benchmark'), required=True)
@@ -87,7 +87,8 @@ def main():
                                             upstream_pid=upstream.pid if upstream else None,
                                             upstream_cpu=upstream_cpu)
                     if gateway:
-                        validate_effects(args.stage, measurement, before, control(args.private))
+                        validate_effects(args.stage, measurement, before, control(args.private),
+                                         public_route=workload.id.startswith("gateway-14-public-"))
                     rounds.append(measurement)
                 result[workload.id] = summarize(rounds)
         print(json.dumps(result, allow_nan=False))

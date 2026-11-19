@@ -64,7 +64,7 @@ async def serve(stage, public, private):
                 if auth:
                     counts['auth'] += 1
                     credential = headers.get('authorization', '').removeprefix('Bearer ')
-                    code = policy.get(credential, 403) if target == '/authorize' else 404
+                    code = policy.get(credential, 403) if (method == 'GET' and target == '/authorize' and headers.get('host') and headers.get('x-original-uri','').startswith('/gateway/') and not body) else 404
                     if code == 504:
                         await asyncio.sleep(1)
                     body = b''

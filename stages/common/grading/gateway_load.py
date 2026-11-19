@@ -3,16 +3,19 @@ from stages.common.grading.performance import matrix
 
 
 def workloads_for(stage):
-    prefix = '/data/' if stage == 14 else '/gateway/data/'
+    if stage == 14:
+        return matrix([('gateway-14-public', True, False, False, '/data/'),
+                       ('gateway-14-admitted', True, False, False, '/gateway/data/')])
+    prefix = '/gateway/data/'
     return matrix([(f'gateway-{stage}', True, False, False, prefix)])
 
 
-def validate_effects(stage, measurement, before, after):
+def validate_effects(stage, measurement, before, after, public_route=False):
     counts = {key: after.get(key, 0) - before.get(key, 0) for key in ('auth', 'origin')}
     delivered = measurement['all_successes']
     if stage in (12, 13):
         origin_ok = (after.get('origin', 0) > 0 and counts['origin'] < delivered)
-    elif stage == 14:
+    elif public_route:
         origin_ok = counts['origin'] == 0
     else:
         origin_ok = counts['origin'] == delivered

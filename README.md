@@ -11,7 +11,7 @@ and [published results](results/README.md).
 
 ## Supported stages
 
-Stages 1–5 and 10 are independent Rust or C++ assignments. Their canonical instructions
+Stages 1–5 and 10–16 are independent Rust or C++ assignments. Their canonical instructions
 live in [stages/](stages/), with shared builder policy in [RULES.md](RULES.md).
 Builders receive English requirements and minimal smoke examples; the full API
 checker stays on the host. Preparation generates and freezes each run’s packet directly from these sources.
@@ -30,6 +30,12 @@ Optional previews go under `.generated/packets/`; historical packets live in
 | 4 | Reverse proxying, upstream reuse, bodies, and failure handling |
 | 5 | Plaintext caching, rate limiting, reload, and graceful drain |
 | 10 | Experimental nginx configuration, HTTPS/TLS, streaming, cache coordination, and workers |
+| 11 | Authorization gateway |
+| 12 | Tenant-aware HTTP cache |
+| 13 | Authorization and tenant cache, including revocation on a warm hit |
+| 14 | Client and global quotas with trusted proxy identity |
+| 15 | Authenticated upstream TLS and client certificate rotation |
+| 16 | Disk-backed uploads with cancellation and per-tenant quotas |
 
 [Stage 10 inputs](stages/stage-10/README.md) use the same public runner, evaluator,
 shared rules, and result publisher, with documented [Stage 10 execution constraints](docs/stage-10-runtime.md).
@@ -47,7 +53,7 @@ skips performance and earns zero performance credit.
 
 The runtime requires Linux, Python 3.11+, the selected Rust/C++ compiler, Bubblewrap,
 and nsenter. Benchmarks require separate server/generator CPUs and sufficient file
-descriptors. Stage 10 additionally requires OpenSSL development files and delegated
+descriptors. Stages 10 and 15 additionally require OpenSSL development files and delegated
 user-systemd cgroups. Compilation and candidate execution are sandboxed.
 
 ```sh

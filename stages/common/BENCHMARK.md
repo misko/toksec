@@ -43,6 +43,6 @@ For Stages 11–16 the parent also checks the declared downstream effects. Origi
 and authorization counters include warmup. Protected responses require a fresh
 decision each time. Caching workloads must demonstrate reuse. Refusals and
 timeouts cannot earn successful delivery throughput. The mixed state and quota
-checks run in the API gate. Stage 14 measures service on the unmetered local
-route. Cache performance uses a 60-second TTL and uploads use 256 MiB aggregate
+checks run in the API gate. Stage 14 measures local service and admitted gateway service separately, with
+both burst limits set to ten million during performance rounds. Cache performance uses a 60-second TTL and uploads use 256 MiB aggregate
 and tenant quotas and a two-second upload deadline during load measurement.

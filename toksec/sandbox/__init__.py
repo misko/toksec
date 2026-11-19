@@ -180,10 +180,12 @@ def invoke_driver(artifact, level, mode='check', configuration_override=None, **
         values = configuration(level)
         values['cache_ttl_ms'] = '60000'
         configuration_override = ''.join(f'{k}={v}\n' for k, v in values.items())
-    if mode == 'benchmark' and level in (12, 13, 16) and configuration_override is None:
+    if mode == 'benchmark' and level in (12, 13, 14, 16) and configuration_override is None:
         from toksec.specification import configuration
         values = configuration(level)
-        if level == 16:
+        if level == 14:
+            values.update(client_burst='10000000', global_burst='10000000')
+        elif level == 16:
             values.update(tenant_bytes='268435456', spool_bytes='268435456', upload_timeout_ms='2000')
         else:
             values.update(cache_ttl_ms='60000')
