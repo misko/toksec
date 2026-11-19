@@ -56,7 +56,7 @@ def files(root):
 
 def destination(results, record):
     stage, language = record.get('stage'), record.get('language')
-    if type(stage) is not int or not 1 <= stage <= 10 or language not in ('cpp', 'rust'):
+    if type(stage) is not int or not 1 <= stage <= 16 or language not in ('cpp', 'rust'):
         raise ValueError('invalid stage or language')
     if record.get('publication_version') == 2:
         identity = validate_run_id(record.get('run_id'))

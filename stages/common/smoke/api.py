@@ -49,7 +49,7 @@ def cases(level):
     if level >= 2:
         selected += [Case('smoke-head', 2, 'Ordinary HEAD of the same existing file: 200, representation length and no body.', head),
                      Case('smoke-persistent', 2, 'Two ordinary sequential GETs on one persistent connection.', persistent)]
-    if level >= 3:
+    if level in (3, 4, 5):
         name, description, execute = {
             3: ('smoke-host', 'Ordinary GET from the second configured host.', routed),
             4: ('smoke-proxy', 'Ordinary GET through a healthy upstream.', proxy),

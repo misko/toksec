@@ -1,0 +1,24 @@
+{
+  "stage": 16,
+  "title": "Disk-backed upload gateway",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "upload-spool"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "upload_bytes": "131072",
+    "tenant_bytes": "196608",
+    "spool_bytes": "262144",
+    "upload_timeout_ms": "600",
+    "spool_dir": "/tmp/spool"
+  }
+}

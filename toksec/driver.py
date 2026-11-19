@@ -19,6 +19,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--stage', '--level', dest='stage', type=int, required=True)
     parser.add_argument('--fixtures', type=Path, required=True)
+    parser.add_argument('--private', type=Path)
     parser.add_argument('--pid', type=int, required=True)
     parser.add_argument('--server-cpu', type=int, required=True)
     parser.add_argument('--mode', choices=('check', 'benchmark'), required=True)
@@ -39,7 +40,10 @@ def main():
             if args.mode == 'benchmark' and len(available) < 5:
                 raise RuntimeError('proxy benchmarks need one server, four generator and one upstream CPU')
             upstream_cpu = available[-1]
-            upstream = subprocess.Popen(['taskset', '-c', str(upstream_cpu), sys.executable, '-m', fixture_module, str(ready)],
+            fixture_args = [fixture_module, str(ready)]
+            if args.stage in range(11, 17):
+                fixture_args = ['stages.common.grading.gateway_origin', str(args.stage), str(args.fixtures), str(args.private)]
+            upstream = subprocess.Popen(['taskset', '-c', str(upstream_cpu), sys.executable, '-m', *fixture_args],
                                         cwd=str(Path(__file__).resolve().parents[1]), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             end = time.monotonic() + 2
             while not ready.exists():
@@ -66,12 +70,26 @@ def main():
                 selected = [c for c in cases_for(args.stage) + configured_cases(args.stage) if c.id == args.case]
                 if len(selected) != 1:
                     raise ValueError('unknown or ambiguous case')
-            result = run_checks(Context(args.stage, args.fixtures, args.pid), selected)
+            result = run_checks(Context(args.stage, args.fixtures, args.pid, args.private), selected)
         else:
             selected = [w for w in workloads(args.stage) if not args.workload or w.id == args.workload]
             if not selected or not 1 <= args.rounds <= 5:
                 raise ValueError('invalid workload or rounds')
-            result = {w.id: summarize([round_run(w, args.pid, args.server_cpu, args.fixtures, upstream_pid=upstream.pid if upstream else None, upstream_cpu=upstream_cpu) for _ in range(args.rounds)]) for w in selected}
+            result = {}
+            for workload in selected:
+                rounds = []
+                for _ in range(args.rounds):
+                    gateway = args.stage in range(11, 17)
+                    if gateway:
+                        from stages.common.grading.gateway_load import control, validate_effects
+                        before = control(args.private)
+                    measurement = round_run(workload, args.pid, args.server_cpu, args.fixtures,
+                                            upstream_pid=upstream.pid if upstream else None,
+                                            upstream_cpu=upstream_cpu)
+                    if gateway:
+                        validate_effects(args.stage, measurement, before, control(args.private))
+                    rounds.append(measurement)
+                result[workload.id] = summarize(rounds)
         print(json.dumps(result, allow_nan=False))
     finally:
         if upstream:

@@ -1,0 +1,23 @@
+{
+  "stage": 14,
+  "title": "Fair admission",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "admission"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "client_burst": "3",
+    "global_burst": "8",
+    "refill_ms": "1000",
+    "trusted_peer": "127.0.0.1"
+  }
+}

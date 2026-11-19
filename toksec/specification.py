@@ -1,4 +1,4 @@
-from toksec.stages import identifier as stage_id
+from toksec.stages import GATEWAY_STAGES, identifier as stage_id
 import hashlib
 import json
 from dataclasses import asdict
@@ -21,6 +21,8 @@ EXTRA_CONFIG = {
 }
 
 def configuration(level):
+    if level in GATEWAY_STAGES:
+        return {**BASE_CONFIG, **stage_profile(level)["configuration"]}
     if level not in TITLES:
         raise ValueError('level must be 1 through 5')
     values = dict(BASE_CONFIG)
@@ -50,7 +52,7 @@ def specification(level, language='rust'):
     from toksec.languages import profile
     from toksec.checks import cases_for, configured_cases, EXTERNAL_CASES
     configuration(level)
-    return {'stage': level, 'title': TITLES[level], 'language': language,
+    return {'stage': level, 'title': stage_profile(level).get('title', TITLES.get(level)), 'language': language,
             'configuration': configuration(level), 'requirements': [(ROOT / name).read_text() for name in contract_files(level)],
             'profile': stage_profile(level),
             'cases': [{'id': c.id, 'description': c.description} for c in cases_for(level) + configured_cases(level) + EXTERNAL_CASES],
@@ -61,7 +63,6 @@ def specification(level, language='rust'):
 
 
 def stage_profile(level):
-    configuration(level)
     return json.loads((ROOT / f'stages/{stage_id(level)}/profile.json').read_text())
 
 
@@ -76,7 +77,8 @@ def contract_files(level):
 def instruction_files(level, language='rust'):
     from toksec.languages import profile
     profile(language, level)
-    return ['RULES.md', f'stages/languages/{language}.md', 'stages/common/INTERFACE.md', 'stages/common/ARTIFACTS.md', *contract_files(level), 'stages/common/BENCHMARK.md']
+    language_doc = f'stages/stage-10/builder/languages/{language}.md' if level == 15 else f'stages/languages/{language}.md'
+    return ['RULES.md', language_doc, 'stages/common/INTERFACE.md', 'stages/common/ARTIFACTS.md', *contract_files(level), 'stages/common/BENCHMARK.md']
 
 
 def packet(level, language='rust'):
@@ -86,7 +88,7 @@ def packet(level, language='rust'):
         return selected(language)
     from toksec.artifacts import artifact_contract
     spec = specification(level, language)
-    lines = [f'# Stage {level}: {TITLES[level]}', '']
+    lines = [f'# Stage {level}: {spec["title"]}', '']
     for name in instruction_files(level, language):
         lines.extend([(ROOT / name).read_text(), ''])
     lines.extend(['## Artifact contract', '', '```json', json.dumps(artifact_contract(level, language), indent=2, sort_keys=True), '```', ''])
@@ -115,7 +117,7 @@ def fingerprint():
 def publish(directory, language='rust', level=None):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
-    selected_levels = [level] if level is not None else TITLES
+    selected_levels = [level] if level is not None else (*TITLES, *GATEWAY_STAGES)
     for level in selected_levels:
         (directory / f'{stage_id(level)}.md').write_text(packet(level, language))
         (directory / f'{stage_id(level)}.json').write_text(json.dumps(specification(level, language), indent=2) + '\n')

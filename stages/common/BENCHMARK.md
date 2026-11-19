@@ -38,3 +38,11 @@ benchmark_candidate accepts a declared workload ID for a smaller diagnostic run,
 or null for the full matrix. Subset measurements do not promote a full-matrix
 baseline. Every result identifies its selected workloads. Final grading still
 requires full API acceptance followed by the complete declared matrix.
+
+For Stages 11–16 the parent also checks the declared downstream effects. Origin
+and authorization counters include warmup. Protected responses require a fresh
+decision each time. Caching workloads must demonstrate reuse. Refusals and
+timeouts cannot earn successful delivery throughput. The mixed state and quota
+checks run in the API gate. Stage 14 measures service on the unmetered local
+route. Cache performance uses a 60-second TTL and uploads use 256 MiB aggregate
+and tenant quotas and a two-second upload deadline during load measurement.

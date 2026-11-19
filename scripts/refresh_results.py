@@ -17,7 +17,7 @@ def eligible(roots):
         for path in sorted((root/'.runs').glob('**/manifest.json')):
             manifest = read(path)
             level = stage_number(manifest)
-            if (level not in range(1,11)
+            if (level not in range(1,17)
                 or not manifest.get('started_unix')
                 or manifest.get('builder_evaluation_scope') != 'visible_smoke_only'
                 or manifest.get('starter') or manifest.get('starter_candidate') or manifest.get('starter_sha256')):

@@ -1,0 +1,21 @@
+{
+  "stage": 12,
+  "title": "Tenant cache",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "tenant-cache"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "cache_bytes": "4194304",
+    "cache_ttl_ms": "600"
+  }
+}

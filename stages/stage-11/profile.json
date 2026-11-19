@@ -1,0 +1,21 @@
+{
+  "stage": 11,
+  "title": "Authorization gateway",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "authorization"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "auth_address": "127.0.0.1:8082",
+    "auth_timeout_ms": "300"
+  }
+}

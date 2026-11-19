@@ -13,6 +13,7 @@ import time
 
 from toksec.provenance import checkout
 from toksec.specification import ROOT
+from toksec.stages import GATEWAY_STAGES
 from toksec.storage import atomic_json
 
 
@@ -37,8 +38,8 @@ def plan(stages, replicas, parallel, budget_usd, wall_seconds, language, cpus, b
         raise ValueError('batch per-run budgets must be positive and at most $5')
     if len(set(amounts)) != len(amounts):
         raise ValueError('budget sweep values must be distinct')
-    if not stages or len(set(stages)) != len(stages) or any(s not in (1, 5, 10) for s in stages):
-        raise ValueError('choose distinct stages from 1, 5, and 10')
+    if not stages or len(set(stages)) != len(stages) or any(s not in (1, 5, 10, *GATEWAY_STAGES) for s in stages):
+        raise ValueError('choose distinct stages from 1, 5, 10, or 11–16')
     if type(replicas) is not int or replicas < 1 or type(parallel) is not int or parallel < 1:
         raise ValueError('replicas and parallel must be positive integers')
     if not 120 <= wall_seconds <= 7200 or language not in ('cpp', 'rust'):

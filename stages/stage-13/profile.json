@@ -1,0 +1,24 @@
+{
+  "stage": 13,
+  "title": "Protected tenant cache",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "authorization",
+    "tenant-cache"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "auth_address": "127.0.0.1:8082",
+    "auth_timeout_ms": "300",
+    "cache_bytes": "4194304",
+    "cache_ttl_ms": "600"
+  }
+}

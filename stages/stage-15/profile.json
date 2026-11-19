@@ -1,0 +1,23 @@
+{
+  "stage": 15,
+  "title": "Authenticated TLS origin",
+  "capabilities": [
+    "static-files",
+    "persistence",
+    "gateway",
+    "upstream-mtls"
+  ],
+  "languages": [
+    "rust",
+    "cpp"
+  ],
+  "development_suite": "smoke",
+  "starter": false,
+  "configuration": {
+    "origin_address": "127.0.0.1:8081",
+    "tls_name": "origin.test",
+    "tls_ca": "/fixtures/ca.pem",
+    "tls_cert": "/fixtures/client.pem",
+    "tls_key": "/fixtures/client.key"
+  }
+}

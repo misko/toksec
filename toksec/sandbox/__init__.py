@@ -87,6 +87,9 @@ def toolchain():
 def build(source, artifact, level, test=False, language='rust'):
     from toksec.languages import profile
     profile(language, level)
+    if level == 15:
+        from toksec.sandbox import cgroup
+        return cgroup.build(source, artifact, language, test)
     if language == 'cpp':
         from toksec.cpp_build import build as cpp_build
         return cpp_build(source, artifact, level, test)
@@ -138,9 +141,12 @@ def build(source, artifact, level, test=False, language='rust'):
 @contextlib.contextmanager
 def running(artifact, level, configuration_override=None, smoke=False):
     artifact = Path(artifact).resolve()
-    with tempfile.TemporaryDirectory(prefix='toksec-runtime-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='toksec-runtime-') as temporary, tempfile.TemporaryDirectory(prefix='toksec-parent-') as private:
         directory = Path(temporary)
         (fixtures.create_smoke if smoke else fixtures.create)(directory, level)
+        if level == 15:
+            from stages.common.grading.gateway_origin import issue_certificates
+            issue_certificates(Path(private), directory)
         if configuration_override is not None:
             (directory / 'server.conf').write_text(configuration_override)
         read_fd, write_fd = os.pipe()
@@ -149,6 +155,7 @@ def running(artifact, level, configuration_override=None, smoke=False):
             try:
                 command = base() + ['--info-fd', str(write_fd), '--ro-bind', str(artifact), '/candidate',
                                     '--ro-bind', str(directory), '/fixtures', '--ro-bind', str(directory / 'www'), '/www',
+                                    *(['--size', str(384 * 1024**2), '--tmpfs', '/tmp/spool'] if level == 16 else []),
                                     '--chdir', '/candidate', '--', '/candidate/server', '--config', '/fixtures/server.conf']
                 cpus = sorted(os.sched_getaffinity(0))
                 def constrain():
@@ -159,7 +166,7 @@ def running(artifact, level, configuration_override=None, smoke=False):
                 os.close(write_fd)
                 write_fd = None
                 pid = sandbox_info(read_fd)
-                yield {'process': process, 'pid': pid, 'fixtures': directory, 'cpu': cpus[0]}
+                yield {'process': process, 'pid': pid, 'fixtures': directory, 'private': private, 'cpu': cpus[0]}
             finally:
                 os.close(read_fd)
                 if write_fd is not None:
@@ -173,11 +180,19 @@ def invoke_driver(artifact, level, mode='check', configuration_override=None, **
         values = configuration(level)
         values['cache_ttl_ms'] = '60000'
         configuration_override = ''.join(f'{k}={v}\n' for k, v in values.items())
+    if mode == 'benchmark' and level in (12, 13, 16) and configuration_override is None:
+        from toksec.specification import configuration
+        values = configuration(level)
+        if level == 16:
+            values.update(tenant_bytes='268435456', spool_bytes='268435456', upload_timeout_ms='2000')
+        else:
+            values.update(cache_ttl_ms='60000')
+        configuration_override = ''.join(f'{k}={v}\n' for k,v in values.items())
     with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or mode == 'benchmark') as runtime:
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
                    '--stage', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
-                   '--mode', mode, '--server-cpu', str(runtime['cpu'])]
+                   '--private', runtime['private'], '--mode', mode, '--server-cpu', str(runtime['cpu'])]
         for key, value in options.items():
             command += ['--' + key.replace('_', '-'), str(value)]
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,

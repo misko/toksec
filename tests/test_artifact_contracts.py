@@ -20,13 +20,13 @@ class ArtifactContractTests(unittest.TestCase):
                 'performance': {'status': 'not_run', 'credit': None, 'metrics': None}}
 
     def test_all_stage_language_contracts_and_source_names(self):
-        for stage in range(1, 11):
+        for stage in range(1, 17):
             for language, filename in [('cpp', 'main.cpp'), ('rust', 'main.rs')]:
                 with self.subTest(stage=stage, language=language):
                     contract = artifacts.artifact_contract(stage, language)
                     self.assertEqual(contract['submission']['source_file'], filename)
                     self.assertEqual(artifacts.validate_artifact(contract), contract)
-        for stage, language in [(0, 'cpp'), (11, 'cpp'), (True, 'cpp'), (1, 'python')]:
+        for stage, language in [(0, 'cpp'), (17, 'cpp'), (True, 'cpp'), (1, 'python')]:
             with self.assertRaises(ValueError):
                 artifacts.artifact_contract(stage, language)
 

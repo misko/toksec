@@ -9,7 +9,7 @@
     "stage": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 10
+      "maximum": 16
     },
     "language": {
       "enum": [

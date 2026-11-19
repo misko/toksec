@@ -64,9 +64,16 @@ async def load(spec, clients, start_at):
     stats = {'attempts': 0, 'successes': 0, 'completed_in_window': 0, 'failures': 0, 'timeouts': 0,
              'payload_bytes': 0, 'peak_inflight': 0, 'clients_started': 0, 'lag_max_ms': 0,
              'lag_samples': 0, 'lag_over_20ms': 0, 'histogram': histogram}
+    stats['all_successes'] = 0
     active = 0
     expected = payload(spec['size'], spec['gzip'])
     raw = request(spec['path'], host=spec.get('host', 'alpha.test'), close=not spec['persistent'], headers={'Accept-Encoding': 'gzip'} if spec['gzip'] else {})
+    workload_id = spec['id']
+    if workload_id.startswith(('gateway-11-', 'gateway-13-')):
+        raw = request(spec['path'], close=False, headers={'Authorization': 'Bearer reader'})
+    if workload_id.startswith('gateway-16-'):
+        raw = request('/gateway/upload', method='POST', headers={'Content-Length': str(len(expected))},
+                      close=False, body=expected)
     context = None
     if spec['tls']:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -107,6 +114,7 @@ async def load(spec, clients, start_at):
                     writer.write(raw)
                     await writer.drain()
                     closing = await response(reader, expected, spec['gzip'])
+                    stats['all_successes'] += 1
                     finished = time.monotonic()
                     if measured:
                         stats['successes'] += 1
@@ -207,7 +215,7 @@ def round_run(workload, pid, server_cpu, temporary, upstream_pid=None, upstream_
             process.join()
     cpu_after, _, _ = proc_sample(pid)
     histogram = [sum(p['histogram'][i] for p in parts) for i in range(BINS)]
-    summed = {key: sum(p[key] for p in parts) for key in ('attempts', 'successes', 'completed_in_window', 'failures', 'timeouts', 'payload_bytes', 'clients_started', 'cpu_seconds', 'rss_kib')}
+    summed = {key: sum(p[key] for p in parts) for key in ('attempts', 'successes', 'all_successes', 'completed_in_window', 'failures', 'timeouts', 'payload_bytes', 'clients_started', 'cpu_seconds', 'rss_kib')}
     overloaded = any(p['cpu_seconds'] / max(0.001, p['elapsed_seconds']) > 0.90 or
                      p['lag_over_20ms'] > max(1, p['lag_samples'] * 0.01) for p in parts)
     upstream_seconds = max(0, proc_sample(upstream_pid)[0] - upstream_before) if upstream_pid else 0

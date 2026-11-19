@@ -1,7 +1,8 @@
 """Canonical stage identity with read compatibility for historical level fields."""
 import importlib
 
-SUPPORTED_STAGES = (1, 2, 3, 4, 5, 10)
+GATEWAY_STAGES = tuple(range(11, 17))
+SUPPORTED_STAGES = (1, 2, 3, 4, 5, 10, *GATEWAY_STAGES)
 
 
 def number(value):

@@ -1,0 +1,3 @@
+# Admission
+
+Rate-limit /gateway/ using two initially full token buckets: per effective client and global, with capacities client_burst and global_burst respectively. Each refills one token per refill_ms up to capacity. Accept only if both have a token and debit both atomically. Otherwise return 429 without contacting the origin. Use the TCP peer address, except that a peer equal to trusted_peer may supply one valid IPv4 X-Real-IP. Ignore that header from other peers. GET /health always returns 200 with body ok plus newline and consumes no tokens. SIGHUP installs valid configuration atomically and resets buckets; invalid replacements preserve service.
