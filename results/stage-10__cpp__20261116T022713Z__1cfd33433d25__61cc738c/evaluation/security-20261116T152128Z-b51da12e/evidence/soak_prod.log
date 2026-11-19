@@ -1,0 +1,5 @@
+workers=4 watching_pid=2723458 start_rss=1460kB start_fds=4
+requests=5000 ok=5000 bad=0
+end_rss=2780kB (delta 1320) end_fds=4 (delta 0)
+SOAK_RESULT PASS
+--- srvlog: 0 bytes

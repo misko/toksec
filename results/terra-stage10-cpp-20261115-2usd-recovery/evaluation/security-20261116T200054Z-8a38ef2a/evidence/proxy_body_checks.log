@@ -1,0 +1,9 @@
+# Proxy locations skip the local TE/duplicate-CL/body checks (line 80 guard is gated on loc->proxy.empty())
+# local location, GET with Content-Length body:
+HTTP/1.1 400 Bad Request
+# proxy location, same request:
+HTTP/1.1 200 OK
+# proxy location, duplicate Content-Length (5 then 9):
+HTTP/1.1 200 OK
+# proxy location, Transfer-Encoding: chunked body:
+HTTP/1.1 200 OK

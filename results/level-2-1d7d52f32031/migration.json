@@ -1,0 +1,86 @@
+{
+  "files": {
+    "README.md": {
+      "path": "provenance/legacy/README.md",
+      "sha256": "2b9ed0e5433a042f40f8fd53d0a3fdd672343df4a45c1ec40d17e008b1a8323f"
+    },
+    "correctness.png": {
+      "path": "evaluation/imported-7e71498428b10526/figures/correctness.png",
+      "sha256": "5dc9a8e1320a9640b25db3689894635e09d938addf513526dd6dbccaf1192e3b"
+    },
+    "correctness.svg": {
+      "path": "evaluation/imported-7e71498428b10526/figures/correctness.svg",
+      "sha256": "aca17f86a2adbb815371cba729a49b1eea2e41798860de687cedf061cae4f3df"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "925daeea1604d09a794c077fd7ba38d5d8190468564b01167bd07112bd7fc73e"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "96d8a9ed1b12bc10abeaea1210692212c6c27b29a2bf10d8e41db97400169087"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "c4ed0c0a84846b59167fad54cfa9e726e1fef5569f1c837e9bab9e27501a3836"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "d1bd4c1786a7b01895b68484891673c8e01ccc9bca5d0ef458abfc572bd21cdd"
+    },
+    "performance.png": {
+      "path": "evaluation/imported-7e71498428b10526/figures/performance.png",
+      "sha256": "d1a645c25c74d0e196f311fa4ffc6710c021a6c9f307455ad2ae00c23ba15b27"
+    },
+    "performance.svg": {
+      "path": "evaluation/imported-7e71498428b10526/figures/performance.svg",
+      "sha256": "2ce7de98f13b1ee151aff0bc2ba660906eae2e837b2e212b4e3860708f861306"
+    },
+    "progress.md": {
+      "path": "implementation/evidence/progress.md",
+      "sha256": "362f380ef95c6e555a2a27dcf17551db197a5d8d1561b47544ccf0b65228cd69"
+    },
+    "release-000001-evaluation.json": {
+      "path": "evaluation/imported-7e71498428b10526/raw/release-000001-evaluation.json",
+      "sha256": "c7677757b7f06b48b7146c451030ad8c526502ca7d7e057d4e89a5125bef58ab"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "ac4bb2ce7e3c1d2362e04e5d7f0dce1e0bf20325c3e7b6cc266d7d5339ad8ef5"
+    },
+    "release-000002-evaluation.json": {
+      "path": "evaluation/imported-7e71498428b10526/raw/release-000002-evaluation.json",
+      "sha256": "2cb87627749bb6a673907010b883ed05be3a62b177d626f53294b45645fea5c4"
+    },
+    "release-000002.cpp": {
+      "path": "implementation/releases/release-000002.cpp",
+      "sha256": "758bb3f103dc5f13e5b620ebc981234521b2eda8df41ec7e7bd5e0f32894861d"
+    },
+    "release-000003-evaluation.json": {
+      "path": "evaluation/imported-7e71498428b10526/raw/release-000003-evaluation.json",
+      "sha256": "a8428b76df15aae0535110ade9ffe7fdee92a9cf3380d8d891d13fb916e06b09"
+    },
+    "release-000003.cpp": {
+      "path": "implementation/releases/release-000003.cpp",
+      "sha256": "847c0e9e97013ab00b9a63bf84b420a7d39cc5dabf21cb1744b12b58e0083a9a"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "f4d5065afa145cdef7032aa63b4453293c64dffca1f25ee5adb529aa3de3d05b"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "98dd1e4726bd4d9187a89e4f875375f92c27d836620e19eaa9e1b40fad04f151"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "e0e2c2d936ea35a483a6a198be99cd9a9dce6d72b941bc0bf7365344679fe07e"
+    },
+    "timeline.json": {
+      "path": "evaluation/imported-7e71498428b10526/raw/timeline.json",
+      "sha256": "c23dd0173b678de0dcc0a6a2fca41b617c44871ba7fd77e5bc7568445bfb487a"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "7e71498428b105264bcb3b7adf48de55f158d28e2a797e7995eb52783a3a6880"
+}

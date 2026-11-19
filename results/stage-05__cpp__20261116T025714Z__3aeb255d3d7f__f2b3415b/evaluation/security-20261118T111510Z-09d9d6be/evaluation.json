@@ -1,0 +1,93 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 0,
+      "path": "evidence/ev_r14_A_expect_f2b_cold.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 8124,
+      "path": "evidence/ev_r14_A_f2b3415b_v2_out.log",
+      "sha256": "8794960484d4db3a2a099875c7a90b5b1060214f11c10fe78e0a2146b567a25f"
+    },
+    {
+      "bytes": 16539,
+      "path": "evidence/ev_r16_A_final_f2b3415b.txt",
+      "sha256": "8d7788a41160b851ce73acbdeed11706435110ba20dc18a71ba83c06ee5ec62b"
+    },
+    {
+      "bytes": 5043,
+      "path": "evidence/ev_r16_A_matrix.txt",
+      "sha256": "2fd9f5f1258cac47391c76d8b386781ed93f314c679bf8cc85468147f987a19b"
+    },
+    {
+      "bytes": 1469,
+      "path": "report.md",
+      "sha256": "db9100f4c112e3b567f216dd7d4e82d674d9d5f0aef935f873ab2d9aa46dc75e"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T11:15:10.363589+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111510Z-09d9d6be",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Second build of the pair. f2b3415b:88 requires Content-Length or Transfer-Encoding on the reply and 502s a reply that has neither. Invisible to the attacker as a status difference but it is why node looks like a proxy fault rather than a consumer decision.",
+      "evidence": [
+        "evidence/ev_r16_A_final_f2b3415b.txt",
+        "evidence/ev_r16_A_matrix.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Same hard-502 on an unframed upstream reply; node s valid 400 surfaces to the client as 502"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -2,9 +2,21 @@
 import json
 from pathlib import Path
 from decimal import Decimal
+from toksec.stages import number as stage_number
 
 
 def markdown(run):
+    from toksec.stage_dispatch import stage_of
+    if stage_of(run) == 10:
+        from toksec.controller import counted_capacity as capacity, read
+        state = read(run)
+        cap = capacity(run)
+        tag = state['tags'][-1]['tag'] if state['tags'] else 'none'
+        return ('# Stage 10 implementation report\n\n'
+                'API coverage: partial. Performance: provisional; no final acceptance grade.\n\n'
+                f'Last completed tag: {tag}. Published releases: {len(state["tags"])}.\n'
+                f'Finished: {state["finished"]}.\n'
+                f'Conservative model spend: ${cap["budget"]["spent_usd_upper_bound"]:.8f}.\n')
     run = Path(run)
     read = lambda p: json.loads(p.read_text())
     manifest, state = read(run/'manifest.json'), read(run/'state.json')
@@ -12,7 +24,7 @@ def markdown(run):
     requests = [r for r in ledger['requests'] if r.get('run') == run.name]
     settled = [r['usage'] for r in requests if r['state'] == 'settled']
     spent = sum((Decimal(u['cost_usd_upper_bound']) for u in settled), Decimal(0))
-    lines = [f"# Stage {manifest['level']}: {run.name}", '',
+    lines = [f"# Stage {stage_number(manifest)}: {run.name}", '',
              f"Model: {manifest.get('model', 'gpt-6-luna')}; finished: {state['finished']}; retained: {state['best']}",
              f"Calls: {len(requests)}; tokens: {sum(u['total'] for u in settled)}; cost upper bound: ${spent}", '',
              '| Candidate | Passed checks | Build | Retained |', '|---|---:|---|---|']

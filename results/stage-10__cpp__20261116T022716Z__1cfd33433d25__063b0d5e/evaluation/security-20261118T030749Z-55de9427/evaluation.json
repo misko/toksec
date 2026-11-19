@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1619,
+      "path": "evidence/ev_r12_W_063b0d5e_rng.log",
+      "sha256": "96652186afaa6d620a967939e38354956ac87fd27cbeb854766f92f3f9e2f3f8"
+    },
+    {
+      "bytes": 2336,
+      "path": "evidence/ev_r12_W_063b0d5e_sem.log",
+      "sha256": "71964fa45fdcbcee1ab0766d71a842431033af51705a5fae5fc5bca6ab09753f"
+    },
+    {
+      "bytes": 1512,
+      "path": "report.md",
+      "sha256": "584921fdfba2b885a1b56040de3e05f55d2bf04807385c46d2044de034e12c79"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:49.160101+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030749Z-55de9427",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The hop set unions the client list, but the re-add tests h[content-length] rather than the strip set, so deleting content-length cannot remove the re-added header. The four semantic names are deletable and observable (304 to 200, 206 to 200).",
+      "evidence": [
+        "evidence/ev_r12_W_063b0d5e_sem.log",
+        "evidence/ev_r12_W_063b0d5e_rng.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Client-nominated deletion works on non-framing headers; Content-Length survives because the re-add gates on the client's own map"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Final tag of run 063b0d5e; proxy location",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

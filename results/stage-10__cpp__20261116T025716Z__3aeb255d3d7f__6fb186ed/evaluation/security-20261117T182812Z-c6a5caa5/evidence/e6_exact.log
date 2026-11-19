@@ -1,0 +1,9 @@
+# build 3aeb255d3d7f__6fb186ed  config: location /api { proxy_pass "http://backend/exec"; }
+# strict peer: fires sh only on an exact 3-token line; prints line + token count verbatim.
+# CTL: the plain root must answer, else the harness is at fault.
+CTL GET /hello.txt          -> 200 body=ALPHA
+GET /api                    -> 200  OUT=uid=1000(mouse9911)...   (exec id, the upstream default)
+GET /api?cmd=whoami         -> 200  OUT=mouse9911                 (exec the attacker's command)
+UPSTREAM: LINE=b'GET /exec HTTP/1.1' TOKS=3
+          LINE=b'GET /exec?cmd=whoami HTTP/1.1' TOKS=3
+# three tokens: a strict request-line parser reads token 1 as /exec?cmd=whoami and executes it.

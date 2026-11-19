@@ -1,0 +1,135 @@
+{
+  "analysis_complete": true,
+  "benchmark_skipped": "Build and all required API checks must pass before performance measurement.",
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 1.6821688143536448,
+    "test": false,
+    "timeout": false
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.004325459711253643
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.014080192893743515
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.008139198645949364
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.0029242243617773056
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.00013027992099523544
+      },
+      {
+        "id": "syntax",
+        "passed": true,
+        "seconds": 0.0008899113163352013
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.0009291255846619606
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 0.00011528562754392624
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.2033999059349298
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.00047076866030693054
+      },
+      {
+        "id": "headerless-request",
+        "passed": true,
+        "seconds": 5.665235221385956e-05
+      },
+      {
+        "id": "head",
+        "passed": true,
+        "seconds": 0.00012635160237550735
+      },
+      {
+        "id": "persistent-pipeline",
+        "passed": true,
+        "seconds": 0.0002245372161269188
+      },
+      {
+        "id": "connection-semantics",
+        "passed": true,
+        "seconds": 9.89958643913269e-05
+      },
+      {
+        "id": "connection-limits",
+        "passed": true,
+        "seconds": 2.01671692635864
+      },
+      {
+        "id": "slow-client-fairness",
+        "passed": true,
+        "seconds": 0.001170850358903408
+      },
+      {
+        "id": "byte-header-values",
+        "passed": true,
+        "seconds": 6.143376231193542e-05
+      },
+      {
+        "id": "connection-capacity",
+        "passed": true,
+        "seconds": 0.3067827196791768
+      },
+      {
+        "id": "write-deadline",
+        "passed": true,
+        "seconds": 1.102046748623252
+      },
+      {
+        "error": "AssertionError: invalid status line",
+        "id": "pipeline-backpressure",
+        "passed": false,
+        "seconds": 1.014182181097567
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.3767981445416808
+      }
+    ],
+    "passed": false,
+    "server_diagnostics": "",
+    "server_exit_code": null
+  },
+  "evaluated_unix": 1794634111.7438278,
+  "grading": {
+    "api_checks_failed": 1,
+    "api_checks_passed": 20,
+    "api_passed": false,
+    "deduction": "Failed API requirements lose API credit; all performance credit is forfeited.",
+    "performance_credit": 0,
+    "performance_status": "failed_api"
+  },
+  "level": 2
+}

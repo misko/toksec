@@ -10,8 +10,10 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from controller import atomic_json
+from toksec.stages import number as stage_number
+from toksec.storage import atomic_json
 from toksec import controller, evaluate, releases
+from toksec.languages import source_name
 from toksec.specification import fingerprint, specification
 
 
@@ -37,28 +39,37 @@ def analyze(run, output):
     if not repository.exists():
         subprocess.run(['git', '-c', 'core.hooksPath=/dev/null', 'clone', '--no-checkout', str(bundle), str(repository)], check=True, capture_output=True)
     subprocess.run(['git', '-C', str(repository), '-c', 'core.hooksPath=/dev/null', 'checkout', '--detach', records[-1]['tag']], check=True, capture_output=True)
-    timeline = {'level': manifest['level'], 'framework': manifest['fingerprint'],
+    timeline = {'stage': stage_number(manifest), 'framework': manifest['fingerprint'], 'language': manifest.get('language', 'rust'),
                 'started_unix': manifest['started_unix'], 'ended_unix': state.get('ended_unix'),
-                'total_checks': len(specification(manifest['level'])['cases']),
+                'total_checks': len(specification(stage_number(manifest))['cases']),
                 'method': 'Independent post-run measurements plotted at release publication time; no model API calls.',
                 'releases': []}
     for record in records:
         tag = record['tag']
         print('Evaluating ' + tag, flush=True)
-        source = subprocess.check_output(['git', '-C', str(repository), 'show', tag + ':main.rs'])
+        source = subprocess.check_output(['git', '-C', str(repository), 'show', tag + ':' + source_name(manifest)])
         if hashlib.sha256(source).hexdigest() != record['source_sha256']:
             raise ValueError('Exported source does not match recorded hash')
         stem = tag.replace('/', '-')
-        source_path = output / (stem + '.rs')
+        source_path = output / (stem + Path(source_name(manifest)).suffix)
         source_path.write_bytes(source)
         destination = output / stem
         result_path = destination / 'result.json'
         if result_path.exists():
             result = json.loads(result_path.read_text())
             if not result.get('analysis_complete'):
-                raise ValueError('Incomplete prior evaluation at ' + str(destination) + '; preserve it and use a fresh output directory')
+                if result.get('checks', {}).get('passed'):
+                    result = evaluate.resume(source_path, destination, stage_number(manifest), manifest.get('language', 'rust'))
+                else:
+                    destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
+                    result = evaluate.evaluate(source_path, destination, stage_number(manifest), performance=True, language=manifest.get('language', 'rust'))
+                result['analysis_complete'] = True
+                result['evaluated_unix'] = time.time()
+                atomic_json(result_path, result)
         else:
-            result = evaluate.evaluate(source_path, destination, manifest['level'], performance=True)
+            if destination.exists():
+                destination.rename(destination.with_name(stem + '-interrupted-' + str(time.time_ns())))
+            result = evaluate.evaluate(source_path, destination, stage_number(manifest), performance=True, language=manifest.get('language', 'rust'))
             result['analysis_complete'] = True
             result['evaluated_unix'] = time.time()
             atomic_json(result_path, result)

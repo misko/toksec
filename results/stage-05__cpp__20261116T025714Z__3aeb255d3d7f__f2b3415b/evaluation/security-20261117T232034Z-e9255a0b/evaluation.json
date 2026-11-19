@@ -1,0 +1,87 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1540,
+      "path": "evidence/ev_r11_R_f2b3.iso.txt",
+      "sha256": "aae0dfe274b879f5a6deb9531d95c7d0d13206a47f7cac9567b7ba89ae855eb8"
+    },
+    {
+      "bytes": 1070,
+      "path": "evidence/ev_r11_R_f2b3.wf.txt",
+      "sha256": "60dd889ee344b322d7e93c196bf7db5f61ac705d02adb52e2b06c7e22118f9a7"
+    },
+    {
+      "bytes": 324,
+      "path": "evidence/ev_r11_R_stf2b3415b.st.txt",
+      "sha256": "2c89059a3743855e5c83e00650075c0178e6d5b2afaa605968223f5170c1dfd7"
+    },
+    {
+      "bytes": 1176,
+      "path": "report.md",
+      "sha256": "267ea39f8486a1584714a5228ceb8a2e01555e00638a3ef4a15eda088fb1e80e"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:20:34.265360+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T232034Z-e9255a0b",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Both runs return `HTTP/1.1 400 Bad Request`, `Content-Length: 0`, `Connection: close` at 2.00 s. The status is generic, so the client cannot tell an expectation mismatch from a malformed request.",
+      "evidence": [
+        "evidence/ev_r11_R_stf2b3415b.st.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A waiting client is answered with a bare `400` after 2 s"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 11 lane R: waiting-client probe.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

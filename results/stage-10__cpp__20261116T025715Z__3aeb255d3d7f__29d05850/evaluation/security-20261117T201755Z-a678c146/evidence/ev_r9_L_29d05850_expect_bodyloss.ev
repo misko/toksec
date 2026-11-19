@@ -1,0 +1,64 @@
+### K0_ctl_post
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 405 Method Not Allowed'
+RESPONSES 1
+CLIENTBYTES 73
+BODY b'HTTP/1.1 405 Method Not Allowed\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### K1_ctl_pipeline
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\nGET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+RESPONSES 1
+CLIENTBYTES 307
+BODY b"HTTP/1.1 200 OK\r\ncontent-type: text/plain\r\nContent-Length: 222\r\nConnection: close\r\n\r\nPLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\\n' | CLEN=None BODYLEN=0 BODY=b''"
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### X1_expect_with_body
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhello'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+RESPONSES 1
+CLIENTBYTES 73
+BODY b'HTTP/1.1 417 Expectation Failed\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### X2_expect_body_is_request
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nContent-Length: 66\r\nConnection: close\r\n\r\nGET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+RESPONSES 1
+CLIENTBYTES 73
+BODY b'HTTP/1.1 417 Expectation Failed\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### X3_expect_then_pipelined
+REQ b'POST /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nExpect: 100-continue\r\nContent-Length: 5\r\nConnection: close\r\n\r\nhelloGET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 417 Expectation Failed'
+RESPONSES 1
+CLIENTBYTES 73
+BODY b'HTTP/1.1 417 Expectation Failed\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### G1_emptyport
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+RESPONSES 1
+CLIENTBYTES 66
+BODY b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### G2_hugeport
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:99999999999999999999\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+RESPONSES 1
+CLIENTBYTES 66
+BODY b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+
+### G3_colon_then_junk
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:80:90x\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+RESPONSES 1
+CLIENTBYTES 66
+BODY b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+UPSTREAM NONE
+

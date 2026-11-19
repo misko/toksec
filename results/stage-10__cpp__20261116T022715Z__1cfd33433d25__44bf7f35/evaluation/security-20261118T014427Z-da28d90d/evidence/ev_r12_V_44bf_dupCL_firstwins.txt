@@ -1,0 +1,18 @@
+LANE V — 44bf7f35 duplicate Content-Length resolution. Build 1cfd33433d25__44bf7f35, source ...44bf7f35.cpp, cfg ev_r12_V_cfg_44bf.conf.
+Control passed (200 HELLO) before each of the 5 replicates.
+
+mode dupCLfirst, upstream "Content-Length: 5" then "Content-Length: 2", body "HELLO":
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e74656e742d4c656e6774683a20320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a4854
+  decoded: 200, CL: 2, body "HT"
+
+The header loop at `:87` takes `length=number(v)` on every CL line with no already-set guard, so the
+LAST one wins, and `body.resize(length)` cuts the body to it. The emitted CL equals the cut body,
+so no mismatch is visible — but the value is last-wins here while a first-wins client (RFC 7230
+says the pair must agree) would have taken 5.
+
+dupCLlast (5 then 2 is dupCLfirst; the reverse, 2 then 5, is dupCLlast) passes 5 too and shows the
+mirror. A pair that *agrees* (dupCL) passes on this build and is refused by the other five:
+dupCL client_received_hex 485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+
+5/5 cold identical; all five controls passed.

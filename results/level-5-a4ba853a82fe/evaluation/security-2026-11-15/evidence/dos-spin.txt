@@ -1,0 +1,5 @@
+s5 pid=1876274 host=alpha.test
+sanity: b'HTTP/1.1 200 OK'
+s5 idle CPU/s: 0.00
+s5 CPU during 8 stalled half-closed 2.0s: 1.39s  (69% of a core)
+s5 CPU after clients closed: 0.00s

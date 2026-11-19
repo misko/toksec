@@ -1,0 +1,195 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "/src/main.cpp: In function 'void serve(int)':\n/src/main.cpp:87:87: warning: 'std::shared_ptr<_Tp> std::atomic_load(const shared_ptr<_Tp>*) [with _Tp = Config]' is deprecated: use 'std::atomic<std::shared_ptr<T>>' instead [-Wdeprecated-declarations]\n   87 | static void serve(int fd){Reader r(fd);int count=0;while(!stopping){auto c=atomic_load(&config);long long deadline=nowms()+c->idle;if(r.buf.empty()){if(!r.more(deadline))break;}deadline=nowms()+c->htime;string head;int err=0;for(;;){auto p=r.buf.find(\"\\r\\n\\r\\n\");if(p!=string::npos){if(p+4>(size_t)c->hbytes){err=431;break;}head=r.buf.substr(0,p+4);r.buf.erase(0,p+4);break;}if(r.buf.size()>(size_t)c->hbytes){err=431;break;}if(!r.more(deadline)){err=400;break;}}if(err){Response e=error(err);respond(fd,e,false,true,c->wtime);break;}if(head.find('\\0')!=string::npos){Response e=error(400);respond(fd,e,false,true,c->wtime);break;}auto p=head.find(\"\\r\\n\");string line=head.substr(0,p);auto a=line.find(' '),b=a==string::npos?string::npos:line.find(' ',a+1);string method,target,version;Headers h;if(p==string::npos||a==string::npos||b==string::npos||line.find(' ',b+1)!=string::npos||a==0||b==a+1){err=400;}else{method=line.substr(0,a);target=line.substr(a+1,b-a-1);version=line.substr(b+1);if(!token(method)||(version!=\"HTTP/1.1\"&&version!=\"HTTP/1.0\")||!parseheaders(head.substr(p+2),h))err=400;}string path,query,host;if(!err&&!pathdecode(target,path,query))err=400;auto hosts=values(h,\"host\");if(!err){if(hosts.size()>1||(hosts.empty()&&version==\"HTTP/1.1\"))err=400;else if(hosts.empty())host=c->defhost;else if(!validhost(hosts[0],host))err=400;else if(host!=c->defhost&&host!=c->bhost)err=400;}\n      |                                                                            ~~~~~~~~~~~^~~~~~~~~\nIn file included from /usr/include/c++/15/memory:83,\n                 from /src/main.cpp:16:\n/usr/include/c++/15/bits/shared_ptr_atomic.h:142:5: note: declared here\n  142 |     atomic_load(const shared_ptr<_Tp>* __p)\n      |     ^~~~~~~~~~~\n/src/main.cpp: In function 'int main(int, char**)':\n/src/main.cpp:91:159: warning: 'void std::atomic_store(shared_ptr<_Tp>*, shared_ptr<_Tp>) [with _Tp = Config]' is deprecated: use 'std::atomic<std::shared_ptr<T>>' instead [-Wdeprecated-declarations]\n   91 | int main(int argc,char**argv){if(argc!=3||string(argv[1])!=\"--config\")return 1;configfile=argv[2];shared_ptr<Config> c;if(!loadconfig(c))return 1;atomic_store(&config,c);signal(SIGPIPE,SIG_IGN);signal(SIGHUP,sig);signal(SIGTERM,sig);signal(SIGINT,sig);int s=socket(AF_INET,SOCK_STREAM|SOCK_NONBLOCK|SOCK_CLOEXEC,0);if(s<0)return 1;int one=1;setsockopt(s,SOL_SOCKET,SO_REUSEADDR,&one,sizeof one);if(bind(s,(sockaddr*)&c->listen.sa,sizeof(c->listen.sa))||listen(s,1024)){close(s);return 1;}pthread_attr_t attr;pthread_attr_init(&attr);pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);pthread_attr_setstacksize(&attr,65536);while(!stopping){if(reloadflag.exchange(false)){shared_ptr<Config> n;if(loadconfig(n)&&n->listen.text==c->listen.text){c=n;atomic_store(&config,c);flushcache();}}pollfd p{s,POLLIN,0};int n=poll(&p,1,100);if(n<=0)continue;for(;;){int fd=accept4(s,nullptr,nullptr,SOCK_NONBLOCK|SOCK_CLOEXEC);if(fd<0){if(errno==EINTR)continue;break;}if(active.load()>=c->maxconn){close(fd);continue;}active++;pthread_t t;if(pthread_create(&t,&attr,worker,(void*)(intptr_t)fd)){active--;close(fd);}}}close(s);long long until=nowms()+c->drain;while(active.load()&&nowms()<until)usleep(10000);return 0;}\n      |                                                                                                                                                   ~~~~~~~~~~~~^~~~~~~~~~~\n/usr/include/c++/15/bits/shared_ptr_atomic.h:183:5: note: declared here\n  183 |     atomic_store(shared_ptr<_Tp>* __p, shared_ptr<_Tp> __r)\n      |     ^~~~~~~~~~~~\n/src/main.cpp:91:767: warning: 'void std::atomic_store(shared_ptr<_Tp>*, shared_ptr<_Tp>) [with _Tp = Config]' is deprecated: use 'std::atomic<std::shared_ptr<T>>' instead [-Wdeprecated-declarations]\n   91 | int main(int argc,char**argv){if(argc!=3||string(argv[1])!=\"--config\")return 1;configfile=argv[2];shared_ptr<Config> c;if(!loadconfig(c))return 1;atomic_store(&config,c);signal(SIGPIPE,SIG_IGN);signal(SIGHUP,sig);signal(SIGTERM,sig);signal(SIGINT,sig);int s=socket(AF_INET,SOCK_STREAM|SOCK_NONBLOCK|SOCK_CLOEXEC,0);if(s<0)return 1;int one=1;setsockopt(s,SOL_SOCKET,SO_REUSEADDR,&one,sizeof one);if(bind(s,(sockaddr*)&c->listen.sa,sizeof(c->listen.sa))||listen(s,1024)){close(s);return 1;}pthread_attr_t attr;pthread_attr_init(&attr);pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);pthread_attr_setstacksize(&attr,65536);while(!stopping){if(reloadflag.exchange(false)){shared_ptr<Config> n;if(loadconfig(n)&&n->listen.text==c->listen.text){c=n;atomic_store(&config,c);flushcache();}}pollfd p{s,POLLIN,0};int n=poll(&p,1,100);if(n<=0)continue;for(;;){int fd=accept4(s,nullptr,nullptr,SOCK_NONBLOCK|SOCK_CLOEXEC);if(fd<0){if(errno==EINTR)continue;break;}if(active.load()>=c->maxconn){close(fd);continue;}active++;pthread_t t;if(pthread_create(&t,&attr,worker,(void*)(intptr_t)fd)){active--;close(fd);}}}close(s);long long until=nowms()+c->drain;while(active.load()&&nowms()<until)usleep(10000);return 0;}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ~~~~~~~~~~~~^~~~~~~~~~~\n/usr/include/c++/15/bits/shared_ptr_atomic.h:183:5: note: declared here\n  183 |     atomic_store(shared_ptr<_Tp>* __p, shared_ptr<_Tp> __r)\n      |     ^~~~~~~~~~~~\n",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 3.833056017756462,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0036614835262298584
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.013066084124147892
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.0005981521680951118
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.0003346838057041168
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.00013348646461963654
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 1.0013275044038892
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.00032869912683963776
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00018132757395505905
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "absolute-header-deadline",
+      "passed": false,
+      "seconds": 1.2011086009442806
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0008648205548524857
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 0.00200036633759737
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.006033345125615597
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.003997297957539558
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.003986752592027187
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.0407359432429075
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.004045246168971062
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 0.00010982900857925415
+    },
+    {
+      "id": "hosts",
+      "passed": true,
+      "seconds": 0.0010185884311795235
+    },
+    {
+      "id": "routes-index-mime",
+      "passed": true,
+      "seconds": 0.0004070401191711426
+    },
+    {
+      "id": "etag",
+      "passed": true,
+      "seconds": 0.0003248518332839012
+    },
+    {
+      "id": "ranges",
+      "passed": true,
+      "seconds": 0.00034732092171907425
+    },
+    {
+      "id": "routing-interactions",
+      "passed": true,
+      "seconds": 0.0006499709561467171
+    },
+    {
+      "id": "proxy-get-and-post",
+      "passed": true,
+      "seconds": 0.004536685533821583
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "passed": true,
+      "seconds": 0.005170492455363274
+    },
+    {
+      "id": "proxy-pool-and-errors",
+      "passed": true,
+      "seconds": 1.019652197137475
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "passed": true,
+      "seconds": 0.004361861385405064
+    },
+    {
+      "id": "proxy-fragmented-upload",
+      "passed": true,
+      "seconds": 0.0022730641067028046
+    },
+    {
+      "id": "cache",
+      "passed": true,
+      "seconds": 1.2311526127159595
+    },
+    {
+      "id": "cache-byte-limit",
+      "passed": true,
+      "seconds": 0.3340144529938698
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "passed": true,
+      "seconds": 0.6033346448093653
+    },
+    {
+      "id": "graceful-stop",
+      "passed": true,
+      "seconds": 0.026742521673440933
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.30179188773036003
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.1053418954834342
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.13078847154974937
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.27211729995906353
+    }
+  ],
+  "summary": {
+    "passed": 34,
+    "status": "failed",
+    "total": 35
+  },
+  "unimplemented_requirements": []
+}

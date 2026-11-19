@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 187,
+      "path": "evidence/ev_r17_D_cond_a4ba_head.hex",
+      "sha256": "8e5afc0fcbac3c976c7b7a042fd50030402728c2cb55c2aea2e8817050f61486"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cond_a4ba_post.hex",
+      "sha256": "024fd0ae3a262e11eb82a8f836bb9806a1cebefcfa4678098959190d332e5946"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_cond_a4ba_range.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_cond_a4ba_vget.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 2389,
+      "path": "report.md",
+      "sha256": "dab846b3c0a0e1792b58f9cf53ec81b8ba7c9f8176dcd7986659be4dfc53c703"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:01:04.530993+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T130104Z-7cfe8d26",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "After poisoning, a GET victim is served from cache at zero fetches. A HEAD to the same target also hits with zero fetches and returns 200 with the poisoned Content-Length: 50 header and no body; a Range: bytes=0-1 GET hits with zero fetches and returns the full 50-byte poisoned body at 200 (no 206, no slicing); a fabricated If-None-Match also hits at zero fetches and serves the full 200 poison because the stored upstream headers carry no ETag for the local 304 path to compare. Only a POST refetches (hit 5), so method is not part of the key and HEAD widens the poison to HEAD consumers.",
+      "evidence": [
+        "evidence/ev_r17_D_cond_a4ba_vget.hex",
+        "evidence/ev_r17_D_cond_a4ba_head.hex",
+        "evidence/ev_r17_D_cond_a4ba_range.hex",
+        "evidence/ev_r17_D_cond_a4ba_post.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "HEAD and Range are served from the poisoned entry; 304 is unreachable; POST bypasses"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

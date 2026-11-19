@@ -1,0 +1,102 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1144,
+      "path": "evidence/ev_r13_D_cfg.py",
+      "sha256": "d684a1f5204302941c23fa80f8464cc35dea3714617065a6aabc7a09fc3c0366"
+    },
+    {
+      "bytes": 855,
+      "path": "evidence/ev_r13_D_client.py",
+      "sha256": "25df25c27762baf9c398fc1eb32f7454566799f1d4268b3a1af28461e91cd8f8"
+    },
+    {
+      "bytes": 6193,
+      "path": "evidence/ev_r13_D_peer.py",
+      "sha256": "cf3f1242c0d164761a4098432e6d6ea5845882854a71e1c6cac7513869f45714"
+    },
+    {
+      "bytes": 3264,
+      "path": "evidence/ev_r13_D_peer2.py",
+      "sha256": "f3b017175795635f5d4279687737cb8172dddce0c4842ecb3e99218a029102c1"
+    },
+    {
+      "bytes": 5652,
+      "path": "evidence/ev_r13_D_run.py",
+      "sha256": "a0e5e85a9ee96bc6cdf23cc099ce786488df9e00a061359e66a69bffeae80beb"
+    },
+    {
+      "bytes": 5045,
+      "path": "evidence/ev_r13_D_run2.py",
+      "sha256": "ddb73e43f7be0faa192dc50c788819ff5e577112a844457b974fcfd8ea3a257e"
+    },
+    {
+      "bytes": 1407,
+      "path": "report.md",
+      "sha256": "44f558961874053633792dd55e92846678941b40dc77b59ca72499478fa9f8b7"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T05:51:35.674736+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T055135Z-6fa70237",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Bytes 0x09-0x0D at mid-path/space positions decode and reach the upstream line, splitting it into 4 tokens.",
+      "evidence": [
+        "evidence/ev_r13_D_peer.py",
+        "evidence/ev_r13_D_peer2.py",
+        "evidence/ev_r13_D_client.py",
+        "evidence/ev_r13_D_cfg.py",
+        "evidence/ev_r13_D_run.py",
+        "evidence/ev_r13_D_run2.py"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Decoded 0x09-0x0D splits upstream request line into 4 tokens"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Remote code execution precondition analysis; RCE occurs on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

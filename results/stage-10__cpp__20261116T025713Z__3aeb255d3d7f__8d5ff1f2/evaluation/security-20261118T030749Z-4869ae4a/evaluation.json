@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1678,
+      "path": "evidence/ev_r12_W_8d5ff1f2_rng.log",
+      "sha256": "7f4cd90109e70246c6a77f625d09867ef87685144784f60f74acf0165f7d8bcb"
+    },
+    {
+      "bytes": 2612,
+      "path": "evidence/ev_r12_W_8d5ff1f2_sem.log",
+      "sha256": "2c2bf5b683854ab7c8239da2435ddc11cec21ead7e6ad6ed9aa1e967fbb1d72f"
+    },
+    {
+      "bytes": 1316,
+      "path": "report.md",
+      "sha256": "a70095469b5e35642957ddf67b701cc101bb9449dbe4bbee0fcac068dba2109d"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:49.325934+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030749Z-4869ae4a",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "proxy_request filters only the built-in names, so none of the five probed deletions took effect (control 304 and payload 304 identical). The deletion-set trust boundary is closed on this build.",
+      "evidence": [
+        "evidence/ev_r12_W_8d5ff1f2_sem.log",
+        "evidence/ev_r12_W_8d5ff1f2_rng.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The strip list is fixed; the client's Connection tokens are ignored entirely"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final tag of run 8d5ff1f2; negative for the deletion mechanism",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

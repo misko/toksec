@@ -1,0 +1,20 @@
+=== RUN 19:15:17 port=32100 ["/tmp/H_idle.json", "ev_r8_H_8d5_idle.log"]
+--- SEND 0: b'GET /hold/h1 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 5\r\nContent-Length: 45\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET /hold/h1 HTTP/1.1\nTOKS:3\n'
+=== end resp 0
+PROBE-AFTER-0: OPEN 
+--- SEND 1: b'GET /hold/h2 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 6\r\nContent-Length: 45\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET /hold/h2 HTTP/1.1\nTOKS:3\n'
+=== end resp 1
+PROBE-AFTER-1: OPEN 
+--- SEND 2: b'GET /hold/h3 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 7\r\nContent-Length: 45\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET /hold/h3 HTTP/1.1\nTOKS:3\n'
+=== end resp 2
+PROBE-AFTER-2: OPEN 
+=== END RUN

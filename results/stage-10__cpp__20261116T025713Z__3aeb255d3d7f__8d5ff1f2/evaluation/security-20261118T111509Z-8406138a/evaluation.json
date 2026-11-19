@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 192,
+      "path": "evidence/ev_r16_A_cap_8d5ff1f2_exec09crlf.log",
+      "sha256": "695de14574e12479f91aefbae376b0de59ae0d9b1c1051b8f59bfcacdab124ad"
+    },
+    {
+      "bytes": 16821,
+      "path": "evidence/ev_r16_A_final_8d5ff1f2.txt",
+      "sha256": "b2aa73d49ea5f0222f849ffe87e3600b67400555163eda3757e281b58b3d8b0c"
+    },
+    {
+      "bytes": 1669,
+      "path": "report.md",
+      "sha256": "4e939fd2e17e329c173a2576767b6d9baf7aefc4629e66fde5626f0c2bea7910"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T11:15:09.186981+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111509Z-8406138a",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The guard at 77 rejects only NUL and backslash, so a decoded 0x09 reaches the upstream request line. Against stock nginx the request line degrades to HTTP/0.9: /exec runs and the caller gets 502. Control (GET /api/exec?cmd=id) is 200 with uid on the same config. Node 400s every exec09 shape.",
+      "evidence": [
+        "evidence/ev_r16_A_cap_8d5ff1f2_exec09crlf.log",
+        "evidence/ev_r16_A_final_8d5ff1f2.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The only shape that executes on stock software is the encoded-query form, and it executes from a path byte the decoder passes through"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

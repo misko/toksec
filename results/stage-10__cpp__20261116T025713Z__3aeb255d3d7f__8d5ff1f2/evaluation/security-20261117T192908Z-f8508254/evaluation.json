@@ -1,0 +1,107 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 2662,
+      "path": "evidence/crlfuf.log",
+      "sha256": "cc35863d80fb9bf71f97923573610c9f647804bbe56a57d4d45d22a354548e24"
+    },
+    {
+      "bytes": 1416,
+      "path": "evidence/hdrinj.log",
+      "sha256": "a7cebaa5293a1b38ed0d9be9dd73be706b9f8419a6b40c88919072eba8d7a700"
+    },
+    {
+      "bytes": 3900,
+      "path": "evidence/loc.log",
+      "sha256": "52c47ebbfa9e1205766e9830ac32ec33ba381000ad3850794ecdfcdbe8253fba"
+    },
+    {
+      "bytes": 4539,
+      "path": "evidence/loc2.log",
+      "sha256": "c69bd8c96400a53beb88a050539dcff496105c1cf83d7313ed94fac7165acd8e"
+    },
+    {
+      "bytes": 1593,
+      "path": "evidence/loc_decode.log",
+      "sha256": "23e2384947c9e04b257e2bbabad5648ce95f1eed236d93b62412996d10e80eeb"
+    },
+    {
+      "bytes": 13289,
+      "path": "evidence/range.log",
+      "sha256": "25c792a8ffce6f8a49943e72d041cc599f1a0af6900cdea66c024f0daf7a9731"
+    },
+    {
+      "bytes": 3417,
+      "path": "report.md",
+      "sha256": "83e3fd346414753a1ebf6e45af1156f1b17e4c043a192784c5730498cf3ab541"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T19:29:08.648095+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; python raw-socket probes, curl 8.18.0 cross-check"
+  },
+  "evaluation_id": "security-20261117T192908Z-f8508254",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "pathnorm rejects only NUL and backslash, so CR and LF from the request path survive into the location string, and response() concatenates that string into the head verbatim. GET /hdr%0d%0aX-Inject:%20yes yields a real X-Inject: yes/ line; a Set-Cookie payload installs a live cookie; CRLFCRLF ends the head early and turns the genuine tail into body; a forged Content-Length produces a duplicate that fails curl with Invalid Content-Length. Precondition: an attacker-chosen path segment on this build, and a directory whose name contains the control bytes. It is a client-side response-splitting primitive, not server-side execution.",
+      "evidence": [
+        "evidence/hdrinj.log",
+        "evidence/crlfuf.log",
+        "evidence/loc2.log",
+        "evidence/loc_decode.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The 301 Location is concatenated into the header block from the decoded path while the path decoder admits CR and LF, so the response head can be split and headers forged"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Static build: no upstream, so nothing executes on the server",
+    "Injected header lines carry a trailing slash and any query because the target is a slashless directory"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Verified the staged source is byte-identical to the tag",
+    "Controls GET /hello.txt 200 and /ten.txt Range 2-4 == 234",
+    "Probed the 301 with CRLF, CRLFCRLF and Set-Cookie payloads in the directory name",
+    "Cross-checked the duplicate-Content-Length case with curl"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 7 lane D: static file layer plus the 301 Location header build.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

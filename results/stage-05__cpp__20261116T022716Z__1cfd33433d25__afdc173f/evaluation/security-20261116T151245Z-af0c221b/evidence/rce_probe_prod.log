@@ -1,0 +1,66 @@
+target=target port=18831 upstream=19893
+
+=== control-forward ===
+client request: b'GET /proxy/exec?cmd=id;uname%24%7BIFS%7D-a;cat%24%7BIFS%7D%2Fetc%2Fhostname HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+--- upstream saw ---
+   GET /exec?cmd=id;uname%24%7BIFS%7D-a;cat%24%7BIFS%7D%2Fetc%2Fhostname HTTP/1.1
+   EXECUTED: id;uname${IFS}-a;cat${IFS}/etc/hostname  ->  uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),
+--- client received ---
+HTTP/1.1 200 OK
+Content-Length: 240
+Connection: keep-alive
+content-type: text/plain
+
+uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+Linux gauss 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+gauss
+--- body ---
+uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+Linux gauss 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+gauss
+
+=== smuggle-exec ===
+client request: b'GET /%70roxy/x%0D%0AHost:%20backend%0D%0A%0D%0AGET%20/exec%3Fcmd%3Did;uname%24%7BIFS%7D-a;cat%24%7BIFS%7D%2Fetc%2Fhostname%20HTTP/1.1%0D%0AHost:%20backend%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+--- upstream saw ---
+--- client received ---
+HTTP/1.1 400 Bad Request
+Content-Length: 0
+Connection: close
+
+
+--- body ---
+
+
+=== smuggle-delete ===
+client request: b'GET /%70roxy/x%0D%0A%0D%0ADELETE%20/admin%20HTTP/1.1%0D%0AHost:%20backend%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+--- upstream saw ---
+--- client received ---
+HTTP/1.1 400 Bad Request
+Content-Length: 0
+Connection: close
+
+
+--- body ---
+
+
+=== smuggle-exec-post ===
+client request: b'GET /%70roxy/x%0D%0A%0D%0APOST%20/exec%20HTTP/1.1%0D%0AContent-Length:%204%0D%0AHost:%20backend%0D%0A%0D%0Aid%3B%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+--- upstream saw ---
+--- client received ---
+HTTP/1.1 400 Bad Request
+Content-Length: 0
+Connection: close
+
+
+--- body ---
+
+
+=== SUMMARY ===
+  control-forward        executed=True first_body_line='uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+  smuggle-exec           executed=False first_body_line='<none>'
+  smuggle-delete         executed=False first_body_line='<none>'
+  smuggle-exec-post      executed=False first_body_line='<none>'
+control_forward_ok=True  (1 request line expected, proves forwarding itself works)
+smuggled_cases=0/3 []
+SMUGGLE_VERDICT NOT VULNERABLE
+--- srvlog: 0 bytes

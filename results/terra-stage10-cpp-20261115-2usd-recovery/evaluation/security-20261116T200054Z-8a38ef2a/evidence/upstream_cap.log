@@ -1,0 +1,5 @@
+# Upstream response is fully buffered with a hard 64MiB cap (line 78 recv loop / 78 out.size()<67108864)
+# 70,000,000-byte upstream body -> proxied response is silently truncated at the cap, framing stays self-consistent:
+bytes received: 67112000
+declared Content-Length: ['Content-Length: 67111936']
+actual body bytes: 67111936

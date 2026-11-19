@@ -1,0 +1,101 @@
+{
+  "artifacts": [
+    {
+      "bytes": 12635,
+      "path": "evidence/ev_r9_K_29d05850_fulllog.log",
+      "sha256": "37455a4b1708d5896339962275aa61cfdc3c102117b06cbb8b6a1debfb1e6011"
+    },
+    {
+      "bytes": 10428,
+      "path": "evidence/ev_r9_K_61cc738c_fulllog.log",
+      "sha256": "23aea8cdb8eb2e04926548a2a3a5a54894ad883cba4431e1b71b36d289c8f5a2"
+    },
+    {
+      "bytes": 378,
+      "path": "evidence/ev_r9_K_head_29.log",
+      "sha256": "7763652f4e5fef102a1336443aa418a37f99d18dedfd638ee2cbe309737740e6"
+    },
+    {
+      "bytes": 463,
+      "path": "evidence/ev_r9_K_judge_29d1.log",
+      "sha256": "71beb69a4c94317d9d429849e72f63373d325f261cb972ba4311128ada7f4c2b"
+    },
+    {
+      "bytes": 3088,
+      "path": "report.md",
+      "sha256": "9bc555aa97504aa8e619e95c1c63d9583bea5f10f64cd51f11b58b217621d102"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:35:51.742097+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact bytes, verbatim client-head capture"
+  },
+  "evaluation_id": "security-20261117T203551Z-09c83f36",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The status line is read with getline(st,reason) and re-emitted as HTTP/1.1 <code><reason>. A reason containing a bare CR and then header text lands those bytes before the proxy's own header block. An upstream reason of OK\\rContent-Length: 999 yields a client head with a rogue Content-Length: 999 ahead of the real Content-Length: 5; with OK\\rSet-Cookie: a=b two live cookies are installed. CRLF-strict clients take the first CL and starve, CR-splitting clients see three headers. Precondition: an attacker-influenced upstream.",
+      "evidence": [
+        "evidence/ev_r9_K_judge_29d1.log",
+        "evidence/ev_r9_K_29d05850_fulllog.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The upstream reason phrase is copied verbatim into the client head, so a bare CR in it pre-empts headers the proxy writes"
+    },
+    {
+      "description": "The bodyless branch still appends Content-Length if the upstream supplied a length and the code is not 204. A 304 with Content-Length: 5 was forwarded with that CL even though no body follows, so a client that honours CL on a bodyless status waits. Precondition: an upstream that sends CL on a bodyless status.",
+      "evidence": [
+        "evidence/ev_r9_K_61cc738c_fulllog.log",
+        "evidence/ev_r9_K_head_29.log"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Content-Length is emitted on a 204, a bodyless status, when the upstream sent one"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Upstream-host execution only",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first",
+    "Scripted peer emitted each response shape on its own path",
+    "Captured the client head verbatim and re-requested on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 29d05850, round 9 lane K: the client-facing response head the proxy rebuilds.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,37 @@
+{
+  "artifact_contract_provenance": "supplied_to_builder",
+  "budget_usd": "2",
+  "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
+  "framework": "15aae464dc224d99a083a920ab55c103d43aa92a627d402b68bde705416aac2b",
+  "grading_status": "reported",
+  "id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "language": "cpp",
+  "last_tag": "release/000001",
+  "layout_version": 1,
+  "model": "gpt-6.1-terra",
+  "path": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "paths": {
+    "accounting": "accounting",
+    "artifact_contract": "inputs/artifact.json",
+    "evaluation": "evaluation",
+    "implementation": "implementation",
+    "inputs": "inputs",
+    "latest_evaluation": "evaluation/security-20261118T23012Z-rcematrix"
+  },
+  "persisted_run_id": true,
+  "protocol": "toksec-1cfd33433d25",
+  "publication_version": 2,
+  "raw_run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-nine-20261116/stage-05-cpp-replica-03/runs/stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "stage": 5,
+  "started_unix": 1794797249.8879108,
+  "started_utc": "2026-11-16T02-47-29Z",
+  "status": "builder_finished",
+  "toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "wall_seconds": 7200
+}

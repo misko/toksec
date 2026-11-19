@@ -1,0 +1,89 @@
+{
+  "build": {
+    "compiler": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "diagnostics": "",
+    "passed": true,
+    "seconds": 2.33090028911829,
+    "test": false,
+    "timeout": false
+  },
+  "checks": {
+    "cases": [
+      {
+        "id": "bootstrap",
+        "passed": true,
+        "seconds": 0.0016698101535439491
+      },
+      {
+        "id": "files",
+        "passed": true,
+        "seconds": 0.009709754958748817
+      },
+      {
+        "id": "query-and-decoding",
+        "passed": true,
+        "seconds": 0.0005203466862440109
+      },
+      {
+        "id": "confinement",
+        "passed": true,
+        "seconds": 0.0002617044374346733
+      },
+      {
+        "id": "fragmentation",
+        "passed": true,
+        "seconds": 0.0001024436205625534
+      },
+      {
+        "id": "syntax",
+        "passed": true,
+        "seconds": 0.0012566586956381798
+      },
+      {
+        "id": "request-framing",
+        "passed": true,
+        "seconds": 0.00019838102161884308
+      },
+      {
+        "id": "header-limit",
+        "passed": true,
+        "seconds": 9.736698120832443e-05
+      },
+      {
+        "id": "absolute-header-deadline",
+        "passed": true,
+        "seconds": 1.2039477797225118
+      },
+      {
+        "id": "disconnect-recovery",
+        "passed": true,
+        "seconds": 0.0003052167594432831
+      },
+      {
+        "id": "headerless-request",
+        "passed": true,
+        "seconds": 4.80208545923233e-05
+      },
+      {
+        "id": "configuration",
+        "passed": true,
+        "seconds": 0.24237675219774246
+      }
+    ],
+    "passed": true,
+    "server_diagnostics": "",
+    "server_exit_code": null
+  },
+  "framework": "6fb7772770821e4f56dbcebe476c5cf9647b02c65faa6c0e5433d0cd355ebcb4",
+  "grading": {
+    "api_checks_failed": 0,
+    "api_checks_passed": 12,
+    "api_passed": true,
+    "performance_status": "not_requested"
+  },
+  "language": "rust",
+  "level": 1,
+  "output": "/home/mouse9911/gits/toksec-next/.runs/references/stage-01-rust/api-003",
+  "section": "api",
+  "source_sha256": "7de049780c1f1c9e789955a961a01e7e43226a98db69a5f7ec9cbfa24b655ebf"
+}

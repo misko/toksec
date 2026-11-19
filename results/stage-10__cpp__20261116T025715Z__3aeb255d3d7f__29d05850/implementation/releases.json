@@ -1,0 +1,98 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "e6d20fe5a82b4a098e0c5b1b31a14563",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 4000000000,
+          "remaining_nanodollars": 3818947500,
+          "remaining_usd": 3.8189475,
+          "request_count": 7,
+          "spent_nanodollars": 181052500,
+          "spent_usd_upper_bound": 0.1810525
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "e6d20fe5a82b4a098e0c5b1b31a14563",
+        "seconds_remaining": 7067.139582633972
+      },
+      "commit": "7db399744b7854b4a1871fb44d3e9dc88cd46233",
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent"
+      ],
+      "recorded_unix": 1794806051.164946,
+      "scope": "visible_smoke_only",
+      "source_sha256": "4db7ae625ca5856bb6ec1ea1d7ae97a1883eadab7f5812efb01e87f9f2b19168",
+      "tag": "release/000001"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "c95b3a5bc96c4c028214498859ea4815",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 4000000000,
+          "remaining_nanodollars": 3335278750,
+          "remaining_usd": 3.33527875,
+          "request_count": 22,
+          "spent_nanodollars": 664721250,
+          "spent_usd_upper_bound": 0.66472125
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "c95b3a5bc96c4c028214498859ea4815",
+        "seconds_remaining": 6894.237830877304
+      },
+      "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+      "note": "Adds nonblocking upstream GET/HEAD forwarding; proxy visible smoke now passes alongside bootstrap, config, HTTP and verified persistent HTTPS. Proxy framing and streaming support remain incomplete; no full-stage or performance claim.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794806224.066725,
+      "scope": "visible_smoke_only",
+      "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+      "tag": "release/000002"
+    }
+  ]
+}

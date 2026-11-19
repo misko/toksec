@@ -1,0 +1,79 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 2296,
+      "path": "evidence/ev_r10_N_61ccs.ev",
+      "sha256": "2e6382e203ff63e4581dc8420aaeab7083b60534b317f810688d69b1f380e333"
+    },
+    {
+      "bytes": 1729,
+      "path": "report.md",
+      "sha256": "09fcccc7f7d775cf88198d07a36129afac667367c99b2bcce50a86f88a65bf09"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T21:49:50.194186+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; distinct per-file marker content so the opened file is unambiguous, service-side slice arithmetic recomputed by hand"
+  },
+  "evaluation_id": "security-20261117T214950Z-d1d9778d",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Identical mechanism to 44bf7f35: the forced trailing slash means `/al..` never prefix-matches, and a written component `..` is refused. S08 404, S09 403, 0/14.",
+      "evidence": [
+        "evidence/ev_r10_N_61ccs.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Negative: same trailing-slash forcing (`bad alias`), so the slice escape is unavailable"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Filesystem read only; all RCE remains on the upstream host",
+    "Alias must be configured; several builds additionally need a slashless location"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Plain alias control and root control first on the same cold server",
+    "Marker text proves which file opened, never the status code",
+    "Every payload re-run 3x"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 61cc738c, round 10 lane N: alias slice on a trailing-slash-forced location.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

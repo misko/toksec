@@ -1,0 +1,115 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1426,
+      "path": "evidence/ev_r8_F_063_cnrt.log",
+      "sha256": "fd008b0dd59c5d7ec717f60adb6e7ab3b03fdaa1f60099e8b73afd34fb76f7f3"
+    },
+    {
+      "bytes": 46459,
+      "path": "evidence/ev_r8_F_063_evidence.txt",
+      "sha256": "232ff5b866c6e17a89f27d85375b6d86cedc6d4bb9a52e0df7be5487fed80e62"
+    },
+    {
+      "bytes": 1166,
+      "path": "evidence/ev_r8_F_063_final2.log",
+      "sha256": "96d44a1c9532ddae779b3f4d0b616a0846d15f3ce6b5d9048e333765588b8983"
+    },
+    {
+      "bytes": 3065,
+      "path": "report.md",
+      "sha256": "9b6a9810e29d45b24a1225c290963c3eebc2a260a8a47e8a98971c9f975b9cac"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:03:15.398798+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; openssl s_client for SNI, strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T200315Z-24424f80",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "sni_cb serves the certificate named by SNI and does nothing else; the callback never touches the route pointer, so a certificate is chosen for a name the request need not come from.",
+      "evidence": [
+        "evidence/ev_r8_F_063_evidence.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Host and SNI are independent authorities and are never reconciled"
+    },
+    {
+      "description": "One TLS connection with SNI beta.test and Host alpha.test serves certificate CN=beta.test, passes hostname verification for beta.test, and the request executes on alpha's proxied exec route: the client verifies one name and runs code on another. Precondition: a TLS listener with two server_name blocks each carrying its own proxied location.",
+      "evidence": [
+        "evidence/ev_r8_F_063_final2.log"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Host and SNI are independent authorities and are never reconciled"
+    },
+    {
+      "description": "The forwarded request always carries the constant Host: 127.0.0.1:<port>; the client Host is consumed for routing and dropped, so an upstream that routes on Host sees the proxy's constant regardless of what the client sent.",
+      "evidence": [
+        "evidence/ev_r8_F_063_evidence.txt"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Host and SNI are independent authorities and are never reconciled"
+    },
+    {
+      "description": "server_name arguments are stored with lower() and no grammar check, so a trailing-dot name loads and its certificate is served by SNI, while every Host carrying the same trailing dot is rejected by the Host validator: the name is reachable by cert and unreachable by route.",
+      "evidence": [
+        "evidence/ev_r8_F_063_cnrt.log"
+      ],
+      "id": "SEC-004",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Host and SNI are independent authorities and are never reconciled"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Needs a TLS listener and two server blocks",
+    "An exec route must be proxied on the routed vhost to show command output"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control pair first, then the crossed SNI/Host matrix",
+    "Compared the served certificate subject with the executed route",
+    "Captured upstream request bytes"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 8 lane F: Host and SNI as independent route/certificate authorities on a TLS vhost proxy.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,10 @@
+### CNRT 8d5_cnrt2
+  sni=dot.test.      Host=dot.test.      -> cert=CN=beta.test code=400 body=b''
+  sni=dot.test.      Host=dot.test       -> cert=CN=beta.test code=400 body=b''
+  sni=dot.test.      Host=alpha.test     -> cert=CN=beta.test code=200 body=b'ALPHA\n'
+  sni=dot.test       Host=dot.test.      -> cert=CN=alpha.test code=400 body=b''
+  sni=dot.test       Host=dot.test       -> cert=CN=alpha.test code=400 body=b''
+  sni=dot.test       Host=alpha.test     -> cert=CN=alpha.test code=200 body=b'ALPHA\n'
+  sni=alpha.test     Host=dot.test.      -> cert=CN=alpha.test code=400 body=b''
+  sni=alpha.test     Host=dot.test       -> cert=CN=alpha.test code=400 body=b''
+  sni=alpha.test     Host=alpha.test     -> cert=CN=alpha.test code=200 body=b'ALPHA\n'

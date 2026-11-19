@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 953,
+      "path": "evidence/ev_r11_S_cold_e1a.txt",
+      "sha256": "95d47e7556d156ce250e991e1799b62b6225975fa566d6dba0a3a8a357a034cf"
+    },
+    {
+      "bytes": 1353,
+      "path": "evidence/ev_r11_S_exec3_e1a.txt",
+      "sha256": "5c5a241236d7bdb7a549058c179879efd56a0cfbd0c56abe5fc87be19a568b90"
+    },
+    {
+      "bytes": 2236,
+      "path": "evidence/ev_r11_S_headline_1cfd33433d25__e1a28e35.txt",
+      "sha256": "85c24991cb45b39bac68e4dc996c049379ab497da8514daead1777e373e1a601"
+    },
+    {
+      "bytes": 2166,
+      "path": "report.md",
+      "sha256": "a7a434ae9425957be4349e6742a195aa1c85dc398ec5cdaa93b7a64b78396eac"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:18:29.834312+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231829Z-3c66a910",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`acquire` scans the per-authority vector and returns the top fd only on EAGAIN (`:81`), and `recycle` returns any fd with an HTTP/1.1 head and an empty buffer (`:82`). The replay pair leaks 10/10 from cold servers and 50/50 on a keep-alive connection; because it is deterministic the exec output crosses clients without the victim asking for `/exec`, 13/20. Populated-socket and truncated-body sub-probes are clean, so the leak needs the upstream to write after the peek \u2014 which it controls.",
+      "evidence": [
+        "evidence/ev_r11_S_headline_1cfd33433d25__e1a28e35.txt",
+        "evidence/ev_r11_S_cold_e1a.txt",
+        "evidence/ev_r11_S_exec3_e1a.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The same check-then-use makes the stale-response leak fully deterministic, so a victim receives exec output it never requested"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "5526e34559864d4d898fc693d845e66606809a4b",
+    "source_sha256": "b6ce041759ab2d60dfe76688c3a11977cfc4ad052389a7feae0bcef4bc5c4641",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-05__cpp__20261116T022712Z__1cfd33433d25__e1a28e35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run e1a28e35, round 11 lane S: `acquire` EAGAIN-only reuse and `recycle`.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

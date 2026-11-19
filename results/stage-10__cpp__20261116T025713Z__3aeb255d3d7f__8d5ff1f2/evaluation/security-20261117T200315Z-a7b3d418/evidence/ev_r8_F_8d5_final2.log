@@ -1,0 +1,10 @@
+### FINAL 8d5 port=34120 coldstart ok=True peers A=38303 B=39105
+[COLD-POC-0] REQUEST=b'GET /exec HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+      cert_served=beta.test hostname_verify(beta.test)=PASS
+      RESPONSE=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:38303 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[COLD-POC-1] REQUEST=b'GET /exec HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+      cert_served=beta.test hostname_verify(beta.test)=PASS
+      RESPONSE=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39105 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[REV] REQUEST=b'GET /exec HTTP/1.1\r\nHost: beta.test\r\nConnection: close\r\n\r\n'
+      cert_served=alpha.test hostname_verify(alpha.test)=PASS
+      RESPONSE=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'

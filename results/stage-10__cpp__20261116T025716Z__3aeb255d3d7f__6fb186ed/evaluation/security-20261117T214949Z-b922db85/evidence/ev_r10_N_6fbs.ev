@@ -1,0 +1,100 @@
+# lane N evidence: build 6fbs
+# config + client-BIN marker below
+# cfg: worker_processes 1;
+# cfg: events { worker_connections 128; }
+# cfg: http {
+# cfg:   upstream backend { server 127.0.0.1:40753; }
+# cfg:   server {
+# cfg:     listen 127.0.0.1:37056;
+# cfg:     server_name alpha.test;
+# cfg:     root /tmp/r10_www_N/alpha;
+# cfg:     location /api/ { proxy_pass http://backend/api/; }
+# cfg:     location /al { alias /tmp/r10_www_N/aliasdir; }
+# cfg:     location / { root /tmp/r10_www_N/alpha; }
+# cfg:   }
+# cfg:   server {
+# cfg:     listen 127.0.0.1:37056;
+# cfg:     server_name beta.test;
+# cfg:     root /tmp/r10_www_N/beta;
+# cfg:     location /api/ { proxy_pass http://backend/api/; }
+# cfg:     location /al { alias /tmp/r10_www_N/aliasdir; }
+# cfg:     location / { root /tmp/r10_www_N/beta; }
+# cfg:   }
+# cfg: }
+## ev_r10_N_6fbs_sweep.json
+{
+ "tag": "6fbs",
+ "port": 37056,
+ "res": {
+  "S01_ctl_alias": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S02_PA": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S03_PB": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S04_PC": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S05_PD": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S06_PE1": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S07_PE2": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S08_ESC": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 147
+  },
+  "S09_ESC2": {
+   "status": "HTTP/1.1 403 Forbidden",
+   "body": "",
+   "rawlen": 64
+  },
+  "S10_ESCpct": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 147
+  },
+  "S11_UNCH": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-SUBX",
+   "rawlen": 147
+  },
+  "S12_PG": {
+   "status": "HTTP/1.1 404 Not Found",
+   "body": "",
+   "rawlen": 64
+  },
+  "S13_VHbeta_alias": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-ALIASDIR-x.txt",
+   "rawlen": 148
+  },
+  "S14_VHbeta_esc": {
+   "status": "HTTP/1.1 200 OK",
+   "body": "MARKER-PARENT-ESCAPE",
+   "rawlen": 147
+  }
+ }
+}

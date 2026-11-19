@@ -1,0 +1,8 @@
+control=b'HTTP/1.1 200 OK'
+GET  I63.bin  size=67108863  HTTP/1.1 200 OK              recv=67108863
+HEAD I63.bin  size=67108863  HTTP/1.1 200 OK              recv=0
+GET  I64.bin  size=67108864  HTTP/1.1 200 OK              recv=67108864
+HEAD I64.bin  size=67108864  HTTP/1.1 200 OK              recv=0
+GET  I65.bin  size=67108865  HTTP/1.1 403 Forbidden       recv=0
+HEAD I65.bin  size=67108865  HTTP/1.1 200 OK              recv=0
+port 37712 clear

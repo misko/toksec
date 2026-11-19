@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 12940322,
+      "path": "evidence/ev_r11_Q_1cfd33433d25__6baf167b_Z1.log",
+      "sha256": "41fee0876bd1fb5b9125b848e24942a5ae916e00dbf90a88a8195790d608a733"
+    },
+    {
+      "bytes": 1831,
+      "path": "report.md",
+      "sha256": "1e64f28aaaaa4805094b81795309e70b8a281d52a9a70b4f3c4949ff5fa5a8b6"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T00:11:31.331414+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T001131Z-51958a79",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`:55` fails 400 whenever the request carries `transfer-encoding`, and `:58` fails the same for a bare `Content-Length`, so no request body is ever consumed and no upstream body byte is ever emitted; chunk state on this build is response-side only. Three shapes tried, all 400 with zero upstream requests. This is the clean per-build contrast that makes the other five decoders' behaviour attributable to the decoder rather than to the proxy as a class.",
+      "evidence": [
+        "evidence/ev_r11_Q_1cfd33433d25__6baf167b_Z1.log"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Every request `Transfer-Encoding` is a 400, so this build never decodes a chunked request body at all"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 11 lane Q: request-side chunking is refused outright.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

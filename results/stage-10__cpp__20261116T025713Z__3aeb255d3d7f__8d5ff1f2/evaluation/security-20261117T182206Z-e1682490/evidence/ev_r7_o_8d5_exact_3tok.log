@@ -1,0 +1,8 @@
+LINE=b'GET /exec HTTP/1.1' TOKS=3
+LINE=b'GET /exec?cmd=whoami HTTP/1.1' TOKS=3
+# --- interpretation ---
+# config: location /api { proxy_pass "http://backend/exec"; }   (URI has no trailing slash/space)
+# pt = loc->uri + path.substr(loc->path.size()) + query
+# bare GET /api            -> path=/api == loc->path, remainder "" -> "GET /exec"          3 tokens -> exec id
+# GET /api?cmd=whoami      -> remainder "" + query "?cmd=whoami"   -> "GET /exec?cmd=whoami" 3 tokens -> exec whoami
+# strict peer fires exec only on a 3-token line; both fired. No %XX anywhere in the client request.

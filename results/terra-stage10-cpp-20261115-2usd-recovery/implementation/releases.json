@@ -1,0 +1,352 @@
+{
+  "releases": [
+    {
+      "candidate": "ad61ee8291f444f397fc04a1a12fb67b",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 1657676250,
+          "remaining_usd": 1.65767625,
+          "request_count": 2,
+          "spent_nanodollars": 40232500,
+          "spent_usd_upper_bound": 0.0402325
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "ad61ee8291f444f397fc04a1a12fb67b",
+        "seconds_remaining": 7075.2670431137085
+      },
+      "commit": "e6ffd09acddad6ba90b632c853f8244f7300bd9d",
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get"
+      ],
+      "recorded_unix": 1794763621.8928862,
+      "scope": "visible_smoke_only",
+      "source_sha256": "1fcad8481e15d5eeb3bb016b2de23897b98f98d23fd7fd8b722ca568bbade9e9",
+      "tag": "release/000001"
+    },
+    {
+      "candidate": "7009e8f0bad145f1935e86ab2628f3dc",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 1549993750,
+          "remaining_usd": 1.54999375,
+          "request_count": 5,
+          "spent_nanodollars": 147915000,
+          "spent_usd_upper_bound": 0.147915
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "7009e8f0bad145f1935e86ab2628f3dc",
+        "seconds_remaining": 6973.644675731659
+      },
+      "commit": "77f063f5ef23ba5fe1e1fd8fa7209cb3dcac5a2c",
+      "note": "Adds TLS 1.2/1.3 transport and basic upstream proxy GET. Visible smoke now passes bootstrap, config, HTTP GET, HTTPS GET, HTTPS persistent and proxy; these checks do not establish full API correctness. Proxy currently buffers and lacks POST and required admission/cache behavior; reload and many validation and deadline cases remain incomplete.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794763723.5153556,
+      "scope": "visible_smoke_only",
+      "source_sha256": "c6951d6d1c5f28200094179268e228d4003bdff09d68b1e10b6967fb901406b0",
+      "tag": "release/000002"
+    },
+    {
+      "candidate": "c0b19122def745ed8087ed2513ab0633",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 1437520000,
+          "remaining_usd": 1.43752,
+          "request_count": 9,
+          "spent_nanodollars": 260388750,
+          "spent_usd_upper_bound": 0.26038875
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000002"
+        },
+        "latest": "c0b19122def745ed8087ed2513ab0633",
+        "seconds_remaining": 6927.268681764603
+      },
+      "commit": "d82e75e1318aee1d58e34ec6b4e4ebceec2dfb2d",
+      "note": "Adds normalized decoded path handling, UTF-8 validation, descriptor-relative no-follow file traversal, conditional ETag and single-range support beyond the previous TLS/proxy smoke milestone. Visible bootstrap, config, HTTP, HTTPS persistence and proxy smoke pass; broader behavior remains incomplete and independently unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794763769.8913407,
+      "scope": "visible_smoke_only",
+      "source_sha256": "7488a156cbe715c3da398b8c1e2092eeed172a3ec8a4313a4dec34a57da2c806",
+      "tag": "release/000003"
+    },
+    {
+      "candidate": "519afa4ede2b452bb835df6ab3bbc1a5",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 1207131250,
+          "remaining_usd": 1.20713125,
+          "request_count": 17,
+          "spent_nanodollars": 490777500,
+          "spent_usd_upper_bound": 0.4907775
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000003"
+        },
+        "latest": "519afa4ede2b452bb835df6ab3bbc1a5",
+        "seconds_remaining": 6812.608606815338
+      },
+      "commit": "ca0c0d1fb9840788dba228c6f24a01efc47ef25d",
+      "note": "Adds directive context, duplicate, block-shape and selected value validation, plus stricter HTTP framing and request validation since the preceding tagged milestone. Visible bootstrap, config, HTTP, HTTPS persistence and proxy checks pass. Proxy streaming, full configuration validation, reload, cache, admission and many deadline requirements remain incomplete; full API acceptance is not established.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794763884.5514026,
+      "scope": "visible_smoke_only",
+      "source_sha256": "5f44b6fe9d703f5816ee54c42ec8d813bb5a2f234cef81c128343311573bf310",
+      "tag": "release/000004"
+    },
+    {
+      "candidate": "dfd84ebb6bee4ca0acf32b4d9a6a76dc",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 1059301250,
+          "remaining_usd": 1.05930125,
+          "request_count": 22,
+          "spent_nanodollars": 638607500,
+          "spent_usd_upper_bound": 0.6386075
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000004"
+        },
+        "latest": "dfd84ebb6bee4ca0acf32b4d9a6a76dc",
+        "seconds_remaining": 6760.605532646179
+      },
+      "commit": "365b9ce932f3764051aeccb4cfbbee0ed96266e4",
+      "note": "Adds stricter request path normalization and UTF-8 validation, safer component-wise file opens and expanded request framing validation. Visible bootstrap, configuration, HTTP, HTTPS persistence and proxy smoke checks remain passing. Streaming proxy, full validation, reload, cache and global admission remain incomplete; no full-stage acceptance is claimed.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794763936.5544078,
+      "scope": "visible_smoke_only",
+      "source_sha256": "dc954b7dc7bb2ee7b94e3249762d0b753abc054df387426b412d8aeefcb82745",
+      "tag": "release/000005"
+    },
+    {
+      "candidate": "01ed27e200c54ff18352751dc9418fef",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 969996250,
+          "remaining_usd": 0.96999625,
+          "request_count": 25,
+          "spent_nanodollars": 727912500,
+          "spent_usd_upper_bound": 0.7279125
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000005"
+        },
+        "latest": "01ed27e200c54ff18352751dc9418fef",
+        "seconds_remaining": 6732.601736545563
+      },
+      "commit": "a39e63fdf108fe1f1fe179cf11e927d7273b2391",
+      "note": "Adds absolute request-header, response-write and TLS-handshake timeout tracking to the event loop. Visible bootstrap, config, HTTP GET, HTTPS GET/persistence and proxy checks pass. Full deadline semantics, streaming proxy, cache, reload and global resource controls remain incomplete; no full-stage acceptance is claimed.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794763964.558265,
+      "scope": "visible_smoke_only",
+      "source_sha256": "5a9b5c044bc678d80706a6d87ded6deda64e1fd98226d21c0fcec7dc6f1a45ae",
+      "tag": "release/000006"
+    },
+    {
+      "candidate": "f0bcc792595a421ea3dc90c7fb7c7904",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 1697908750,
+          "remaining_nanodollars": 784666250,
+          "remaining_usd": 0.78466625,
+          "request_count": 31,
+          "spent_nanodollars": 913242500,
+          "spent_usd_upper_bound": 0.9132425
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000006"
+        },
+        "latest": "f0bcc792595a421ea3dc90c7fb7c7904",
+        "seconds_remaining": 6683.135545492172
+      },
+      "commit": "2ccd5686c32225c150fe06138fbf52d88c584f76",
+      "note": "Strengthens configuration directive validation, rejecting unknown directives, wrong contexts, duplicate directives and several invalid forms, while retaining visible bootstrap, configuration, HTTP, HTTPS persistence and proxy checks. Full grammar and semantic validation, streaming proxy, cache, transactional reload, and global limits remain incomplete; no full-stage acceptance is claimed.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794764014.024447,
+      "scope": "visible_smoke_only",
+      "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+      "tag": "release/000007"
+    }
+  ]
+}

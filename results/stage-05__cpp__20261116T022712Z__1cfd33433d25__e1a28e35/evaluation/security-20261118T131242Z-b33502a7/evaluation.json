@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 187,
+      "path": "evidence/ev_r17_D_cond_e1a2_head.hex",
+      "sha256": "4b0cf02b786a1b736a45b03240b512fa13d24b422c35b58fb1e18583ef5c3511"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cond_e1a2_inm.hex",
+      "sha256": "745b3c327674f9af06d4e72cf91dd9381d68848733b972712e206c3c6472f624"
+    },
+    {
+      "bytes": 291,
+      "path": "evidence/ev_r17_D_cond_e1a2_post.hex",
+      "sha256": "9a32751cf5cf788f372a5a5f8a21b85086fa303fe58148f1912c0eec60e520ac"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cond_e1a2_range.hex",
+      "sha256": "745b3c327674f9af06d4e72cf91dd9381d68848733b972712e206c3c6472f624"
+    },
+    {
+      "bytes": 1530,
+      "path": "report.md",
+      "sha256": "f31f317a41b69f55a05726e978b2ebaf922ea2cb5e8ba88dca23641c9d5e499d"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:42.213116+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131242Z-b33502a7",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "HEAD hits at zero fetch with the poisoned Content-Length, Range is ignored and the full body is served at 200, If-None-Match is ignored, POST refetches. Method is not in the key here either.",
+      "evidence": [
+        "evidence/ev_r17_D_cond_e1a2_head.hex",
+        "evidence/ev_r17_D_cond_e1a2_range.hex",
+        "evidence/ev_r17_D_cond_e1a2_inm.hex",
+        "evidence/ev_r17_D_cond_e1a2_post.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "e1a28e35: same conditional behavior on the variant-vector entry"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "5526e34559864d4d898fc693d845e66606809a4b",
+    "source_sha256": "b6ce041759ab2d60dfe76688c3a11977cfc4ad052389a7feae0bcef4bc5c4641",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-05__cpp__20261116T022712Z__1cfd33433d25__e1a28e35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

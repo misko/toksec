@@ -1,0 +1,4 @@
+plain-noenc    client=HTTP/1.1 200 OK              forwarded=1 line=b'GET //x HTTP/1.1'
+pct-encoded    client=HTTP/1.1 200 OK              forwarded=1 line=b'GET //x HTTP/1.1'
+pct-plus-crlf  client=HTTP/1.1 400 Bad Request     forwarded=0 line=b'-'
+pct-tab        client=HTTP/1.1 400 Bad Request     forwarded=0 line=b'-'

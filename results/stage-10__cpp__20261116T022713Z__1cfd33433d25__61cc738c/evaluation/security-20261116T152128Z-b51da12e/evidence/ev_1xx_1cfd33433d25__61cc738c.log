@@ -1,0 +1,20 @@
+1cfd33433d25__61cc738c
+  upstream -> none, then 200 'HELLO'
+  client raw: b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: close\r\n\r\nHELLO'
+  200 reached: True   HELLO reached: True
+
+1cfd33433d25__61cc738c
+  upstream -> 100, then 200 'HELLO'
+  client raw: b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+  200 reached: False   HELLO reached: False
+
+1cfd33433d25__61cc738c
+  upstream -> 102, then 200 'HELLO'
+  client raw: b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+  200 reached: False   HELLO reached: False
+
+1cfd33433d25__61cc738c
+  upstream -> 103, then 200 'HELLO'
+  client raw: b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+  200 reached: False   HELLO reached: False
+

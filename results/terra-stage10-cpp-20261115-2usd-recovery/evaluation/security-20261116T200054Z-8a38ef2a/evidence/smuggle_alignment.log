@@ -1,0 +1,7 @@
+# Request smuggling: proxy locations accept Content-Length, serve() never consumes the body.
+# Client sends 2 requests (1 real + 1 crafted body). Server returns 3 responses.
+# resp1=client A target, resp2=the SMUGGLED request, resp3=client B target (shifts out of alignment).
+total responses: 3
+resp1 status=200 OK body='NGINX-SAW /hello.txt\n'
+resp2 status=200 OK body='ABCDEFGHIJ'
+resp3 status=404 Not Found body=''

@@ -1,0 +1,107 @@
+{
+  "artifacts": [
+    {
+      "bytes": 735,
+      "path": "evidence/e6_body.log",
+      "sha256": "f2843976613ad085d027f4149d39208ebeda2f86ab00dfb97f14fd8606d0f046"
+    },
+    {
+      "bytes": 682,
+      "path": "evidence/e6_exact.log",
+      "sha256": "cb7b2fcbfa0d348736180581db1f06d86da6f6357210e3bfdaa5cf729d0d7f7e"
+    },
+    {
+      "bytes": 563,
+      "path": "evidence/e6_qs.log",
+      "sha256": "08190164715a06d992102a511caf9ca262ed9d5c9e9f03d799792297501befbb"
+    },
+    {
+      "bytes": 4015,
+      "path": "report.md",
+      "sha256": "a939ae1dd12a271c9ea30d863c027ad9e60c294176d3bd803b7ba9061c020a8e"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T18:28:12.580361+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual review of release/000004 + live compiled binary against a strict exec peer with raw line capture"
+  },
+  "evaluation_id": "security-20261117T182812Z-c6a5caa5",
+  "evaluator_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+  "findings": [
+    {
+      "description": "The URI is spec.substr(slash)+path.substr(loc->path.size())+q. With an exact location match the remainder is empty, so GET /api?cmd=whoami emits GET /exec?cmd=whoami HTTP/1.1 - three tokens. A strict parser reads token 1 as the exec route with the query attached and runs whoami. Bare GET /api emits GET /exec HTTP/1.1 and runs id. No percent-encoding in the client request. Requires a proxy_pass URI naming the exec route with no trailing space.",
+      "evidence": [
+        "evidence/e6_exact.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Exact-match URI without a trailing space keeps a 3-token line, so an attacker query alone executes a chosen command on a strict parser"
+    },
+    {
+      "description": "A quoted trailing space in the URI makes GET /api emit GET /exec  HTTP/1.1, four tokens, two spaces. A whitespace-splitting upstream executes the default command. CL:0 POST also works and emits POST. The attacker sends only the path; the command is the upstream default. Requires the quoted space and a whitespace-splitting upstream.",
+      "evidence": [
+        "evidence/e6_qs.log"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A quoted space in the proxy_pass URI is the separator, so a bare GET /api executes the upstream default command with no encoding"
+    },
+    {
+      "description": "The gate rejects any Content-Length other than the literal 0 with 400 and does not close, so a POST body request fails while a GET with a trailing request line and no CL is answered 400 and the leftover is parsed and proxied, producing a second execution from one write. Requires keep-alive. Control GET /hello.txt 200.",
+      "evidence": [
+        "evidence/e6_body.log"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A trailing request line with no Content-Length survives an accepted-then-400 request and is proxied as a second request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "One build only",
+    "SEC-002 needs a whitespace-splitting upstream and SEC-001 a strict 3-token reader",
+    "SEC-003 needs keep-alive",
+    "RCE is upstream-side; no local exec",
+    "No memory fuzzing"
+  ],
+  "methods": [
+    "Read release/000004 from the tag",
+    "Built the exact release and confirmed --check-config",
+    "Strict peer with verbatim line, token count, exact 3-token exec trigger",
+    "Same-config GET /hello.txt control before every payload",
+    "Quoted-space and exact-match URI variants; CL:0 vs CL!=0 vs no-CL tail"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Second pass on final release release/000004 of stage-10 run 6fb186ed. Config-shape axis of the proxy branch (quoted-space URI, exact-match URI) and the CL gate body behaviour; each driven on a fresh config with a static control.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

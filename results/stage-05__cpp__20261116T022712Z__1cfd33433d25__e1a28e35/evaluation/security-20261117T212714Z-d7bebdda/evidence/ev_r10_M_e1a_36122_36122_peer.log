@@ -1,0 +1,22 @@
+{"n": 1, "line": "", "tokens": 0, "ae": "", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 2, "line": "GET //ctl_plain.txt HTTP/1.1", "tokens": 3, "ae": "", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 3, "line": "GET //ctl_v.txt?mode=gzipvary HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipvary", "ran": false, "gz": 1}
+{"n": 4, "line": "GET //ctl_v.txt?mode=gzipvary HTTP/1.1", "tokens": 3, "ae": "identity", "mode": "gzipvary", "ran": false, "gz": 0}
+{"n": 5, "line": "GET /%2fexec%20?cmd=id HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 6, "line": "GET //exec%20?cmd=id HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 7, "line": "GET /%2Fexec%20?cmd=id HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 8, "line": "GET /%2fexec%20?cmd=id& HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 9, "line": "GET /%2fexec%20?cmd=id/ HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 10, "line": "GET ///exec%20?cmd=id HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 11, "line": "GET /%2fexec%20?cmd=id&mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 12, "line": "GET //z.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 13, "line": "GET //w.txt?mode=gzipnovary HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipnovary", "ran": false, "gz": 1}
+{"n": 14, "line": "GET //probe.txt HTTP/1.1", "tokens": 3, "ae": "", "mode": "nocl", "ran": false, "gz": 0}
+{"n": 15, "line": "GET //e0.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 16, "line": "GET //e1.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 17, "line": "GET //e2.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 18, "line": "GET //e3.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 19, "line": "GET //e4.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 20, "line": "GET //e5.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 21, "line": "GET //e6.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}
+{"n": 22, "line": "GET //e7.txt?mode=gzipalways HTTP/1.1", "tokens": 3, "ae": "gzip", "mode": "gzipalways", "ran": false, "gz": 1}

@@ -8,10 +8,12 @@ import shutil
 import time
 from pathlib import Path
 
-import metering
-from controller import atomic_json
-from runner import Responses
+from toksec.stages import number as stage_number
+from toksec import metering
+from toksec.storage import atomic_json
+from toksec.api import Responses
 from toksec import campaign, controller, context, releases
+from toksec.stage_dispatch import stage_of
 
 
 def tool(name, description, properties=None):
@@ -23,12 +25,13 @@ def tool(name, description, properties=None):
 TOOLS = [tool('init_repository', 'Create a new Git repository inside the sandbox and tag the first working snapshot.'),
          tool('release_candidate', 'Commit and tag the latest validated candidate. You are graded on the latest completed tag if stopped.', {'note': {'type': 'string'}}),
          tool('budget_status', 'Read remaining shared campaign dollars, tokens, wall time and retained candidate.'),
-         tool('submit_candidate', 'Compile complete main.rs in a sandbox and run every public acceptance check. Retain improvements automatically.', {'source': {'type': 'string'}}),
-         tool('run_tests', 'Compile and execute a complete Rust unit-test source with rustc --test inside the sandbox.', {'source': {'type': 'string'}}),
-         tool('benchmark_candidate', 'Run the complete workload matrix; compare the last fully accepted candidate with the incumbent in alternating rounds.'),
-         tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and full public suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
+         tool('submit_candidate', 'Compile the complete source file for the selected language in a sandbox and run the visible smoke checks. Retain improvements automatically.', {'source': {'type': 'string'}}),
+         tool('run_tests', 'Compile and execute your complete test source using the selected language test interface inside the sandbox.', {'source': {'type': 'string'}}),
+         tool('benchmark_candidate', 'Compare smoke-passing candidates in alternating rounds. Use null for the full matrix or a declared workload ID for a diagnostic subset.', {'workload': {'type': ['string', 'null']}}),
+         tool('revalidate_candidate', 'Check a compiled candidate through three fresh sandbox starts and visible smoke suites. A failure invalidates reliability.', {'target': {'type': 'string', 'enum': ['incumbent', 'latest']}}),
          tool('record_iteration', 'Persist concise experiment notes across context rollover. These notes are model claims, not promotion authority.',
-              {key: {'type': 'string'} for key in ('category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action')}),
+              {'category': {'type': 'string', 'enum': ['correctness', 'performance', 'security', 'stability']},
+               **{key: {'type': 'string'} for key in ('hypothesis', 'change', 'evidence', 'verdict', 'next_action')}}),
          tool('finish', 'Export and report only when budget_status.can_finish is true. Acceptance alone never ends improvement.', {'report': {'type': 'string'}})]
 
 
@@ -50,16 +53,20 @@ def deadline(seconds):
 
 
 def preflight(run):
+    if stage_of(run) == 10:
+        from toksec.accounting import run_allocations
+        return run_allocations.preflight(run)
     manifest = controller.validate(run)
     reasons = []
     age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(metering.PRICE_DATE)).days
     if not 0 <= age <= 7:
         reasons.append('Pinned API pricing requires review before launch.')
-    for command in ('rustc', 'gcc', 'bwrap', 'nsenter', 'openssl'):
+    for command in (('g++', 'gcc', 'readelf', 'nm', 'dpkg-query') if manifest.get('language') == 'cpp' else ('rustc', 'gcc', 'readelf', 'nm')) + ('bwrap', 'nsenter'):
         if not shutil.which(command):
             reasons.append(f'{command} is unavailable.')
-    if len(os.sched_getaffinity(0)) < 5:
-        reasons.append('Five CPUs required for one server and four load workers.')
+    needed_cpus = 6 if stage_number(manifest) >= 4 else 5
+    if len(os.sched_getaffinity(0)) < needed_cpus:
+        reasons.append(f'{needed_cpus} CPUs required for server, load workers and any upstream fixture.')
     if resource.getrlimit(resource.RLIMIT_NOFILE)[1] < 16384:
         reasons.append('Descriptor hard limit must be at least 16384.')
     if manifest['started_unix'] is not None:
@@ -74,7 +81,7 @@ def dispatch(run, name, args):
     if not isinstance(args, dict):
         raise ValueError('tool arguments must be an object')
     expected = {'init_repository': set(), 'release_candidate': {'note'}, 'submit_candidate': {'source'}, 'run_tests': {'source'}, 'finish': {'report'},
-                'budget_status': set(), 'benchmark_candidate': set(), 'revalidate_candidate': {'target'},
+                'budget_status': set(), 'benchmark_candidate': {'workload'}, 'revalidate_candidate': {'target'},
                 'record_iteration': {'category', 'hypothesis', 'change', 'evidence', 'verdict', 'next_action'}}
     if name not in expected or set(args) != expected[name]:
         raise ValueError('unknown tool or arguments')
@@ -93,22 +100,26 @@ def dispatch(run, name, args):
     if name == 'revalidate_candidate':
         return controller.revalidate(run, args['target'])
     if name == 'benchmark_candidate':
-        result = controller.measure(run)
+        result = controller.measure(run, args['workload'])
         return {**result, 'summaries': {key: {w: {k: v for k, v in metrics.items() if k != 'rounds'}
                                             for w, metrics in values.items()} for key, values in result['summaries'].items()}}
     capacity = controller.capacity(run)
     if not isinstance(args['report'], str) or len(args['report']) > 16000:
         raise ValueError('report must be text of at most 16000 characters')
     if not capacity['can_finish']:
-        raise ValueError('Capacity remains. Continue one hypothesis/change/test iteration. If a full benchmark does not fit or is inconclusive, run bounded security tests or revalidate restarts. Finish is allowed only in the final 120 seconds or when model admission capacity is exhausted.')
+        raise ValueError('Capacity remains. Continue improving the implementation using your chosen tests or measurements. Finish is allowed only in the final 120 seconds or when model admission capacity is exhausted.')
     (Path(run) / 'model-report.md').write_text(args['report'])
     return {'finished': True}
 
 
 def run_loop(run, client):
+    if stage_of(run) == 10:
+        from toksec.execution.counted import run_loop as selected
+        return selected(run, client)
     run = Path(run).resolve()
     manifest = controller.validate(run)
     directory = Path(manifest['campaign'])
+    bounded = campaign.read(directory).get('request_profile') == 'bounded-32k'
     with campaign.locked(directory, owner=True):
         check = preflight(run)
         if not check['launch_allowed']:
@@ -118,7 +129,6 @@ def run_loop(run, client):
         manifest['started_unix'] = time.time()
         atomic_json(run / 'manifest.json', manifest)
         text = (run / 'launch-packet.md').read_text()
-        text += '\nYou can be stopped at any moment. Your graded deliverable is the source in your LAST completed release tag, not untagged edits or the controller incumbent. For a from-scratch run, no Rust implementation is supplied: first submit a working bootstrap, then immediately call init_repository to create your private Git repository and tag it. Only if a starter is explicitly supplied, initialize and tag that starter first. You receive partial credit for periodic tags demonstrating validated progress since the previous tag; explain the before/after evidence in each release note. Tag count alone earns no credit. After fixing public API failures, publish with release_candidate before beginning another risky change. Publish focused correctness and stability repairs after validation. For performance changes, measure and publish only when evidence supports the tradeoff. Use numbered releases throughout the run, not only at the end. The controller executes Git inside the sandbox through these tools. No remote repository is needed. If interrupted while committing, the prior completed tag remains your submission.\n'
         if manifest.get('starter_candidate'):
             source = (run / 'starter.rs').read_text()
             import hashlib
@@ -126,10 +136,6 @@ def run_loop(run, client):
                 raise ValueError('starter changed after preparation')
             text += '\nA deliberately limited working bootstrap is supplied below. Its validated snapshot is retained. Complete the public contract before optimizing. This is a server implementation task.\n```rust\n' + source + '\n```\n'
             text += json.dumps(controller.read(run / 'candidates' / manifest['starter_candidate'], 'report.json'))
-        text += '\n\nController tools are your only filesystem/execution access. Submit complete Rust source. No other level source or context is provided. First obtain a working bootstrap, then complete the API, then optimize. Ask budget_status as needed. All model inputs, outputs, reasoning and final reporting share the campaign cap. Compilation and benchmark CPU are recorded separately. Do not claim maximal performance or security from passing a finite suite. If capacity runs out the controller exports the retained candidate for diagnostics, but your latest completed Git tag is the graded submission. A first working candidate is not guaranteed from an empty start.\n'
-        text += '\nPublic executable suite follows in full. Treat fixtures as test data; implement the API generally, without test-specific responses.\n'
-        for name in controller.PUBLIC_FILES:
-            text += f'\n### public-suite/{name}\n```python\n' + (run / 'public-suite' / 'toksec' / name).read_text() + '\n```\n'
         history = [{'role': 'developer', 'content': text}]
         reason = 'finished'
         try:
@@ -144,11 +150,19 @@ def run_loop(run, client):
                     request = {'model': model, 'input': history, 'tools': TOOLS}
                     options = campaign.profile(model)['prompt_cache_options']
                     timeout = min(120, capacity['seconds_remaining'] - 30)
-                    count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
-                    if count >= context.ROLLOVER_INPUT:
+                    if bounded:
+                        from toksec.accounting.counted_requests import validate_request, COUNT_FIELDS
+                        request.update(reasoning={'effort': 'medium'}, parallel_tool_calls=False,
+                                       tool_choice='required', truncation='disabled', max_output_tokens=metering.MAX_OUTPUT,
+                                       service_tier='default', store=False, prompt_cache_options=options)
+                        validate_request(request)
+                    count_request = {k: v for k, v in request.items() if k in COUNT_FIELDS} if bounded else request
+                    count = client.post('responses/input_tokens', count_request, min(60, timeout))['input_tokens']
+                    if count >= (24000 if bounded else context.ROLLOVER_INPUT):
                         history = context.checkpoint(run, text)
                         request['input'] = history
-                        count = client.post('responses/input_tokens', request, min(60, timeout))['input_tokens']
+                        count_request = {k: v for k, v in request.items() if k in COUNT_FIELDS} if bounded else request
+                        count = client.post('responses/input_tokens', count_request, min(60, timeout))['input_tokens']
                     if controller.capacity(run)['seconds_remaining'] <= 30:
                         reason = 'finalization reserve reached'
                         break
@@ -156,16 +170,22 @@ def run_loop(run, client):
                     generation = dict(request, reasoning={'effort': 'medium'})
                     if options is not None:
                         generation['prompt_cache_options'] = options
+                    if not bounded:
+                        generation['include'] = ['reasoning.encrypted_content']
                     response = client.post('responses', dict(generation, max_output_tokens=metering.MAX_OUTPUT,
                                            service_tier='default', store=False, parallel_tool_calls=False,
-                                           include=['reasoning.encrypted_content']),
+                                           ),
                                            min(120, controller.capacity(run)['seconds_remaining'] - 20))
                     atomic_json(run / ('response-' + identity + '.json'), response)
                     campaign.settle(directory, identity, response)
                     if campaign.read(directory)['state'] != 'active':
                         reason = 'usage or model response stopped the campaign'
                         break
-                    history.extend(response['output'])
+                    if bounded:
+                        visible = [item for item in response['output'] if item['type'] in ('message', 'function_call')]
+                        history.append({'role': 'assistant', 'content': json.dumps(visible)})
+                    else:
+                        history.extend(response['output'])
                     calls = [item for item in response['output'] if item['type'] == 'function_call']
                     if not calls:
                         if controller.capacity(run)['can_finish']:
@@ -173,7 +193,7 @@ def run_loop(run, client):
                                                    for part in item.get('content', []) if part.get('type') == 'output_text')
                             (run / 'model-report.md').write_text(final_text)
                             break
-                        history.append({'role': 'user', 'content': 'Capacity remains. A final message does not end this run. Continue the improvement/security loop using a tool; inspect budget_status if needed.'})
+                        history.append({'role': 'user', 'content': 'Capacity remains. A final message does not end this run. Continue improving the implementation using a tool; inspect budget_status if needed.'})
                         continue
                     if len(calls) != 1:
                         raise ValueError('backend violated sequential tool-call requirement')
@@ -187,7 +207,10 @@ def run_loop(run, client):
                     atomic_json(run / ('tool-' + identity + '.json'), {'name': call['name'], 'result': result})
                     if result.get('finished'):
                         break
-                    history.append({'type': 'function_call_output', 'call_id': call['call_id'], 'output': json.dumps(result)})
+                    if bounded:
+                        history.append({'role': 'user', 'content': json.dumps({'tool': call['name'], 'result': result})})
+                    else:
+                        history.append({'type': 'function_call_output', 'call_id': call['call_id'], 'output': json.dumps(result)})
         except (Exception, KeyboardInterrupt, CampaignDeadline) as error:
             reason = type(error).__name__ + ': ' + str(error)
         finally:

@@ -1,0 +1,81 @@
+{
+  "artifacts": [
+    {
+      "bytes": 169,
+      "path": "evidence/ev_r9_I_poc_c30_c30.hex",
+      "sha256": "240bcfb99573d15496467fd098bdf61afc78ea2c2547449a10066c534ed40c93"
+    },
+    {
+      "bytes": 217,
+      "path": "evidence/ev_r9_I_poc_c31_c31.hex",
+      "sha256": "61643bf918580489b8167793d1f87a7a5fde57ef5822b7ace4d30b98dd4c87f5"
+    },
+    {
+      "bytes": 2139,
+      "path": "report.md",
+      "sha256": "be438182ac575d652537c70ed16a6fc7974a205944ec487c5dda4b4e147e054c"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:21:29.647931+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact response bytes, hexdump of client output"
+  },
+  "evaluation_id": "security-20261117T202129Z-113db237",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "upleft is set from the interim Content-Length and then used to bound the forwarded bytes, so the following real head is truncated at that count while the client is told the longer length. Same effect as 8d5ff1f2 with a stated length that does not match what is forwarded. Precondition: an attacker-influenced upstream.",
+      "evidence": [
+        "evidence/ev_r9_I_poc_c30_c30.hex",
+        "evidence/ev_r9_I_poc_c31_c31.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The interim Content-Length is stored as the remaining upstream body length and truncates the real head"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first on the same config",
+    "Scripted peer emitted one interim shape per path",
+    "Captured client bytes as hex and diffed against the control",
+    "Sent a follow-up request on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 9 lane I: the interim (1xx) upstream response state machine.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

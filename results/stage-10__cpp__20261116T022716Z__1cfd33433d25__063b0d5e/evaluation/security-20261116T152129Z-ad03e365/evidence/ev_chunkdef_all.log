@@ -1,0 +1,23 @@
+063b0d5e   0x5 hex prefix     -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n' total=66
+063b0d5e   leading space      -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n' total=66
+063b0d5e   18 hex digits      -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n' total=66
+063b0d5e   negative -5        -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n' total=66
+063b0d5e   legal extension    -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n5\r\nhello\r\n0\r\n\r\n' total=81
+063b0d5e   4KiB trailer       -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n5\r\nhello\r\n0\r\n\r\n' total=81
+063b0d5e   20KiB trailer      -> b'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n5\r\nhello\r\n0\r\n\r\n' total=81
+8d5ff1f2 client: 0x5: status=200 body=b'hello'
+8d5ff1f2 client: 18digit: status=200 body=b'hello'
+61cc738c client: 0x5: status=200 body=b'hello'
+61cc738c client: 18digit: status=200 body=b'hello'
+44bf7f35 client: 0x5: status=200 body=b'hello'
+44bf7f35 client: 18digit: status=200 body=b'hello'
+29d05850 client: 0x5: status=200 body=b'hello'
+29d05850 client: 18digit: status=200 body=b'hello'
+
+=== http.client read-back (same upstream fixtures) ===
+063b0d5e: 0x5 -> IncompleteRead(0 bytes read); 18-digit -> IncompleteRead(0 bytes read); legal -> 200 'hello'
+8d5ff1f2 / 61cc738c / 44bf7f35 / 29d05850: all three forms -> 200 'hello'
+=> the size-parsing defect is unique to 063b0d5e; the siblings normalise the same bytes.
+
+Note the 4 KiB and 20 KiB trailer cases on 063b0d5e also drop the trailer but keep the payload,
+which is legal relaxation, so trailers are only mentioned in passing.

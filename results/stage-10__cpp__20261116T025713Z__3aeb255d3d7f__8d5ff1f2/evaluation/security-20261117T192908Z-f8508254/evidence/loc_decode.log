@@ -1,0 +1,20 @@
+e1a28e35 release/000002 and 8d5ff1f2 release/000002 — decoded-Location family, raw head bytes
+
+== e1a28e35 %20 dir (raw SP in Location; invalid per RFC 7230 but curl accepts)
+{"status": "HTTP/1.1 301 Moved Permanently", "headers": {"content-length": "0", "connection": "keep-alive", "location": "/d space/"}, "head_bytes": 98, "body_len": 0, "body_preview": "", "raw_head": "HTTP/1.1 301 Moved Permanently\r\nContent-Length: 0\r\nConnection: keep-alive\r\nLocation: /d space/\r\n\r\n"}
+
+== e1a28e35 %0d%0a rejected by its guard (c<32 -> 400)
+{"status": "HTTP/1.1 400 Bad Request", "headers": {"content-length": "0", "connection": "close"}, "head_bytes": 66, "body_len": 0, "body_preview": "", "raw_head": "HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"}
+
+== 8d5ff1f2 %20 dir (raw SP in Location)
+Traceback (most recent call last):
+  File "/tmp/r7D_probe.py", line 4, in <module>
+    s=socket.create_connection(('127.0.0.1',port),timeout=timeout)
+  File "/usr/lib/python3.14/socket.py", line 870, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.14/socket.py", line 855, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [Errno 111] Connection refused
+8d5ff1f2 release/000002 raw head, %20 dir
+{"status": "HTTP/1.1 301 Moved Permanently", "headers": {"location": "/d space/", "content-length": "0", "connection": "keep-alive"}, "head_bytes": 98, "body_len": 0, "body_preview": "", "raw_head": "HTTP/1.1 301 Moved Permanently\r\nLocation: /d space/\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n"}

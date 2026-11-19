@@ -1,0 +1,77 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 1497,
+      "path": "evidence/ev_r15_A2_2usd_auth.log",
+      "sha256": "0c2e8215b1ddea5b8d1517eb09a8e1ce93098b6e09215ef62452e3ed2ac35826"
+    },
+    {
+      "bytes": 1040,
+      "path": "report.md",
+      "sha256": "bd1897f503850c13d1cac2243fa5b482f919b515942780c88ed5822ee933ff6e"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T08:24:36.820085+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T082436Z-17a88e2f",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Round-15 completion of the RCE-precondition matrix. `auth` driven control-first on the final tag, upstream request bytes captured in hex. Execution (where present) is on the upstream host.",
+      "evidence": [
+        "evidence/ev_r15_A2_2usd_auth.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Connection: authorization fixed list \u2014 auth header survives the hop"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "2ccd5686c32225c150fe06138fbf52d88c584f76",
+    "source_sha256": "94f1add130c2d7a9900367f55b2e833e3ea043581c49d393bfcc751cda4f919a",
+    "tag": "release/000007"
+  },
+  "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "RCE precondition matrix completion; execution is on the upstream host where present.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,13 @@
+LANE V — 61cc738c, peer mode clShort (Content-Length: 500, upstream sends 5 bytes then closes).
+Build 1cfd33433d25__61cc738c, source 1cfd33433d25__61cc738c.cpp, config ev_r12_V_cfg_61cc.conf.
+
+CONTROL: client_received_hex 485454502f312e3120323030204f4b0d0a782d63746c3a206b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f (200, 5 bytes)
+
+PAYLOAD
+  upstream_wrote_hex  485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203530300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  client_received_hex 485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203530300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  decoded: "HTTP/1.1 200 OK\r\nContent-Length: 500\r\nConnection: close\r\n\r\nHELLO"
+
+Emitted CL 500, relayed body bytes 5, upstream closed. The proxy re-emits the upstream's declared
+length without comparing it to what it actually relayed, so the client is told 500 and can only get
+5. Deterministic 5/5 cold; every control passed.

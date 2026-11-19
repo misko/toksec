@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 13827,
+      "path": "evidence/ev_r16_B_census.md",
+      "sha256": "15c1f43c3888fdb4e4d25ca8ef6171e788bc28fe4205b978ce2a2888ba6e20aa"
+    },
+    {
+      "bytes": 1428,
+      "path": "report.md",
+      "sha256": "00402ddaba0115a0393be069298f1caf1c5dce0b73b3262fd83c08dbed8a6637"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T11:15:10.756601+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111510Z-f407d962",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "safeopen opens the root O_RDONLY|O_DIRECTORY|O_NOFOLLOW-less and every openat leaf with O_NOFOLLOW. Only three of 26 builds carry NOFOLLOW on the leaf set at all (063b0d5e:48, 6fb186ed:63, 8d5ff1f2:83); the rest have no confinement at all beyond the dot-dot 403. Read primitive only, no executor.",
+      "evidence": [
+        "evidence/ev_r16_B_census.md"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Root open omits O_NOFOLLOW while the leaves carry it, so a symlinked document root is followed"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

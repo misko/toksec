@@ -1,0 +1,29 @@
+Build: 1cfd33433d25__61cc738c (stage-10, release/000001)
+
+Part 1 - strict upstream (only all-digit CL accepted; 400 otherwise)
+
+  CL=decimal 38   -> proxy 200 OK,     upstream received 38/38 body bytes
+  CL=hex 0x26     -> proxy 400 (propagated), upstream received 0/38
+  CL=comma 38, 38 -> proxy 400 (propagated), upstream received 0/38
+  CL=plus +38     -> proxy 400 (propagated), upstream received 0/38
+
+The forwarded head keeps the original text while the body is silently dropped:
+
+POST /api/api/x HTTP/1.1
+Host: 127.0.0.1:<port>
+Connection: close
+content-length: 0x26
+
+Part 2 - RFC-conformant upstream (accepts a comma list of identical 1*DIGIT values, reads the length)
+
+  CL=decimal 38   -> 0.00s, proxy 200 OK, upstream got 38/38 bytes, upstream says "ok"
+  CL=comma 38, 38 -> 1.20s, proxy 200 OK, upstream got 0/38 bytes, upstream STILL WAITING -> "hang"
+
+Part 2 is the defect proper. `38, 38` is legal (RFC 9110 s8.6 permits a list of identical values),
+the upstream accepts it and blocks for 38 bytes. The proxy forwarded none, so the upstream sits on
+its read deadline and the whole exchange stalls 1.2s (its own timeout) before the upstream gives up.
+Had the upstream trusted the value and gone on to parse a following pipelined request, those 38
+bytes would have been consumed as the start of it.
+
+Root: the proxy parses the value with a digits-only helper that returns its 0 default on any
+non-digit, so `length` stays 0 while the header text is copied through untouched.

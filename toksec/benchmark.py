@@ -66,7 +66,7 @@ async def load(spec, clients, start_at):
              'lag_samples': 0, 'lag_over_20ms': 0, 'histogram': histogram}
     active = 0
     expected = payload(spec['size'], spec['gzip'])
-    raw = request(spec['path'], close=not spec['persistent'], headers={'Accept-Encoding': 'gzip'} if spec['gzip'] else {})
+    raw = request(spec['path'], host=spec.get('host', 'alpha.test'), close=not spec['persistent'], headers={'Accept-Encoding': 'gzip'} if spec['gzip'] else {})
     context = None
     if spec['tls']:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -159,15 +159,17 @@ def proc_sample(pid):
         return 0, 0, 0
 
 
-def round_run(workload, pid, server_cpu, temporary):
+def round_run(workload, pid, server_cpu, temporary, upstream_pid=None, upstream_cpu=None):
     from pathlib import Path
-    cpus = sorted(os.sched_getaffinity(0) - {server_cpu})
+    cpus = sorted(os.sched_getaffinity(0) - {server_cpu, upstream_cpu})
     if len(cpus) < 4 or resource.getrlimit(resource.RLIMIT_NOFILE)[1] < 16384:
         raise RuntimeError('benchmark needs four generator CPUs plus one server CPU and descriptor hard limit >=16384')
     spec = asdict(workload)
     processes = []
     start = time.monotonic() + 0.5
     cpu_before, peak_rss, child_count = proc_sample(pid)
+    upstream_before = proc_sample(upstream_pid)[0] if upstream_pid else 0
+    upstream_window = []
     context = multiprocessing.get_context('fork')
     for i in range(4):
         path = Path(temporary) / f'load-{i}.json'
@@ -178,6 +180,15 @@ def round_run(workload, pid, server_cpu, temporary):
     try:
         while any(p.is_alive() for p, _ in processes):
             cpu_after, rss, children = proc_sample(pid)
+            now = time.monotonic()
+            if upstream_pid and start + workload.warmup_seconds <= now <= start + workload.warmup_seconds + workload.seconds:
+                sample = (now, proc_sample(upstream_pid)[0])
+                if not upstream_window:
+                    upstream_window.append(sample)
+                if len(upstream_window) == 1:
+                    upstream_window.append(sample)
+                else:
+                    upstream_window[1] = sample
             peak_rss = max(peak_rss, rss)
             child_count = max(child_count, children)
             if time.monotonic() > timeout:
@@ -199,7 +210,12 @@ def round_run(workload, pid, server_cpu, temporary):
     summed = {key: sum(p[key] for p in parts) for key in ('attempts', 'successes', 'completed_in_window', 'failures', 'timeouts', 'payload_bytes', 'clients_started', 'cpu_seconds', 'rss_kib')}
     overloaded = any(p['cpu_seconds'] / max(0.001, p['elapsed_seconds']) > 0.90 or
                      p['lag_over_20ms'] > max(1, p['lag_samples'] * 0.01) for p in parts)
-    return {**summed, 'valid_rps': summed['completed_in_window'] / workload.seconds,
+    upstream_seconds = max(0, proc_sample(upstream_pid)[0] - upstream_before) if upstream_pid else 0
+    upstream_utilization = ((upstream_window[-1][1] - upstream_window[0][1]) / max(.001, upstream_window[-1][0] - upstream_window[0][0])) if len(upstream_window) == 2 else 0
+    upstream_sample_valid = not upstream_pid or (len(upstream_window) == 2 and upstream_window[-1][0] > upstream_window[0][0])
+    upstream_saturated = upstream_utilization > .90
+    return {'upstream_cpu': upstream_cpu, 'upstream_cpu_seconds': upstream_seconds,
+            'upstream_sample_valid': upstream_sample_valid, 'upstream_utilization': upstream_utilization, 'upstream_saturated': upstream_saturated, **summed, 'valid_rps': summed['completed_in_window'] / workload.seconds,
             'server_cpu': server_cpu, 'generator_cpus': cpus[:4], 'load_average': list(os.getloadavg()),
             'bytes_per_second': summed['payload_bytes'] / workload.seconds,
             'p50_ms': percentile(histogram, 0.50), 'p95_ms': percentile(histogram, 0.95),
@@ -207,7 +223,7 @@ def round_run(workload, pid, server_cpu, temporary):
             'server_peak_rss_kib': peak_rss, 'generator_lag_max_ms': max(p['lag_max_ms'] for p in parts),
             'generator_saturated': overloaded, 'server_child_processes': child_count,
             'sum_worker_peak_inflight': sum(p['peak_inflight'] for p in parts),
-            'eligible': not overloaded and child_count == 0 and summed['clients_started'] == workload.clients and summed['attempts'] > 0}
+            'eligible': not overloaded and upstream_sample_valid and not upstream_saturated and child_count == 0 and summed['clients_started'] == workload.clients and summed['attempts'] > 0}
 
 
 def summarize(rounds):

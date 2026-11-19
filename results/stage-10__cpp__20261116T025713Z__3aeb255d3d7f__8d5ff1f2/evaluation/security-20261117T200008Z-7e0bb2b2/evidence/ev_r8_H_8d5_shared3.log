@@ -1,0 +1,23 @@
+=== RUN 19:30:45 port=32100 ["/tmp/H_borrow_seq.json", "ev_r8_H_8d5_shared3.log"]
+--- SEND 0: b'GET /two/1 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 1\r\nContent-Length: 43\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET /two/1 HTTP/1.1\nTOKS:3\n'
+=== end resp 0
+PROBE-AFTER-0: OPEN 
+--- SEND 1: b'GET /two/2 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 2\r\nContent-Length: 43\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET /two/2 HTTP/1.1\nTOKS:3\n'
+=== end resp 1
+PROBE-AFTER-1: OPEN 
+--- SEND 2: b'GET /one/3 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 3\r\nContent-Length: 43\r\nConnection: close\r\n\r\n'
+RESP-CONNHDR: close
+RESP-BODY: b'PORT:32101\nLINE:GET /one/3 HTTP/1.1\nTOKS:3\n'
+=== end resp 2
+PROBE-AFTER-2: CLOSED 
+--- SEND 3: b'GET /two/4 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b''
+=== end resp 3
+=== END RUN

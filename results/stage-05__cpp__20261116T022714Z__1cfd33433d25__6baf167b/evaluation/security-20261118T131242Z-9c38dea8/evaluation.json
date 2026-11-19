@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 187,
+      "path": "evidence/ev_r17_D_cond_6baf_head.hex",
+      "sha256": "31232f9392bb5391b0f468f2238d8a80a87cee3967762cf6426e759b3cbc9269"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cond_6baf_inm.hex",
+      "sha256": "9bcf328fdd0b5926c1d12303789944986b0aca831bb45d15de72aeb34d9c007f"
+    },
+    {
+      "bytes": 291,
+      "path": "evidence/ev_r17_D_cond_6baf_post.hex",
+      "sha256": "1dc0f03c64e6281765e7d6d51bc46eefadbcea57d00cf1a83e36c93746d8742e"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_cond_6baf_range.hex",
+      "sha256": "9bcf328fdd0b5926c1d12303789944986b0aca831bb45d15de72aeb34d9c007f"
+    },
+    {
+      "bytes": 1651,
+      "path": "report.md",
+      "sha256": "7eae75ba40d44b785834eae998010c92e8d06b32f28d6edb0cfbecc099517a91"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:42.359014+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131242Z-9c38dea8",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "HEAD, Range and If-None-Match all serve the exact-key poison at zero fetches and POST refetches, matching the wildcard builds. Conditional-path behavior is therefore generic to this cache family and not a wildcard-only amplification.",
+      "evidence": [
+        "evidence/ev_r17_D_cond_6baf_head.hex",
+        "evidence/ev_r17_D_cond_6baf_range.hex",
+        "evidence/ev_r17_D_cond_6baf_inm.hex",
+        "evidence/ev_r17_D_cond_6baf_post.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Negative contrast: 6baf167b shows the same conditional depth on its exact key"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

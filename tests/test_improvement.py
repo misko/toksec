@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from test_campaign import PARTIAL, response
 from toksec import campaign, context, controller, runner
 
@@ -22,7 +22,7 @@ class ImprovementTests(unittest.TestCase):
 
     def test_acceptance_and_many_optimizations_do_not_allow_early_finish(self):
         state = controller.read(self.run)
-        state.update(full_acceptance=True, optimization_attempts=99)
+        state.update(smoke_passed=True, optimization_attempts=99)
         atomic_json(self.run / 'state.json', state)
         self.assertFalse(controller.capacity(self.run)['can_finish'])
         with self.assertRaisesRegex(ValueError, 'Capacity remains'):

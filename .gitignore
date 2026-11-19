@@ -3,3 +3,7 @@ __pycache__/
 .runs/
 .venv/
 .env
+.calibration/
+results/.publish.lock
+evaluation-results/
+.generated/

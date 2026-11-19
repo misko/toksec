@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1281,
+      "path": "evidence/ev_r17_C_alias_slice_census.md",
+      "sha256": "e86211d88b3469a906a04e3eecfc909fadaa9f702db36affa8b5420ef2e07f1c"
+    },
+    {
+      "bytes": 1800,
+      "path": "report.md",
+      "sha256": "9ba466c3e7b48bb25260552c662ab7765b13079b670b6ed0f8aa8e4ebcf4d0b7"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T13:23:36.304334+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T132336Z-4514365c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Six builds compute rel=path.substr(alias_len) after an unanchored prefix match and hand the slice to an openat loop with no dot-dot component check, so a decoded path like /al../proc/self/cmdline escapes the alias root and is mechanically readable. Five builds normalize the decoded path before the slice and reject every dot-dot component with 403, closing the shape by construction. Live byte proof for /proc/self/* was not completed inside the turn budget and is marked not-proven.",
+      "evidence": [
+        "evidence/ev_r17_C_alias_slice_census.md"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Alias-slice dot-dot escape stays open on 6 of 11 proxied builds (/al../ shape)"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane C: read-becomes-pivot and channel switches (alias slice, absolute-form, CONNECT, h2c, SSRF shape).",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

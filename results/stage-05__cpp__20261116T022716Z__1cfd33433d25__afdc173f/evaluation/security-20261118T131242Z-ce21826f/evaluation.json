@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 675,
+      "path": "evidence/ev_r17_D_xae_afdc_attacknoae.hex",
+      "sha256": "13f1775f4be1cc4a719d5fd82eacc657022b2f69f281a2dda0cdc8f41f1f79a6"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_xae_afdc_vgzip.hex",
+      "sha256": "745b3c327674f9af06d4e72cf91dd9381d68848733b972712e206c3c6472f624"
+    },
+    {
+      "bytes": 289,
+      "path": "evidence/ev_r17_D_xae_afdc_vnoae.hex",
+      "sha256": "745b3c327674f9af06d4e72cf91dd9381d68848733b972712e206c3c6472f624"
+    },
+    {
+      "bytes": 1548,
+      "path": "report.md",
+      "sha256": "8a030e78cbfa81b48b70f62121d879b7f55d180cedf9b61a24a5631a3f750450"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:12:42.534313+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T131242Z-ce21826f",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Same sequence as a4ba: gzip victim after identity-AE poison is a zero-fetch cache hit, and a no-AE attacker also lands in base|* so the following no-AE victim is served at zero fetches. This is the widening that 6baf167b lacks.",
+      "evidence": [
+        "evidence/ev_r17_D_xae_afdc_vgzip.hex",
+        "evidence/ev_r17_D_xae_afdc_attacknoae.hex",
+        "evidence/ev_r17_D_xae_afdc_vnoae.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "afdc173f: wildcard arm serves cross-AE victims at zero fetch, including a no-AE attacker"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

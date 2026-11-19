@@ -1,0 +1,190 @@
+===== CONTROL /api/ctl =====
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/ctl =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c1 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c2 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c3 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4s =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4z =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4t =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c5 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c6 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c7 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c8 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c8i =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c9i =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c11 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c4n =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c18 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c19 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c20 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c21 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c22 =====
+client-bytes-len 62
+HTTP/1.1 200 OK
+Content-Length: 5
+Connection: close
+
+HELLO
+===== CASE /api/c23 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c30 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/c31 =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== CASE /api/cx =====
+client-bytes-len 66
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+===== KEEPALIVE first=/api/c1 second=/hello.txt =====
+--first (66)--
+HTTP/1.1 502 Bad Gateway
+Content-Length: 0
+Connection: close
+
+
+--second (0)--
+

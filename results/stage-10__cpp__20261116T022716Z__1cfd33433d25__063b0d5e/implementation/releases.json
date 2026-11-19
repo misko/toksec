@@ -1,0 +1,98 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "65ff42e3c4ea4e9f8b34db2fd4e4ecb9",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1822908750,
+          "remaining_usd": 1.82290875,
+          "request_count": 7,
+          "spent_nanodollars": 177091250,
+          "spent_usd_upper_bound": 0.17709125
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "65ff42e3c4ea4e9f8b34db2fd4e4ecb9",
+        "seconds_remaining": 7076.790123939514
+      },
+      "commit": "d74accd7a1985bd74c19f749a1b9a46ce670a40f",
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent"
+      ],
+      "recorded_unix": 1794797020.0697172,
+      "scope": "visible_smoke_only",
+      "source_sha256": "1ecc0c0e97e3d4c69bd62acebd45baee95d6e1cefae2d974754863173fe0d8fe",
+      "tag": "release/000001"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "5aaaf01482484aa397bcd8fc9faa94d0",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1478976250,
+          "remaining_usd": 1.47897625,
+          "request_count": 17,
+          "spent_nanodollars": 521023750,
+          "spent_usd_upper_bound": 0.52102375
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "5aaaf01482484aa397bcd8fc9faa94d0",
+        "seconds_remaining": 6912.405197381973
+      },
+      "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+      "note": "Adds nonblocking proxy forwarding, including streaming fixed-length uploads and fixed-length, chunked, and EOF-delimited upstream responses; retains local HTTP and HTTPS service. Visible smoke and custom proxy tests provide development evidence; full framing, cache, admission and reload behavior remain incomplete.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794797184.454673,
+      "scope": "visible_smoke_only",
+      "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+      "tag": "release/000002"
+    }
+  ]
+}

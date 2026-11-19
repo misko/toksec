@@ -1,0 +1,224 @@
+Static review of all 83 lines
+Build production and ASan+UBSan binaries from the tagged source
+Decode-guard truth table: %20, %41, %2F, %2e%2e, NUL, backslash against a request-line echo upstream
+Request-body state matrix: local vs proxy location, Content-Length, duplicate Content-Length, Transfer-Encoding
+Keep-alive desync harness counting responses per request
+Interim 1xx response injection
+Worker-pinning DoS matrix at 1, 2 and 4 workers with a 1-byte/2s upstream
+Memory watermark sampling from /proc under concurrent 100 MB reads
+Upstream body size cap probe
+Byte-range overflow and semantics cases
+Slowloris control with 200 half-sent headers
+== /tmp/t10r/bighdr.py
+import socket,sys,threading
+port=int(sys.argv[1]); n=int(sys.argv[2])
+srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+srv.bind(("127.0.0.1",port)); srv.listen(20)
+def h(c):
+    d=b""
+    while b"\r\n\r\n" not in d: d+=c.recv(8192)
+    c.sendall(b"HTTP/1.1 200 OK\r\nContent-Length: "+str(n).encode()+b"\r\n\r\n")
+    blk=b"A"*65536
+    sent=0
+    while sent<n:
+        k=min(len(blk),n-sent); c.sendall(blk[:k]); sent+=k
+    c.close()
+while True:
+    c,_=srv.accept(); threading.Thread(target=h,args=(c,),daemon=True).start()
+== /tmp/t10r/chunkup.py
+import socketserver,sys
+MODE=sys.argv[1]
+class H(socketserver.BaseRequestHandler):
+    def handle(self):
+        d=b""
+        while b"\r\n\r\n" not in d:
+            c=self.request.recv(4096)
+            if not c: return
+            d+=c
+        if MODE=="chunked":
+            self.request.sendall(b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nHELLO\r\n6\r\n WORLD\r\n0\r\n\r\n")
+        elif MODE=="loc":
+            self.request.sendall(b"HTTP/1.1 302 Found\r\nLocation: /upstream-target\r\nContent-Length: 2\r\n\r\nhi")
+        elif MODE=="nocl":
+            self.request.sendall(b"HTTP/1.1 200 OK\r\n\r\nno-cl-body")
+        elif MODE=="status999":
+            self.request.sendall(b"HTTP/1.1 999 Weird\r\nContent-Length: 1\r\n\r\nZ")
+class S(socketserver.ThreadingTCPServer):
+    allow_reuse_address=True; daemon_threads=True
+S(("127.0.0.1",int(sys.argv[2])),H).serve_forever()
+== /tmp/t10r/contup.py
+import socket,sys,threading
+port=int(sys.argv[1])
+srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+srv.bind(("127.0.0.1",port)); srv.listen(50)
+def h(c):
+    d=b""
+    while b"\r\n\r\n" not in d:
+        b=c.recv(4096)
+        if not b: break
+        d+=b
+    c.sendall(b"HTTP/1.1 100 Continue\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\nHELLO")
+    c.close()
+while True:
+    c,_=srv.accept(); threading.Thread(target=h,args=(c,),daemon=True).start()
+== /tmp/t10r/drip.py
+import socket, threading, time, sys
+# Slow-loris upstream: never let 3s elapse between bytes, never finish.
+def handle(c):
+    try:
+        c.recv(4096)
+        c.sendall(b"HTTP/1.1 200 OK\r\nContent-Length: 1000000\r\n\r\n")
+        while True:
+            time.sleep(2.0)
+            c.sendall(b"x")
+    except Exception: pass
+s=socket.socket(); s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR,1)
+s.bind(("127.0.0.1",19190)); s.listen(64)
+while True:
+    c,_=s.accept(); threading.Thread(target=handle,args=(c,),daemon=True).start()
+== /tmp/t10r/dripcheck.py
+import socket, sys, threading, time
+port, host, ndrip, nprobe = int(sys.argv[1]), sys.argv[2].encode(), int(sys.argv[3]), int(sys.argv[4])
+def drip():
+    s=socket.create_connection(('127.0.0.1',port),10); s.settimeout(300)
+    s.sendall(b'GET /drip/a HTTP/1.0\r\nHost: '+host+b'\r\n\r\n')
+    while True:
+        try:
+            if not s.recv(65536): break
+        except Exception: break
+for _ in range(ndrip):
+    threading.Thread(target=drip, daemon=True).start(); time.sleep(0.2)
+time.sleep(1.5)
+served=0
+for i in range(nprobe):
+    t0=time.time()
+    try:
+        s=socket.create_connection(('127.0.0.1',port),4); s.settimeout(4)
+        s.sendall(b'GET /hello.txt HTTP/1.0\r\nHost: '+host+b'\r\n\r\n')
+        r=s.recv(64).split(b'\r\n')[0]; s.close(); served+=1
+        print('probe %d: %.1fs %s'%(i,time.time()-t0,r.decode()), flush=True)
+    except Exception as e:
+        print('probe %d: %.1fs BLOCKED (%s)'%(i,time.time()-t0,type(e).__name__), flush=True)
+    time.sleep(1.5)
+print('RESULT served=%d/%d with %d in-flight drip requests'%(served,nprobe,ndrip))
+== /tmp/t10r/echo.py
+import socket,sys,threading
+port=int(sys.argv[1])
+srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+srv.bind(("127.0.0.1",port)); srv.listen(50)
+def h(c):
+    d=b""
+    while b"\r\n\r\n" not in d:
+        b=c.recv(4096)
+        if not b: break
+        d+=b
+    line=d.split(b"\r\n")[0]
+    body=b"LINE=["+line+b"]\n"
+    c.sendall(b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: "+str(len(body)).encode()+b"\r\nX-Tok: 1\r\n\r\n"+body)
+    c.close()
+while True:
+    c,_=srv.accept(); threading.Thread(target=h,args=(c,),daemon=True).start()
+== /tmp/t10r/echo2.py
+import socket,sys,threading
+port=int(sys.argv[1])
+srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+srv.bind(("127.0.0.1",port)); srv.listen(50)
+def h(c):
+    d=b""
+    while b"\r\n\r\n" not in d:
+        b=c.recv(4096)
+        if not b: break
+        d+=b
+    c.close()
+while True:
+    c,_=srv.accept(); threading.Thread(target=h,args=(c,),daemon=True).start()
+== /tmp/t10r/endurance.py
+import socket, sys, time
+port=int(sys.argv[1])
+s=socket.create_connection(("127.0.0.1",port),5)
+s.sendall(b"GET /drip/a HTTP/1.0\r\nHost: multi.test\r\n\r\n")
+time.sleep(1.0)
+s.close(); print("drip client closed after 1.0s", flush=True)
+for i in range(4):
+    t0=time.time()
+    try:
+        c=socket.create_connection(("127.0.0.1",port),4); c.settimeout(4)
+        c.sendall(b"GET /hello.txt HTTP/1.0\r\nHost: multi.test\r\n\r\n")
+        left=i*6
+        r=c.recv(64).split(b"\r\n")[0]; c.close()
+        print("probe %d (+%ds after client close): %.1fs %s"%(i,left,time.time()-t0,r.decode()),flush=True)
+    except Exception as e:
+        print("probe %d (+%ds after client close): %.1fs BLOCKED %s"%(i,i*6,time.time()-t0,type(e).__name__),flush=True)
+    time.sleep(6)
+== /tmp/t10r/memcheck.py
+import socket,sys,threading,time,os
+port=int(sys.argv[1]); pid=int(sys.argv[2]); n=int(sys.argv[3])
+def hwm():
+    for l in open("/proc/%d/status"%pid):
+        if l.startswith("VmHWM"): return l.split()[1]+"kB"
+def serve():
+    s=socket.create_connection(("127.0.0.1",port),5); s.settimeout(60)
+    s.sendall(b"GET /big.bin HTTP/1.0\r\nHost: alpha.test\r\n\r\n")
+    try:
+        while s.recv(65536): pass
+    except Exception: pass
+print("baseline peak:", hwm())
+for _ in range(n): threading.Thread(target=serve,daemon=True).start()
+time.sleep(4)
+print("peak during %d concurrent 100MB reads: %s" % (n, hwm()))
+== /tmp/t10r/slowloris.py
+import socket,sys,time
+port=int(sys.argv[1]); n=int(sys.argv[2])
+socks=[]
+for i in range(n):
+    s=socket.create_connection(("127.0.0.1",port),5)
+    s.sendall(b"GET /hello.txt HTTP/1.1\r\nHost: multi.test\r\nX-Pad: ")
+    socks.append(s)
+print("opened %d half-sent headers"%n, flush=True)
+time.sleep(1)
+ok=0
+for i in range(4):
+    t0=time.time()
+    try:
+        c=socket.create_connection(("127.0.0.1",port),4); c.settimeout(4)
+        c.sendall(b"GET /hello.txt HTTP/1.0\r\nHost: multi.test\r\n\r\n")
+        r=c.recv(64).split(b"\r\n")[0]; c.close(); ok+=1
+        print("probe %d %.1fs %s"%(i,time.time()-t0,r.decode()),flush=True)
+    except Exception as e:
+        print("probe %d %.1fs BLOCKED %s"%(i,time.time()-t0,type(e).__name__),flush=True)
+print("served %d/4 with %d slowloris conns"%(ok,n))
+== /tmp/t10r/slowup.py
+import socketserver,sys,time
+DELAY=float(sys.argv[1])
+class H(socketserver.BaseRequestHandler):
+    def handle(self):
+        d=b""
+        while b"\r\n\r\n" not in d:
+            c=self.request.recv(4096)
+            if not c: return
+            d+=c
+        # dribble the response slowly, always inside a 3s window
+        self.request.sendall(b"HTTP/1.1 200 OK\r\nContent-Length: 100\r\n\r\n")
+        for i in range(10):
+            time.sleep(DELAY)
+            self.request.sendall(b"x")
+class S(socketserver.ThreadingTCPServer):
+    allow_reuse_address=True; daemon_threads=True
+S(("127.0.0.1",19187),H).serve_forever()
+== /tmp/t10r/smug.py
+import socket,sys,time
+port=int(sys.argv[1]); mode=sys.argv[2]
+body=b"GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\n\r\n"
+req=b"GET /proxy/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: "+str(len(body)).encode()+b"\r\n\r\n"+body
+s=socket.create_connection(("127.0.0.1",port),5); s.settimeout(3)
+s.sendall(req)
+if mode=="wait": time.sleep(0.6)
+d=b""
+try:
+    while True:
+        x=s.recv(65536)
+        if not x: break
+        d+=x
+except Exception: pass
+print("RESPONSES:", d.count(b"HTTP/1.1"), "| bytes:", len(d))
+print(d.decode(errors="replace").replace("\r",""))

@@ -1,0 +1,16 @@
+### D0_alpha
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b'ALPHA\n'
+### D1_emptyhost
+REQ b'GET /hello.txt HTTP/1.1\r\nHost:\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b'BETA\n'
+### D2_colon_junk
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: :99999\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b'BETA\n'
+### D3_alpha_badport
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: alpha.test:99999\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b'ALPHA\n'

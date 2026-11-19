@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 83,
+      "path": "evidence/ev_r11_S_affinity_6baf.txt",
+      "sha256": "af80b8e194fb558c584505495d2bb50fe448e1509623045a9a71573954912472"
+    },
+    {
+      "bytes": 98,
+      "path": "evidence/ev_r11_S_reuse_6baf_sameconn.txt",
+      "sha256": "9fc2644579110c1e57e16f488465b09b3af5b2d01c48e2f5dd041b34d9a1fbaa"
+    },
+    {
+      "bytes": 2271,
+      "path": "report.md",
+      "sha256": "003801b507e32a04fe3a0f7e2b862d832442ed6ac97c86221668e05f4ce2d285"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:18:30.036228+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231830Z-3b6c7291",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`UpConn pool` is a member of each detached worker, so the victim has to meet the armed worker: 60 sequential requests produced 60 distinct sockets, 0/9 reuse even on one kept-alive connection. The replay pair leaks 10/50 with deliberate keep-alive affinity and 0/30 one-shot, so it is a negative as a steerable leak but a real latent defect: there is no peek, so a single stray byte is re-read by the next `Reader` and fails the parse rather than being discarded. `reusable` is set from the head and `rd.b.empty()` (`:99`, `:100`), and the retry asymmetry of the sibling builds also applies.",
+      "evidence": [
+        "evidence/ev_r11_S_affinity_6baf.txt",
+        "evidence/ev_r11_S_reuse_6baf_sameconn.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The pool has no liveness check at all and is per-worker, so a stray upstream byte corrupts the next response parse instead of being dropped"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 6baf167b, round 11 lane S: `upstream_once` reuses on an authority-string match alone; pool is worker-local.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

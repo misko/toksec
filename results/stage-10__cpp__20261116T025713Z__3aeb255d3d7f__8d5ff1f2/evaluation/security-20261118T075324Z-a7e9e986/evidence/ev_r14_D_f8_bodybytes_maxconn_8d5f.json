@@ -1,0 +1,41 @@
+{
+ "build": "3aeb255d3d7f__8d5ff1f2",
+ "source_line": "line 30 (bodymax)",
+ "claim": "toksec_body_bytes is live (4 -> 200 with 4-byte body, 5 -> 413); toksec_max_connections is not declared in Config and has no effect",
+ "control": {
+  "port_51021": "5-byte POST -> 200",
+  "port_51042": "3 concurrent conns all 200"
+ },
+ "payload": {
+  "body5_51029": "413 (exceeds)",
+  "conn_51021_ctl5b": "200",
+  "max1_51043": "3 concurrent conns still 200"
+ },
+ "raw": {
+  "ctl_51021_def_5bytes": "485454502f312e3120323030204f4b0d0a782d75702d6c696e653a20504f5354202f6170692f7820485454502f312e310d0a782d75702d746f6b656e733a20330d0a636f6e74656e742d747970653a20746578742f706c61696e0d0a63616368652d636f6e74726f6c3a207075626c69632c206d61782d6167653d36300d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a6f6b0a",
+  "limit4_51029_5bytes": "485454502f312e3120343133205061796c6f616420546f6f204c617267650d0a436f6e74656e742d4c656e6774683a20300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a",
+  "limit4_51029_4bytes": "485454502f312e3120323030204f4b0d0a782d75702d6c696e653a20504f5354202f6170692f7820485454502f312e310d0a782d75702d746f6b656e733a20330d0a636f6e74656e742d747970653a20746578742f706c61696e0d0a63616368652d636f6e74726f6c3a207075626c69632c206d61782d6167653d36300d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a6f6b0a"
+ },
+ "raw_max": {
+  "6baf_max32": [
+   "HTTP/1.1 200 OK",
+   "HTTP/1.1 200 OK",
+   "HTTP/1.1 200 OK"
+  ],
+  "6baf_max1": [
+   "HTTP/1.1 200 OK",
+   "EOF",
+   "EOF"
+  ],
+  "61cc_max32": [
+   "HTTP/1.1 200 OK",
+   "ERR:TimeoutError",
+   "ERR:TimeoutError"
+  ],
+  "61cc_max1": [
+   "HTTP/1.1 200 OK",
+   "ERR:TimeoutError",
+   "ERR:TimeoutError"
+  ]
+ }
+}

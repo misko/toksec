@@ -1,0 +1,87 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1540,
+      "path": "evidence/ev_r11_R_6baf.iso.txt",
+      "sha256": "d54719315923589225eb2399189657bb1c806e2c198d357bfacce870d0a0e04d"
+    },
+    {
+      "bytes": 4746,
+      "path": "evidence/ev_r11_R_6baf.rep.txt",
+      "sha256": "34c2f90c40552dcd6e81c6ce9d4c580718485aa283962916f8f5b0dccc32b15b"
+    },
+    {
+      "bytes": 60,
+      "path": "evidence/ev_r11_R_st6baf167b.st.txt",
+      "sha256": "cfa7b1caa6a83a3f36003ae4511283f8e58e5f7ba9f37e4dc69fafb17c9c9074"
+    },
+    {
+      "bytes": 1691,
+      "path": "report.md",
+      "sha256": "e9f0029403dc62ac3cd86c9df173d564eb1387a94e13670423bfa5d5999c8581"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:20:33.962175+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T232033Z-8ba2cd49",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Two fresh servers, two runs each: the client sends the head, waits, and receives `eof` at exactly 2.00 s with an empty response (`hex=` empty, r0 and r1 identical). The `Expect: 100-continue` header is copied to the upstream verbatim by the `:97` loop but nothing in the proxy answers the contract, so a compliant client either times out or writes blindly into a socket the proxy is about to close.",
+      "evidence": [
+        "evidence/ev_r11_R_st6baf167b.st.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "No `100 Continue` is ever synthesised, so a client that correctly waits for it is closed with zero bytes after 2 s"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 6baf167b, round 11 lane R: waiting-client probe, `Expect` forwarded but never acted on.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

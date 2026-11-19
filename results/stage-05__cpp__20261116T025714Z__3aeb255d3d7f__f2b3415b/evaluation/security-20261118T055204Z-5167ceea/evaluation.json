@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 129,
+      "path": "evidence/ev_r13_C_f2b.headfail.client.hex",
+      "sha256": "eb0a378a8534e67545dd489d3b48fe7ae12e1d91a2791619d9c544e0dec2e4ad"
+    },
+    {
+      "bytes": 0,
+      "path": "evidence/ev_r13_C_f2b.headfail.u2.hex",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 64,
+      "path": "evidence/ev_r13_C_f2b.pipe_headfail.client.hex",
+      "sha256": "0731af8a58b3f10de6ef6fe98ecc768fabdf7c69f9eaee1b5fc72f0040d0347e"
+    },
+    {
+      "bytes": 1255,
+      "path": "report.md",
+      "sha256": "1dc6b8bbc8a5abf8625ebab21c8ac0eb60b1cc4d4915121e878a0c3aafb02015"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T05:52:04.161503+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T055204Z-5167ceea",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Retry resets upin/upout per attempt; no buffer carry-over observed under head-fail and body-fail controls.",
+      "evidence": [
+        "evidence/ev_r13_C_f2b.headfail.client.hex",
+        "evidence/ev_r13_C_f2b.headfail.u2.hex",
+        "evidence/ev_r13_C_f2b.pipe_headfail.client.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Negative: clean retry semantics on f2b3415b"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Remote code execution precondition analysis; RCE occurs on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

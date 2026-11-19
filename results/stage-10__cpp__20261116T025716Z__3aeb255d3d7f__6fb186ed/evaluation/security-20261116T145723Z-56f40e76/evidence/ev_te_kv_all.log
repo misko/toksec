@@ -1,0 +1,30 @@
+### 6baf167b
+  6baf167b       control CL           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:44089\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nhello'
+  6baf167b       TE chunked           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:44089\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nhello'
+  6baf167b       TE chunked, no body  -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:44089\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+### afdc173f
+  afdc173f       control CL           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:34027\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nhello'
+  afdc173f       TE chunked           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:34027\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nhello'
+  afdc173f       TE chunked, no body  -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:34027\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+### ae021893
+  ae021893       control CL           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:33793\r\nConnection: close\r\nContent-Length: 5\r\n\r\nhello'
+  ae021893       TE chunked           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:33793\r\nConnection: close\r\nContent-Length: 5\r\n\r\nhello'
+  ae021893       TE chunked, no body  -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:33793\r\nConnection: close\r\nContent-Length: 0\r\n\r\n'
+### e1a28e35
+  e1a28e35       control CL           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:53551\r\nConnection: keep-alive\r\nContent-Length: 5\r\n\r\nhello'
+  e1a28e35       TE chunked           -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:53551\r\nConnection: keep-alive\r\nContent-Length: 5\r\n\r\nhello'
+  e1a28e35       TE chunked, no body  -> HTTP/1.1 200 OK            upstream=1
+      fwd: b'POST /x HTTP/1.1\r\nHost: 127.0.0.1:53551\r\nConnection: keep-alive\r\nContent-Length: 0\r\n\r\n'
+### f2b3415b
+  f2b3415b                     NO LISTEN

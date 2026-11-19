@@ -1,0 +1,322 @@
+=== LANE F / build 063 : consolidated evidence ===
+--- A. controls, SNI x Host route matrix, validator grammar, dup Host, plain port ---
+### BUILD 063 (bin 1cfd33433d25__063b0d5e) peers A=46121 B=37471 tls=34100 plain=34101
+RESULT CTL tls sni=alpha host=alpha /api/hello.txt | cert=CN=alpha.test (verify-on) | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT CTL plain host=alpha /api/hello.txt | cert=- | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT CTL tls sni=beta host=beta /hello.txt | cert=CN=beta.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT CTL plain host=beta /hello.txt | cert=- | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+CTL verify_return_error sni=alpha hostname-check=alpha -> OK TLSv1.3
+--- MATRIX A: sni x host, GET /api/hello.txt (proxy-only path) ---
+RESULT S=alpha H=alpha /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT S=alpha H=beta /api/hello.txt | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=alpha H=none /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=alpha H=gamma /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=alpha H=ALPHACASE /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT S=alpha H=ALPHADOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=alpha H=LEADDOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=alpha H=STAR /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=alpha /api/hello.txt | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT S=beta H=beta /api/hello.txt | cert=CN=beta.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=none /api/hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=gamma /api/hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=ALPHACASE /api/hello.txt | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT S=beta H=ALPHADOT /api/hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=LEADDOT /api/hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=STAR /api/hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=alpha /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT S=gamma H=beta /api/hello.txt | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=none /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=gamma /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=ALPHACASE /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT S=gamma H=ALPHADOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=LEADDOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=STAR /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=alpha /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT S=ALPHA H=beta /api/hello.txt | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=none /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=gamma /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=ALPHACASE /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT S=ALPHA H=ALPHADOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=LEADDOT /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=ALPHA H=STAR /api/hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- MATRIX B: sni x host, GET /hello.txt (file path, both roots have it) ---
+RESULT S=alpha H=alpha /hello.txt | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT S=alpha H=beta /hello.txt | cert=CN=alpha.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT S=alpha H=gamma /hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=beta H=alpha /hello.txt | cert=CN=beta.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT S=beta H=beta /hello.txt | cert=CN=beta.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT S=beta H=gamma /hello.txt | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT S=gamma H=alpha /hello.txt | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT S=gamma H=beta /hello.txt | cert=CN=alpha.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT S=gamma H=gamma /hello.txt | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- HTTP/1.0 and no-SNI cases ---
+RESULT 1.0 sn=beta H=beta | cert=CN=beta.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT 1.0 sn=none H=beta | cert=CN=alpha.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT 1.0 sn=gamma H=none | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT sn=none H=alpha | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+--- host port forms ---
+RESULT HFORM port0 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM port65536 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM portempty | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM port00080 | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT HFORM port80 | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT HFORM port+1 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM comma | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM space-in | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM trailsp | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT HFORM tab | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM under | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM nul | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM dotend | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM dots | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT HFORM double-colon | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- duplicate Host ---
+RESULT DUP dup-same | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT DUP dup-diff | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT DUP dup-beta-first | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- SNI oddities ---
+RESULT SNIODD sni-trail | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT SNIODD sni-upper | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+RESULT SNIODD sni-unknown | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT SNIODD sni-empty | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37471 NOEXEC'
+--- plain port host forms (no TLS) ---
+RESULT PLAIN H=alpha | cert=- | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46121 NOEXEC'
+RESULT PLAIN H=beta | cert=- | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT PLAIN H=gamma | cert=- | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT PLAIN H=none | cert=- | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+### BUILD 063 MODE val peers A=35683 B=35325
+RESULT SNI beta.test. (trailing dot) + H=alpha | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT SNI BETA.TEST upper + H=alpha | cert=CN=beta.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT SNI beta.test. + H=beta | cert=CN=alpha.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT VAL long64 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL long253 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL lead-hyphen | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL trail-hyphen | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dd | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dot-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dotdot | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL hyphen-mid | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL num | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL space-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL space-host-space | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35683 NOEXEC'
+RESULT VAL tab-lead | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35325 NOEXEC'
+RESULT VAL VT | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL slash | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL atsign | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL bracket | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL ip | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL colon-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL port-min | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35683 NOEXEC'
+RESULT VAL port-max | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=B LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35325 NOEXEC'
+RESULT VAL port-neg | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+!! server exited rc=1 err=b'listen failed 34100\n'
+!! never bound tls=34100
+### BUILD 063 MODE val peers A=42701 B=40961
+RESULT SNI beta.test. (trailing dot) + H=alpha | cert=CN=alpha.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT SNI BETA.TEST upper + H=alpha | cert=CN=beta.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT SNI beta.test. + H=beta | cert=CN=alpha.test | code=200 | class=beta-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037467-5-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: close' | tail=b'BETA\n'
+RESULT VAL long64 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL long253 | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL lead-hyphen | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL trail-hyphen | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dd | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dot-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL dotdot | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL hyphen-mid | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL num | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL space-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL space-host-space | cert=CN=alpha.test | code=502 | class=- | head=b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL tab-lead | cert=CN=alpha.test | code=502 | class=- | head=b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL VT | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL slash | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL atsign | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL bracket | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL ip | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL colon-only | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL port-min | cert=CN=alpha.test | code=502 | class=- | head=b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL port-max | cert=CN=alpha.test | code=502 | class=- | head=b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT VAL port-neg | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- B. HTTP/1.0 no-Host -> default_server (default=alpha), 3 repeats ---
+### BUILD 063 AUTH ua=39253 ub=37159 ok=True
+RESULT CTL s=alpha h=alpha /exec | cert=CN=alpha.test | code=200 | class=EXEC | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39253 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT CTL s=beta h=beta /hello.txt | cert=CN=beta.test | code=200 | class=beta-file | tail=b'BETA\n'
+--- HTTP/1.0 without Host, SNI varies ---
+RESULT 1.0 NOHOST s=alpha.test /exec | cert=CN=alpha.test | code=200 | class=EXEC | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37159 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT 1.0 NOHOST s=beta.test /exec | cert=CN=beta.test | code=200 | class=EXEC | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39253 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT 1.0 NOHOST s=gamma.test /exec | cert=CN=alpha.test | code=200 | class=EXEC | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37159 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT 1.0 NOHOST s=beta /hello.txt | cert=CN=beta.test | code=200 | class=alpha-file | tail=b'ALPHA\n'
+--- empty Host value / space-only Host ---
+RESULT EMPTYHOST s=alpha /api | cert=CN=alpha.test | code=400 | class=- | tail=b''
+RESULT SPACEHOST s=alpha /api | cert=CN=alpha.test | code=400 | class=- | tail=b''
+RESULT EMPTYHOST 1.0 s=alpha /api | cert=CN=alpha.test | code=400 | class=- | tail=b''
+--- cert-vs-route split with real hostname verification ---
+VERIFY sn=beta.test H=alpha.test -> rc=1 VERIFY=[] body=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39253 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mo'
+VERIFY sn=alpha.test H=beta.test (404 expected) -> VERIFY=[] body=b''
+--- SNI gamma + Host alpha, verify gamma (should fail: cert is alpha) ---
+VERIFY sn=gamma H=alpha -> [] body=b''
+### NOHOST 063_btfirst port=34140 peer=43169
+run0  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'ALPHA\n'
+run1  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'ALPHA\n'
+run2  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'ALPHA\n'
+ctl   1.0 NO Host, SNI=alpha.test -> cert=alpha.test verify(alpha)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'ALPHA\n'
+exec  1.0 NO Host, SNI=beta.test -> cert=beta.test body=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:43169 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4'
+--- C. cert/route split, single request, hostname verification ON ---
+### FINAL 063 port=34100 coldstart ok=True peers A=41327 B=33663
+[COLD-POC-0] REQUEST=b'GET /exec HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+      cert_served=beta.test hostname_verify(beta.test)=PASS
+      RESPONSE=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:41327 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[COLD-POC-1] REQUEST=b'GET /exec HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+      cert_served=beta.test hostname_verify(beta.test)=PASS
+      RESPONSE=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:33663 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[REV] REQUEST=b'GET /exec HTTP/1.1\r\nHost: beta.test\r\nConnection: close\r\n\r\n'
+      cert_served=alpha.test hostname_verify(alpha.test)=PASS
+      RESPONSE=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+### POC on 063  (peerA=41749 peerB=40725)
+VFY sn=beta.test Host=alpha.test path=/exec rc=0 | Peer certificate: CN=beta.test ; Verification: OK | BODY=b''
+VFY sn=beta.test Host=beta.test path=/exec rc=0 | Peer certificate: CN=beta.test ; Verification: OK | BODY=b''
+VFY sn=alpha.test Host=alpha.test path=/exec rc=0 | Peer certificate: CN=alpha.test ; Verification: OK | BODY=b''
+### POC2 063 peers A=35233 B=34933
+CTL | sni=alpha.test Host=alpha.test | cert_subject={'commonName': 'alpha.test'} SAN=(('DNS', 'alpha.test'),) hostname_match(alpha.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=200 | body=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35233 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+CTL | sni=beta.test Host=beta.test | cert_subject={'commonName': 'beta.test'} SAN=(('DNS', 'beta.test'),) hostname_match(beta.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=200 | body=b'BETA\n'
+POC | sni=beta.test Host=alpha.test | cert_subject={'commonName': 'beta.test'} SAN=(('DNS', 'beta.test'),) hostname_match(beta.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=200 | body=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:34933 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+POC-repeat | sni=beta.test Host=alpha.test | cert_subject={'commonName': 'beta.test'} SAN=(('DNS', 'beta.test'),) hostname_match(beta.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=200 | body=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35233 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+REV | sni=alpha.test Host=beta.test | cert_subject={'commonName': 'alpha.test'} SAN=(('DNS', 'alpha.test'),) hostname_match(alpha.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=404 | body=b''
+FILE | sni=beta.test Host=alpha.test | cert_subject={'commonName': 'beta.test'} SAN=(('DNS', 'beta.test'),) hostname_match(beta.test)=FAIL:module 'ssl' has no attribute 'match_hostname' | code=200 | body=b'ALPHA\n'
+--- D. beta as default_server (proof default is a config fact, not first-file) ---
+### NOHOST 063_bdefA port=34150 peer=35857
+run0  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'BETA\n'
+run1  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'BETA\n'
+run2  1.0 NO Host, SNI=beta.test -> cert=beta.test verify(beta)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'BETA\n'
+ctl   1.0 NO Host, SNI=alpha.test -> cert=alpha.test verify(alpha)=FAIL module 'ssl' has no attribute 'match_hostname' body=b'BETA\n'
+exec  1.0 NO Host, SNI=beta.test -> cert=beta.test body=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:35857 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4'
+--- E. duplicate server_name: SNI first-match vs Host last-match split ---
+### DUPSPLIT 063_ds
+[C1] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'shared.test'. (_ssl.c:1081)
+[C2] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'alpha.test'. (_ssl.c:1081)
+[SPLIT] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'shared.test'. (_ssl.c:1081)
+### DUPSPLIT 063_ds3
+[C1] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'alpha.test'. (_ssl.c:1081)
+[C2] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'alpha.test'. (_ssl.c:1081)
+[SPLIT] REQ=b'GET /exec HTTP/1.1\r\nHost: shared.test\r\nConnection: close\r\n\r\n' | cert=beta.test hostname_verify(beta.test)=PASS | RESP=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45609 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[SPLIT2] TLS FAIL [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'alpha.test'. (_ssl.c:1081)
+### DUPSPLIT 063_ds5
+[C1] REQ=b'GET /exec HTTP/1.1\r\nHost: shared.test\r\nConnection: close\r\n\r\n' | cert=beta.test hostname_verify(shared.test)=PASS | RESP=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39785 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[C2] REQ=b'GET /exec HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n' | cert=beta.test hostname_verify(alpha.test)=PASS | RESP=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+[SPLIT] REQ=b'GET /exec HTTP/1.1\r\nHost: shared.test\r\nConnection: close\r\n\r\n' | cert=beta.test hostname_verify(shared.test)=PASS | RESP=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close\r\n\r\nUP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39785 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+[SPLIT2] REQ=b'GET /hello.txt HTTP/1.1\r\nHost: shared.test\r\nConnection: close\r\n\r\n' | cert=beta.test hostname_verify(shared.test)=PASS | RESP=b'HTTP/1.1 200 OK\r\nContent-Length: 72\r\nConnection: close\r\n\r\nUP=A LINE=GET /hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:39785 NOEXEC'
+### BUILD 063 MODE dup peers A=40233 B=35843
+RESULT DUP shared sni=shared host=shared /hello.txt | cert=CN=beta.test | code=200 | class=alpha-file | head=b'HTTP/1.1 200 OK\r\nETag: "15037461-6-1794918730"\r\nContent-Type: text/plain\r\nContent-Length: 6\r\nConnection: close' | tail=b'ALPHA\n'
+RESULT DUP shared sni=shared host=shared /api/hello.txt | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:40233 NOEXEC'
+RESULT DUP sni=alpha host=shared /api/hello.txt | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:40233 NOEXEC'
+RESULT DUP sni=shared host=alpha /api/hello.txt | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:40233 NOEXEC'
+RESULT DUP plain host=shared /api/hello.txt | cert=- | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 76\r\nConnection: close' | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:40233 NOEXEC'
+### DUPQ 063_dq (plain port)
+  dup same                   -> 400 b''
+  dup alpha,beta             -> 400 b''
+  dup beta,alpha             -> 400 b''
+  dup alpha,gamma(fold?)     -> 400 b''
+  dup HOST/ lowercase name   -> 400 b''
+  dup alpha + blank          -> 400 b''
+  dup 1.0 two hosts          -> 400 b''
+### PLAIN 063_dinv
+  1.1 H=alpha /api           -> NONE b'ERR'
+  1.1 H=unknown              -> NONE b'ERR'
+  1.0 no Host /api           -> NONE b'ERR'
+  1.0 no Host /hello.txt     -> NONE b'ERR'
+  1.1 no Host                -> NONE b'ERR'
+  1.1 H=shared /api          -> NONE b'ERR'
+### PLAIN 063_dinv2
+  1.1 H=alpha /api           -> 400 b''
+  1.1 H=unknown              -> 400 b''
+  1.0 no Host /api           -> 200 b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45957 NOEXEC'
+  1.0 no Host /hello.txt     -> 200 b'ALPHA\n'
+  1.1 no Host                -> 400 b''
+  1.1 H=shared /api          -> 404 b''
+--- F. executable /exec route matrix ---
+### BUILD 063 MODE exec peers A=45553 B=46227
+RESULT CTL exec sni=alpha host=alpha | cert=CN=alpha.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45553 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT CTL exec plain | cert=- | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46227 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=alpha H=alpha | cert=CN=alpha.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45553 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=alpha H=beta | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=alpha H=gamma | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=alpha H=ALPHACASE | cert=CN=alpha.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46227 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=beta H=alpha | cert=CN=beta.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45553 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=beta H=beta | cert=CN=beta.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=beta H=gamma | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=beta H=ALPHACASE | cert=CN=beta.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46227 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=gamma H=alpha | cert=CN=alpha.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45553 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=gamma H=beta | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=gamma H=gamma | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=gamma H=ALPHACASE | cert=CN=alpha.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46227 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=beta H=alpha.test:00080 | cert=CN=beta.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=A LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:45553 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC S=beta H=ALPHA.TEST | cert=CN=beta.test | code=200 | class=EXEC | head=b'HTTP/1.1 200 OK\r\nContent-Length: 194\r\nConnection: close' | tail=b'UP=B LINE=GET /exec HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46227 EXEC=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)'
+RESULT EXEC plain H=beta | cert=- | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+### BUILD 063 MODE exec peers A=42783 B=37099
+RESULT CTL exec sni=alpha host=alpha | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=A LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:42783 NOEXEC'
+RESULT CTL exec plain | cert=- | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=B LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37099 NOEXEC'
+RESULT EXEC S=alpha H=alpha | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=A LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:42783 NOEXEC'
+RESULT EXEC S=alpha H=beta | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=alpha H=gamma | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=alpha H=ALPHACASE | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=B LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37099 NOEXEC'
+RESULT EXEC S=beta H=alpha | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=A LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:42783 NOEXEC'
+RESULT EXEC S=beta H=beta | cert=CN=beta.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=beta H=gamma | cert=CN=beta.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=beta H=ALPHACASE | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=B LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37099 NOEXEC'
+RESULT EXEC S=gamma H=alpha | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=A LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:42783 NOEXEC'
+RESULT EXEC S=gamma H=beta | cert=CN=alpha.test | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=gamma H=gamma | cert=CN=alpha.test | code=400 | class=- | head=b'HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+RESULT EXEC S=gamma H=ALPHACASE | cert=CN=alpha.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=B LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37099 NOEXEC'
+RESULT EXEC S=beta H=alpha.test:00080 | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=A LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:42783 NOEXEC'
+RESULT EXEC S=beta H=ALPHA.TEST | cert=CN=beta.test | code=200 | class=UPSTREAM | head=b'HTTP/1.1 200 OK\r\nContent-Length: 74\r\nConnection: close' | tail=b'UP=B LINE=GET /exec?cmd=id HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:37099 NOEXEC'
+RESULT EXEC plain H=beta | cert=- | code=404 | class=- | head=b'HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close' | tail=b''
+--- G. port-segment grammar, odd server_name runtime reachability ---
+### PORTGRAM 063_pg
+  Host='alpha.test'       -> 404 
+  Host='alpha.test:80'    -> 404 
+  Host='alpha.test:00080' -> 404 
+  Host='alpha.test:1k'    -> 400 
+  Host='alpha.test:80k'   -> 400 
+  Host='alpha.test:2m'    -> 400 
+  Host='alpha.test:30s'   -> 400 
+  Host='alpha.test:80ms'  -> 400 
+  Host='alpha.test:1 '    -> 404 
+  Host='alpha.test: +80'  -> 400 
+  Host='alpha.test:65k'   -> 400 
+  Host='alpha.test:64k'   -> 400 
+  Host='alpha.test:63k'   -> 400 
+### BUILD 063 ODD peer A=46243 ok=True
+RESULT CTL odd s=alpha h=alpha | cert=CN=alpha.test | code=200 | class=UPSTREAM | tail=b'UP=A LINE=GET /api/hello.txt HTTP/1.1 TOKENS=3 UPHOST=127.0.0.1:46243 NOEXEC'
+RESULT und_er.test sni, H=und_er.test | cert=CN=beta.test | code=400 | class=- | tail=b''
+RESULT und_er host under alpha sni | cert=CN=alpha.test | code=400 | class=- | tail=b''
+RESULT dot.test. sni, H=dot.test. | cert=CN=beta.test | code=400 | class=- | tail=b''
+RESULT dot.test. sni, H=dot.test | cert=CN=beta.test | code=400 | class=- | tail=b''
+RESULT H=dot.test with alpha sni | cert=CN=alpha.test | code=400 | class=- | tail=b''
+RESULT UPPER sni H=upper.test | cert=CN=beta.test | code=404 | class=- | tail=b''
+RESULT UPPER sni H=UPPER.test | cert=CN=beta.test | code=404 | class=- | tail=b''
+### CNRT 063_cnrt
+  sni=dot.test.      Host=dot.test.      -> cert=? code=400 body=b''
+  sni=dot.test.      Host=dot.test       -> cert=? code=400 body=b''
+  sni=dot.test.      Host=alpha.test     -> cert=? code=200 body=b'ALPHA\n'
+  sni=dot.test       Host=dot.test.      -> cert=? code=400 body=b''
+  sni=dot.test       Host=dot.test       -> cert=? code=400 body=b''
+  sni=dot.test       Host=alpha.test     -> cert=? code=200 body=b'ALPHA\n'
+  sni=alpha.test     Host=dot.test.      -> cert=? code=400 body=b''
+  sni=alpha.test     Host=dot.test       -> cert=? code=400 body=b''
+  sni=alpha.test     Host=alpha.test     -> cert=? code=200 body=b'ALPHA\n'
+### CNRT 063_cnrt3
+  sni=dot.test.      Host=dot.test.      -> cert=CN=beta.test code=400 body=b''
+  sni=dot.test.      Host=dot.test       -> cert=CN=beta.test code=400 body=b''
+  sni=dot.test.      Host=alpha.test     -> cert=CN=beta.test code=200 body=b'ALPHA\n'
+  sni=dot.test       Host=dot.test.      -> cert=CN=alpha.test code=400 body=b''
+  sni=dot.test       Host=dot.test       -> cert=CN=alpha.test code=400 body=b''
+  sni=dot.test       Host=alpha.test     -> cert=CN=alpha.test code=200 body=b'ALPHA\n'
+  sni=alpha.test     Host=dot.test.      -> cert=CN=alpha.test code=400 body=b''
+  sni=alpha.test     Host=dot.test       -> cert=CN=alpha.test code=400 body=b''
+  sni=alpha.test     Host=alpha.test     -> cert=CN=alpha.test code=200 body=b'ALPHA\n'
+--- H. 1.0-with-unknown-Host vs 1.0-no-Host ---
+### LAST 063_last
+  1.0 H=gamma (present, unknown)     -> 400 body=b''
+  1.1 H=gamma (present, unknown)     -> 400 body=b''
+  1.0 H=alpha                        -> 200 body=b'ALPHA\n'
+  1.0 no Host (control)              -> 200 body=b'ALPHA\n'
+  1.0 H=beta (other vhost)           -> 200 body=b'BETA\n'

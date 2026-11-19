@@ -1,0 +1,77 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 726,
+      "path": "evidence/ev_r11_R_61cc_p417.txt",
+      "sha256": "2c8a53e8169c4271c5e8dfd7d0b9247e55307c5d14fe7d882deb56dd46d595b7"
+    },
+    {
+      "bytes": 1510,
+      "path": "report.md",
+      "sha256": "d51c2f66e64a75bd32a04db1913a0f06739d378509f6ccea61b61388e7a12ec0"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T23:18:37.498931+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231837Z-499f8818",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Byte-identical to 44bf7f35 on all seven shapes: 417 with `Content-Length: 0` and `Connection: close`, `eof` at 0.000 s, body dead, upstream never contacted; a waiting client gets `Broken pipe` on its body write. `break` leaves the keep-alive loop, so there is no leftover-body desync on either R1 build.",
+      "evidence": [
+        "evidence/ev_r11_R_61cc_p417.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Same bare 417 with an immediate close; `count()` is presence-only so a duplicate `Expect` is counted but never compared"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 61cc738c, round 11 lane R: `if(count(r,\"expect\")){sendhead(io,417,0,true);break;}`.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

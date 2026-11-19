@@ -1,0 +1,26 @@
+Content-Length: 0              0 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 1              1 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 5              5 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: -1             0 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 99999999999999999999 0 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: +1             1 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 0x1            1 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: abc            0 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 1
+Content-Length: 0 1 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     5 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     15 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     16 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     38 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     39 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     17 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     21 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked
+Content-Length: 5 15 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 5
+Transfer-Encoding: chunked 15 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     605 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Transfer-Encoding: chunked     6005 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 67108864       10 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+Content-Length: 67108865       10 -> b'HTTP/1.1 405 Method Not Allowed' bodylen= 0
+--- srvlog: 0 bytes

@@ -1,0 +1,421 @@
+{
+  "created_unix": 1794796036.019642,
+  "dollar_limit": "2",
+  "fingerprint": "15aae464dc224d99a083a920ab55c103d43aa92a627d402b68bde705416aac2b",
+  "model": "gpt-6-luna",
+  "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+  "price_verified_date": "2026-11-12",
+  "rates_usd_per_million": {
+    "cached": "0.01",
+    "input": "0.10",
+    "output": "0.50",
+    "write_upper": "0.25"
+  },
+  "reason": null,
+  "request_profile": "bounded-32k",
+  "requests": [
+    {
+      "counted_input": 5301,
+      "id": "9b908c2f712742ef9f57335aab637f02",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797250.2707753,
+      "reserved_usd": "0.200",
+      "response_id": "resp_05e982762ba94b31016afa6ec2720087d183bc0b6ab442fa3c",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797347.460127,
+      "state": "settled",
+      "usage": {
+        "cache_write": 213,
+        "cached_input": 4962,
+        "cost_usd_upper_bound": "0.04421035",
+        "input": 5301,
+        "output": 8714,
+        "reasoning": 247,
+        "total": 14015
+      }
+    },
+    {
+      "counted_input": 15140,
+      "id": "c7b7347f51e641c2973d9db60d89942d",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797353.40768,
+      "reserved_usd": "0.200",
+      "response_id": "resp_0675c549ae45368b016afa6f299cd087d182b9a9f1f96489eb",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797355.1310942,
+      "state": "settled",
+      "usage": {
+        "cache_write": 9839,
+        "cached_input": 5175,
+        "cost_usd_upper_bound": "0.0128085",
+        "input": 15140,
+        "output": 25,
+        "reasoning": 9,
+        "total": 15165
+      }
+    },
+    {
+      "counted_input": 15983,
+      "id": "9b21934249f8432f914ab9a4ac7536a3",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797355.7357068,
+      "reserved_usd": "0.200",
+      "response_id": "resp_07bfff4c155a78de016afa6f2bf0d087d1be6b3a65333f65d2",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797374.3461032,
+      "state": "settled",
+      "usage": {
+        "cache_write": 843,
+        "cached_input": 15014,
+        "cost_usd_upper_bound": "0.00954545",
+        "input": 15983,
+        "output": 1523,
+        "reasoning": 146,
+        "total": 17506
+      }
+    },
+    {
+      "counted_input": 23041,
+      "id": "c66505b858dc48c49f0b50b96ae2b019",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797378.1998,
+      "reserved_usd": "0.200",
+      "response_id": "resp_035312f13f82d4bb016afa6f42681487d1b5f613e33df7666f",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797383.282808,
+      "state": "settled",
+      "usage": {
+        "cache_write": 7058,
+        "cached_input": 15857,
+        "cost_usd_upper_bound": "0.01129135",
+        "input": 23041,
+        "output": 310,
+        "reasoning": 160,
+        "total": 23351
+      }
+    },
+    {
+      "counted_input": 23962,
+      "id": "1d5374c00048457e803db1987a608684",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797383.75991,
+      "reserved_usd": "0.200",
+      "response_id": "resp_02363dc93ff5ac44016afa6f47f70c87d1ba3260ffb409fd3e",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797387.6190426,
+      "state": "settled",
+      "usage": {
+        "cache_write": 921,
+        "cached_input": 22915,
+        "cost_usd_upper_bound": "0.003463",
+        "input": 23962,
+        "output": 208,
+        "reasoning": 51,
+        "total": 24170
+      }
+    },
+    {
+      "counted_input": 19525,
+      "id": "c5fd931ec2924c14b0b4313c8d2590f2",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797388.5551312,
+      "reserved_usd": "0.200",
+      "response_id": "resp_0099c2ca9f45b7ab016afa6f4ccd2887d1973ee99cbc781598",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797391.1821609,
+      "state": "settled",
+      "usage": {
+        "cache_write": 14437,
+        "cached_input": 4962,
+        "cost_usd_upper_bound": "0.01892035",
+        "input": 19525,
+        "output": 100,
+        "reasoning": 83,
+        "total": 19625
+      }
+    },
+    {
+      "counted_input": 20108,
+      "id": "e862093130504d039924a8915b199c91",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797391.6197612,
+      "reserved_usd": "0.200",
+      "response_id": "resp_0b1074139dec2b51016afa6f4fd3c087d1a8ba1eeb73a8daae",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797393.0600245,
+      "state": "settled",
+      "usage": {
+        "cache_write": 583,
+        "cached_input": 19399,
+        "cost_usd_upper_bound": "0.0019847",
+        "input": 20108,
+        "output": 32,
+        "reasoning": 16,
+        "total": 20140
+      }
+    },
+    {
+      "counted_input": 20949,
+      "id": "81bf44c53c4243a290489fc9602cb6b8",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797393.4774005,
+      "reserved_usd": "0.200",
+      "response_id": "resp_016e9cd157809ab8016afa6f51b2c887d18e1943ecaf2a2719",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797399.1401224,
+      "state": "settled",
+      "usage": {
+        "cache_write": 841,
+        "cached_input": 19982,
+        "cost_usd_upper_bound": "0.00381635",
+        "input": 20949,
+        "output": 328,
+        "reasoning": 181,
+        "total": 21277
+      }
+    },
+    {
+      "counted_input": 21589,
+      "id": "bb1d168567bc43b5baa64d6485452dcf",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797399.8943448,
+      "reserved_usd": "0.200",
+      "response_id": "resp_0eed38dfd19d9149016afa6f581c6c87d1b50c1261b8beeca6",
+      "response_status": "completed",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "settled_unix": 1794797412.9151456,
+      "state": "settled",
+      "usage": {
+        "cache_write": 640,
+        "cached_input": 20823,
+        "cost_usd_upper_bound": "0.00590215",
+        "input": 21589,
+        "output": 787,
+        "reasoning": 760,
+        "total": 22376
+      }
+    },
+    {
+      "counted_input": 22411,
+      "id": "3ce74d942df34ebabb6ec95d95d8c4df",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1794797439.6024795,
+      "reserved_usd": "0.200",
+      "run": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+      "state": "reserved"
+    }
+  ],
+  "schema_version": 2,
+  "scope": "Fresh measured API campaign; excludes framework preparation",
+  "service_tier": "default",
+  "state": "active",
+  "token_limit": 10000000
+}

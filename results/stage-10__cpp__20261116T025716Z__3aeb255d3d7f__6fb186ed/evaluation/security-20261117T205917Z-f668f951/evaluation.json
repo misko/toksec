@@ -1,0 +1,104 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2924,
+      "path": "evidence/ev_r9_J_cap403_6fb186ed.log",
+      "sha256": "54c61c2963f972b966d1648dc4d9e336ab62ac7e9db17ebd8c9da5a759f5cb89"
+    },
+    {
+      "bytes": 448,
+      "path": "evidence/ev_r9_J_capboundary_6fb186ed.log",
+      "sha256": "4d988e0e3a9fc32ab891641144f1446327c99c537fd90b8b8d284b267c0b9367"
+    },
+    {
+      "bytes": 147,
+      "path": "evidence/ev_r9_J_pipe_403_6fb186ed.log",
+      "sha256": "d711813359e897a9ccee068d303c23497ca19d6da4d3c6761db7da2d9e7e5886"
+    },
+    {
+      "bytes": 3494,
+      "path": "report.md",
+      "sha256": "1cb4cfdbd64946ee734c5fbd09407a95a2a222fe9854f4a693cce61840baba78"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:59:17.269053+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket range matrix with measured byte counts"
+  },
+  "evaluation_id": "security-20261117T205917Z-f668f951",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The cap check is on the GET path only; a HEAD request returns before it. A 67108865-byte file answers HEAD with 200 and a Content-Length it can never deliver, while GET is 403: a client that preflights with HEAD, or any link checker or monitoring probe that uses HEAD, sees a healthy resource that cannot actually be fetched. Precondition: a file one byte over the 64 MiB cap.",
+      "evidence": [
+        "evidence/ev_r9_J_capboundary_6fb186ed.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The 64 MiB body cap is checked after the HEAD early return, so HEAD reports 200 for a file whose GET is 403"
+    },
+    {
+      "description": "The cap compares the computed body length, not the file size, so Range: bytes=0-67108863 on a 67108865-byte file computes exactly the cap, passes the gate, and returns 206 with the first 64 MiB. The same file with no Range, or with bytes=0-67108864, is 403. Precondition: a file over the cap and an attacker-chosen Range.",
+      "evidence": [
+        "evidence/ev_r9_J_cap403_6fb186ed.log"
+      ],
+      "id": "SEC-002",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "An explicit Content-Length range of exactly the cap bypasses the cap gate and serves a file that a plain GET refuses"
+    },
+    {
+      "description": "The 403 is emitted with Connection: close, so a pipelined successor behind the oversized-file request is dropped exactly as with any other closing response. Recorded for composition, not as a new defect. Precondition: pipelining plus an over-cap file.",
+      "evidence": [
+        "evidence/ev_r9_J_pipe_403_6fb186ed.log"
+      ],
+      "id": "SEC-003",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "A 403 from the cap closes mid-pipeline and eats the following request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Static build, nothing executes",
+    "Cap findings need a file at or over 64 MiB"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first",
+    "330 range shapes per build with measured received bytes",
+    "HEAD-versus-GET pairs and 64 MiB boundary files"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 9 lane J: static byte-range arithmetic and the trusted length.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

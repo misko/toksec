@@ -1,0 +1,11 @@
+=== RUN 19:15:38 port=32100 ["/tmp/H_kr0.json", "ev_r8_H_8d5_kr1.log"]
+--- SEND 0: b'GET /one/x HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nx-peer: 8\r\nContent-Length: 43\r\nConnection: close\r\n\r\n'
+RESP-CONNHDR: close
+RESP-BODY: b'PORT:32101\nLINE:GET /one/x HTTP/1.1\nTOKS:3\n'
+=== end resp 0
+PROBE-AFTER-0: CLOSED 
+--- SEND 1: b'GET /one/y HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b''
+=== end resp 1
+=== END RUN

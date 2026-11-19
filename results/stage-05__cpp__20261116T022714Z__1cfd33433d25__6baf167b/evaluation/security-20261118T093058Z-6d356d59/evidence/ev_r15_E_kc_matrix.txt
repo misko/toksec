@@ -1,0 +1,4 @@
+# Cache-key control: same payload, six variants on 6baf167b (build 1cfd33433d25__6baf167b)
+# HIT numbers prove new upstream fetches: slash variant, Authorization, other Host and upper-case %2F all MISS
+# key = host + raw target (source line 88 cachekey)
+summary: {'tag': 'KC2B', 'build': '1cfd33433d25__6baf167b', 'ok': True, 'target': '/api/x%250d%250aGET%2520/exec%250d%250aHost:%2520u%250d%250a%250d%250a', 'pois_hit': 3, 'pois_exec': False, 'v_same_hit': 3, 'v_same_exec': False, 'v_slash_hit': 4, 'v_auth_hit': 5, 'v_host_hit': 6, 'v_upper_hit': 7, 'v_upper_exec': False}

@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1357,
+      "path": "evidence/ev_r12_W_29d05850_poc.log",
+      "sha256": "b88b52d237e2d37eb9b0e46eb971a45f74b66a66c1ae5786890126e56a27f1af"
+    },
+    {
+      "bytes": 2336,
+      "path": "evidence/ev_r12_W_29d05850_sem.log",
+      "sha256": "043a7170d49e30ab5692e23beee7c8aab82c4a42309e6a6ffab6cce4d4f4ca04"
+    },
+    {
+      "bytes": 1782,
+      "path": "report.md",
+      "sha256": "0d35e5bbe6e8e7ade7eee91a8eb6d19385fd2335c0c15d79608cee408fba7400"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:48.032471+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030748Z-9b1b4ed1",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The forward loop unions a fixed hop list with the client's Connection tokens, then re-emits only surviving headers with no Content-Length re-add and no body streaming. range, if-none-match, accept-encoding and authorization are all deleted on the client's word, changing the upstream's answer (304 becomes 200, 206 becomes 200). POST is refused at the method gate, so the unframed-body shape cannot fire.",
+      "evidence": [
+        "evidence/ev_r12_W_29d05850_sem.log",
+        "evidence/ev_r12_W_29d05850_poc.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The client-nominated deletion set removes every probed non-framing header from the forwarded request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final tag of run 29d05850; proxy location; client-controlled header deletion",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

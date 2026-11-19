@@ -1,0 +1,5 @@
+req 0 connhdr=keep-alive
+req 1 connhdr=keep-alive
+req 49 connhdr=close
+after-close recv=b''
+done at 49

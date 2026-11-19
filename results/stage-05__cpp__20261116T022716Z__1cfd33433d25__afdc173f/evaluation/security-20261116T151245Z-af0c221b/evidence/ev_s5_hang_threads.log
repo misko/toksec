@@ -1,0 +1,12 @@
+=== 6baf167b, 2 s after SIGTERM, idle server ===
+thread count: 33
+main thread (tid=pid) wchan: futex_do_wait
+  tid 3635710 state=S wchan=futex_do_wait
+  tid 3635711 state=S wchan=futex_do_wait
+  tid 3635712 state=S wchan=futex_do_wait
+  tid 3635713 state=S wchan=futex_do_wait
+  tid 3635714 state=S wchan=futex_do_wait
+  tid 3635715 state=S wchan=futex_do_wait
+  tid 3635716 state=S wchan=futex_do_wait
+  tid 3635717 state=S wchan=futex_do_wait
+  ... all remaining threads identical (futex_do_wait, state S)

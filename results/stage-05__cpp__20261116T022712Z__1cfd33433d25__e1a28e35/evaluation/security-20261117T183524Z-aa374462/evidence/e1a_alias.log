@@ -1,0 +1,16 @@
+# build 1cfd33433d25__e1a28e35  kv config: root=www/alpha  host_root=beta.test:www/beta  alias=/alias:www/alias
+# distinct markers: alpha=ALPHA, beta=BETA, alias=ALIASFILE, alias index=IDX
+# CTL 1: alpha vhost serves alpha.
+GET /hello.txt  Host: alpha.test -> 200 body=ALPHA
+# CTL 2: beta vhost is genuinely confined - an alpha-only file is not reachable there.
+GET /ten.txt    Host: beta.test  -> 404
+GET /hello.txt  Host: beta.test  -> 200 body=BETA
+# BYPASS: the alias branch overwrites the vhost-selected root AFTER host validation.
+GET /alias/hello.txt    Host: beta.test -> 200 body=ALIASFILE
+GET /alias%2fhello.txt  Host: beta.test -> 200 body=ALIASFILE
+GET /alias/             Host: beta.test -> 200 body=IDX
+GET /alias/index.html   Host: beta.test -> 200 body=IDX
+# '..' is still refused on the alias branch.
+GET /alias/../hello.txt     Host: beta.test -> 403
+GET /alias%2f..%2fhello.txt Host: beta.test -> 403
+# Source: line 72 localfile - root = host==bhost ? broot : root; then if(path starts with alias) root=aliasroot.

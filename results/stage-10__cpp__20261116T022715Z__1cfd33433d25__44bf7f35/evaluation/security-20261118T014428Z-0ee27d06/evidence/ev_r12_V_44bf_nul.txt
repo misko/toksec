@@ -1,0 +1,10 @@
+LANE V — 44bf7f35, NUL inside an upstream header value. Build 1cfd33433d25__44bf7f35, source ...44bf7f35.cpp, cfg ev_r12_V_cfg_44bf.conf.
+Control passed (200 HELLO) immediately before.
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d4e756c3a206100620d0a436f6e7465722d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e3120323030204f4b0d0a782d6e756c3a206100620d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  note 582d4e756c3a206100620d0a = "X-Nul: a\0b\r\n"
+
+`:87` has no per-byte value scan at all, so the NUL is copied into `extra` and re-emitted with the
+rest of the field. A C-string client sees "a" and loses "b"; nothing signals it. Same shape as 61cc
+and 8d5f, and the opposite of the three builds that 502 it.

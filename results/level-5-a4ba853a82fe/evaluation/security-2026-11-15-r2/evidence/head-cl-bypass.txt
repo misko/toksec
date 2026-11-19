@@ -1,0 +1,8 @@
+HEAD 200 CL=2^63     => b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+HEAD 200 CL=ULLMAX   => b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+HEAD 304 CL=2^63     => b'HTTP/1.1 304 Not Modified\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+GET 304 CL=555       => b'HTTP/1.1 304 Not Modified\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+GET 204 CL=777       => b'HTTP/1.1 204 Error\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+HEAD 200 CL=0        => b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+--- log(0) ---
+

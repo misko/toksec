@@ -1,0 +1,5 @@
+control=b'HTTP/1.1 200 OK'
+pipelined bytes total=64  response-count=1
+first=b'HTTP/1.1 403 Forbidden'
+has_second_A_response=False
+port 37972 clear

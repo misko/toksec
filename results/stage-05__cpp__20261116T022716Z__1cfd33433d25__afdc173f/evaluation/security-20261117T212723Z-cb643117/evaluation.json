@@ -1,0 +1,90 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 6655,
+      "path": "evidence/ev_r10_M_afdc_36120_36120.json",
+      "sha256": "721bd2f71133a7d3d637dc4a00b9c2141c223859ea100dfb3d373b6c2b075c1e"
+    },
+    {
+      "bytes": 301,
+      "path": "evidence/ev_r10_M_afdc_36120_execgz_identity.bytes",
+      "sha256": "e5da2f81c1040ce25c80367ee78bae0bb508244c869b797032767ca42ca47377"
+    },
+    {
+      "bytes": 209,
+      "path": "evidence/ev_r10_M_afdc_36120_varyid.bytes",
+      "sha256": "e5dcb257f3c2dee0f1a1ef752e4da31f904e84e4a425b7a61a4d9316b1c280ad"
+    },
+    {
+      "bytes": 2140,
+      "path": "report.md",
+      "sha256": "55b26ecc3fd08d0c640bdf02f729bd397e42c62062eef8238647b891797977ac"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:27:23.594435+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted strict-token peer that echoes the request line verbatim, a per-request exec counter, and byte-exact client capture"
+  },
+  "evaluation_id": "security-20261117T212723Z-cb643117",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "cachebase is `\"http://\"+host+target` with the untouched target, so `%2f`, uppercase hex, a trailing `&` and a trailing slash are all distinct keys for the same decoded resource. 40 of 40 cross-spelling reads re-executed (counter incremented). A client that spells the token differently is not served the attacker's entry. Host casing is normalised and does hit the same key; only the target is raw.",
+      "evidence": [
+        "evidence/ev_r10_M_afdc_36120_36120.json"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The cache keys on the raw target, so every spelling of one resource is a separate entry"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is RCE on the upstream host",
+    "Needs a cache-enabled config and an upstream that sends Cache-Control: public, max-age="
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Plain control first on the same config",
+    "Eight raw-target spellings and four Accept-Encoding classes per build",
+    "Cache hit proven by an unchanged upstream exec counter",
+    "Client bytes captured verbatim, not inferred"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run afdc173f, round 10 lane M: cache key composition and Vary handling.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

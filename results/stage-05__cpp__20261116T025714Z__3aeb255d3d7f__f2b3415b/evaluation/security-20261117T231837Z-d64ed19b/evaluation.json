@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 1540,
+      "path": "evidence/ev_r11_R_f2b3.iso.txt",
+      "sha256": "aae0dfe274b879f5a6deb9531d95c7d0d13206a47f7cac9567b7ba89ae855eb8"
+    },
+    {
+      "bytes": 1070,
+      "path": "evidence/ev_r11_R_f2b3.wf.txt",
+      "sha256": "60dd889ee344b322d7e93c196bf7db5f61ac705d02adb52e2b06c7e22118f9a7"
+    },
+    {
+      "bytes": 1465,
+      "path": "report.md",
+      "sha256": "187d5b997aa85aa8dbab7d3da75724082c83052c7b7c2063d948628b74465ff8"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:18:37.098084+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231837Z-d64ed19b",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Same two-frame client output as 6baf167b and e1a28e35 (`502` with `Content-Length: 0`, then `200` carrying `SEQ:2 EXEC:uid=1000`) and the body executes 2/2. Additional start condition: the config needs non-zero `cache_ttl_ms`/`cache_bytes` or the process never comes up.",
+      "evidence": [
+        "evidence/ev_r11_R_f2b3.iso.txt",
+        "evidence/ev_r11_R_f2b3.wf.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "`100` rejected as a parse failure, 502 returned, body re-parsed and executed upstream"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 11 lane R: `status<200||status>599` on the response parser.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

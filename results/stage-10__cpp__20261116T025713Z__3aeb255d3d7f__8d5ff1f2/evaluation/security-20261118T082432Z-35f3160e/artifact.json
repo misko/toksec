@@ -1,0 +1,15 @@
+{
+  "language": "cpp",
+  "release": {
+    "metadata_owner": "controller",
+    "selection": "last_completed_tag",
+    "tag_pattern": "^release/[0-9]{6}$"
+  },
+  "schema_version": 1,
+  "stage": 10,
+  "submission": {
+    "encoding": "utf-8",
+    "max_bytes": 1048576,
+    "source_file": "main.cpp"
+  }
+}

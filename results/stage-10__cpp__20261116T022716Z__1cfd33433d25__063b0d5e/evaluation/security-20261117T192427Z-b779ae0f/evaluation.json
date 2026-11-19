@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1185,
+      "path": "evidence/matrix.log",
+      "sha256": "443dabfa69203061e34c4ca9cdd182a34154e0fa954c5bf7af47f83374004eee"
+    },
+    {
+      "bytes": 660,
+      "path": "evidence/poc.log",
+      "sha256": "c2a7c2956b033da6cc0346a0baa9867466f79f84327cca577ab73bea36a15c62"
+    },
+    {
+      "bytes": 2220,
+      "path": "report.md",
+      "sha256": "1c10c8f7d8ed60f08bbb5d10966fdf0a10549f5475a7f084a80f85cc79e742ca"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T19:24:27.906061+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary against a strict-token upstream peer"
+  },
+  "evaluation_id": "security-20261117T192427Z-b779ae0f",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The upstream target is rebuilt as the configured prefix plus path.substr(config length) plus query. The length is config text but the string is the decoded path, so a path whose decoded length equals the prefix length slices to empty and the emitted target is the destination alone. Lane config: location /api with proxy_pass http://backend/exec, the min() clamp. produces upstream GET /exec?cmd=whoami HTTP/1.1 on a single request with no percent byte in the target; the peer executes the command. Control /hello.txt returns 200 on the same config. Execution is sh -c on the upstream host.",
+      "evidence": [
+        "evidence/poc.log",
+        "evidence/matrix.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The slice length comes from config while the index is the decoded path, so an equal-length path emits the destination alone and reaches the exec route with zero client encoding"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "RCE is on the upstream host, not local",
+    "Needs a proxied location whose configured prefix the path can fully consume"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Verified the staged source is byte-identical to the tag",
+    "Compiled and ran the build against a strict-token peer",
+    "Control GET /hello.txt then the equal-length payload",
+    "Diffed the upstream request line against the control"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "80867f23fd76ced38153728f6a813c082ae4a9d1",
+    "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T022716Z__1cfd33433d25__063b0d5e",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run 063b0d5e, round 7 lane B: the config-derived substr() length applied to the decoded path when the upstream target is rebuilt.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

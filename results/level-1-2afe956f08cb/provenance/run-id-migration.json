@@ -1,0 +1,134 @@
+{
+  "files": {
+    "README.md": {
+      "path": "provenance/run-id-migration/original/README.md",
+      "sha256": "2834a540b37b4c9401e0fe02ff5a5aa37a2bcd9e9ad6a81a88610679a11fcbd3"
+    },
+    "accounting/ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "cac514b9ccd5b755dc2f807847ecbc10e1c1e2b4ba5fb1d17a93052ab4bcbe53"
+    },
+    "evaluation/imported-871ea7e58b0abdce/api.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/api.json",
+      "sha256": "f2fda51d85186bd0db91b12a12dc05d44d74287b7050582b4c814575fc27b861"
+    },
+    "evaluation/imported-871ea7e58b0abdce/evaluation.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/evaluation.json",
+      "sha256": "8bc13365a0e1bf079484278d9ab68f38995257f71c6a272c6d518ba2562781d1"
+    },
+    "evaluation/imported-871ea7e58b0abdce/figures/correctness.png": {
+      "path": "evaluation/imported-871ea7e58b0abdce/figures/correctness.png",
+      "sha256": "f0762791cccf6f9fe487f6032eacf1099543c07f561236101c28e6bdf8f3fde2"
+    },
+    "evaluation/imported-871ea7e58b0abdce/figures/correctness.svg": {
+      "path": "evaluation/imported-871ea7e58b0abdce/figures/correctness.svg",
+      "sha256": "3426b92cd7432d1b73df9be290147b6fc851c689310158be80fca64b07baf4c8"
+    },
+    "evaluation/imported-871ea7e58b0abdce/figures/performance.png": {
+      "path": "evaluation/imported-871ea7e58b0abdce/figures/performance.png",
+      "sha256": "bd953c21153bf785ce6cd76a7f49d75d5fed0f0632d21003b4f6f30eb67e282e"
+    },
+    "evaluation/imported-871ea7e58b0abdce/figures/performance.svg": {
+      "path": "evaluation/imported-871ea7e58b0abdce/figures/performance.svg",
+      "sha256": "b2245fc04fb8e56a479a52d5893f83c031e8abbc0669a02bd4121ec907611807"
+    },
+    "evaluation/imported-871ea7e58b0abdce/performance.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/performance.json",
+      "sha256": "5fb46302bdd4a15d5ef4aa0eba92cb4079c3b9fb88a8fa2e137f950097bd4651"
+    },
+    "evaluation/imported-871ea7e58b0abdce/raw/release-000001-evaluation.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/raw/release-000001-evaluation.json",
+      "sha256": "7c71a8bf208672d124eedf5ddbb62918c451159e84a0eedac226d114964b5bc6"
+    },
+    "evaluation/imported-871ea7e58b0abdce/raw/release-000002-evaluation.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/raw/release-000002-evaluation.json",
+      "sha256": "8510658cf3b425107d9b3b7ed348a32bc9ba53ace749e2599471ae88241b35a7"
+    },
+    "evaluation/imported-871ea7e58b0abdce/raw/release-000003-evaluation.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/raw/release-000003-evaluation.json",
+      "sha256": "0a27c556abb5a61b8735770d6084bb5baa90558b65769c868c7997424df4b554"
+    },
+    "evaluation/imported-871ea7e58b0abdce/raw/timeline.json": {
+      "path": "evaluation/imported-871ea7e58b0abdce/raw/timeline.json",
+      "sha256": "9bfcf9959c225308c760fbb790a5f6cff9bf0bdd9949bc289c85d49e67b85a5d"
+    },
+    "evaluation/imported-871ea7e58b0abdce/report.md": {
+      "path": "evaluation/imported-871ea7e58b0abdce/report.md",
+      "sha256": "cf0bd1545b0dd4fe2c15f9108aaa54b37081e136dd4dfce25e2b77c8e39382ef"
+    },
+    "implementation/evidence/progress.md": {
+      "path": "implementation/evidence/progress.md",
+      "sha256": "dd7d42a48cd3bc755daae9a122a9a1df6aa58f6c3d1abf8a48a02dcf924707e1"
+    },
+    "implementation/evidence/state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "d96b5f5da7eac0beec21016b4e2fa84ba29920a55460325735fb7e82e97173bb"
+    },
+    "implementation/implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "431849de051af4260cf01f1ad4a09554b801dc842e0774eb353e6e7a59d86f49"
+    },
+    "implementation/releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "39f2df3905faacf4ee7a0bbc258e80cd854aa1f3728d88bd68490e6626161870"
+    },
+    "implementation/releases/release-000001.rs": {
+      "path": "implementation/releases/release-000001.rs",
+      "sha256": "066b5329e914446a6ceb5f678e54e594391d59e948ebc1177277400b71df9552"
+    },
+    "implementation/releases/release-000002.rs": {
+      "path": "implementation/releases/release-000002.rs",
+      "sha256": "08d28b0a039295daf308ee4b1e8db9716f6cc9debde4457382dfd84b64563ace"
+    },
+    "implementation/releases/release-000003.rs": {
+      "path": "implementation/releases/release-000003.rs",
+      "sha256": "db6a2e28c0576642e6e6dc128c011cfd18d09b87236567136738a744618eed08"
+    },
+    "implementation/source/main.rs": {
+      "path": "implementation/source/main.rs",
+      "sha256": "db6a2e28c0576642e6e6dc128c011cfd18d09b87236567136738a744618eed08"
+    },
+    "inputs/launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "e1213fe1f488d7cb64775a4af30aab2de02e3f374fa420b930bdf67924f187ef"
+    },
+    "inputs/manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "df655c816116e98bcd59dd89aec575837a882c1d9f00e2c86ad55f7c800135fc"
+    },
+    "inputs/specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "d63d44f7050da50995ab2e039da0c4ed733f532845d053309eca6327d59a981e"
+    },
+    "migration.json": {
+      "path": "migration.json",
+      "sha256": "b38004b5c9f28de6537e81d598723fac3e43a85367bfd0b54859f87e1827a6dc"
+    },
+    "provenance/artifact.json": {
+      "path": "provenance/artifact.json",
+      "sha256": "fe9ca9ffc731f4b23d9b7dccc1c3efc35ee77965b092a8ec98d84ba8741357ec"
+    },
+    "provenance/legacy/README.md": {
+      "path": "provenance/legacy/README.md",
+      "sha256": "c3814e5b9a97a29182ea140ab1c5118269dba1f357ae6e06a4620a2ac8e9bec5"
+    },
+    "provenance/legacy/run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "e8b98d312dafc1ede80eef68c0a67e57ad1c103a0a7b9d9c5a161f8390f561cf"
+    },
+    "run.json": {
+      "path": "provenance/run-id-migration/original/run.json",
+      "sha256": "0f9182d49a4a4e2c211f5115acea5a246b914b5dea141407b0262684797d3161"
+    },
+    "sha256.json": {
+      "path": "provenance/run-id-migration/original/sha256.json",
+      "sha256": "7560592afd8f517af8614f680abaa0c9b2802735afd614bd34f733559257d6de"
+    }
+  },
+  "historical_ids": [
+    "2026-11-14T04-37-02Z__stage-01__rust__gpt-6.1-terra__rust-http-v6__712880cc"
+  ],
+  "run_id": "level-1-2afe956f08cb",
+  "schema_version": 1,
+  "source_path": "stage-01/rust"
+}

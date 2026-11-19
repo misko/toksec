@@ -1,0 +1,24 @@
+# evidence lane B  build=1cfd33433d25__afdc173f
+# config: kv proxy_prefix=/api (no URI-form)
+# strict peer: verbatim upstream line + whitespace token count; exec only if target token path == /exec
+# shape | client status | upstream token count | verbatim upstream request line
+CONTROL /hello.txt | 200 | - | b'ALPHA\n'   <-- must be 200
+/api | 200 | 3 | 'GET / HTTP/1.1'
+/api/ | 200 | 3 | 'GET // HTTP/1.1'
+/api/x | 200 | 3 | 'GET //x HTTP/1.1'
+/api//x | 200 | 3 | 'GET ///x HTTP/1.1'
+/app | 404 | 0 | <no upstream>
+/ap | 404 | 0 | <no upstream>
+/ | 200 | 0 | <no upstream>
+/api/x/y | 200 | 3 | 'GET //x/y HTTP/1.1'
+
+## prefix-unmatched (decoded shorter than prefix) -> location not selected
+/a | 404 | no upstream
+/ap | 404 | no upstream
+/ap?cmd=id | 404 | no upstream
+
+## zero-percent payload + %2f off-by-N (prefix /api, upstream route /exec)
+N=0 /apiexec?cmd=whoami | 200 | 3 | 'GET /exec?cmd=whoami HTTP/1.1' | EXEC
+N=1 /api%2fexec?cmd=whoami | 200 | 3 | 'GET //exec?cmd=whoami HTTP/1.1' | no-exec
+N=2 /api%2f%2fexec?cmd=whoami | 200 | 3 | 'GET ///exec?cmd=whoami HTTP/1.1' | no-exec
+N=3 /api%2f%2f%2fexec?cmd=whoami | 200 | 3 | 'GET ////exec?cmd=whoami HTTP/1.1' | no-exec

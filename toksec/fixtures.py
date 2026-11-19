@@ -8,6 +8,22 @@ from toksec.specification import configuration
 from toksec.wire import payload
 
 
+def create_smoke(directory, level):
+    directory = Path(directory)
+    root = directory / 'www'
+    (root / 'data').mkdir(parents=True)
+    (root / 'hello.txt').write_bytes(b'hello toksec\n')
+    for size in (4096, 65536):
+        (root / 'data' / str(size)).write_bytes(payload(size))
+    if level >= 3:
+        for sub in ('beta', 'assets'):
+            (root / sub).mkdir()
+        (root / 'beta/hello.txt').write_bytes(b'beta toksec\n')
+        for size in (4096, 65536):
+            (root / 'assets' / str(size)).write_bytes(payload(size))
+    (directory / 'server.conf').write_text(''.join(f'{k}={v}\n' for k, v in configuration(level).items()))
+
+
 def create(directory, level):
     directory = Path(directory)
     root = directory / 'www'
@@ -17,19 +33,17 @@ def create(directory, level):
                        'space name.txt': b'space\n', 'directory/index.html': b'<p>index</p>\n',
                        'assets/item.txt': b'asset\n', 'beta/hello.txt': b'beta toksec\n'}.items():
         (root / name).write_bytes(body)
+    if level >= 2:
+        (root / 'stall').write_bytes(payload(8 * 1024 * 1024))
     for size in (4096, 65536):
         (root / 'data' / str(size)).write_bytes(payload(size))
+        (root / 'assets' / str(size)).write_bytes(payload(size))
         (root / 'text' / (str(size) + '.txt')).write_bytes(payload(size, True))
     (directory / 'secret').write_bytes(b'outside root secret')
     (root / 'escape').symlink_to('/fixtures/secret')
     (root / 'inside-link').symlink_to('hello.txt')
     os.mkfifo(root / 'pipe')
     (directory / 'server.conf').write_text(''.join(f'{k}={v}\n' for k, v in configuration(level).items()))
-    if level == 5:
-        subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1',
-                        '-subj', '/CN=alpha.test', '-addext', 'subjectAltName=DNS:alpha.test,DNS:beta.test',
-                        '-keyout', str(directory / 'key.pem'), '-out', str(directory / 'cert.pem')],
-                       check=True, capture_output=True, timeout=10)
 
 
 async def upstreams(ready):

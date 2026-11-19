@@ -1,0 +1,28 @@
+LANE V headline — 61cc738c, peer mode clTE, one cold request, control first.
+Build 1cfd33433d25__61cc738c, source 1cfd33433d25__61cc738c.cpp, config ev_r12_V_cfg_61cc.conf
+client port 45021, upstream port 45022.
+
+CONTROL (peer mode ctl, well-formed)
+  request_client_hex    474554202f6170692f657865633f636d643d696420485454502f312e310d0a486f73743a20616c7068612e746573740d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+  upstream_wrote_hex    485454502f312e3120323030204f4b0d0a582d43746c3a206b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  client_received_hex   485454502f312e3120323030204f4b0d0a782d63746c3a206b0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+
+PAYLOAD (peer mode clTE: Content-Length: 5 then Transfer-Encoding: chunked, body 15 bytes of chunk stream)
+  request_client_hex    474554202f6170692f657865633f636d643d696420485454502f312e310d0a486f73743a20616c7068612e746573740d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+  upstream_wrote_hex    485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20350d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a350d0a48454c4c4f0d0a300d0a0d0a
+  client_received_hex   485454502f312e3120323030204f4b0d0a5472616e736665722d456e636f64696e673a206368756e6b65640d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a350d0a4845
+
+DECODE OF THE CLIENT BYTES
+  HTTP/1.1 200 OK\r\n
+  Transfer-Encoding: chunked\r\n
+  Content-Length: 5\r\n
+  Connection: close\r\n
+  \r\n
+  5\r\nHE            <- 5 bytes: the START of a 15-byte chunked stream, cut at the CL value
+
+Upstream body bytes on the wire: 15 ("5\r\nHELLO\r\n0\r\n\r\n").
+Emitted Content-Length: 5. Body bytes relayed: 5. CL == relayed, but the body is still
+chunk-framed and TE:chunked is emitted, so a TE-using client reads chunk size 5 and then gets
+"HE" only. 10 bytes of the chunk stream (the payload tail, the CRLF and the 0-chunk) never arrive.
+
+5/5 cold replicates byte-identical. Every replicate's control passed 200 HELLO.

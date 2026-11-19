@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 143,
+      "path": "evidence/ev_r14_B_afdc173f_lfonly_client.hex",
+      "sha256": "6a0e7f00949146948e06fda03630e0aa159096bc18a143d0a36d829669d0c90e"
+    },
+    {
+      "bytes": 281,
+      "path": "evidence/ev_r14_B_afdc173f_lfonly_ctl.hex",
+      "sha256": "abab56f8338892de5587a7afa554d0fddfb087892ef08890595c15a9f05fab1f"
+    },
+    {
+      "bytes": 769,
+      "path": "evidence/ev_r14_B_afdc173f_lfonly_req.hex",
+      "sha256": "70b44b0ef5d2979ae234ad7e33ae0da8dbd97a0aafc1281eced3460607914cdb"
+    },
+    {
+      "bytes": 1428,
+      "path": "report.md",
+      "sha256": "9b5b625b248b15a1610c0c53522d35bb0c59c690c137b3325ec34b2a3b0d11dc"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T07:53:20.103447+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075320Z-5c918641",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Upstream reply in `lfonly` mode: proxy forwards bytes nginx does not, mis-frames the body, or refuses. Client request is an ordinary GET; the upstream is attacker-controlled.",
+      "evidence": [
+        "evidence/ev_r14_B_afdc173f_lfonly_client.hex",
+        "evidence/ev_r14_B_afdc173f_lfonly_req.hex",
+        "evidence/ev_r14_B_afdc173f_lfonly_ctl.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "upstream response mode `lfonly` diverges from nginx"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "f7557d5f84b45a4de8dcdbc840968fc82f5cbfa8",
+    "source_sha256": "00bdfd50931ce260255375dd835543fa5fcd74eef619f129071d504bc6d135f3",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022716Z__1cfd33433d25__afdc173f",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,12 @@
+{
+  "best": "70a78c95b5af4c71b65ed352e05f82b3",
+  "context_rollovers": 4,
+  "ended_unix": 1794797248.153147,
+  "finished": true,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "70a78c95b5af4c71b65ed352e05f82b3",
+  "optimization_attempts": 0,
+  "smoke_passed": true,
+  "stop_reason": "TimeoutError: The read operation timed out"
+}

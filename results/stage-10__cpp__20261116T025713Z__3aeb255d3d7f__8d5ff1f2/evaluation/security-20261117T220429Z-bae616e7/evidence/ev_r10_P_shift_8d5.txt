@@ -1,0 +1,1 @@
+HTTP/1.1 100 Error\r\nContent-Length: 60\r\nConnection: keep-alive\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 20\r\nX-Real: 1\r\n\r\nSEQ:12 TOKHTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:13 TOK:3 HELLO\nHTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:14 TOK:3 HELLO\n

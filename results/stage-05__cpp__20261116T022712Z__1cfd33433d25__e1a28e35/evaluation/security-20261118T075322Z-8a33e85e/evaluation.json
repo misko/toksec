@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 496,
+      "path": "evidence/ev_r14_B_cfg_e1a28e35_1xx.conf",
+      "sha256": "eecd5b1144f78b4d3c091f5eeb566c7680f5a9c67e79b93fa3a62492da1acedf"
+    },
+    {
+      "bytes": 496,
+      "path": "evidence/ev_r14_B_cfg_e1a28e35_bighead.conf",
+      "sha256": "64c4d0020e83127b555bcd6cc5805b16c48938355eea65c5c22658d9a583268f"
+    },
+    {
+      "bytes": 496,
+      "path": "evidence/ev_r14_B_cfg_e1a28e35_chunkext.conf",
+      "sha256": "c1e77f79bd484581d3d6c23dd008306e6d66fc18385c922373c44fe54d539e97"
+    },
+    {
+      "bytes": 496,
+      "path": "evidence/ev_r14_B_cfg_e1a28e35_ctl.conf",
+      "sha256": "80a71a28907defb224fe807b116a4f4c6a3cd423ba6eb02cf89adfd9a702d500"
+    },
+    {
+      "bytes": 1557,
+      "path": "report.md",
+      "sha256": "05c33f31f2263868d696728fdefb6c8b832b00ad71da779a51c9278f0eaf8a3b"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T07:53:22.740394+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075322Z-8a33e85e",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "negative \u2014 config `proxy_prefix` trimmed, tab/space does not become a 4th token. Negative result: control first, then payload, upstream bytes captured.",
+      "evidence": [
+        "evidence/ev_r14_B_cfg_e1a28e35_1xx.conf",
+        "evidence/ev_r14_B_cfg_e1a28e35_bighead.conf",
+        "evidence/ev_r14_B_cfg_e1a28e35_chunkext.conf",
+        "evidence/ev_r14_B_cfg_e1a28e35_ctl.conf"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "negative \u2014 config `proxy_prefix` trimmed, tab/space does not become a 4th token"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "5526e34559864d4d898fc693d845e66606809a4b",
+    "source_sha256": "b6ce041759ab2d60dfe76688c3a11977cfc4ad052389a7feae0bcef4bc5c4641",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-05__cpp__20261116T022712Z__1cfd33433d25__e1a28e35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

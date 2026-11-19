@@ -1,0 +1,40 @@
+{
+  "api_coverage": "partial",
+  "artifact_contract_provenance": "reconstructed_for_storage",
+  "budget_usd": "2.00",
+  "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
+  "framework": "f02ed71d055cb6d8d98df193fde15b7908ca67140b478e431c0a9e355612c5e0",
+  "grading_status": "reported",
+  "id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "inventory_management": "preserved_snapshot",
+  "language": "cpp",
+  "last_tag": "release/000007",
+  "layout_version": 1,
+  "model": "gpt-6.1-terra",
+  "path": "terra-stage10-cpp-20261115-2usd-recovery",
+  "paths": {
+    "accounting": "accounting",
+    "artifact_contract": "provenance/artifact.json",
+    "evaluation": "evaluation",
+    "implementation": "implementation",
+    "inputs": "inputs",
+    "latest_evaluation": "evaluation/security-20261118T23032Z-rcematrix"
+  },
+  "performance_scope": "provisional",
+  "persisted_run_id": false,
+  "protocol": "stage10-experimental",
+  "publication_version": 2,
+  "raw_run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "run_budget_usd": "1.69790875",
+  "run_id": "terra-stage10-cpp-20261115-2usd-recovery",
+  "source_run": "/home/mouse9911/gits/toksec-next/.runs/terra-stage10-cpp-20261115-2usd-recovery",
+  "stage": 10,
+  "started_unix": 1794763597.1601098,
+  "started_utc": "2026-11-15T17-26-37Z",
+  "status": "partially_graded",
+  "wall_seconds": 7100
+}

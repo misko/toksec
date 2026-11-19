@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 5070,
+      "path": "evidence/ev_r15_F_8d5full.json",
+      "sha256": "00fd4c32d3220841a93daac51077e3f11c7ece7be28e2bab9e0235631f262c8b"
+    },
+    {
+      "bytes": 341,
+      "path": "evidence/ev_r15_F_cli_3aeb255d3d7f__8d5ff1f2_lfcol.txt",
+      "sha256": "f3f2c46d7246af968a01bcebf3855bc62a161bbd84c5039fd726e3665dbcb542"
+    },
+    {
+      "bytes": 1495,
+      "path": "report.md",
+      "sha256": "189630ea209befcd6e011a12699caabe2908d8e073716f8e6778d1cf910aa83a"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T09:19:47.688024+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T091947Z-594cc797",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "getline on LF over an already-terminated block: the value is cut and the remainder is parsed as a new header and re-emitted. 11 header bytes in become 12 out with a minted header - a split, not a rewrite and not hop-by-hop stripping.",
+      "evidence": [
+        "evidence/ev_r15_F_cli_3aeb255d3d7f__8d5ff1f2_lfcol.txt",
+        "evidence/ev_r15_F_8d5full.json"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Bare LF in an upstream header value splits the line and mints a client header the peer never sent"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Response-header sink and paired control-byte separators; execution, where present, is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

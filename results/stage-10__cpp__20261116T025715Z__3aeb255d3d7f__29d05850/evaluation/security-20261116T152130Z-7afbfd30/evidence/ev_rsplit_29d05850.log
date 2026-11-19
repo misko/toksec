@@ -1,0 +1,24 @@
+build        : 3aeb255d3d7f__29d05850
+upstream     : malicious. Sends a response whose header block contains a bare LF, so one header
+               line carries the next header inside its value.
+
+The proxy parses the upstream head by splitting on CRLF only, so it treats the smuggled text as
+part of the previous value, and relays it unchanged. A downstream parser that also accepts bare
+LF splits on LF instead and sees a different header set. The same bytes become a different
+framing decision depending on which parser reads them.
+
+--- A: smuggled CL behind TE
+client received: b'HTTP/1.1 200 OK\r\nx: a\nContent-Length: 2\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n2\r\nOK\r\n0\r\n\r\n'
+    CRLF-strict parser: 3 fields, CL=0, TE=1
+    LF-lenient parser : 4 fields, CL=1, TE=1
+
+--- B: smuggled duplicate CL
+client received: b'HTTP/1.1 200 OK\r\nx: a\nContent-Length: 999\r\nContent-Length: 2\r\nConnection: close\r\n\r\nOK'
+    CRLF-strict parser: 3 fields, CL=1, TE=0
+    LF-lenient parser : 4 fields, CL=2, TE=0
+
+--- C: control, all CRLF
+client received: b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'
+    CRLF-strict parser: 2 fields, CL=1, TE=0
+    LF-lenient parser : 2 fields, CL=1, TE=0
+

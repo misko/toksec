@@ -1,0 +1,104 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 5640,
+      "path": "evidence/dotdot.log",
+      "sha256": "f6fe049d305ef7d0ad842f025c28b993d899caf7235155db73504f22c2c50082"
+    },
+    {
+      "bytes": 4002,
+      "path": "evidence/filetrail.log",
+      "sha256": "d165140041bcaafbfbe45cd34c8284c927cfbf68c6e37c0d22fdbe37c031f6b3"
+    },
+    {
+      "bytes": 2232,
+      "path": "evidence/index.log",
+      "sha256": "70b78c804f925c28bac06419abcd2938e63b16a1209988bbc33bfa5dafed8b68"
+    },
+    {
+      "bytes": 3900,
+      "path": "evidence/loc.log",
+      "sha256": "52c47ebbfa9e1205766e9830ac32ec33ba381000ad3850794ecdfcdbe8253fba"
+    },
+    {
+      "bytes": 13289,
+      "path": "evidence/range.log",
+      "sha256": "25c792a8ffce6f8a49943e72d041cc599f1a0af6900cdea66c024f0daf7a9731"
+    },
+    {
+      "bytes": 8362,
+      "path": "evidence/symlink.log",
+      "sha256": "b804e895abc8dd8c72f1d9531a2176d8089b45e502f031baa085ab6abc7174a6"
+    },
+    {
+      "bytes": 1854,
+      "path": "report.md",
+      "sha256": "713c761a3458ae9447e95b88404355028c50ec867752ca0735b914f6e64d1db6"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T19:29:34.817164+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; python raw-socket probes with hexlabelled dumps"
+  },
+  "evaluation_id": "security-20261117T192934Z-9b08cfa1",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "bytes=5-2 returns 400 on this build and 416 elsewhere. A conformance divergence, not a framing break: no negative or huge length is emitted, and empty files still 416 with bytes */0.",
+      "evidence": [
+        "evidence/range.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A reversed Range is answered 400 here where every sibling answers 416, because the range is parsed before the satisfiability check"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Static build: no upstream, so nothing executes code",
+    "Range/416 framing was the interesting axis and is reported for what it showed"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Verified the staged source is byte-identical to the tag",
+    "Ran a raw-socket probe per axis with a /hello.txt 200 control",
+    "Captured status, Content-Range, Content-Length, Location and body bytes",
+    "Ran the symlink and index matrices under a /tmp root copy"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e5b20e4a4c8a92c5166e843922fced3e2968d73d",
+    "source_sha256": "f4096e4c2c6bb6348f7a5b0722474d5836a36f82e632308b4694e1ee159fba21",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025712Z__3aeb255d3d7f__ae021893",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run ae021893, round 7 lane D: static file layer, Range arithmetic, symlink handling, index fallback and the 301 Location build.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,79 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 66,
+      "path": "evidence/ev_r10_O_1cfd33433d25_e1a28e35_O2_abs.hex",
+      "sha256": "10600bcec20a18e8070833a0694ec48bebb7f4bb74931cc55e927024fdc9cebe"
+    },
+    {
+      "bytes": 1974,
+      "path": "report.md",
+      "sha256": "7a0bd865cd97f3b0373c7da0fff23367a0b8d6b74a871b2a7ee70de652f4ecd2"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:47:33.447069+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw hex request bytes, exact-token peer plus an independent naive concatenating upstream"
+  },
+  "evaluation_id": "security-20261117T214733Z-b4c20a32",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The exact-`/` test is the first statement of the decoder, before any prefix match, so an absolute-form target never reaches dispatch. Probed extras on 063b0d5e (authority disagreeing with `Host`, no `Host`, `:port` authority, userinfo) are all 400 too.",
+      "evidence": [
+        "evidence/ev_r10_O_1cfd33433d25_e1a28e35_O2_abs.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Absolute-form request targets are answered 400 at the decoder's first-byte `/` test, so the authority never dispatches"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "The proxy never executes; all RCE is on the upstream host",
+    "Absolute-form findings are negatives and need nothing but a proxied prefix location"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request first on the same config",
+    "Hex-exact single request per shape",
+    "Two independent upstreams for the one positive"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "5526e34559864d4d898fc693d845e66606809a4b",
+    "source_sha256": "b6ce041759ab2d60dfe76688c3a11977cfc4ad052389a7feae0bcef4bc5c4641",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-05__cpp__20261116T022712Z__1cfd33433d25__e1a28e35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000002 of run e1a28e35, round 10 lane O: absolute-form and multi-slash targets.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

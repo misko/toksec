@@ -1,0 +1,196 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 3.28004795871675,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0027561048045754433
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.005534750409424305
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.00054984912276268
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.0003149174153804779
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.00017646793276071548
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.0003038207069039345
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.0002719853073358536
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00021719839423894882
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "absolute-header-deadline",
+      "passed": false,
+      "seconds": 1.2024860251694918
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0011237794533371925
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 0.0001712338998913765
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.00020582694560289383
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.0004416396841406822
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.00016613397747278214
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.0041294544935226
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.002795320935547352
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 8.767470717430115e-05
+    },
+    {
+      "id": "hosts",
+      "passed": true,
+      "seconds": 0.00021200813353061676
+    },
+    {
+      "id": "routes-index-mime",
+      "passed": true,
+      "seconds": 0.00028135720640420914
+    },
+    {
+      "id": "etag",
+      "passed": true,
+      "seconds": 0.0002780267968773842
+    },
+    {
+      "id": "ranges",
+      "passed": true,
+      "seconds": 0.00036612991243600845
+    },
+    {
+      "id": "routing-interactions",
+      "passed": true,
+      "seconds": 0.0006053941324353218
+    },
+    {
+      "id": "proxy-get-and-post",
+      "passed": true,
+      "seconds": 0.009237965568900108
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "passed": true,
+      "seconds": 0.007445789873600006
+    },
+    {
+      "error": "AssertionError: upstream connections not reused",
+      "id": "proxy-pool-and-errors",
+      "passed": false,
+      "seconds": 0.015527795068919659
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "passed": true,
+      "seconds": 0.00604666955769062
+    },
+    {
+      "id": "proxy-fragmented-upload",
+      "passed": true,
+      "seconds": 0.003958531655371189
+    },
+    {
+      "id": "cache",
+      "passed": true,
+      "seconds": 1.2314644875004888
+    },
+    {
+      "id": "cache-byte-limit",
+      "passed": true,
+      "seconds": 0.34685448929667473
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "passed": true,
+      "seconds": 0.6031934758648276
+    },
+    {
+      "id": "graceful-stop",
+      "passed": true,
+      "seconds": 0.022775649093091488
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.30359357688575983
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.101900682784617
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.12174036353826523
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.3189213154837489
+    }
+  ],
+  "summary": {
+    "passed": 33,
+    "status": "failed",
+    "total": 35
+  },
+  "unimplemented_requirements": []
+}

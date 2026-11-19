@@ -1,0 +1,224 @@
+{
+  "ended_unix": 1794797377.6818366,
+  "finished": true,
+  "last_feedback": {
+    "result": {
+      "build": {
+        "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+        "diagnostics": "/src/main.cpp: In function 'void process(Conn&)':\n/src/main.cpp:86:681: error: call of overloaded 'token(std::string&)' is ambiguous\n   86 | static void process(Conn &c){size_t end=c.in.find(\"\\r\\n\\r\\n\");if(end==string::npos){if(c.in.size()>c.ep->cfg->header)answer(c,431,\"\",\"\",false,true);return;}if(end+4>c.ep->cfg->header){answer(c,431,\"\",\"\",false,true);return;}string header=c.in.substr(0,end+2);c.in.erase(0,end+4);auto fail=[&](int s){answer(c,s,\"\",\"\",false,true);};size_t p=header.find(\"\\r\\n\");if(p==string::npos){fail(400);return;}string line=header.substr(0,p);auto a=line.find(' '),b=a==string::npos?string::npos:line.find(' ',a+1);if(a==string::npos||b==string::npos||line.find(' ',b+1)!=string::npos){fail(400);return;}string method=line.substr(0,a),target=line.substr(a+1,b-a-1),ver=line.substr(b+1);if(!token(method)||(ver!=\"HTTP/1.1\"&&ver!=\"HTTP/1.0\")){fail(400);return;}map<string,vector<string>> h;p+=2;while(p<header.size()){size_t q=header.find(\"\\r\\n\",p);if(q==string::npos){fail(400);return;}string l=header.substr(p,q-p);p=q+2;size_t k=l.find(':');if(k==string::npos||!token(l.substr(0,k))){fail(400);return;}string v=l.substr(k+1);for(unsigned char ch:v)if((ch<32&&ch!='\\t')||ch==127){fail(400);return;}h[lower(l.substr(0,k))].push_back(trim(v));}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ~~~~~^~~~~~~~\n/src/main.cpp:86:681: note: there are 2 candidates\n/src/main.cpp:33:13: note: candidate 1: 'bool token(const std::string&)'\n   33 | static bool token(const string &s);\n      |             ^~~~~\n/src/main.cpp:83:13: note: candidate 2: 'bool token(std::string)'\n   83 | static bool token(string x){if(x.empty())return false;for(unsigned char c:x)if(!isalnum(c)&&string(\"!#$%&'*+-.^_`|~\").find(c)==string::npos)return false;return true;}\n      |             ^~~~~\n/src/main.cpp:86:954: error: call of overloaded 'token(std::__cxx11::basic_string<char>)' is ambiguous\n   86 | static void process(Conn &c){size_t end=c.in.find(\"\\r\\n\\r\\n\");if(end==string::npos){if(c.in.size()>c.ep->cfg->header)answer(c,431,\"\",\"\",false,true);return;}if(end+4>c.ep->cfg->header){answer(c,431,\"\",\"\",false,true);return;}string header=c.in.substr(0,end+2);c.in.erase(0,end+4);auto fail=[&](int s){answer(c,s,\"\",\"\",false,true);};size_t p=header.find(\"\\r\\n\");if(p==string::npos){fail(400);return;}string line=header.substr(0,p);auto a=line.find(' '),b=a==string::npos?string::npos:line.find(' ',a+1);if(a==string::npos||b==string::npos||line.find(' ',b+1)!=string::npos){fail(400);return;}string method=line.substr(0,a),target=line.substr(a+1,b-a-1),ver=line.substr(b+1);if(!token(method)||(ver!=\"HTTP/1.1\"&&ver!=\"HTTP/1.0\")){fail(400);return;}map<string,vector<string>> h;p+=2;while(p<header.size()){size_t q=header.find(\"\\r\\n\",p);if(q==string::npos){fail(400);return;}string l=header.substr(p,q-p);p=q+2;size_t k=l.find(':');if(k==string::npos||!token(l.substr(0,k))){fail(400);return;}string v=l.substr(k+1);for(unsigned char ch:v)if((ch<32&&ch!='\\t')||ch==127){fail(400);return;}h[lower(l.substr(0,k))].push_back(trim(v));}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~^~~~~~~~~~~~~~~\n/src/main.cpp:86:954: note: there are 2 candidates\n/src/main.cpp:33:13: note: candidate 1: 'bool token(const std::string&)'\n   33 | static bool token(const string &s);\n      |             ^~~~~\n/src/main.cpp:83:13: note: candidate 2: 'bool token(std::string)'\n   83 | static bool token(string x){if(x.empty())return false;for(unsigned char c:x)if(!isalnum(c)&&string(\"!#$%&'*+-.^_`|~\").find(c)==string::npos)return false;return true;}\n      |             ^~~~~\n/src/main.cpp: In function 'bool upstream_parse(Conn&)':\n/src/main.cpp:106:757: error: call of overloaded 'token(std::__cxx11::basic_string<char>)' is ambiguous\n  106 |  if(!c.uheaders){for(;;){size_t e=c.uraw.find(\"\\r\\n\\r\\n\");if(e==string::npos){if(c.uraw.size()>c.ep->cfg->header)upstream_fail(c,502);return false;}if(e+4>c.ep->cfg->header){upstream_fail(c,502);return false;}string h=c.uraw.substr(0,e+2);c.uraw.erase(0,e+4);size_t p=h.find(\"\\r\\n\");string line=h.substr(0,p);if(p==string::npos||line.size()<12||line.substr(0,5)!=\"HTTP/\"||line[8]!=' '||!isdigit(line[9])||!isdigit(line[10])||!isdigit(line[11])){upstream_fail(c,502);return false;}int status=(line[9]-'0')*100+(line[10]-'0')*10+line[11]-'0';map<string,vector<string>> fields;p+=2;while(p<h.size()){size_t q=h.find(\"\\r\\n\",p);if(q==string::npos){upstream_fail(c,502);return false;}string l=h.substr(p,q-p);p=q+2;size_t z=l.find(':');if(z==string::npos||!token(l.substr(0,z))){upstream_fail(c,502);return false;}string v=trim(l.substr(z+1));for(unsigned char ch:v)if((ch<32&&ch!='\\t')||ch==127){upstream_fail(c,502);return false;}fields[lower(l.substr(0,z))].push_back(v);}if(status>=100&&status<200){if(status==101||++c.chunkstate>8){upstream_fail(c,502);return false;}continue;}c.chunkstate=0;if(status<200||fields[\"content-length\"].size()>1||fields[\"transfer-encoding\"].size()>1||(!fields[\"content-length\"].empty()&&!fields[\"transfer-encoding\"].empty())){upstream_fail(c,502);return false;}long long len=-1;if(!fields[\"content-length\"].empty()){string v=fields[\"content-length\"][0];if(v.empty()||v.find_first_not_of(\"0123456789\")!=string::npos){upstream_fail(c,502);return false;}try{len=stoll(v);}catch(...){upstream_fail(c,502);return false;}}bool chunked=!fields[\"transfer-encoding\"].empty();if(chunked&&lower(fields[\"transfer-encoding\"][0])!=\"chunked\"){upstream_fail(c,502);return false;}bool nobody=c.bodyless||status==204||status==304;set<string> hop={\"connection\",\"keep-alive\",\"proxy-connection\",\"transfer-encoding\",\"upgrade\",\"te\",\"trailer\",\"content-length\"};for(auto v:fields[\"connection\"]){size_t x=0;while(x<v.size()){size_t y=v.find(',',x);if(y==string::npos)y=v.size();hop.insert(lower(trim(v.substr(x,y-x))));x=y+1;}}string extra;for(auto &[name,vals]:fields)if(!hop.count(name))for(auto &v:vals)extra+=name+\": \"+v+\"\\r\\n\";if(status!=204&&len>=0)extra+=\"Content-Length: \"+to_string(len)+\"\\r\\n\";if(!nobody&&len<0){if(c.version==\"HTTP/1.1\"){c.downstream_chunked=true;extra+=\"Transfer-Encoding: chunked\\r\\n\";}else c.closing=true;}c.out=\"HTTP/1.1 \"+to_string(status)+\" \"+reason(status)+\"\\r\\n\"+extra+\"Connection: \"+(c.closing?\"close\":\"keep-alive\")+\"\\r\\n\\r\\n\";c.sent=0;c.uheaders=true;c.upstream_chunked=chunked;c.respleft=len;if(nobody||(!chunked&&len==0)){upstream_finish(c);return true;}break;}}\n      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ~~~~~^~~~~~~~~~~~~~~\n/src/main.cpp:106:757: note: there are 2 candidates\n/src/main.cpp:33:13: note: candidate 1: 'bool token(const std::string&)'\n   33 | static bool token(const string &s);\n      |             ^~~~~\n/src/main.cpp:83:13: note: candidate 2: 'bool token(std::string)'\n   83 | static bool token(string x){if(x.empty())return false;for(unsigned char c:x)if(!isalnum(c)&&string(\"!#$%&'*+-.^_`|~\").find(c)==string::npos)return false;return true;}\n      |             ^~~~~\n/src/main.cpp: At global scope:\n/src/main.cpp:33:13: warning: 'bool token(const std::string&)' used but never defined\n   33 | static bool token(const string &s);\n      |             ^~~~~\n",
+        "language": "cpp",
+        "passed": false,
+        "seconds": 3.046445995569229,
+        "test": false,
+        "timeout": false
+      },
+      "checks": {
+        "cases": [],
+        "passed": false
+      },
+      "id": "a9cf17562370493cb0139a2df44ea0b1",
+      "test": false
+    },
+    "tool": "edit_candidate"
+  },
+  "latest": "a9cf17562370493cb0139a2df44ea0b1",
+  "notes": "",
+  "recent_actions": [
+    {
+      "arguments": {
+        "line_count": 32,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 30
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 65,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "budget_status"
+    },
+    {
+      "arguments": {
+        "line_count": 75,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 80,
+        "start_line": 76
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "run_tests"
+    },
+    {
+      "arguments": {
+        "line_count": 160,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 75
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "edit_candidate"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "edit_candidate"
+    }
+  ],
+  "retained_reads": {
+    "builder/INTERFACE.md": {
+      "text": "# Source, process and fixture interface\n\nSubmit one UTF-8 main.cpp or main.rs, at most 1 MiB, through submit_candidate.\nThe controller compiles and runs it in a sandbox. No additional implementation\nfiles, downloaded dependencies, HTTP libraries or previous implementations are\nprovided. Approved OpenSSL is the sole TLS dependency exception. See your language\npolicy and TLS.md. Compiler and library identities belong in the run manifest.\n\nLaunch the master as `/candidate/server --config /fixtures/config/nginx.conf`.\n`--check-config PATH` validates configuration, includes, roots and TLS material,\nprints a diagnostic on failure, and exits without binding or forking workers.\nExit zero means valid; a nonzero exit means invalid. Diagnostics identify file\nand line where possible and never print private key contents.\n\nInitial startup must make all configured listeners serviceable within five seconds.\nThe master remains foreground; do not daemonize. SIGTERM to the master starts a\nbounded graceful drain. SIGHUP requests transactional configuration/certificate\nreload. OPERATIONS.md defines worker replacement and generation semantics.\n\nThe host mounts these fixture paths in each test sandbox:\n\n| Path | Access and use |\n|---|---|\n| /fixtures/config | Read-only to candidate; host may replace files for reload tests |\n| /fixtures/tls | Read-only test-only certificate chains, leaf private keys and CA certificate |\n| /www | Read-only immutable files, with alternate roots and aliases in tests |\n| /tmp | Private writable scratch, capped at 64 MiB by the host |\n| /candidate | Read-only source snapshot and executable |\n\nThe supplied sample files demonstrate inputs. Host fixtures vary names, content,\nports and limits within the contract. Do not hardcode sample values. No host\ncredentials, CA signing private key, reference server or hidden checker is mounted.\nUpstream fixture services are reachable only in the sandbox's private network.\n\nThe process tree receives 1, 2 or 4 CPUs as declared in each measurement profile,\n512 MiB aggregate charged memory, 16,384 total live file descriptors, and at most\none master plus four worker processes. The host includes mapped OpenSSL and\ncharged scratch/cache memory in the resource budget; it must publish the exact\nmemory-accounting method. Do not interpret per-process limits as separate budgets.\nCompile limits remain 4096 MiB address space, 60 CPU seconds and 120 wall seconds.\nAggregate enforcement must pass host preflight before any run is authorized.\n\nThe source may fork workers from itself but may not execute external programs or\ndelegate HTTP/TLS/configuration parsing to another executable. IPC, shared memory,\nthreads, POSIX/Linux I/O and the approved TLS C ABI are allowed. Worker thread\ncounts and descriptors remain inside the aggregate resource budget.\n\nController tools retain their existing names: budget_status, submit_candidate,\nrevalidate_candidate, run_tests, benchmark_candidate, init_repository,\nrelease_candidate and finish. Tests are your own standalone programs run in the\nsame isolation policy. They must create their own listeners and fixtures.\nThe controller owns compilation, Git initialization/tagging and release evidence.\nThese tool names describe the intended Stage 10 interface, not current support."
+    },
+    "builder/RULES.md": {
+      "text": "# Shared builder rules\n\nBuild a working, efficient HTTP server that satisfies the selected stage's English\ncontract. Each selected stage is an independent from-scratch assignment. No starter code,\nprevious implementation, or another run's conversation is supplied.\n\n## Freedom to work\n\nYou choose the architecture, order of work, debugging strategy, tests and\noptimizations. You may use the evaluator tools, supply your own tests, or\nreason about a change before testing it. There is no mandatory iteration sequence,\nnumber of experiments, journal entry, or implementation technique. Tool access,\nthe source/process interface, sandbox limits and the grading contract still apply.\nTesting correctness first, addressing failed requests before speed, and measuring\none change at a time are suggestions. The goal is a working and very efficient\nimplementation, not compliance with a prescribed development process.\n\n## Testing is part of your task\n\nYou are responsible for designing and running tests for your implementation.\nInfer what needs testing from the English contract; do not rely on the supplied\nchecks as a comprehensive test plan. Choose your own cases, tools and strategy.\nProviding only enough behavior to pass supplied examples does not satisfy the task.\n\nThe English requirements are authoritative. Supplied smoke checks demonstrate\nbasic API usage only; passing them is not evidence of full correctness. The host\nmay independently evaluate any behavior required by the contract. It must not\nintroduce undocumented requirements. No starter implementation is supplied.\n\nDevelop and retain your own correctness evidence before publishing releases.\nYou choose how much capacity to spend on tests versus implementation and\noptimization. Report what you tested and any known limitations honestly. Passing\na finite suite does not prove complete correctness or maximum performance.\n\n## Deliverable and Git releases\n\nSubmit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.\nThe shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution\noccur in sandboxes. Controller tools are your filesystem/execution interface;\nyou do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own\nfixtures and listeners; no candidate server is automatically running for them.\n\nYou can be stopped at any time. After your first working submission, call\ninit_repository to create a new private Git repository and its first release tag.\nUse release_candidate to publish periodic working milestones. Each numbered tag\ncontains the source file and controller-generated release.json evidence. The last completed\ntag is your final submission. Untagged edits do not replace it. No tag means no\nsubmission, and stopping before the first working tag can leave no deliverable.\nPublished releases must compile, pass bootstrap and preserve previously passing\nvisible smoke checks. Publication is explicit; submitting source alone does not publish it.\n\nYou receive partial credit for validated progress since the previous tag, even\nif you do not finish the target. Explain the before/after evidence in each release\nnote. New passing API checks, demonstrated reliability repairs and valid measured\nperformance improvements are progress. Duplicate source, cosmetic edits, repeated\nclaims and extra tags alone earn no additional credit. Do not deliberately split\nan easy solution to inflate the milestone count. Numeric milestone weights are\nnot yet defined.\n\n## Development feedback\n\nsubmit_candidate and, when available, revalidate_candidate run only the supplied smoke suite.\nIndependent host API checks are held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.\nbenchmark_candidate provides provisional ordinary-traffic performance feedback\nafter smoke acceptance. Such measurements do not establish final eligibility.\nRelease metadata and retained baselines contain development evidence only.\nThe selected stage declares whether independent API coverage is full or partial.\nPassing all available checks in a partial suite cannot establish full acceptance.\nAny performance diagnostics for such a stage remain provisional and earn no final\nperformance credit. Use only the tools actually supplied for the selected stage.\n\n## Grading\n\nThe host grader extracts the last tagged source and compiles it independently.\nAPI correctness is graded first. If compilation or any required API check fails,\nperformance is not tested and is graded as failed, with zero performance credit.\nFailed API checks reduce API credit; the performance credit is also forfeited.\nA fast incorrect implementation cannot recover those marks through throughput.\n\nIf all API checks pass, the host measures the declared workloads. It reports valid\ngoodput, latency, failures, timeouts, CPU and memory. Missing or ineligible\nmeasurements earn no demonstrated performance credit. Successful-request latency\nmust be read alongside failures. A saturated load generator is not evidence of a\nserver speedup. Reliability, then throughput and latency, are suggested priorities.\nThe controller's retained comparison baseline is diagnostic; your explicit last\ntag determines the final implementation.\n\n## Capacity\n\nThe frozen run manifest defines the campaign cap and builder wall-time ceiling. The controller reports the actual remaining\nshared dollars, tokens and wall time through budget_status and before each model\ncall. All model input, output, reasoning and final reporting consume that budget.\nCompilation and evaluation CPU are tracked separately. The strict worst-case\nreservation policy can stop admission before the authorized balance is fully spent.\n\nUse the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the\nfinalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall\nceilings regardless of that decision. Do not assume another call will be available\nfor publication. Record limitations and unmeasured claims honestly in your report."
+    },
+    "fixtures/config/bootstrap.conf": {
+      "text": "events {}\nhttp {\n    server {\n        listen 127.0.0.1:8080;\n        server_name alpha.test;\n        location / {\n            root /www;\n        }\n    }\n}"
+    },
+    "fixtures/config/conf.d/servers.conf": {
+      "text": "server {\n    listen 127.0.0.1:8080 default_server;\n    listen 127.0.0.1:8443 ssl default_server;\n    server_name alpha.test;\n    ssl_certificate /fixtures/tls/alpha-chain.pem;\n    ssl_certificate_key /fixtures/tls/alpha-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n    location = /old {\n        return 302 /hello.txt;\n    }\n}\nserver {\n    listen 127.0.0.1:8080;\n    listen 127.0.0.1:8443 ssl;\n    server_name beta.test;\n    root /www/beta;\n    ssl_certificate /fixtures/tls/beta-chain.pem;\n    ssl_certificate_key /fixtures/tls/beta-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n}"
+    },
+    "fixtures/config/nginx.conf": {
+      "text": "worker_processes 2;\nevents {\n    worker_connections 8192;\n}\nhttp {\n    root /www;\n    default_type application/octet-stream;\n    types {\n        text/html html;\n        text/plain txt;\n    }\n    client_max_body_size 64m;\n    keepalive_timeout 2s;\n    keepalive_requests 100;\n    toksec_upstream_active 64;\n    toksec_upstream_queue 8192;\n    toksec_cache_bytes 4m;\n    toksec_rate_per_second 0;\n\n    upstream backend {\n        server 127.0.0.1:8081;\n        server 127.0.0.1:8082;\n        keepalive 64;\n    }\n    include conf.d/servers.conf;\n}"
+    }
+  },
+  "stop_reason": "budget reservation capacity exhausted",
+  "tags": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "65ff42e3c4ea4e9f8b34db2fd4e4ecb9",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1822908750,
+          "remaining_usd": 1.82290875,
+          "request_count": 7,
+          "spent_nanodollars": 177091250,
+          "spent_usd_upper_bound": 0.17709125
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "65ff42e3c4ea4e9f8b34db2fd4e4ecb9",
+        "seconds_remaining": 7076.790123939514
+      },
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent"
+      ],
+      "recorded_unix": 1794797020.0697172,
+      "scope": "visible_smoke_only",
+      "source_sha256": "1ecc0c0e97e3d4c69bd62acebd45baee95d6e1cefae2d974754863173fe0d8fe",
+      "tag": "release/000001"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "5aaaf01482484aa397bcd8fc9faa94d0",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 2000000000,
+          "remaining_nanodollars": 1478976250,
+          "remaining_usd": 1.47897625,
+          "request_count": 17,
+          "spent_nanodollars": 521023750,
+          "spent_usd_upper_bound": 0.52102375
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "5aaaf01482484aa397bcd8fc9faa94d0",
+        "seconds_remaining": 6912.405197381973
+      },
+      "note": "Adds nonblocking proxy forwarding, including streaming fixed-length uploads and fixed-length, chunked, and EOF-delimited upstream responses; retains local HTTP and HTTPS service. Visible smoke and custom proxy tests provide development evidence; full framing, cache, admission and reload behavior remain incomplete.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794797184.454673,
+      "scope": "visible_smoke_only",
+      "source_sha256": "e5cd16c196af595f92eab5b202fb1430d064a201c3e8b1c79ebd61e8104a61c5",
+      "tag": "release/000002"
+    }
+  ]
+}

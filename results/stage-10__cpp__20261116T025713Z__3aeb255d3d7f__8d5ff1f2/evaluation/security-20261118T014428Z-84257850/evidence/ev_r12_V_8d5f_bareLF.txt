@@ -1,0 +1,16 @@
+LANE V — 8d5f1f2, bare LF in an upstream header. Build 3aeb255d3d7f__8d5ff1f2, source ...8d5ff1f2.cpp, cfg ev_r12_V_cfg_8d5f.conf.
+Control passed (200, x-ctl: k, HELLO) immediately before.
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a582d413a206f6e650a582d423a2074776f0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  note "582d413a206f6e650a582d423a2074776f" = "X-A: one\nX-B: two" — ONE upstream line, bare LF
+client_received_hex 485454502f312e3120323030204f4b0d0a782d613a206f6e650d0a782d623a2074776f0d0a436f6e74656e742d4c656e6774683a20350d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+  decoded: "HTTP/1.1 200 OK\r\nx-a: one\r\nx-b: two\r\n..."
+
+8d5f splits the bare LF and re-serialises both halves with CRLF, so the client always sees two
+well-formed fields — the opposite decision from 61cc and 44bf, which pass the LF through raw and
+leave the split to the client. 5/5 cold identical.
+
+CONTRAST, same build: an LF *continuation* (peer mode bareLFmid) is refused 502 with an empty body.
+client_received_hex 485454502f312e31203530322042616420476174657761790d0a436f6e74656e742d4c656e6774683a20300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+So 8d5f treats an LF as a line terminator but will not treat it as a fold, and its header parser
+gives up instead of re-emitting.

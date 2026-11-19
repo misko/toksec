@@ -1,0 +1,25 @@
+{
+  "budget_usd": "3",
+  "comparison_policy": "Do not pool different protocols, languages, models, budgets or input policies.",
+  "framework": "4d5b4ee0ee148f9c579d973aee7253ae5ac08281e4ce31c28771e3e760f20c23",
+  "id": "level-5-a4ba853a82fe",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "language": "cpp",
+  "last_tag": "release/000002",
+  "model": "gpt-6.1-terra",
+  "path": "level-5-a4ba853a82fe",
+  "persisted_run_id": false,
+  "protocol": "http-v8",
+  "publication_version": 2,
+  "raw_run_id": "level-5-a4ba853a82fe",
+  "run_id": "level-5-a4ba853a82fe",
+  "source_run": "/home/mouse9911/gits/toksec-stage5-cpp/.runs/terra-cpp-stage5-1794682940/runs/level-5-a4ba853a82fe",
+  "stage": 5,
+  "started_unix": 1794682952.5142586,
+  "started_utc": "2026-11-14T19-02-32Z",
+  "status": "partially_graded",
+  "wall_seconds": 7200
+}

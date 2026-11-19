@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 953,
+      "path": "evidence/ev_r11_S_cold_f2b.txt",
+      "sha256": "acb7dae8c66fde9f5ee7ef975ddc5c3180f0c9795847645651a96a9f9719d6d9"
+    },
+    {
+      "bytes": 2236,
+      "path": "evidence/ev_r11_S_headline_3aeb255d3d7f__f2b3415b.txt",
+      "sha256": "571fae644fcf6d467e6bfc721e0e5584d74b6b0aa913e5b1a69c6c2223c4ddcc"
+    },
+    {
+      "bytes": 130,
+      "path": "evidence/ev_r11_S_window_f2b_d2_2ups_post.txt",
+      "sha256": "75a623c44cd30a6e6a583ffe4611d893f5fa9908310f26d146bf33580256274f"
+    },
+    {
+      "bytes": 2439,
+      "path": "report.md",
+      "sha256": "aaad11b1070582a0e8f23ce40a9ed70af78ec70468d1b3064cb2fc82cb7dd886"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T23:18:29.589062+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231829Z-d008cb23",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Control first on the same config. `startup` pops the pooled fd and treats `recv(MSG_PEEK|MSG_DONTWAIT)` returning EAGAIN as reusable (`:87`); `delup` returns the fd whenever the head was HTTP/1.1 without `Connection: close` (`:89`, `:71`). A peer that holds one response back and flushes it after the peek hands the victim the attacker's frame byte for byte, 10/10 from cold servers, exec output included. Separate defect on `:86`: `upfail` retries only GET/HEAD, so a dead pooled socket is fatal to a POST \u2014 20/20 POST 502 while GET is retried away when a second upstream exists.",
+      "evidence": [
+        "evidence/ev_r11_S_headline_3aeb255d3d7f__f2b3415b.txt",
+        "evidence/ev_r11_S_cold_f2b.txt",
+        "evidence/ev_r11_S_window_f2b_d2_2ups_post.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Pool liveness is a one-byte check-then-use with no epoch, so a frame the upstream writes after the peek is served to the next client as its own response"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 11 lane S: `startup` peek, `delup`/`reusable` pooling.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 524,
+      "path": "evidence/ev_r12_X_ev_f2b_close.txt",
+      "sha256": "a2f8875ff324852c374452156ee9d0e7c1aea3bee63ff9ec2da3be8d63b5ff52"
+    },
+    {
+      "bytes": 279,
+      "path": "evidence/ev_r12_X_ev_f2b_control.txt",
+      "sha256": "34154b0f6c4622949cb411f9461e54a80bf045fcba0451ed1c95bdaaecaaaf85"
+    },
+    {
+      "bytes": 593,
+      "path": "evidence/ev_r12_X_ev_f2b_execfail.txt",
+      "sha256": "35619902e65eee296cb3753c17c3e99ec2c271a1040dadf69f361353dd6fae9f"
+    },
+    {
+      "bytes": 1764,
+      "path": "report.md",
+      "sha256": "6f228a8d5430a26ea2f6775e74dd784182d8238786c8f553ad11a3f200f380fc"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T00:51:52.156901+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T005152Z-de7e5e00",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "upfail() advances c->attempt and re-enters startup() for a GET/HEAD on the first failure, which rebuilds and re-sends from the parsed request. When the first upstream executed and then died, the second upstream executes the same split command. Retry is a single fixed hop, not a budget: with three upstreams the third is never dialled.",
+      "evidence": [
+        "evidence/ev_r12_X_ev_f2b_execfail.txt",
+        "evidence/ev_r12_X_ev_f2b_close.txt",
+        "evidence/ev_r12_X_ev_f2b_control.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "The per-client failover guard retries a request whose command already ran, executing it twice"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final tag of run f2b3415b; two or more upstreams; execution on the upstream host",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

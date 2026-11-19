@@ -1,0 +1,41 @@
+### build 3aeb255d3d7f__6fb186ed tls=39100 plain=39200 upstream=39400 tlsB=39600
+check-config rc=0 
+[P1 cleartext] control -> HTTP/1.1 200 OK body=b'NOEXEC tokens=3'
+[P1 cleartext] payload -> HTTP/1.1 200 OK body=b'EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cd'
+[P1 cleartext] upstream=["GET /hello.txt HTTP/1.1 [3tok]", "GET /exec ?cmd=id HTTP/1.1 [4tok]"]
+[P1 TLS] sanity control -> OK HTTP/1.1 200 OK body=b'NOEXEC tokens=3'
+[P1 TLS] payload -> OK subj=alpha.test HTTP/1.1 200 OK body=b'EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cd'
+[P1 TLS] upstream=["GET /hello.txt HTTP/1.1 [3tok]", "GET /exec ?cmd=id HTTP/1.1 [4tok]"]
+[P1 VERDICT] IDENTICAL 'GET /exec ?cmd=id HTTP/1.1' tokens=4
+[P2 cleartext] payload -> HTTP/1.1 200 OK body=b'EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cd'
+[P2 cleartext] upstream=["GET /exec ?cmd=id HTTP/1.1 [4tok]"]
+[P2 TLS] payload -> OK HTTP/1.1 200 OK body=b'EXEC:uid=1000(mouse9911) gid=1000(mouse9911) groups=1000(mouse9911),4(adm),24(cd'
+[P2 TLS] upstream=["GET /exec ?cmd=id HTTP/1.1 [4tok]"]
+[P2 VERDICT] IDENTICAL lines, exec_reached=True
+[SNI] snippet is a beta variant; cert=beta => matched, cert=alpha => fell through to default_server
+  exact beta                     sni='beta.test'      cert=beta.test      Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  upper BETA.TEST                sni='BETA.TEST'      cert=beta.test      Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  trailing dot                   sni='beta.test.'     cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  wildcard *.test                sni='*.test'         cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  embedded space                 sni='beta test'      cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  literal %00                    sni='beta.test%00'   cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  long 3x60                      sni='aaaaaaaaaaaaaaa cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  beta-only name on port A       sni='beta-only.test' cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  beta.test on port B (valid there) sni='beta.test'      cert=beta.test      Host=beta.test   served=?     HTTP/1.1 400 Bad Request
+  no SNI                         sni=''               cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  bogus nope.test                sni='nope.test'      cert=alpha.test     Host=beta.test   served=BETA  HTTP/1.1 200 OK
+  sni=beta Host=alpha            sni='beta.test'      cert=beta.test      Host=alpha.test  served=ALPHA HTTP/1.1 200 OK
+  sni=beta-only Host=alpha       sni='beta-only.test' cert=alpha.test     Host=alpha.test  served=ALPHA HTTP/1.1 200 OK
+  portB own name on portB        sni='beta-only.test' cert=beta.test      Host=beta-only.test served=BETA  HTTP/1.1 200 OK
+[ALPN]
+  http/1.1               -> OK       selected='http/1.1' HTTP/1.1 200 OK 
+  h2 only                -> HSFAIL   selected=None <empty> SSLError: [SSL: TLSV1_ALERT_NO_APPLICATION_PROTOCOL] tlsv1 alert no application protocol (_ssl.c:1081)
+  h2,http/1.1            -> OK       selected='http/1.1' HTTP/1.1 200 OK 
+  http/1.1,h2            -> OK       selected='http/1.1' HTTP/1.1 200 OK 
+  duplicate http/1.1     -> OK       selected='http/1.1' HTTP/1.1 200 OK 
+  http/1.1+NUL           -> HSFAIL   selected=None <empty> SSLError: [SSL: TLSV1_ALERT_NO_APPLICATION_PROTOCOL] tlsv1 alert no application protocol (_ssl.c:1081)
+  empty list             -> OK       selected=None HTTP/1.1 200 OK 
+  no ALPN ext            -> OK       selected=None HTTP/1.1 200 OK 
+  default                -> OK       selected=None HTTP/1.1 200 OK 
+[RENEG CONTROL no R] statuses=["HTTP/1.1 200 OK", "HTTP/1.1 200 OK"] roots=ALPHABETA
+[RENEG WITH R] statuses=["HTTP/1.1 200 OK", "HTTP/1.1 400 Bad Request"] tail='n\r\nContent-Length: 6\r\nConnection: keep-alive\r\n\r\nALPHA\nHTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'

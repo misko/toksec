@@ -1,0 +1,316 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 15410,
+      "path": "evidence/FINDINGS.md",
+      "sha256": "bb8adb8ae7a386cd024ddd654e4eb5789e55d5bb8b6443cb4b238e28f3ca1939"
+    },
+    {
+      "bytes": 579,
+      "path": "evidence/cache-key-collision.txt",
+      "sha256": "109a44ed5260a95a99e7dc0954bb3a189850ec2edd631b8eee6019a0b1890572"
+    },
+    {
+      "bytes": 1002,
+      "path": "evidence/cache-poison.txt",
+      "sha256": "925982e9f680c9728fe0bf325ba5b5f6def9022bdf42c2f1ed298f76fca082d4"
+    },
+    {
+      "bytes": 526,
+      "path": "evidence/cfg5single",
+      "sha256": "b10e630791a1414d23d7b413f409d85534b7251ee7c567ac2b25655e1cadb78b"
+    },
+    {
+      "bytes": 1664,
+      "path": "evidence/crlf-injection.txt",
+      "sha256": "f0c41944ecbc454f6a25b0d1b3928add9e361b9af5070ad4aeab1bdbf7e5b779"
+    },
+    {
+      "bytes": 178,
+      "path": "evidence/dos-spin.txt",
+      "sha256": "0d2d39d573f24c5eaf131e038138f6b625ec82f8e6a5b2f30af3b2fa2dcaf517"
+    },
+    {
+      "bytes": 627,
+      "path": "evidence/head-cl-bypass.txt",
+      "sha256": "aa0ba221805509efc4eaafda93ab275a3fbd26fe2b0a5502576fd8110ed0ef9d"
+    },
+    {
+      "bytes": 657,
+      "path": "evidence/method-host-bypass.txt",
+      "sha256": "80ac332d8c25c0d1ad9ea8b7f8e02c8105d2b7ebaf0069ad8ca7b6dae040ce0a"
+    },
+    {
+      "bytes": 2018,
+      "path": "evidence/method-manifest.md",
+      "sha256": "b1cda8e76230243696c451a2c1b38a5b04815a009272d1104c627d2328a44010"
+    },
+    {
+      "bytes": 545,
+      "path": "evidence/prebody-desync.txt",
+      "sha256": "c12e940bb23788aba2a6088826b97f84655211bdba89b518a0a79adf93dc0ac6"
+    },
+    {
+      "bytes": 701,
+      "path": "evidence/rce-demo.txt",
+      "sha256": "92c7b0451bc7d269118749e98a302307c4190c950a864b51ad7447d7152e92bc"
+    },
+    {
+      "bytes": 679,
+      "path": "evidence/rce-file-read.txt",
+      "sha256": "ccaa540877570656aeca2331ccbed7cd3a399da00575c89af6d43df1a4c13598"
+    },
+    {
+      "bytes": 27809,
+      "path": "evidence/s5.cpp",
+      "sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee"
+    },
+    {
+      "bytes": 3023,
+      "path": "evidence/s5absorb.py",
+      "sha256": "45a6c0fddf32dac0ce620bd63b9d7ff9e1d4fae64a484dc889ee12d2c53d6a88"
+    },
+    {
+      "bytes": 2784,
+      "path": "evidence/s5crlf.py",
+      "sha256": "6d3c4c70de807cba8363c59fddfdf9b5050a9a5e7cd5924d297db162b7e39abe"
+    },
+    {
+      "bytes": 3931,
+      "path": "evidence/s5desync.py",
+      "sha256": "57661d64c0216bf4c46af380750849c07d000cc4bdf0d75c1f57ef0bfbbbc20d"
+    },
+    {
+      "bytes": 3211,
+      "path": "evidence/s5final.py",
+      "sha256": "fc256a67d0691beb28e98bbd4fd0b8f04f52f8e7efc84b6dc0451d90073792d4"
+    },
+    {
+      "bytes": 2831,
+      "path": "evidence/s5frame.py",
+      "sha256": "8d6569dc466f6d358262c8dad272d27f1f04e700bf06caf27c70537204bb4775"
+    },
+    {
+      "bytes": 164896,
+      "path": "evidence/s5o3",
+      "sha256": "e48bc83fc18355d81b13da1f74f47591a01c42acebceace7a7229f5e06ce28ba"
+    },
+    {
+      "bytes": 3200,
+      "path": "evidence/s5rce_demo.py",
+      "sha256": "8c42034afc8e43422341ff50cf0f1e686e0014389af7e830822c07b1b2f5df4e"
+    },
+    {
+      "bytes": 3371,
+      "path": "evidence/s5rce_file_read.py",
+      "sha256": "2762efbf4f1cf494cd676413f666dbc14f7119da0df88d50a03c50dfd116a0c0"
+    },
+    {
+      "bytes": 3288,
+      "path": "evidence/s5smuggle.py",
+      "sha256": "78e317dfa6916186d72db5f3505dc1933c1510b5c6c204c1273fb3b7fe9c37db"
+    },
+    {
+      "bytes": 7781296,
+      "path": "evidence/s5ub",
+      "sha256": "3e2a70b3cb7ba20315389d0096b2e90ec027b85826b04565ec51fb8c57e4a995"
+    },
+    {
+      "bytes": 194,
+      "path": "evidence/sighup-crash.txt",
+      "sha256": "83de6911c05d9de64783f45281fb141f8828c28495d6bd1a57bc2f35562c8980"
+    },
+    {
+      "bytes": 493,
+      "path": "evidence/smuggle-poison.txt",
+      "sha256": "2ee3998faf008c25436bcfb4439870a15b2964a26a0cd044e86d914dc64135e2"
+    },
+    {
+      "bytes": 655,
+      "path": "evidence/truncation_trailing_bytes.txt",
+      "sha256": "dca3ff95a686ff6165639778cbeecc7c99674146e5163349fbaa2767949dabdb"
+    },
+    {
+      "bytes": 27372,
+      "path": "report.md",
+      "sha256": "457d9095369f99081486959dcea0294b50e417c6cb728d0545df2d8596b2cfcc"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T01:20:50.100116+00:00",
+  "environment": {
+    "analyst_provenance": "author-attested; reconstructed at recording time, not captured during the original run",
+    "arch": "x86_64",
+    "builds": [
+      "-O3 -std=c++20",
+      "ASan+UBSan+_GLIBCXX_DEBUG"
+    ],
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "execution": "local, loopback networking, non-sandboxed",
+    "libc": "glibc 2.43",
+    "method_manifest_sha256": "b1cda8e76230243696c451a2c1b38a5b04815a009272d1104c627d2328a44010",
+    "os": "Linux 7.0.0-31-generic"
+  },
+  "evaluation_id": "security-2026-11-15-r2",
+  "evaluator_sha256": "b1cda8e76230243696c451a2c1b38a5b04815a009272d1104c627d2328a44010",
+  "findings": [
+    {
+      "description": "pathdecode() validates control bytes only on the raw target and then percent-decodes without re-checking; startup() builds the upstream request line from the decoded path whenever the raw target does not literally start with proxy_prefix. Encoding the prefix itself forces that branch, so %0D%0A becomes real CRLF in the upstream request line. One unauthenticated client request yields two upstream requests; the smuggled request reaches an upstream code-execution endpoint and its response is delivered to a different client from the upstream pool. Demonstrated by running a shell command on the upstream host and returning its output. The smuggled request is a full backend HTTP request, so the same primitive also reads arbitrary files outside any web root when the backend exposes a code-executing endpoint; demonstrated by reading /etc/passwd, the hostname and an out-of-root secret file in one request.",
+      "evidence": [
+        "evidence/rce-demo.txt",
+        "evidence/rce-file-read.txt",
+        "evidence/smuggle-poison.txt",
+        "evidence/crlf-injection.txt",
+        "evidence/s5rce_file_read.py"
+      ],
+      "id": "SEC-001",
+      "severity": "critical",
+      "status": "confirmed",
+      "title": "Remote code execution on the upstream host via request smuggling"
+    },
+    {
+      "description": "Decoded percent escapes reach the upstream request line verbatim. %0D%0A injects headers and a second request; %20 and %09 inject spaces and tabs. The asymmetry is visible directly: a path with a literal /proxy/ prefix stays encoded while the same path with %70roxy decodes, confirming that encoding the prefix selects the vulnerable branch.",
+      "evidence": [
+        "evidence/crlf-injection.txt"
+      ],
+      "id": "SEC-002",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "CRLF injection into the upstream request line"
+    },
+    {
+      "description": "After the proxy consumes the first upstream response it pools the socket because consumed equals the buffered size and the response is reusable. The smuggled request response then arrives as unsolicited bytes on that pooled fd, and the next client to reuse the socket receives it as the answer to its own request. An attacker request for /x caused a later victim request for /victim to receive an ADMIN-PRIVATE body.",
+      "evidence": [
+        "evidence/smuggle-poison.txt",
+        "evidence/method-host-bypass.txt"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Cross-client response poisoning via pooled upstream socket"
+    },
+    {
+      "description": "The proxy forwards only GET, HEAD and POST and rewrites Host to the configured upstream. A smuggled request carrying an arbitrary method and an arbitrary Host reaches the upstream intact, so backend routes that the proxy rules were meant to protect become reachable by any unauthenticated client.",
+      "evidence": [
+        "evidence/method-host-bypass.txt"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Method and Host allowlist bypass through smuggling"
+    },
+    {
+      "description": "The event mask always includes EPOLLRDHUP under level-triggered epoll. A client that requests a large body, half-closes its write side and never reads keeps the fd permanently ready, and a blocked send returning EAGAIN is treated as a retry. Eight such connections held the listener at roughly 70 percent of a core, dropping to zero when the clients closed. Stage-1 and stage-2 servers share the defect.",
+      "evidence": [
+        "evidence/dos-spin.txt"
+      ],
+      "id": "SEC-005",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Half-closed stalled reader causes sustained CPU spin"
+    },
+    {
+      "description": "The cache key is built from the cache base, a separator character, and the raw Accept-Encoding concatenation, with no escaping or length framing. A request for /proxy/a|b with an empty Accept-Encoding and a request for /proxy/a with Accept-Encoding b| produce the same key. The second request was served the first target body from cache while the upstream saw only one request.",
+      "evidence": [
+        "evidence/cache-key-collision.txt"
+      ],
+      "id": "SEC-006",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Cache-key collision enables cross-target cache poisoning"
+    },
+    {
+      "description": "In the no-body branch of upprocess() the upstream Content-Length is not checked against body_bytes, and the value is copied to the client as a signed long long. An upstream Content-Length above LLONG_MAX was accepted, and 204 and 304 responses were forwarded without bounding the advertised length.",
+      "evidence": [
+        "evidence/head-cl-bypass.txt"
+      ],
+      "id": "SEC-007",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Upstream body-length bound bypass on HEAD, 204 and 304 responses"
+    },
+    {
+      "description": "startup() calls substr using the current proxy prefix length on an in-flight request path. Reloading the configuration with a longer proxy_prefix while an upstream attempt is pending throws std::out_of_range and terminates the process via SIGABRT. Requires a local SIGHUP, so it is not remotely triggerable by itself. Reproduced in four consecutive fresh runs.",
+      "evidence": [
+        "evidence/sighup-crash.txt"
+      ],
+      "id": "SEC-008",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "SIGHUP with a lengthened proxy_prefix aborts the process"
+    },
+    {
+      "description": "When the upstream answers before the proxy has finished sending a POST body, the fd is pooled while unsent request bytes remain. The next request that reuses the pooled socket consumes a foreign response. Confirmed as a desync primitive.",
+      "evidence": [
+        "evidence/prebody-desync.txt"
+      ],
+      "id": "SEC-009",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Pre-body upstream pooling desync"
+    },
+    {
+      "description": "== l5\n  trail=0 (2097152, None) (2097152, None) (2097152, None)\n  trail=1024 (2097152, None) (2097152, None) (2097152, None)\n  trail=4090 (2097152, None) (2097152, None) (2097152, None)\n  trail=4096 (2097152, None) (2097152, None) (2097152, None)\n  trail=8192 (2097152, None) (2097152, None) (2097152, None)\n  trail=16384 (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError') (2097152, 'ConnectionResetError')\n  trail=32768 (2080575, 'ConnectionResetError') (127860, 'ConnectionResetError') (1175871, 'ConnectionResetError')\n  trail=65536 (2097152, 'ConnectionResetError') (2080575, 'ConnectionResetError') (2097152, 'ConnectionResetError')\n",
+      "evidence": [
+        "evidence/truncation_trailing_bytes.txt"
+      ],
+      "id": "SEC-010",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Undrained bytes behind the header terminator reset the socket and truncate the body"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "No memory-corruption RCE was found in the proxy process; the demonstrated RCE executes on the upstream host",
+    "The demonstrated RCE requires an upstream endpoint that executes code, implemented in testing as /exec via /bin/sh -c",
+    "Two-upstream round-robin parity control was reasoned about but not exhaustively re-run",
+    "Cache-key collision and SIGHUP crash probes are timing and state sensitive",
+    "Analyst and environment metadata were reconstructed at recording time rather than captured during the original run",
+    "Truncation is timing dependent in magnitude (127,860-2,097,152 of 2,097,152 observed) but the 16 KiB threshold truncated in 3/3 on every build tested"
+  ],
+  "methods": [
+    "Manual source review of all 84 lines, tracing every attacker-controlled value from parse to sink",
+    "Structure-aware fuzzing of parse_request (2000 iterations)",
+    "Structure-aware fuzzing of the upstream response parser (3000 iterations)",
+    "Live rogue-upstream differential fuzzing through the real proxy (~600 cases)",
+    "Black-box protocol battery: framing, ranges, ETag, cache, routing, limits",
+    "Targeted desync probes using percent-encoded CRLF in the proxy target",
+    "DoS measurement via /proc/<pid>/stat CPU accounting of the listener process",
+    "Reproduction on both sanitizer and production -O3 builds",
+    "Trailing-byte truncation sweep: 0/1024/4090/4096/8192/16384/32768/65536 bytes written after the header terminator against a 2 MiB file, three trials per row, Connection: close"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Full manual and dynamic security analysis of the toksec stage-5 C++ HTTP proxy at release/000002, covering request parsing, upstream proxying, response framing, cache behavior, reload handling, and connection lifecycle; includes prior stage-1 and stage-2 DoS context.",
+  "status": "completed",
+  "toksec_commit": "ea1fbc980866c10b2273ce4d2f67b3cd509a2a38",
+  "toksec_dirty": false
+}

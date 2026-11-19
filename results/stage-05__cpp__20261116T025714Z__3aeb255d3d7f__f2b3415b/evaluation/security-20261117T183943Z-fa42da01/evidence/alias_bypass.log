@@ -1,0 +1,36 @@
+# Alias-over-vhost bypass, four kv builds, identical shape.
+# config per build: root=www/alpha  host_root=beta.test:www/beta  alias=/alias:www/alias
+# markers: alpha=ALPHA  beta=BETA  alias=ALIASFILE  alias index=IDX
+# Controls prove the roots are distinct and beta is genuinely confined.
+=== afdc173f (release/000001) ===
+  GET /hello.txt  Host: alpha.test -> 200 ALPHA
+  GET /ten.txt    Host: beta.test  -> 404        (confinement holds for ordinary paths)
+  GET /hello.txt  Host: beta.test  -> 200 BETA
+  GET /alias/hello.txt    Host: beta.test -> 200 ALIASFILE   BYPASS
+  GET /alias%2fhello.txt  Host: beta.test -> 200 ALIASFILE   BYPASS encoded
+  GET /alias/             Host: beta.test -> 200 IDX
+  GET /alias/../hello.txt Host: beta.test -> 403
+=== 6baf167b (release/000001) ===
+  GET /hello.txt  Host: alpha.test -> 200 ALPHA
+  GET /ten.txt    Host: beta.test  -> 404
+  GET /hello.txt  Host: beta.test  -> 200 BETA
+  GET /alias/hello.txt    Host: beta.test -> 200 ALIASFILE   BYPASS
+  GET /alias%2fhello.txt  Host: beta.test -> 200 ALIASFILE   BYPASS encoded
+  GET /alias/             Host: beta.test -> 200 IDX
+  GET /alias/../hello.txt Host: beta.test -> 403
+=== ae021893 (release/000001) ===
+  GET /hello.txt  Host: alpha.test -> 200 ALPHA
+  GET /ten.txt    Host: beta.test  -> 404
+  GET /hello.txt  Host: beta.test  -> 200 BETA
+  GET /alias/hello.txt    Host: beta.test -> 200 ALIASFILE   BYPASS
+  GET /alias%2fhello.txt  Host: beta.test -> 200 ALIASFILE   BYPASS encoded
+  GET /alias/             Host: beta.test -> 200 IDX
+  GET /alias/../hello.txt Host: beta.test -> 403
+=== f2b3415b (release/000001) ===
+  GET /hello.txt  Host: alpha.test -> 200 ALPHA
+  GET /ten.txt    Host: beta.test  -> 404
+  GET /hello.txt  Host: beta.test  -> 200 BETA
+  GET /alias/hello.txt    Host: beta.test -> 200 ALIASFILE   BYPASS
+  GET /alias%2fhello.txt  Host: beta.test -> 200 ALIASFILE   BYPASS encoded
+  GET /alias/             Host: beta.test -> 200 IDX
+  GET /alias/../hello.txt Host: beta.test -> 403

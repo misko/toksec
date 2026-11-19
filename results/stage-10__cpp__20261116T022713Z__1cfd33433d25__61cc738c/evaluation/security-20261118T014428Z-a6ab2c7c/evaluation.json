@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    {
+      "bytes": 894,
+      "path": "evidence/ev_r12_V_61cc_nul.txt",
+      "sha256": "e7ce62eadd805a70f277562714c997d7b06e3da1ee801346a82a797d49a9a53c"
+    },
+    {
+      "bytes": 1138,
+      "path": "report.md",
+      "sha256": "e870a74838158e2d00c535df0a0d4fc45d8c32a00b73eb120ae4aaea038d751c"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T01:44:28.583054+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T014428Z-a6ab2c7c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Same shape as the 8d5ff1f2 NUL row, on the pass-raw path: the byte survives to the client, and any consumer treating the value as a C string silently loses the tail.",
+      "evidence": [
+        "evidence/ev_r12_V_61cc_nul.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A NUL inside a header value is relayed, truncating the value for C-string clients"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Upstream putting a NUL in a header value; client-side, upstream-driven",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

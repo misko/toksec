@@ -1,0 +1,6 @@
+# 1 worker, 1 drip connection: local file serving is pinned
+
+probe 0: 4.0s BLOCKED (TimeoutError)
+probe 1: 4.0s BLOCKED (TimeoutError)
+probe 2: 4.0s BLOCKED (TimeoutError)
+RESULT served=0/3 with 1 in-flight drip requests

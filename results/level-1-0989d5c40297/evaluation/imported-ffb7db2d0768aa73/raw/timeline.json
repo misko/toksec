@@ -1,0 +1,1821 @@
+{
+  "ended_unix": 1794634241.0741765,
+  "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
+  "language": "cpp",
+  "level": 1,
+  "method": "Independent post-run measurements plotted at release publication time; no model API calls.",
+  "releases": [
+    {
+      "benchmarks": {},
+      "build_passed": true,
+      "candidate": "2c58c533b4e8465c80f912d82279d39a",
+      "capacity": {
+        "best_candidate": "2c58c533b4e8465c80f912d82279d39a",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "full_acceptance": true,
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 1066000,
+        "next_call_reservation_usd": "2.745",
+        "optimization_attempts": 0,
+        "reason": null,
+        "remaining": 9984281,
+        "remaining_usd": "2.96700065",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 7143.609748840332,
+        "service_tier": "default",
+        "spent_usd_upper_bound": "0.03299935",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 15719,
+        "work_phase": "improve"
+      },
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.00215296633541584
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.009410323575139046
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.000447259284555912
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.00026252586394548416
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.0003075897693634033
+        },
+        {
+          "error": "AssertionError: ",
+          "id": "syntax",
+          "passed": false,
+          "seconds": 0.0001785801723599434
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00019753910601139069
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.00010641850531101227
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.201252874918282
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.003703780472278595
+        },
+        {
+          "id": "headerless-request",
+          "passed": true,
+          "seconds": 0.0011657802388072014
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.3256041705608368
+        }
+      ],
+      "commit": "99ae95515ee77587ad0f7457e93d2a4a79653296",
+      "elapsed_seconds": 56.38841247558594,
+      "evaluated_unix": 1794634249.704891,
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
+      "full_acceptance": true,
+      "language": "cpp",
+      "level": 1,
+      "note": "Initial working snapshot",
+      "passed": 11,
+      "passed_checks": [
+        "bootstrap"
+      ],
+      "recorded_unix": 1794633323.9943697,
+      "source_sha256": "d6c56c629aae025ab58b86b953107bb3b9b5db37442c4bfa1eb74b5f1ce75685",
+      "tag": "release/000001"
+    },
+    {
+      "benchmarks": {
+        "fresh-4096-256": {
+          "eligible": false,
+          "failures": 0,
+          "max_rps": 27379.333333333332,
+          "median_rps": 23103.0,
+          "min_rps": 19071.0,
+          "rounds": [
+            {
+              "attempts": 69565,
+              "bytes_per_second": 94629888.0,
+              "clients_started": 256,
+              "completed_in_window": 69309,
+              "cpu_seconds": 8.647489958000001,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 105.47707788646221,
+              "generator_saturated": true,
+              "load_average": [
+                58.04833984375,
+                59.20947265625,
+                58.91015625
+              ],
+              "p50_ms": 9.7,
+              "p95_ms": 21.5,
+              "p99_ms": 25.1,
+              "payload_bytes": 283889664,
+              "rss_kib": 79336,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.49,
+              "server_peak_rss_kib": 7624,
+              "successes": 69565,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 23103.0
+            },
+            {
+              "attempts": 68302,
+              "bytes_per_second": 92905472.0,
+              "clients_started": 256,
+              "completed_in_window": 68046,
+              "cpu_seconds": 10.388054276,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 55.14105781912804,
+              "generator_saturated": true,
+              "load_average": [
+                58.60546875,
+                59.3056640625,
+                58.94287109375
+              ],
+              "p50_ms": 11.0,
+              "p95_ms": 17.6,
+              "p99_ms": 26.3,
+              "payload_bytes": 278716416,
+              "rss_kib": 79220,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.7699999999999998,
+              "server_peak_rss_kib": 7624,
+              "successes": 68302,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 22682.0
+            },
+            {
+              "attempts": 75598,
+              "bytes_per_second": 102866944.0,
+              "clients_started": 256,
+              "completed_in_window": 75342,
+              "cpu_seconds": 10.999618604,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 27.94147003442049,
+              "generator_saturated": true,
+              "load_average": [
+                58.15625,
+                59.20068359375,
+                58.91064453125
+              ],
+              "p50_ms": 7.6,
+              "p95_ms": 23.2,
+              "p99_ms": 25.4,
+              "payload_bytes": 308600832,
+              "rss_kib": 78420,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.83,
+              "server_peak_rss_kib": 7624,
+              "successes": 75598,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 25114.0
+            },
+            {
+              "attempts": 57469,
+              "bytes_per_second": 78114816.0,
+              "clients_started": 256,
+              "completed_in_window": 57213,
+              "cpu_seconds": 9.59551834,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 137.41233758628368,
+              "generator_saturated": true,
+              "load_average": [
+                58.1435546875,
+                59.1806640625,
+                58.9052734375
+              ],
+              "p50_ms": 9.3,
+              "p95_ms": 27.1,
+              "p99_ms": 63.2,
+              "payload_bytes": 234344448,
+              "rss_kib": 78864,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.63,
+              "server_peak_rss_kib": 7624,
+              "successes": 57469,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 19071.0
+            },
+            {
+              "attempts": 82394,
+              "bytes_per_second": 112145749.33333333,
+              "clients_started": 256,
+              "completed_in_window": 82138,
+              "cpu_seconds": 9.817556838,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 65.35958778113127,
+              "generator_saturated": true,
+              "load_average": [
+                58.53271484375,
+                59.244140625,
+                58.927734375
+              ],
+              "p50_ms": 6.7,
+              "p95_ms": 22.7,
+              "p99_ms": 36.3,
+              "payload_bytes": 336437248,
+              "rss_kib": 78372,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.7299999999999995,
+              "server_peak_rss_kib": 7872,
+              "successes": 82394,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 27379.333333333332
+            }
+          ],
+          "worst_p99_ms": 63.2
+        },
+        "fresh-4096-4096": {
+          "eligible": false,
+          "failures": 55,
+          "max_rps": 12044.0,
+          "median_rps": 10928.666666666666,
+          "min_rps": 7489.0,
+          "rounds": [
+            {
+              "attempts": 40228,
+              "bytes_per_second": 49332224.0,
+              "clients_started": 4096,
+              "completed_in_window": 36132,
+              "cpu_seconds": 12.029337475,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 270.3397525474429,
+              "generator_saturated": true,
+              "load_average": [
+                59.1064453125,
+                59.3291015625,
+                58.96728515625
+              ],
+              "p50_ms": 258.9,
+              "p95_ms": 470.5,
+              "p99_ms": 529.9,
+              "payload_bytes": 147996672,
+              "rss_kib": 127400,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.49,
+              "server_peak_rss_kib": 26644,
+              "successes": 40228,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 12044.0
+            },
+            {
+              "attempts": 36415,
+              "bytes_per_second": 44126208.0,
+              "clients_started": 4096,
+              "completed_in_window": 32319,
+              "cpu_seconds": 11.660584099,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 292.7192635834217,
+              "generator_saturated": true,
+              "load_average": [
+                59.41845703125,
+                59.39013671875,
+                58.9892578125
+              ],
+              "p50_ms": 279.4,
+              "p95_ms": 573.4,
+              "p99_ms": 615.6,
+              "payload_bytes": 132378624,
+              "rss_kib": 126424,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.4600000000000002,
+              "server_peak_rss_kib": 33728,
+              "successes": 36415,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 10773.0
+            },
+            {
+              "attempts": 37814,
+              "bytes_per_second": 46036309.333333336,
+              "clients_started": 4096,
+              "completed_in_window": 33718,
+              "cpu_seconds": 11.26594964,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 429.44960854947567,
+              "generator_saturated": true,
+              "load_average": [
+                59.41845703125,
+                59.39013671875,
+                58.9892578125
+              ],
+              "p50_ms": 255.8,
+              "p95_ms": 625.0,
+              "p99_ms": 805.8,
+              "payload_bytes": 138108928,
+              "rss_kib": 131788,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.5199999999999996,
+              "server_peak_rss_kib": 35828,
+              "successes": 37814,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 11239.333333333334
+            },
+            {
+              "attempts": 36937,
+              "bytes_per_second": 44763818.666666664,
+              "clients_started": 4096,
+              "completed_in_window": 32786,
+              "cpu_seconds": 10.574713842,
+              "eligible": false,
+              "failures": 55,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 731.0090437531471,
+              "generator_saturated": true,
+              "load_average": [
+                59.3046875,
+                59.36669921875,
+                58.98388671875
+              ],
+              "p50_ms": 245.7,
+              "p95_ms": 615.8,
+              "p99_ms": 1136.5,
+              "payload_bytes": 134291456,
+              "rss_kib": 126584,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.3399999999999999,
+              "server_peak_rss_kib": 36180,
+              "successes": 36882,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 10928.666666666666
+            },
+            {
+              "attempts": 26562,
+              "bytes_per_second": 30674944.0,
+              "clients_started": 4096,
+              "completed_in_window": 22467,
+              "cpu_seconds": 9.226200386,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 321.0505237802863,
+              "generator_saturated": true,
+              "load_average": [
+                58.7998046875,
+                59.2607421875,
+                58.95166015625
+              ],
+              "p50_ms": 464.3,
+              "p95_ms": 589.8,
+              "p99_ms": 618.0,
+              "payload_bytes": 92024832,
+              "rss_kib": 125976,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.2200000000000006,
+              "server_peak_rss_kib": 34584,
+              "successes": 26562,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 7489.0
+            }
+          ],
+          "worst_p99_ms": 1136.5
+        },
+        "fresh-65536-256": {
+          "eligible": false,
+          "failures": 0,
+          "max_rps": 19046.333333333332,
+          "median_rps": 15657.666666666666,
+          "min_rps": 5335.666666666667,
+          "rounds": [
+            {
+              "attempts": 57395,
+              "bytes_per_second": 1248220501.3333333,
+              "clients_started": 256,
+              "completed_in_window": 57139,
+              "cpu_seconds": 11.718779313999999,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 143.58449913561344,
+              "generator_saturated": true,
+              "load_average": [
+                59.05078125,
+                59.33984375,
+                58.96044921875
+              ],
+              "p50_ms": 10.4,
+              "p95_ms": 32.3,
+              "p99_ms": 43.8,
+              "payload_bytes": 3744661504,
+              "rss_kib": 91748,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.44,
+              "server_peak_rss_kib": 7140,
+              "successes": 57395,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 19046.333333333332
+            },
+            {
+              "attempts": 16263,
+              "bytes_per_second": 349678250.6666667,
+              "clients_started": 256,
+              "completed_in_window": 16007,
+              "cpu_seconds": 5.251710219,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 37.07592189311981,
+              "generator_saturated": true,
+              "load_average": [
+                58.88623046875,
+                59.30078125,
+                58.94970703125
+              ],
+              "p50_ms": 35.5,
+              "p95_ms": 126.7,
+              "p99_ms": 549.7,
+              "payload_bytes": 1049034752,
+              "rss_kib": 91836,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 0.6499999999999999,
+              "server_peak_rss_kib": 7220,
+              "successes": 16263,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 5335.666666666667
+            },
+            {
+              "attempts": 48230,
+              "bytes_per_second": 1048029866.6666666,
+              "clients_started": 256,
+              "completed_in_window": 47975,
+              "cpu_seconds": 11.331585708,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 30.530204065144062,
+              "generator_saturated": true,
+              "load_average": [
+                59.1357421875,
+                59.345703125,
+                58.96630859375
+              ],
+              "p50_ms": 13.0,
+              "p95_ms": 33.3,
+              "p99_ms": 37.8,
+              "payload_bytes": 3144089600,
+              "rss_kib": 92560,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.4300000000000002,
+              "server_peak_rss_kib": 7220,
+              "successes": 48230,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 15991.666666666666
+            },
+            {
+              "attempts": 31286,
+              "bytes_per_second": 677860693.3333334,
+              "clients_started": 256,
+              "completed_in_window": 31030,
+              "cpu_seconds": 9.151752756,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 236.1460030078888,
+              "generator_saturated": true,
+              "load_average": [
+                59.205078125,
+                59.35693359375,
+                58.97216796875
+              ],
+              "p50_ms": 17.2,
+              "p95_ms": 59.9,
+              "p99_ms": 122.2,
+              "payload_bytes": 2033582080,
+              "rss_kib": 93704,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.1400000000000001,
+              "server_peak_rss_kib": 7220,
+              "successes": 31286,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 10343.333333333334
+            },
+            {
+              "attempts": 47228,
+              "bytes_per_second": 1026140842.6666666,
+              "clients_started": 256,
+              "completed_in_window": 46973,
+              "cpu_seconds": 11.015043123,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 156.00270684808493,
+              "generator_saturated": true,
+              "load_average": [
+                59.0283203125,
+                59.3173828125,
+                58.96142578125
+              ],
+              "p50_ms": 12.6,
+              "p95_ms": 37.7,
+              "p99_ms": 63.9,
+              "payload_bytes": 3078422528,
+              "rss_kib": 92144,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.3599999999999994,
+              "server_peak_rss_kib": 7220,
+              "successes": 47228,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 15657.666666666666
+            }
+          ],
+          "worst_p99_ms": 549.7
+        },
+        "fresh-65536-4096": {
+          "eligible": false,
+          "failures": 8007,
+          "max_rps": 8941.333333333334,
+          "median_rps": 4854.666666666667,
+          "min_rps": 342.3333333333333,
+          "rounds": [
+            {
+              "attempts": 19379,
+              "bytes_per_second": 333862229.3333333,
+              "clients_started": 4096,
+              "completed_in_window": 15283,
+              "cpu_seconds": 7.477461508999999,
+              "eligible": false,
+              "failures": 4096,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 500.6026653572917,
+              "generator_saturated": true,
+              "load_average": [
+                59.00341796875,
+                59.2861328125,
+                58.962890625
+              ],
+              "p50_ms": 568.7,
+              "p95_ms": 713.5,
+              "p99_ms": 855.8,
+              "payload_bytes": 1001586688,
+              "rss_kib": 295000,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 0.92,
+              "server_peak_rss_kib": 29480,
+              "successes": 15283,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 2818,
+              "valid_rps": 5094.333333333333
+            },
+            {
+              "attempts": 7385,
+              "bytes_per_second": 22435157.333333332,
+              "clients_started": 4096,
+              "completed_in_window": 1027,
+              "cpu_seconds": 2.908302808,
+              "eligible": false,
+              "failures": 3817,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 305.8144571259618,
+              "generator_saturated": true,
+              "load_average": [
+                59.88427734375,
+                59.46435546875,
+                59.0224609375
+              ],
+              "p50_ms": 1166.7,
+              "p95_ms": 1982.2,
+              "p99_ms": 1987.9,
+              "payload_bytes": 67305472,
+              "rss_kib": 182428,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 0.33999999999999997,
+              "server_peak_rss_kib": 38396,
+              "successes": 3568,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 3557,
+              "valid_rps": 342.3333333333333
+            },
+            {
+              "attempts": 17321,
+              "bytes_per_second": 288904533.3333333,
+              "clients_started": 4096,
+              "completed_in_window": 13225,
+              "cpu_seconds": 7.273814152,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 959.1164970770478,
+              "generator_saturated": true,
+              "load_average": [
+                60.2939453125,
+                59.556640625,
+                59.0546875
+              ],
+              "p50_ms": 574.5,
+              "p95_ms": 980.5,
+              "p99_ms": 1332.5,
+              "payload_bytes": 866713600,
+              "rss_kib": 274208,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 0.8200000000000001,
+              "server_peak_rss_kib": 43596,
+              "successes": 17321,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 4408.333333333333
+            },
+            {
+              "attempts": 18754,
+              "bytes_per_second": 318155434.6666667,
+              "clients_started": 4096,
+              "completed_in_window": 14564,
+              "cpu_seconds": 6.792393351,
+              "eligible": false,
+              "failures": 94,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 312.3407159000635,
+              "generator_saturated": true,
+              "load_average": [
+                60.5107421875,
+                59.6142578125,
+                59.076171875
+              ],
+              "p50_ms": 631.9,
+              "p95_ms": 955.6,
+              "p99_ms": 1079.0,
+              "payload_bytes": 954466304,
+              "rss_kib": 252944,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 0.81,
+              "server_peak_rss_kib": 44972,
+              "successes": 18660,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 4854.666666666667
+            },
+            {
+              "attempts": 30920,
+              "bytes_per_second": 585979221.3333334,
+              "clients_started": 4096,
+              "completed_in_window": 26824,
+              "cpu_seconds": 11.565308653999999,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 399.73397087305784,
+              "generator_saturated": true,
+              "load_average": [
+                60.2294921875,
+                59.57080078125,
+                59.06494140625
+              ],
+              "p50_ms": 319.5,
+              "p95_ms": 649.5,
+              "p99_ms": 709.7,
+              "payload_bytes": 1757937664,
+              "rss_kib": 286944,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.52,
+              "server_peak_rss_kib": 45412,
+              "successes": 30920,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 8941.333333333334
+            }
+          ],
+          "worst_p99_ms": 1987.9
+        }
+      },
+      "build_passed": true,
+      "candidate": "21a06dd1e11c4f72902d055e77e7e781",
+      "capacity": {
+        "best_candidate": "2c58c533b4e8465c80f912d82279d39a",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "full_acceptance": true,
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 1066000,
+        "next_call_reservation_usd": "2.745",
+        "optimization_attempts": 0,
+        "reason": null,
+        "remaining": 9882442,
+        "remaining_usd": "2.90593950",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 6895.555410146713,
+        "service_tier": "default",
+        "spent_usd_upper_bound": "0.09406050",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 117558,
+        "work_phase": "improve"
+      },
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.002743988297879696
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.009046223945915699
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.0004454413428902626
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.00026359129697084427
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.001353180967271328
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.00028457678854465485
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00016732048243284225
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 9.799748659133911e-05
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2016390645876527
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.00038293004035949707
+        },
+        {
+          "id": "headerless-request",
+          "passed": true,
+          "seconds": 5.693640559911728e-05
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.25793184991925955
+        }
+      ],
+      "commit": "cd1ee5765b15782c11f7b58f1e95efc36e93a1a9",
+      "elapsed_seconds": 304.4425494670868,
+      "evaluated_unix": 1794634354.454824,
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
+      "full_acceptance": true,
+      "language": "cpp",
+      "level": 1,
+      "note": "Fix NUL and malformed CR/LF validation even when a complete header arrives in one read; return 404 for missing paths with trailing slashes and avoid duplicating the root descriptor. Smoke bootstrap passes; benchmark of prior version was ineligible at high concurrency, so no performance improvement is claimed.",
+      "passed": 12,
+      "passed_checks": [
+        "bootstrap"
+      ],
+      "recorded_unix": 1794633572.0485067,
+      "source_sha256": "819c0a9462176332e29948467845b3d8d8745fc2b82eadc03fa8f95617875d4f",
+      "tag": "release/000002"
+    },
+    {
+      "benchmarks": {
+        "fresh-4096-256": {
+          "eligible": false,
+          "failures": 0,
+          "max_rps": 37784.666666666664,
+          "median_rps": 30623.0,
+          "min_rps": 24839.333333333332,
+          "rounds": [
+            {
+              "attempts": 81402,
+              "bytes_per_second": 110791338.66666667,
+              "clients_started": 256,
+              "completed_in_window": 81146,
+              "cpu_seconds": 8.943834678,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 898.7616486847401,
+              "generator_saturated": true,
+              "load_average": [
+                49.20703125,
+                50.4609375,
+                49.94873046875
+              ],
+              "p50_ms": 4.8,
+              "p95_ms": 22.5,
+              "p99_ms": 51.8,
+              "payload_bytes": 332374016,
+              "rss_kib": 78888,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.35,
+              "server_peak_rss_kib": 4660,
+              "successes": 81402,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 27048.666666666668
+            },
+            {
+              "attempts": 74773,
+              "bytes_per_second": 101741909.33333333,
+              "clients_started": 256,
+              "completed_in_window": 74518,
+              "cpu_seconds": 8.655542903,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 30.976547859609127,
+              "generator_saturated": true,
+              "load_average": [
+                49.1103515625,
+                50.419921875,
+                49.93798828125
+              ],
+              "p50_ms": 4.6,
+              "p95_ms": 23.1,
+              "p99_ms": 125.4,
+              "payload_bytes": 305225728,
+              "rss_kib": 79688,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.3599999999999999,
+              "server_peak_rss_kib": 4660,
+              "successes": 74773,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 24839.333333333332
+            },
+            {
+              "attempts": 113610,
+              "bytes_per_second": 154765994.66666666,
+              "clients_started": 256,
+              "completed_in_window": 113354,
+              "cpu_seconds": 11.918499535,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 34.148192033171654,
+              "generator_saturated": true,
+              "load_average": [
+                49.421875,
+                50.462890625,
+                49.95458984375
+              ],
+              "p50_ms": 4.4,
+              "p95_ms": 19.2,
+              "p99_ms": 23.2,
+              "payload_bytes": 464297984,
+              "rss_kib": 78736,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.96,
+              "server_peak_rss_kib": 4692,
+              "successes": 113610,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 37784.666666666664
+            },
+            {
+              "attempts": 104260,
+              "bytes_per_second": 142001493.33333334,
+              "clients_started": 256,
+              "completed_in_window": 104005,
+              "cpu_seconds": 11.695813545,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 287.38137800246477,
+              "generator_saturated": true,
+              "load_average": [
+                50.18896484375,
+                50.60498046875,
+                50.00341796875
+              ],
+              "p50_ms": 6.1,
+              "p95_ms": 16.0,
+              "p99_ms": 23.0,
+              "payload_bytes": 426004480,
+              "rss_kib": 78808,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.9000000000000004,
+              "server_peak_rss_kib": 4692,
+              "successes": 104260,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 34668.333333333336
+            },
+            {
+              "attempts": 92124,
+              "bytes_per_second": 125431808.0,
+              "clients_started": 256,
+              "completed_in_window": 91869,
+              "cpu_seconds": 11.252669229,
+              "eligible": true,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 46.851261518895626,
+              "generator_saturated": false,
+              "load_average": [
+                50.73486328125,
+                50.71142578125,
+                50.041015625
+              ],
+              "p50_ms": 6.5,
+              "p95_ms": 19.5,
+              "p99_ms": 24.8,
+              "payload_bytes": 376295424,
+              "rss_kib": 79016,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.9000000000000004,
+              "server_peak_rss_kib": 4692,
+              "successes": 92124,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 30623.0
+            }
+          ],
+          "worst_p99_ms": 125.4
+        },
+        "fresh-4096-4096": {
+          "eligible": false,
+          "failures": 266,
+          "max_rps": 16433.0,
+          "median_rps": 14290.333333333334,
+          "min_rps": 9904.0,
+          "rounds": [
+            {
+              "attempts": 46967,
+              "bytes_per_second": 58533205.333333336,
+              "clients_started": 4096,
+              "completed_in_window": 42871,
+              "cpu_seconds": 14.0621245,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 281.43403213471174,
+              "generator_saturated": true,
+              "load_average": [
+                51.72998046875,
+                50.9228515625,
+                50.13037109375
+              ],
+              "p50_ms": 230.8,
+              "p95_ms": 447.3,
+              "p99_ms": 557.9,
+              "payload_bytes": 175599616,
+              "rss_kib": 125852,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.72,
+              "server_peak_rss_kib": 4744,
+              "successes": 46967,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 14290.333333333334
+            },
+            {
+              "attempts": 47737,
+              "bytes_per_second": 59584512.0,
+              "clients_started": 4096,
+              "completed_in_window": 43641,
+              "cpu_seconds": 13.964869452,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 273.0482127517462,
+              "generator_saturated": true,
+              "load_average": [
+                51.43115234375,
+                50.8740234375,
+                50.11865234375
+              ],
+              "p50_ms": 225.0,
+              "p95_ms": 435.9,
+              "p99_ms": 513.7,
+              "payload_bytes": 178753536,
+              "rss_kib": 132116,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.78,
+              "server_peak_rss_kib": 4744,
+              "successes": 47737,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 14547.0
+            },
+            {
+              "attempts": 43785,
+              "bytes_per_second": 54188714.666666664,
+              "clients_started": 4096,
+              "completed_in_window": 39689,
+              "cpu_seconds": 13.754545117,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 250.68481266498566,
+              "generator_saturated": true,
+              "load_average": [
+                51.47705078125,
+                50.89306640625,
+                50.12890625
+              ],
+              "p50_ms": 246.0,
+              "p95_ms": 469.2,
+              "p99_ms": 575.9,
+              "payload_bytes": 162566144,
+              "rss_kib": 130136,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.6399999999999997,
+              "server_peak_rss_kib": 4776,
+              "successes": 43785,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 13229.666666666666
+            },
+            {
+              "attempts": 34072,
+              "bytes_per_second": 40566784.0,
+              "clients_started": 4096,
+              "completed_in_window": 29712,
+              "cpu_seconds": 11.681000783,
+              "eligible": false,
+              "failures": 266,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 989.4505329430103,
+              "generator_saturated": true,
+              "load_average": [
+                51.47705078125,
+                50.89306640625,
+                50.12890625
+              ],
+              "p50_ms": 272.6,
+              "p95_ms": 568.9,
+              "p99_ms": 1014.1,
+              "payload_bytes": 121700352,
+              "rss_kib": 132016,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.3399999999999999,
+              "server_peak_rss_kib": 4780,
+              "successes": 33806,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 9904.0
+            },
+            {
+              "attempts": 53395,
+              "bytes_per_second": 67309568.0,
+              "clients_started": 4096,
+              "completed_in_window": 49299,
+              "cpu_seconds": 13.456942141999999,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 264.780324883759,
+              "generator_saturated": true,
+              "load_average": [
+                50.9580078125,
+                50.794921875,
+                50.10107421875
+              ],
+              "p50_ms": 201.5,
+              "p95_ms": 424.1,
+              "p99_ms": 524.6,
+              "payload_bytes": 201928704,
+              "rss_kib": 127748,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.6899999999999995,
+              "server_peak_rss_kib": 4812,
+              "successes": 53395,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 16433.0
+            }
+          ],
+          "worst_p99_ms": 1014.1
+        },
+        "fresh-65536-256": {
+          "eligible": false,
+          "failures": 0,
+          "max_rps": 21260.666666666668,
+          "median_rps": 19077.333333333332,
+          "min_rps": 17782.0,
+          "rounds": [
+            {
+              "attempts": 53602,
+              "bytes_per_second": 1165361152.0,
+              "clients_started": 256,
+              "completed_in_window": 53346,
+              "cpu_seconds": 12.435171766,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 20.210636779665947,
+              "generator_saturated": true,
+              "load_average": [
+                50.67578125,
+                50.69921875,
+                50.04052734375
+              ],
+              "p50_ms": 12.5,
+              "p95_ms": 30.8,
+              "p99_ms": 35.2,
+              "payload_bytes": 3496083456,
+              "rss_kib": 92988,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.38,
+              "server_peak_rss_kib": 4348,
+              "successes": 53602,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 17782.0
+            },
+            {
+              "attempts": 57487,
+              "bytes_per_second": 1250252117.3333333,
+              "clients_started": 256,
+              "completed_in_window": 57232,
+              "cpu_seconds": 13.242895552,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 19.999430514872074,
+              "generator_saturated": true,
+              "load_average": [
+                50.54150390625,
+                50.6708984375,
+                50.03466796875
+              ],
+              "p50_ms": 12.1,
+              "p95_ms": 24.1,
+              "p99_ms": 33.4,
+              "payload_bytes": 3750756352,
+              "rss_kib": 93544,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.46,
+              "server_peak_rss_kib": 4356,
+              "successes": 57487,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 19077.333333333332
+            },
+            {
+              "attempts": 60534,
+              "bytes_per_second": 1316793002.6666667,
+              "clients_started": 256,
+              "completed_in_window": 60278,
+              "cpu_seconds": 13.434254949,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 36.88369132578373,
+              "generator_saturated": true,
+              "load_average": [
+                50.498046875,
+                50.65966796875,
+                50.0341796875
+              ],
+              "p50_ms": 11.7,
+              "p95_ms": 23.3,
+              "p99_ms": 28.8,
+              "payload_bytes": 3950379008,
+              "rss_kib": 94072,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.5499999999999998,
+              "server_peak_rss_kib": 4364,
+              "successes": 60534,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 20092.666666666668
+            },
+            {
+              "attempts": 53730,
+              "bytes_per_second": 1168201045.3333333,
+              "clients_started": 256,
+              "completed_in_window": 53476,
+              "cpu_seconds": 13.058811127,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 36.841295659542084,
+              "generator_saturated": true,
+              "load_average": [
+                50.85888671875,
+                50.73193359375,
+                50.06103515625
+              ],
+              "p50_ms": 13.4,
+              "p95_ms": 24.5,
+              "p99_ms": 28.5,
+              "payload_bytes": 3504603136,
+              "rss_kib": 92888,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.4800000000000004,
+              "server_peak_rss_kib": 4364,
+              "successes": 53730,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 17825.333333333332
+            },
+            {
+              "attempts": 64038,
+              "bytes_per_second": 1393339050.6666667,
+              "clients_started": 256,
+              "completed_in_window": 63782,
+              "cpu_seconds": 13.059719289,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 72.79050350189209,
+              "generator_saturated": true,
+              "load_average": [
+                51.27099609375,
+                50.81982421875,
+                50.09326171875
+              ],
+              "p50_ms": 8.6,
+              "p95_ms": 30.5,
+              "p99_ms": 35.2,
+              "payload_bytes": 4180017152,
+              "rss_kib": 93408,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.6500000000000004,
+              "server_peak_rss_kib": 4396,
+              "successes": 64038,
+              "sum_worker_peak_inflight": 256,
+              "timeouts": 0,
+              "valid_rps": 21260.666666666668
+            }
+          ],
+          "worst_p99_ms": 35.2
+        },
+        "fresh-65536-4096": {
+          "eligible": false,
+          "failures": 0,
+          "max_rps": 12560.333333333334,
+          "median_rps": 10737.333333333334,
+          "min_rps": 8536.0,
+          "rounds": [
+            {
+              "attempts": 29704,
+              "bytes_per_second": 559415296.0,
+              "clients_started": 4096,
+              "completed_in_window": 25608,
+              "cpu_seconds": 10.815171123999999,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 638.3399739861488,
+              "generator_saturated": true,
+              "load_average": [
+                51.4638671875,
+                50.90185546875,
+                50.14306640625
+              ],
+              "p50_ms": 316.1,
+              "p95_ms": 903.9,
+              "p99_ms": 1110.8,
+              "payload_bytes": 1678245888,
+              "rss_kib": 288356,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.3,
+              "server_peak_rss_kib": 4716,
+              "successes": 29704,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 8536.0
+            },
+            {
+              "attempts": 31837,
+              "bytes_per_second": 606011392.0,
+              "clients_started": 4096,
+              "completed_in_window": 27741,
+              "cpu_seconds": 11.357335913,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 595.7188252359629,
+              "generator_saturated": true,
+              "load_average": [
+                51.34619140625,
+                50.88671875,
+                50.14208984375
+              ],
+              "p50_ms": 313.5,
+              "p95_ms": 669.1,
+              "p99_ms": 718.3,
+              "payload_bytes": 1818034176,
+              "rss_kib": 305772,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.4400000000000002,
+              "server_peak_rss_kib": 4764,
+              "successes": 31837,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 9247.0
+            },
+            {
+              "attempts": 41777,
+              "bytes_per_second": 823154005.3333334,
+              "clients_started": 4096,
+              "completed_in_window": 37681,
+              "cpu_seconds": 14.254625977,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 279.7415656968951,
+              "generator_saturated": true,
+              "load_average": [
+                51.34619140625,
+                50.88671875,
+                50.14208984375
+              ],
+              "p50_ms": 268.9,
+              "p95_ms": 472.9,
+              "p99_ms": 556.6,
+              "payload_bytes": 2469462016,
+              "rss_kib": 274028,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.87,
+              "server_peak_rss_kib": 4784,
+              "successes": 41777,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 12560.333333333334
+            },
+            {
+              "attempts": 39288,
+              "bytes_per_second": 768802816.0,
+              "clients_started": 4096,
+              "completed_in_window": 35193,
+              "cpu_seconds": 12.710746137,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 416.09940957278013,
+              "generator_saturated": true,
+              "load_average": [
+                51.078125,
+                50.83837890625,
+                50.13037109375
+              ],
+              "p50_ms": 244.8,
+              "p95_ms": 633.0,
+              "p99_ms": 673.4,
+              "payload_bytes": 2306408448,
+              "rss_kib": 319444,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.62,
+              "server_peak_rss_kib": 4800,
+              "successes": 39288,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 11731.0
+            },
+            {
+              "attempts": 36308,
+              "bytes_per_second": 703681877.3333334,
+              "clients_started": 4096,
+              "completed_in_window": 32212,
+              "cpu_seconds": 12.849443712000001,
+              "eligible": false,
+              "failures": 0,
+              "generator_cpus": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "generator_lag_max_ms": 536.5255605429411,
+              "generator_saturated": true,
+              "load_average": [
+                50.91162109375,
+                50.8076171875,
+                50.1240234375
+              ],
+              "p50_ms": 273.9,
+              "p95_ms": 737.8,
+              "p99_ms": 838.0,
+              "payload_bytes": 2111045632,
+              "rss_kib": 307368,
+              "server_child_processes": 0,
+              "server_cpu": 5,
+              "server_cpu_seconds": 1.75,
+              "server_peak_rss_kib": 4800,
+              "successes": 36308,
+              "sum_worker_peak_inflight": 4096,
+              "timeouts": 0,
+              "valid_rps": 10737.333333333334
+            }
+          ],
+          "worst_p99_ms": 1110.8
+        }
+      },
+      "build_passed": true,
+      "candidate": "e0f186b2c32c4dbb8b038de331965b12",
+      "capacity": {
+        "best_candidate": "2c58c533b4e8465c80f912d82279d39a",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "full_acceptance": true,
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 1066000,
+        "next_call_reservation_usd": "2.745",
+        "optimization_attempts": 2,
+        "reason": null,
+        "remaining": 9578434,
+        "remaining_usd": "2.81238315",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 6325.945949316025,
+        "service_tier": "default",
+        "spent_usd_upper_bound": "0.18761685",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 421566,
+        "work_phase": "improve"
+      },
+      "cases": [
+        {
+          "id": "bootstrap",
+          "passed": true,
+          "seconds": 0.002497659996151924
+        },
+        {
+          "id": "files",
+          "passed": true,
+          "seconds": 0.008000586181879044
+        },
+        {
+          "id": "query-and-decoding",
+          "passed": true,
+          "seconds": 0.005916070193052292
+        },
+        {
+          "id": "confinement",
+          "passed": true,
+          "seconds": 0.015988833270967007
+        },
+        {
+          "id": "fragmentation",
+          "passed": true,
+          "seconds": 0.00197606161236763
+        },
+        {
+          "id": "syntax",
+          "passed": true,
+          "seconds": 0.00137315783649683
+        },
+        {
+          "id": "request-framing",
+          "passed": true,
+          "seconds": 0.00019079353660345078
+        },
+        {
+          "id": "header-limit",
+          "passed": true,
+          "seconds": 0.00010637007653713226
+        },
+        {
+          "id": "absolute-header-deadline",
+          "passed": true,
+          "seconds": 1.2010675966739655
+        },
+        {
+          "id": "disconnect-recovery",
+          "passed": true,
+          "seconds": 0.00040705129504203796
+        },
+        {
+          "id": "headerless-request",
+          "passed": true,
+          "seconds": 6.242562085390091e-05
+        },
+        {
+          "id": "configuration",
+          "passed": true,
+          "seconds": 0.1960274502635002
+        }
+      ],
+      "commit": "bfbe4984ce3c47cd60480467326a5be13cc0581c",
+      "elapsed_seconds": 874.0518727302551,
+      "evaluated_unix": 1794670498.9638784,
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "ed6253e1274c54b6f6481d4bf5fb0076547b956c1b3f55e811ef1eb0491697e6",
+      "full_acceptance": true,
+      "language": "cpp",
+      "level": 1,
+      "note": "Add strict UTF-8 and control-byte validation to configuration and accept decimal port zero; 16 targeted configuration cases and 30 copied-parser/filesystem cases passed, and bootstrap passed on three fresh starts. Refactor the accept path to process immediately and bound accept batches; workload comparison was inconclusive and does not establish a speedup, with high-concurrency failures in both variants.",
+      "passed": 12,
+      "passed_checks": [
+        "bootstrap"
+      ],
+      "recorded_unix": 1794634141.65783,
+      "source_sha256": "5827560d686dadde699e19d576b35198268849e0ff093a252ad4e8fd94b41019",
+      "tag": "release/000003"
+    }
+  ],
+  "started_unix": 1794633267.6059573,
+  "total_checks": 12
+}

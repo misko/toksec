@@ -1,0 +1,326 @@
+{
+  "ended_unix": 1794809489.9384034,
+  "finished": true,
+  "last_feedback": {
+    "result": {
+      "text": "#include <openssl/ssl.h>\n#include <openssl/err.h>\n#include <algorithm>\n#include <arpa/inet.h>\n#include <cerrno>\n#include <csignal>\n#include <cstring>\n#include <fcntl.h>\n#include <fstream>\n#include <functional>\n#include <glob.h>\n#include <iostream>\n#include <map>\n#include <netinet/in.h>\n#include <poll.h>\n#include <set>\n#include <sstream>\n#include <string>\n#include <sys/socket.h>\n#include <sys/stat.h>\n#include <sys/types.h>\n#include <sys/wait.h>\n#include <unistd.h>\n#include <vector>\nusing namespace std;\nstruct Node { string name; vector<string> args; vector<Node> children; bool block=false; };\nstruct Config { vector<Node> nodes; string base; set<string> active; size_t bytes=0; int files=0, statements=0; };\nstatic bool tokenize(const string& s, vector<string>& t) {\n if(s.size()>=3 && s.substr(0,3)==\"\\xef\\xbb\\xbf\") return false;\n for(size_t i=0;i<s.size();) {\n  unsigned char c=s[i]; if(!c) return false; if(c==' '||c=='\\t'||c=='\\r'||c=='\\n'){i++;continue;} if(c=='#'){while(i<s.size()&&s[i]!='\\n')i++;continue;} if(c==';'||c=='{'||c=='}'){t.push_back(string(1,c));i++;continue;}\n  string x; char quote=0; if(c=='\\''||c=='\"'){quote=c;i++;}\n  bool ended=!quote; while(i<s.size()) {c=s[i]; if(quote && c==quote){i++;ended=true;break;} if(!quote&&(c==' '||c=='\\t'||c=='\\r'||c=='\\n'||c==';'||c=='{'||c=='}'||c=='#'))break; if(c=='\\r'||c=='\\n'||c==0||c=='$')return false; if(c=='\\\\'){if(++i==s.size())return false;c=s[i];if(c=='n')c='\\n';else if(c=='r')c='\\r';else if(c=='t')c='\\t';else if(c!='\\\\'&&c!='\\''&&c!='\"'&&c!=' '&&c!='\\t'&&c!='#'&&c!=';'&&c!='{'&&c!='}')return false;} x+=char(c);i++;if(x.size()>4096)return false;}\n  if(!ended || (quote && i<s.size() && s[i]!=' '&&s[i]!='\\t'&&s[i]!='\\r'&&s[i]!='\\n'&&s[i]!=';'&&s[i]!='{'&&s[i]!='}'&&s[i]!='#'))return false; t.push_back(x);\n }\n return true;\n}\nstatic bool parse_seq(const vector<string>& t,size_t& p,vector<Node>& out,int depth,bool closing) { if(depth>8)return false; while(p<t.size()){if(t[p]==\"}\"){if(!closing)return false;p++;return true;} if(t[p]==\"{\"||t[p]==\";\")return false; Node n;n.name=t[p++];while(p<t.size()&&t[p]!=\";\"&&t[p]!=\"{\"&&t[p]!=\"}\"){n.args.push_back(t[p++]);if(n.args.size()>32)return false;}if(p==t.size()||t[p]==\"}\")return false; if(t[p++]==\"{\"){n.block=true;if(!parse_seq(t,p,n.children,depth+1,true))return false;}out.push_back(move(n));}return !closing; }\nstatic bool loadfile(Config& c,const string& file,vector<Node>& dest,int depth) {\n if(depth>8||++c.files>128||c.active.count(file))return false; c.active.insert(file);ifstream f(file,ios::binary);if(!f)return false; string s((istreambuf_iterator<char>(f)),{});c.bytes+=s.size();if(c.bytes>1048576)return false;vector<string> t;vector<Node> a;size_t p=0;if(!tokenize(s,t)||!parse_seq(t,p,a,0,false))return false;\n for(auto& n:a){if(++c.statements>16384)return false; if(n.name==\"include\") {if(n.block||n.args.size()!=1||n.args[0].find(\"..\")!=string::npos)return false;string path=n.args[0][0]=='/'?n.args[0]:c.base+\"/\"+n.args[0];glob_t g{};int r=glob(path.c_str(),0,nullptr,&g);if(r && path.find('*')==string::npos){globfree(&g);return false;}for(size_t i=0;i<g.gl_pathc;i++)if(!loadfile(c,g.gl_pathv[i],dest,depth+1)){globfree(&g);return false;}globfree(&g);}else { // expand includes in blocks too\n   function<bool(vector<Node>&)> expand=[&](vector<Node>& v){vector<Node> z;for(auto &q:v){if(q.name==\"include\"){if(q.block||q.args.size()!=1||q.args[0].find(\"..\")!=string::npos)return false;string path=q.args[0][0]=='/'?q.args[0]:c.base+\"/\"+q.args[0];glob_t g{};int r=glob(path.c_str(),0,nullptr,&g);if(r&&path.find('*')==string::npos){globfree(&g);return false;}for(size_t j=0;j<g.gl_pathc;j++)if(!loadfile(c,g.gl_pathv[j],z,depth+1)){globfree(&g);return false;}globfree(&g);}else{if(!expand(q.children))return false;z.push_back(move(q));}}v=move(z);return true;}; if(!expand(n.children))return false;dest.push_back(move(n));}}\n c.active.erase(file);return true;\n}\nstatic const Node* child(const vector<Node>& n,const string& name) {for(auto& x:n)if(x.name==name)return &x;return nullptr;}\nstatic string val(const vector<Node>& n,const string& k,string d=\"\") {auto p=child(n,k);return p&&!p->args.empty()?p->args[0]:d;}\nstruct Location{string path,root,alias,index=\"index.html\",rtype,dest,proxy,default_type=\"text/plain\";vector<string> indexes={\"index.html\"};map<string,string> types={{\"html\",\"text/html\"},{\"gif\",\"image/gif\"},{\"jpg\",\"image/jpeg\"}};bool exact=false,etag=true; int keepalive_requests=1000;};\nstruct Server{vector<pair<int,bool>> listens;vector<string> names;vector<Location> loc;string root=\"html\",cert,key; SSL_CTX* ctx=nullptr;};\nstruct Settings{int workers=1;vector<Server> servers;map<string,vector<int>> upstreams;};\nstatic int alpn_cb(SSL*,const unsigned char** out,unsigned char* outlen,const unsigned char* in,unsigned int len,void*){for(unsigned int i=0;i<len;){unsigned int n=in[i++];if(i+n>len)return SSL_TLSEXT_ERR_ALERT_FATAL;if(n==8&&!memcmp(in+i,\"http/1.1\",8)){*out=in+i;*outlen=8;return SSL_TLSEXT_ERR_OK;}i+=n;}return SSL_TLSEXT_ERR_ALERT_FATAL;}\nstatic int sni_cb(SSL* ssl,int*,void* arg){auto s=(Settings*)arg;const char* name=SSL_get_servername(ssl,TLSEXT_NAMETYPE_host_name);if(!name)return SSL_TLSEXT_ERR_OK;sockaddr_in a{};socklen_t n=sizeof(a);if(getsockname(SSL_get_fd(ssl),(sockaddr*)&a,&n))return SSL_TLSEXT_ERR_OK;int port=ntohs(a.sin_port);for(auto& v:s->servers){bool match=false;for(auto ls:v.listens)if(ls.first==port&&ls.second)match=true;if(match)for(auto& x:v.names)if(!strcasecmp(x.c_str(),name)){SSL_set_SSL_CTX(ssl,v.ctx);return SSL_TLSEXT_ERR_OK;}}return SSL_TLSEXT_ERR_OK;}\nstatic bool setup_tls(Settings& s){for(auto& v:s.servers){bool tls=false;for(auto p:v.listens)tls|=p.second;if(!tls)continue;v.ctx=SSL_CTX_new(TLS_server_method());if(!v.ctx)return false;SSL_CTX_set_min_proto_version(v.ctx,TLS1_2_VERSION);SSL_CTX_set_max_proto_version(v.ctx,TLS1_3_VERSION);SSL_CTX_set_cipher_list(v.ctx,\"ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384\");SSL_CTX_set_ciphersuites(v.ctx,\"TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384\");SSL_CTX_set1_groups_list(v.ctx,\"X25519:P-256\");SSL_CTX_set_options(v.ctx,SSL_OP_NO_TICKET|SSL_OP_NO_RENEGOTIATION);SSL_CTX_set_session_cache_mode(v.ctx,SSL_SESS_CACHE_OFF);SSL_CTX_set_num_tickets(v.ctx,0);SSL_CTX_set_alpn_select_cb(v.ctx,alpn_cb,nullptr);SSL_CTX_set_tlsext_servername_callback(v.ctx,sni_cb);SSL_CTX_set_tlsext_servername_arg(v.ctx,&s);if(SSL_CTX_use_certificate_chain_file(v.ctx,v.cert.c_str())!=1||SSL_CTX_use_PrivateKey_file(v.ctx,v.key.c_str(),SSL_FILETYPE_PEM)!=1||SSL_CTX_check_private_key(v.ctx)!=1)return false;EVP_PKEY* k=SSL_CTX_get0_privatekey(v.ctx);if(!k||EVP_PKEY_base_id(k)!=EVP_PKEY_RSA||EVP_PKEY_bits(k)!=2048)return false;}return true;}\nstatic bool valid_config(const Config& c){\n auto plain=[](const string& x){if(x.empty())return false;for(unsigned char ch:x)if(ch<32||ch==127||ch=='$')return false;return true;};\n auto number=[](string x,int kind,bool zero,long long cap){if(x.empty())return false;long long mul=1;if(kind==1&&(x.back()=='k'||x.back()=='m')){mul=x.back()=='k'?1024:1048576;x.pop_back();}else if(kind==2){if(x.size()>=2&&x.substr(x.size()-2)==\"ms\")x.resize(x.size()-2);else if(x.back()=='s'){x.pop_back();mul=1000;}else mul=1000;}if(x.empty())return false;long long n=0;for(char ch:x){if(ch<'0'||ch>'9'||n>(cap/mul-(ch-'0'))/10)return false;n=n*10+ch-'0';}return (zero||n>0)&&n<=cap/mul;};\n auto dns=[](string x){if(x.empty()||x.size()>253)return false;size_t i=0;while(i<x.size()){size_t j=x.find('.',i);if(j==string::npos)j=x.size();if(j==i||j-i>63||x[i]=='-'||x[j-1]=='-')return false;for(size_t k=i;k<j;k++)if(!((x[k]>='a'&&x[k]<='z')||(x[k]>='A'&&x[k]<='Z')||(x[k]>='0'&&x[k]<='9')||x[k]=='-'))return false;i=j+1;if(j==x.size())break;if(i==x.size())return false;}return true;};\n auto ident=[](const string& x){if(x.empty()||!((x[0]>='A'&&x[0]<='Z')||(x[0]>='a'&&x[0]<='z')||x[0]=='_'))return false;for(char ch:x)if(!((ch>='A'&&ch<='Z')||(ch>='a'&&ch<='z')||(ch>='0'&&ch<='9')||ch=='_'))return false;return true;};\n auto endpoint=[&](const string& x){return x.rfind(\"127.0.0.1:\",0)==0&&number(x.substr(10),0,false,65535);};\n auto pathdir=[&](string x){if(!plain(x))return false;if(x[0]!='/')x=c.base+\"/\"+x;struct stat st{};return stat(x.c_str(),&st)==0&&S_ISDIR(st.st_mode)&&access(x.c_str(),R_OK|X_OK)==0;};\n set<string> groups, refs;map<int,pair<int,int>> endpoints;map<int,set<string>> names;int servers=0;bool good=true;\n function<void(const vector<Node>&,char)> walk=[&](const vector<Node>& ns,char ctx){set<string> seen,locs,ups;int events=0,http=0;for(const Node& n:ns){if(!good)return;for(auto& a:n.args)if(!plain(a)){good=false;return;}const string& k=n.name;\n if(k==\"events\"||k==\"http\"){if(ctx!='M'||!n.block||!n.args.empty()||(k==\"events\"?++events:++http)>1){good=false;return;}walk(n.children,k==\"events\"?'E':'H');continue;}\n if(k==\"server\"&&ctx=='H'){if(!n.block||!n.args.empty()){good=false;return;}servers++;walk(n.children,'S');continue;}\n if(k==\"upstream\"&&ctx=='H'){if(!n.block||n.args.size()!=1||!ident(n.args[0])||!groups.insert(n.args[0]).second){good=false;return;}walk(n.children,'U');continue;}\n if(k==\"location\"&&ctx=='S'){bool exact=n.args.size()==2&&n.args[0]==\"=\";if(!n.block||n.args.size()!=(exact?2u:1u)){good=false;return;}string p=n.args.back();if(p.empty()||p[0]!='/'||p.find_first_of(\"?#%\\\\\")!=string::npos||p.find(\"//\")!=string::npos||!locs.insert((exact?\"=\":\"^\")+p).second){good=false;return;}size_t pos=1;while(pos<p.size()){size_t end=p.find('/',pos);if(end==string::npos)end=p.size();string part=p.substr(pos,end-pos);if(part==\".\"||part==\"..\"){good=false;return;}pos=end+1;}if(child(n.children,\"alias\")&&(exact||p.back()!='/')){good=false;return;}walk(n.children,'L');continue;}\n if(k==\"types\"&&(ctx=='H'||ctx=='S'||ctx=='L')){if(!n.block||!n.args.empty()||!seen.insert(k).second){good=false;return;}set<string> ext;for(auto& t:n.children){if(t.block||t.args.empty()||t.args.size()>32||t.name.find('/')==string::npos){good=false;return;}for(auto x:t.args){if(x.empty()){good=false;return;}for(char ch:x)if(!isalnum((unsigned char)ch)||ch>127){good=false;return;}for(char& ch:x)ch=tolower((unsigned char)ch);if(!ext.insert(x).second){good=false;return;}}}continue;}\n if(n.block){good=false;return;}bool repeat=(ctx=='S'&&k==\"listen\")||(ctx=='U'&&k==\"server\");if(!repeat&&!seen.insert(k).second){good=false;return;}\n if(ctx=='M'&&k==\"worker_processes\"){if(n.args.size()!=1||(n.args[0]!=\"1\"&&n.args[0]!=\"2\"&&n.args[0]!=\"4\"))good=false;continue;}\n if(ctx=='E'&&k==\"worker_connections\"){if(n.args.size()!=1||!number(n.args[0],0,false,2147483647))good=false;continue;}\n if(ctx=='U'&&k==\"server\"){if(n.args.size()!=1||!endpoint(n.args[0])||!ups.insert(n.args[0]).second||ups.size()>16)good=false;continue;}\n if(ctx=='U'&&k==\"keepalive\"){if(n.args.size()!=1||!number(n.args[0],0,false,2147483647))good=false;continue;}\n if(ctx=='S'&&k==\"listen\"){if(n.args.empty()||n.args.size()>3||!endpoint(n.args[0])){good=false;return;}bool tls=false,def=false;size_t i=1;if(i<n.args.size()&&n.args[i]==\"ssl\"){tls=true;i++;}if(i<n.args.size()&&n.args[i]==\"default_server\"){def=true;i++;}if(i!=n.args.size()||!ups.insert(n.args[0]).second){good=false;return;}int port=atoi(n.args[0].c_str()+10);auto it=endpoints.find(port);if(it==endpoints.end())endpoints[port]={tls,def};else if(it->second.first!=(int)tls||(def&&it->second.second++)){good=false;return;}continue;}\n if(ctx=='S'&&k==\"server_name\"){if(n.args.empty()){good=false;return;}for(auto& x:n.args)if(!dns(x)){good=false;return;}continue;}\n bool common=ctx=='H'||ctx=='S'||ctx=='L';\n if(common&&(k==\"root\"||k==\"alias\")){if((k==\"alias\"&&ctx!='L')||n.args.size()!=1||!pathdir(n.args[0])||(k==\"alias\"&&(n.args[0][0]!='/'||n.args[0].back()!='/')))good=false;continue;}\n if(common&&k==\"index\"){if(n.args.empty()){good=false;return;}for(auto& x:n.args)if(x==\".\"||x==\"..\"||x.find_first_of(\"/\\\\\")!=string::npos){good=false;return;}continue;}\n if(common&&k==\"default_type\"){if(n.args.size()!=1||n.args[0].find('/')==string::npos||n.args[0].find_first_of(\" ;\\t\")!=string::npos)good=false;continue;}\n if(common&&k==\"etag\"){if(n.args.size()!=1||(n.args[0]!=\"on\"&&n.args[0]!=\"off\"))good=false;continue;}\n if((ctx=='H'||ctx=='S')&&(k==\"ssl_certificate\"||k==\"ssl_certificate_key\")){if(n.args.size()!=1)good=false;continue;}\n if((ctx=='H'||ctx=='S')&&k==\"ssl_protocols\"){if(n.args!=vector<string>{\"TLSv1.2\",\"TLSv1.3\"})good=false;continue;}\n if(ctx=='L'&&k==\"return\"){if(n.args.size()!=2||(n.args[0]!=\"301\"&&n.args[0]!=\"302\"&&n.args[0]!=\"307\"&&n.args[0]!=\"308\")||(n.args[1][0]!='/'&&n.args[1].rfind(\"http://\",0)!=0&&n.args[1].rfind(\"https://\",0)!=0)||n.args[1].find(' ')!=string::npos)good=false;continue;}\n if(ctx=='L'&&k==\"proxy_pass\"){if(n.args.size()!=1||n.args[0].rfind(\"http://\",0)!=0){good=false;return;}string a=n.args[0].substr(7);size_t p=a.find('/');string name=a.substr(0,p);if(!ident(name)||(p!=string::npos&&a.substr(p).find_first_of(\"?#%\")!=string::npos)){good=false;return;}refs.insert(name);continue;}\n set<string> times={\"keepalive_timeout\",\"client_header_timeout\",\"client_body_timeout\",\"send_timeout\",\"proxy_connect_timeout\",\"proxy_read_timeout\",\"proxy_send_timeout\"};if(common&&times.count(k)){if(k==\"client_header_timeout\"&&ctx=='L'){good=false;return;}if(n.args.size()!=1||!(k==\"keepalive_timeout\"&&n.args[0]==\"0\")&&!number(n.args[0],2,false,86400000))good=false;continue;}\n if(common&&(k==\"keepalive_requests\"||k==\"client_max_body_size\")){if(n.args.size()!=1||!number(n.args[0],k==\"client_max_body_size\"?1:0,k==\"client_max_body_size\",2147483647))good=false;continue;}\n if(ctx=='H'&&k.rfind(\"toksec_\",0)==0){set<string> sz={\"toksec_header_bytes\",\"toksec_body_bytes\",\"toksec_cache_bytes\"},tim={\"toksec_header_deadline\",\"toksec_write_deadline\",\"toksec_upstream_deadline\",\"toksec_upstream_queue_timeout\",\"toksec_upstream_cooldown\",\"toksec_cache_ttl\",\"toksec_drain_timeout\",\"toksec_tls_handshake_timeout\"},num={\"toksec_pipeline_depth\",\"toksec_max_connections\",\"toksec_upstream_active\",\"toksec_upstream_queue\",\"toksec_cache_entries\",\"toksec_cache_waiters\",\"toksec_upstream_failures\",\"toksec_rate_per_second\",\"toksec_rate_burst\"};if(n.args.size()!=1||(!sz.count(k)&&!tim.count(k)&&!num.count(k))||!number(n.args[0],sz.count(k)?1:tim.count(k)?2:0,k==\"toksec_cache_bytes\"||k==\"toksec_upstream_queue\"||k==\"toksec_rate_per_second\",tim.count(k)?86400000:k==\"toksec_pipeline_depth\"?64:2147483647))good=false;continue;}"
+    },
+    "tool": "read_source"
+  },
+  "latest": "ecd207215a7f4fd6bad1419f5a23b46d",
+  "notes": "",
+  "recent_actions": [
+    {
+      "arguments": {
+        "line_count": 180,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 120,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 150,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 200,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 200,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 160,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 85,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    }
+  ],
+  "retained_reads": {
+    "builder/INTERFACE.md": {
+      "text": "# Source, process and fixture interface\n\nSubmit one UTF-8 main.cpp or main.rs, at most 1 MiB, through submit_candidate.\nThe controller compiles and runs it in a sandbox. No additional implementation\nfiles, downloaded dependencies, HTTP libraries or previous implementations are\nprovided. Approved OpenSSL is the sole TLS dependency exception. See your language\npolicy and TLS.md. Compiler and library identities belong in the run manifest.\n\nLaunch the master as `/candidate/server --config /fixtures/config/nginx.conf`.\n`--check-config PATH` validates configuration, includes, roots and TLS material,\nprints a diagnostic on failure, and exits without binding or forking workers.\nExit zero means valid; a nonzero exit means invalid. Diagnostics identify file\nand line where possible and never print private key contents.\n\nInitial startup must make all configured listeners serviceable within five seconds.\nThe master remains foreground; do not daemonize. SIGTERM to the master starts a\nbounded graceful drain. SIGHUP requests transactional configuration/certificate\nreload. OPERATIONS.md defines worker replacement and generation semantics.\n\nThe host mounts these fixture paths in each test sandbox:\n\n| Path | Access and use |\n|---|---|\n| /fixtures/config | Read-only to candidate; host may replace files for reload tests |\n| /fixtures/tls | Read-only test-only certificate chains, leaf private keys and CA certificate |\n| /www | Read-only immutable files, with alternate roots and aliases in tests |\n| /tmp | Private writable scratch, capped at 64 MiB by the host |\n| /candidate | Read-only source snapshot and executable |\n\nThe supplied sample files demonstrate inputs. Host fixtures vary names, content,\nports and limits within the contract. Do not hardcode sample values. No host\ncredentials, CA signing private key, reference server or hidden checker is mounted.\nUpstream fixture services are reachable only in the sandbox's private network.\n\nThe process tree receives 1, 2 or 4 CPUs as declared in each measurement profile,\n512 MiB aggregate charged memory, 16,384 total live file descriptors, and at most\none master plus four worker processes. The host includes mapped OpenSSL and\ncharged scratch/cache memory in the resource budget; it must publish the exact\nmemory-accounting method. Do not interpret per-process limits as separate budgets.\nCompile limits remain 4096 MiB address space, 60 CPU seconds and 120 wall seconds.\nAggregate enforcement must pass host preflight before any run is authorized.\n\nThe source may fork workers from itself but may not execute external programs or\ndelegate HTTP/TLS/configuration parsing to another executable. IPC, shared memory,\nthreads, POSIX/Linux I/O and the approved TLS C ABI are allowed. Worker thread\ncounts and descriptors remain inside the aggregate resource budget.\n\nController tools retain their existing names: budget_status, submit_candidate,\nrevalidate_candidate, run_tests, benchmark_candidate, init_repository,\nrelease_candidate and finish. Tests are your own standalone programs run in the\nsame isolation policy. They must create their own listeners and fixtures.\nThe controller owns compilation, Git initialization/tagging and release evidence.\nThese tool names describe the intended Stage 10 interface, not current support."
+    },
+    "builder/OPERATIONS.md": {
+      "text": "# Cache, worker and recovery behavior\n\nThis file defines Stage 10 additions to HTTP.md. Configuration directive names\nand values are in CONFIGURATION.md. All deadlines use monotonic time.\n\n## Cache and coalescing\n\nCache successful proxy GET responses with explicit Cache-Control:\npublic,max-age=N, capped by the configured cache TTL. The key includes downstream\nscheme, normalized HTTP host, target path and query. Honor Vary: Accept-Encoding\nusing its exact request field value, with absence distinct from a present value.\nBypass Vary:*, other Vary names, Authorization requests and Set-Cookie, private or\nno-store responses. Do not cache partial responses, malformed/truncated bodies,\nor 5xx errors. HEAD may read a completed GET entry but never populate one.\n\nAn expired entry with an ETag uses If-None-Match upstream. If it lacks ETag but\nhas Last-Modified, use If-Modified-Since. A valid 304 refreshes the stored body\nusing returned freshness/validator headers, retaining absent stored fields;\nreturn a normal body-bearing 200 to an unconditional GET. A fresh 200 replaces\nthe entry only after its complete body validates. Without a validator fetch a\nnew representation. Never serve an expired entry on refresh failure in this\nprofile. Complete waiters with the applicable 502/504 and permit later recovery.\n\nStore cache entries and coalesce misses within each worker. A single-worker cold\nburst for one cacheable key produces one in-flight upstream fetch. With W workers\nat most W simultaneous fetches are allowed for that key. Partition the configured\ntotal cache body-byte allowance equally across workers; unused shares need not\nbe borrowed. Metadata and waiting requests must also be bounded by explicit entry\nand waiter limits. The memory budget applies to the entire process tree.\n\nDo not coalesce POST, HEAD misses, Authorization requests or different variants.\nBefore Vary is known, include Accept-Encoding in the pending key. When a response\nproves noncacheable or too large for a worker's cache allowance, release waiters\ninto ordinary FIFO proxy admission; do not silently reuse that response for them.\nQueue deadlines continue from each waiter's original arrival. The initiating\nclient's disconnect must not cancel a fetch with remaining live waiters. With no\nclients left, abort the upstream exchange and do not retain a partial entry.\n\n## Global limits and upstream failure policy\n\nRate limiting and configured connection/admission limits apply across all workers,\nnot independently per worker. The global HTTP request limiter is a monotonic token\nbucket with the configured rate/burst. Rejections are 429 with Retry-After: 1.\nBenchmarks disable the request limiter except designated correctness/fairness cases.\nSeparate configured upstream groups have separate FIFO admission queues and limits.\nRetries share their request's admission budget; they do not create unlimited work.\n\nAfter an endpoint's configured consecutive transport/deadline failure threshold,\nexclude it from new selection for the configured cooldown. Existing exchanges may\nfinish. After cooldown permit a single probe exchange at a time; success restores\neligibility, failure restarts cooldown. With no eligible endpoint or available\nprobe, return 503 with Retry-After: 1. Valid upstream HTTP error responses do not\nby themselves count as transport failure. Keep protocol-invalid connections out\nof the reusable pool. The directive table specifies the threshold/cooldown values.\n\n## Master and workers\n\nRun exactly the configured 1, 2 or 4 workers beneath one foreground master. Use\nthe same executable; no external helpers. Each worker must be able to serve all\nconfigured listener types. Threads and the I/O mechanism remain implementation\nchoices. Global limits may use any permitted IPC strategy.\n\nIf the host kills one worker, the master replaces it within two seconds after\nobserving exit. Requests owned by that worker may fail. Other workers must remain\nserviceable, and the process tree must not accumulate zombies or leaked IPC.\nTests identify workers through the process tree, not a candidate-supplied PID list.\nCache contents owned by an exited worker may be lost. Global admission/rate-limit\nstate must recover that worker's reservations without permanently reducing capacity.\n\nSIGHUP validates an entire new configuration plus TLS material before publication.\nCONFIGURATION.md enumerates immutable directives and fixed run-manifest resource\nbudgets; changes to those directives reject the reload. Other documented reloadable settings switch\nas one generation. New connections use the new generation within two seconds.\nExisting connections and in-flight operations may finish on their accepted\ngeneration. Their keepalive lifetime ends at the configured drain deadline.\nThis is an explicit Stage 10 change from Stage 5's subsequent-request reload scope.\n\nFlush cache for the new generation; old in-flight responses cannot repopulate it.\nReset the single global limiter on a successful generation change; old and new\nconnections both consume the newly configured bucket. Preserve upstream group\nreservations across generations, keyed by the immutable group name. Cache/admission state retained\nby old connections still counts against process-tree resource limits. An invalid\nreload leaves the active generation, certificate and listeners serving unchanged.\nThe old and new configurations are immutable snapshots from request processing's\nperspective; internal representation remains the agent's choice.\n\nSIGTERM stops new accepts within 250 ms, finishes in-flight responses up to the\nconfigured drain deadline, and exits the complete process tree within that deadline\nplus 500 ms. Idle connections close; an incomplete request cannot extend draining.\nNever start replacement workers while shutting down.\n\n## Sustained operation\n\nIndependent correctness tests combine disconnects, queue pressure, cache expiry,\nfailed reload, certificate rotation and worker exits. Required behavior is the\nsame as above even when events overlap. A worker kill may interrupt its owned\nrequests; it does not waive correctness for responses that are completed.\n\nAfter clients close and configured idle/pool deadlines pass, live socket and queue\nreservations must return to their pre-wave baseline, apart from explicitly bounded\nidle pools/cache entries. Repeat waves must not grow descriptors, processes or\ncharged memory without bound. Host tests disclose allowed accounting tolerance\nand observation deadlines before this packet is frozen for launch."
+    },
+    "builder/RULES.md": {
+      "text": "# Shared builder rules\n\nBuild a working, efficient HTTP server that satisfies the selected stage's English\ncontract. Each selected stage is an independent from-scratch assignment. No starter code,\nprevious implementation, or another run's conversation is supplied.\n\n## Freedom to work\n\nYou choose the architecture, order of work, debugging strategy, tests and\noptimizations. You may use the evaluator tools, supply your own tests, or\nreason about a change before testing it. There is no mandatory iteration sequence,\nnumber of experiments, journal entry, or implementation technique. Tool access,\nthe source/process interface, sandbox limits and the grading contract still apply.\nTesting correctness first, addressing failed requests before speed, and measuring\none change at a time are suggestions. The goal is a working and very efficient\nimplementation, not compliance with a prescribed development process.\n\n## Testing is part of your task\n\nYou are responsible for designing and running tests for your implementation.\nInfer what needs testing from the English contract; do not rely on the supplied\nchecks as a comprehensive test plan. Choose your own cases, tools and strategy.\nProviding only enough behavior to pass supplied examples does not satisfy the task.\n\nThe English requirements are authoritative. Supplied smoke checks demonstrate\nbasic API usage only; passing them is not evidence of full correctness. The host\nmay independently evaluate any behavior required by the contract. It must not\nintroduce undocumented requirements. No starter implementation is supplied.\n\nDevelop and retain your own correctness evidence before publishing releases.\nYou choose how much capacity to spend on tests versus implementation and\noptimization. Report what you tested and any known limitations honestly. Passing\na finite suite does not prove complete correctness or maximum performance.\n\n## Deliverable and Git releases\n\nSubmit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.\nThe shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution\noccur in sandboxes. Controller tools are your filesystem/execution interface;\nyou do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own\nfixtures and listeners; no candidate server is automatically running for them.\n\nYou can be stopped at any time. After your first working submission, call\ninit_repository to create a new private Git repository and its first release tag.\nUse release_candidate to publish periodic working milestones. Each numbered tag\ncontains the source file and controller-generated release.json evidence. The last completed\ntag is your final submission. Untagged edits do not replace it. No tag means no\nsubmission, and stopping before the first working tag can leave no deliverable.\nPublished releases must compile, pass bootstrap and preserve previously passing\nvisible smoke checks. Publication is explicit; submitting source alone does not publish it.\n\nYou receive partial credit for validated progress since the previous tag, even\nif you do not finish the target. Explain the before/after evidence in each release\nnote. New passing API checks, demonstrated reliability repairs and valid measured\nperformance improvements are progress. Duplicate source, cosmetic edits, repeated\nclaims and extra tags alone earn no additional credit. Do not deliberately split\nan easy solution to inflate the milestone count. Numeric milestone weights are\nnot yet defined.\n\n## Development feedback\n\nsubmit_candidate and, when available, revalidate_candidate run only the supplied smoke suite.\nIndependent host API checks are held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.\nbenchmark_candidate provides provisional ordinary-traffic performance feedback\nafter smoke acceptance. Such measurements do not establish final eligibility.\nRelease metadata and retained baselines contain development evidence only.\nThe selected stage declares whether independent API coverage is full or partial.\nPassing all available checks in a partial suite cannot establish full acceptance.\nAny performance diagnostics for such a stage remain provisional and earn no final\nperformance credit. Use only the tools actually supplied for the selected stage.\n\n## Grading\n\nThe host grader extracts the last tagged source and compiles it independently.\nAPI correctness is graded first. If compilation or any required API check fails,\nperformance is not tested and is graded as failed, with zero performance credit.\nFailed API checks reduce API credit; the performance credit is also forfeited.\nA fast incorrect implementation cannot recover those marks through throughput.\n\nIf all API checks pass, the host measures the declared workloads. It reports valid\ngoodput, latency, failures, timeouts, CPU and memory. Missing or ineligible\nmeasurements earn no demonstrated performance credit. Successful-request latency\nmust be read alongside failures. A saturated load generator is not evidence of a\nserver speedup. Reliability, then throughput and latency, are suggested priorities.\nThe controller's retained comparison baseline is diagnostic; your explicit last\ntag determines the final implementation.\n\n## Capacity\n\nThe frozen run manifest defines the campaign cap and builder wall-time ceiling. The controller reports the actual remaining\nshared dollars, tokens and wall time through budget_status and before each model\ncall. All model input, output, reasoning and final reporting consume that budget.\nCompilation and evaluation CPU are tracked separately. The strict worst-case\nreservation policy can stop admission before the authorized balance is fully spent.\n\nUse the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the\nfinalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall\nceilings regardless of that decision. Do not assume another call will be available\nfor publication. Record limitations and unmeasured claims honestly in your report."
+    },
+    "builder/SMOKE.md": {
+      "text": "# Minimal visible smoke checks\n\nThe host supplies these descriptions and ordinary example inputs. It does not\nship the checker implementation or its edge-case fixtures to the builder.\n\n1. bootstrap: one ordinary plaintext GET of /hello.txt returns 200, exact bytes,\n   Content-Length and a closing response to Connection: close. This uses the separate minimal bootstrap.conf and is the first-tag eligibility gate.\n2. config: --check-config accepts the ordinary supplied nginx.conf and exits zero.\n3. https-get: one ordinary HTTPS GET returns the same file, with trusted fixture\n   CA and hostname verification enabled by the client.\n4. https-persistent: two sequential ordinary GETs on one HTTPS connection succeed.\n5. proxy: one ordinary proxied GET returns the fixture upstream's exact body.\n\nA tag may be published once bootstrap passes. Every new tag must compile, pass\nbootstrap and preserve previously passing visible checks. Missing later checks\nare recorded as incomplete rather than preventing every early release. Smoke\nsuccess does not establish final API correctness or final performance eligibility.\n\nThere are deliberately no visible tests for malformed syntax, large headers,\nmissing fields, TLS negotiation edge cases, worker crashes or overload. Design\nyour own tests from the complete public contract. Their absence from the smoke\nsuite does not remove them from the assignment."
+    },
+    "fixtures/config/bootstrap.conf": {
+      "text": "events {}\nhttp {\n    server {\n        listen 127.0.0.1:8080;\n        server_name alpha.test;\n        location / {\n            root /www;\n        }\n    }\n}"
+    },
+    "fixtures/config/conf.d/servers.conf": {
+      "text": "server {\n    listen 127.0.0.1:8080 default_server;\n    listen 127.0.0.1:8443 ssl default_server;\n    server_name alpha.test;\n    ssl_certificate /fixtures/tls/alpha-chain.pem;\n    ssl_certificate_key /fixtures/tls/alpha-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n    location = /old {\n        return 302 /hello.txt;\n    }\n}\nserver {\n    listen 127.0.0.1:8080;\n    listen 127.0.0.1:8443 ssl;\n    server_name beta.test;\n    root /www/beta;\n    ssl_certificate /fixtures/tls/beta-chain.pem;\n    ssl_certificate_key /fixtures/tls/beta-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n}"
+    },
+    "fixtures/config/nginx.conf": {
+      "text": "worker_processes 2;\nevents {\n    worker_connections 8192;\n}\nhttp {\n    root /www;\n    default_type application/octet-stream;\n    types {\n        text/html html;\n        text/plain txt;\n    }\n    client_max_body_size 64m;\n    keepalive_timeout 2s;\n    keepalive_requests 100;\n    toksec_upstream_active 64;\n    toksec_upstream_queue 8192;\n    toksec_cache_bytes 4m;\n    toksec_rate_per_second 0;\n\n    upstream backend {\n        server 127.0.0.1:8081;\n        server 127.0.0.1:8082;\n        keepalive 64;\n    }\n    include conf.d/servers.conf;\n}"
+    }
+  },
+  "stop_reason": "RuntimeError: API HTTP 429; no automatic retry",
+  "tags": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "b51af4c947244ef687ab5f8f11851d06",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 5000000000,
+          "remaining_nanodollars": 4862537500,
+          "remaining_usd": 4.8625375,
+          "request_count": 6,
+          "spent_nanodollars": 137462500,
+          "spent_usd_upper_bound": 0.1374625
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "b51af4c947244ef687ab5f8f11851d06",
+        "seconds_remaining": 7114.30073428154
+      },
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get"
+      ],
+      "recorded_unix": 1794808876.8878484,
+      "scope": "visible_smoke_only",
+      "source_sha256": "7c3d148a88c5b1706f5b7167a7060c13d58729627890240b05611353ce12e392",
+      "tag": "release/000001"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "d7101b62da3746f4b67adabd293335aa",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 5000000000,
+          "remaining_nanodollars": 4653490000,
+          "remaining_usd": 4.65349,
+          "request_count": 14,
+          "spent_nanodollars": 346510000,
+          "spent_usd_upper_bound": 0.34651
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "d7101b62da3746f4b67adabd293335aa",
+        "seconds_remaining": 6989.031983613968
+      },
+      "note": "Adds OpenSSL downstream TLS with certificate selection and persistent HTTP; visible HTTPS GET and persistent checks now pass in addition to bootstrap, configuration and plaintext GET. Proxy and broad contract cases remain incomplete.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent"
+      ],
+      "recorded_unix": 1794809002.1566055,
+      "scope": "visible_smoke_only",
+      "source_sha256": "3f015d0ff066677eaddfbf0c2dc7b05fd75af55c894f297d4777275bbb926da0",
+      "tag": "release/000002"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "48230a7b12f343faa78530a2a15175e9",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 5000000000,
+          "remaining_nanodollars": 4272446250,
+          "remaining_usd": 4.27244625,
+          "request_count": 27,
+          "spent_nanodollars": 727553750,
+          "spent_usd_upper_bound": 0.72755375
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent"
+          ],
+          "tag": "release/000002"
+        },
+        "latest": "48230a7b12f343faa78530a2a15175e9",
+        "seconds_remaining": 6830.927438735962
+      },
+      "note": "Adds nonblocking ordinary proxy GET forwarding; proxy visible smoke now passes in addition to previously passing bootstrap, configuration and HTTP/HTTPS checks. This is partial proxy support, not full streaming/framing correctness.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794809160.2611105,
+      "scope": "visible_smoke_only",
+      "source_sha256": "fc9d08de983e733b0ae73f7d2939fd0cd6459035bf621c53ad89ddcdb627b706",
+      "tag": "release/000003"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "4ba06860d5bf43eeb7a96eac37f0f3f7",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 5000000000,
+          "remaining_nanodollars": 3470367500,
+          "remaining_usd": 3.4703675,
+          "request_count": 51,
+          "spent_nanodollars": 1529632500,
+          "spent_usd_upper_bound": 1.5296325
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000003"
+        },
+        "latest": "4ba06860d5bf43eeb7a96eac37f0f3f7",
+        "seconds_remaining": 6646.3966517448425
+      },
+      "note": "Adds local representation support including conditional ETag, single byte ranges, inherited MIME/index settings, UTF-8 and path validation, and nonblocking ordinary proxy response delivery. Smoke and standalone local-file/HTTP probes were run during development; streaming, cache, comprehensive configuration validation, lifecycle reload and limit semantics remain incomplete.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794809344.7919002,
+      "scope": "visible_smoke_only",
+      "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+      "tag": "release/000004"
+    }
+  ]
+}

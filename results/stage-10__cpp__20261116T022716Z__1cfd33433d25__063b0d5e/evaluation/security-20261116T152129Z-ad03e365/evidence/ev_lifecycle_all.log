@@ -1,0 +1,72 @@
+Lifecycle audit — signal / reload / shutdown semantics, stage-10 cpp builds
+Harness: local socket upstream, 2.0 s upstream delay, single client request issued,
+then SIGTERM (or SIGHUP) delivered at t+0.3 s. All commands wrapped in `timeout`.
+=====================================================================
+
+A. SPEC REQUIREMENTS UNDER TEST
+   CONFIGURATION.md:131  | `toksec_drain_timeout` | TIME | `5s`. Maximum graceful shutdown duration. |
+   CONFIGURATION.md:153  "On SIGHUP the master reads and validates a complete candidate..."
+   CONFIGURATION.md:157  "The master commits one generation only after every worker can use it.
+                          Failure retains the complete previous generation and logs an error."
+   CONFIGURATION.md:166  "New connections use the committed generation."
+   OPERATIONS.md:88-89    "SIGTERM stops new accepts within 250 ms, finishes in-flight responses up
+                          to the configured drain deadline, and exits the complete process tree
+                          within that deadline plus 500 ms. Idle connections close; an incomplete
+                          request cannot extend draining."
+   OPERATIONS.md:70-72    "If the host kills one worker, the master replaces it within two seconds"
+   TLS.md:71             "SIGHUP loads fresh certificate bytes even when certificate paths are unchanged."
+
+B. DIRECTIVE SUPPORT (--check-config, `http { toksec_drain_timeout 5s; ... }`)
+   all six builds: ACCEPT at http scope (spec scope) — so the directive parses everywhere.
+
+   But unknown http{}-level directives are silently accepted by four builds
+   (`http { totally_bogus_zzz 1s; }` -> rc=0), and rejected by two (rc=1). The four
+   therefore only *appear* to implement drain; text search shows no use of the value:
+     063b0d5e  grep -c 'high drain' = 0
+     29d05850  0
+     6fb186ed  0
+     8d5ff1f2  name listed in the validation set only, value never read
+
+C. SIGTERM WITH ONE IN-FLIGHT PROXIED RESPONSE (2.0 s upstream delay), drain=5s
+   build     close  bytes body_seen  master
+   61cc738c  EOF    +0.00s  66   0/10    502 synthesised, exited +0.25s
+   44bf7f35  EOF    +0.00s   0   0/10    exited +0.25s
+   063b0d5e  EOF    +1.70s  68  10/10    NEVER EXITED (>7.5 s), keeps serving
+   8d5ff1f2  EOF    +0.00s   0   0/10    exited +0.25s
+   29d05850  EOF    +0.00s   0   0/10    exited +0.25s
+   6fb186ed  EOF    +0.00s   0   0/10    exited +0.25s
+   Reproduced 3/3 for 61cc738c and 8d5ff1f2. Static responses are unaffected everywhere
+   (already buffered before the signal), which is why the defect is proxy-only.
+
+D. SIGTERM WHILE IDLE, 063b0d5e, workers=1 and workers=2 (10.6 s observation each)
+   master never exits, CPU stays 0, workers keep accepting, `accept()` keeps returning 200.
+   Cause: master blocks in `while(!stopping){...waitpid(-1,&status,0)}` and `signal()` installs
+   the handler with SA_RESTART semantics, so the blocking waitpid returns only when a child
+   changes state. With every worker idle nothing wakes it.
+   Line 82: `while(!stopping){int status;pid_t p=waitpid(-1,&status,0);...}`
+
+E. SIGHUP
+   6fb186ed  no SIGHUP handler at all -> default disposition terminates the MASTER.
+             Workers are orphaned and keep serving; killed orphan is NOT replaced;
+             restarting the binary fails `listen: Address already in use`.
+             Lines 74/75 install only SIGTERM/SIGINT/SIGPIPE (`signal(SIGTERM,onterm)`).
+   61cc738c  handler sets `reloadflag` (line 69 `void hup(int){reloadflag=1;}`) but the master
+             never tests it; `reloadflag` is set and cleared nowhere. Certificate and root
+             stay unchanged across HUP (10 x 0.4 s probes, single cert serial).
+   44bf7f35  same shape: `reloadflag` set at line 95, cleared at line 105 `if(reloadflag){reloadflag=0;}`
+             with no reload work. Root stays ALPHA after HUP.
+   063b0d5e  `signal(SIGHUP,SIG_IGN)` in master (line 82) and worker (line 73). Inert.
+   29d05850  `hupflag` set at line 41, never referenced again. Inert.
+   8d5ff1f2  only correct build: reloads, rejects an immutable `worker_processes` change
+             (root stays ALPHA, child count stays 1), tolerates invalid config
+             (master alive, old generation serving, in-flight request completes),
+             rotates on a valid reload, and closes idle keep-alive at the swap.
+
+F. WORKER KILL (SIGKILL to one worker)
+   all six replace the worker and keep serving — OPERATIONS.md:70 satisfied everywhere.
+
+G. CONSEQUENCE SUMMARY
+   - No build honours the configured drain deadline; five cut the proxied response at 0 ms.
+   - 063b0d5e is the mirror image: it drains correctly but never terminates.
+   - Certificate rotation via the documented SIGHUP path works on one build of six.
+   - 6fb186ed turns the documented reload signal into a supervisor-teardown.

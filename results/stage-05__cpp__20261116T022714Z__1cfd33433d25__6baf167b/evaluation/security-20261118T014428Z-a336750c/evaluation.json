@@ -1,0 +1,83 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 793,
+      "path": "evidence/ev_r12_V_6baf_clShort.txt",
+      "sha256": "70fc187a7c80ad8277079c3b675d8830479454c61f17bbe37ef834b1eade5ccd"
+    },
+    {
+      "bytes": 1611,
+      "path": "evidence/ev_r12_V_6baf_predicate.txt",
+      "sha256": "c5603c85ace434f2918f91a66ebb1a87d2fbe554fb3f4db4f8b072b931fc8011"
+    },
+    {
+      "bytes": 1422,
+      "path": "report.md",
+      "sha256": "785d298cfc70ff42f84ba0722583041604c6dd5b7d649e3683362178866ccb9c"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T01:44:28.903155+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T014428Z-a336750c",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "safe_header rejects CR, LF and NUL at parse time and the same predicate gates emission, so the build agrees with itself. The strongest of the six builds in this lane and the reference point for the others.",
+      "evidence": [
+        "evidence/ev_r12_V_6baf_predicate.txt",
+        "evidence/ev_r12_V_6baf_clShort.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "informational",
+      "status": "confirmed",
+      "title": "Parse and emit share one restrictive predicate, so no malformed head escapes; eleven of fifteen modes refused"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "e2e5d47f1e1ce9888f301bfb7469217a8dadc1ee",
+    "source_sha256": "4e8047a0e9346e26a700d71fb2c4a7ce08aec23236a5275434c68d1dab0a5a4f",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "All fifteen peer modes against 6baf167b; refusal boundary",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

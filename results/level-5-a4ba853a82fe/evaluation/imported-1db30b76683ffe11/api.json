@@ -1,0 +1,194 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 5.569461367093027,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.001000850461423397
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.00839476939290762
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.0006718793883919716
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.00042022019624710083
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.0005009304732084274
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.00044619757682085037
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.00033182743936777115
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00021522119641304016
+    },
+    {
+      "id": "absolute-header-deadline",
+      "passed": true,
+      "seconds": 1.2013082401826978
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0005253218114376068
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 0.00011779554188251495
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.00024412851780653
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.00037910323590040207
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.00017614010721445084
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.006033604964614
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.0014459509402513504
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 8.155498653650284e-05
+    },
+    {
+      "id": "hosts",
+      "passed": true,
+      "seconds": 0.00028083473443984985
+    },
+    {
+      "id": "routes-index-mime",
+      "passed": true,
+      "seconds": 0.00036974065005779266
+    },
+    {
+      "id": "etag",
+      "passed": true,
+      "seconds": 0.0003765225410461426
+    },
+    {
+      "id": "ranges",
+      "passed": true,
+      "seconds": 0.00045278947800397873
+    },
+    {
+      "id": "routing-interactions",
+      "passed": true,
+      "seconds": 0.0008434271439909935
+    },
+    {
+      "id": "proxy-get-and-post",
+      "passed": true,
+      "seconds": 0.007505401037633419
+    },
+    {
+      "id": "proxy-framing-and-hops",
+      "passed": true,
+      "seconds": 0.008508614264428616
+    },
+    {
+      "id": "proxy-pool-and-errors",
+      "passed": true,
+      "seconds": 1.0129387862980366
+    },
+    {
+      "id": "proxy-no-post-retry",
+      "passed": true,
+      "seconds": 0.002789268270134926
+    },
+    {
+      "id": "proxy-fragmented-upload",
+      "passed": true,
+      "seconds": 0.004075782373547554
+    },
+    {
+      "id": "cache",
+      "passed": true,
+      "seconds": 1.2359402878209949
+    },
+    {
+      "id": "cache-byte-limit",
+      "passed": true,
+      "seconds": 0.3994146976619959
+    },
+    {
+      "id": "reload-and-rate-limit",
+      "passed": true,
+      "seconds": 0.6033511999994516
+    },
+    {
+      "id": "graceful-stop",
+      "passed": true,
+      "seconds": 0.036855255253612995
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.30278909020125866
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.1100580794736743
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.1300926236435771
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.3535717222839594
+    }
+  ],
+  "summary": {
+    "passed": 35,
+    "status": "passed",
+    "total": 35
+  },
+  "unimplemented_requirements": []
+}

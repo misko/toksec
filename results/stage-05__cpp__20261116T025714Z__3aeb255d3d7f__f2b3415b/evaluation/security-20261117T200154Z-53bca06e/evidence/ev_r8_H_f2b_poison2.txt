@@ -1,0 +1,70 @@
+=== try 2  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 5  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 8  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 11  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 14  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 17  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 20  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 23  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 26  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED
+=== try 29  client2 status: HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED

@@ -1,0 +1,95 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 669,
+      "path": "evidence/ev_r17_D_ctl_a4ba_attack.hex",
+      "sha256": "f066b7f3139cd1621822c137638b22ee5760fc7c17e79c151a52bf6a0bede828"
+    },
+    {
+      "bytes": 305,
+      "path": "evidence/ev_r17_D_ctl_a4ba_up_attack.hex",
+      "sha256": "ca69d70553e7df88d1940957f751eb79554aa8e9fa338dd7672cde0933494b96"
+    },
+    {
+      "bytes": 189,
+      "path": "evidence/ev_r17_D_root_a4ba_up_victim.hex",
+      "sha256": "d9cc9557ed755cf416d7b8455700a2021edb2b2db8faced9c0e2baf59528b54c"
+    },
+    {
+      "bytes": 287,
+      "path": "evidence/ev_r17_D_root_a4ba_victim_xq.hex",
+      "sha256": "5e75717e8a0b686731b3421bb1b34ffe53e60ee3ed9f7718197f6528fa8ed041"
+    },
+    {
+      "bytes": 2410,
+      "path": "report.md",
+      "sha256": "abb558ce0999519eeb105410a4855c94727a756221b7a2a764f3c366632041b0"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T13:01:01.811367+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T130101Z-5f9698bb",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "Control first: two identical /api/zz.txt requests hit the cache (two fetches total, second serves the stored body). A single identity-AE request to /api/x?smuggled<CR><LF>GET /exec?cmd=id then poisons the exact key host+/api/x?<smug>. The first victim to the identical target refetches it (upstream line captured with the smuggled second request inside), and every later identical victim is served from cache at zero fetches (see ev_r17_D_xae rows for the explicit zero-fetch confirmation), so one attack request claims one exact key and the exec output it produces.",
+      "evidence": [
+        "evidence/ev_r17_D_ctl_a4ba_attack.hex",
+        "evidence/ev_r17_D_root_a4ba_victim_xq.hex",
+        "evidence/ev_r17_D_root_a4ba_up_victim.hex",
+        "evidence/ev_r17_D_ctl_a4ba_up_attack.hex"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Poison key is the exact raw target; identity-AE attack repels only the byte-identical victim request"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Round 17 lane D: cache-poison key width, command injection into the cached entry, eviction persistence, and conditional-path survival.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

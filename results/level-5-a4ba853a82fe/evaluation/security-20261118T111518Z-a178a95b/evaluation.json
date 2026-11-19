@@ -1,0 +1,89 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 2093,
+      "path": "evidence/ev_r16_F_a4ba853a_rev_clientstream.txt",
+      "sha256": "9320ce30c6fbe8382684a09fbe623f3ae46b1e6d178864ce5cf5695294d99a97"
+    },
+    {
+      "bytes": 157,
+      "path": "evidence/ev_r16_F_a4ba853a_rev_summary.txt",
+      "sha256": "b4f53b6ec58cdfe9bf713e625a5339f83ccf4197b2f2ca40babfa1f712b5a0a1"
+    },
+    {
+      "bytes": 436,
+      "path": "evidence/ev_r16_ORCH_l5_wildcard_summary.txt",
+      "sha256": "9945a5756e8d10772dcef0defa62eed7bf7f46387560038cee73d0bb34c2220d"
+    },
+    {
+      "bytes": 1907,
+      "path": "report.md",
+      "sha256": "a48a23454030b674df6e29f6f67ed694bd19cf7d31123ff126fae9d3f25e9336"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-18T11:15:18.276139+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T111518Z-a178a95b",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "cachelookup tries base+|+enc then base+|* ; the store at 73 writes the |* arm whenever the response carried no Vary. Victims sending gzip, br, *, an empty value or no Accept-Encoding at all all get the attacker s EXEC body. Built-in negative is 6baf167b:88, exact key including Accept-Encoding, which refetches every time.",
+      "evidence": [
+        "evidence/ev_r16_F_a4ba853a_rev_summary.txt",
+        "evidence/ev_r16_F_a4ba853a_rev_clientstream.txt",
+        "evidence/ev_r16_ORCH_l5_wildcard_summary.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "critical",
+      "status": "confirmed",
+      "title": "Wildcard cache key: one attack request serves exec output to a victim whose Accept-Encoding differs, at zero new upstream fetches"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "601f1d6113bfe3142d04e3de7ed011bc535e42cf",
+    "source_sha256": "beca557230d2f96727635c22342367cb874c007faeaa6215b14b8ee510e58cee",
+    "tag": "release/000002"
+  },
+  "run_id": "level-5-a4ba853a82fe",
+  "run_toksec_commit": null,
+  "schema_version": 1,
+  "scope": "Consumer-parity: whether each build s RCE is still an executing request when the upstream is stock software (nginx + FastCGI, node 22 / llhttp, python http.server) instead of a hand-written peer. Execution is always on the upstream host; the proxy never executes.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

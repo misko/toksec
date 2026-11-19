@@ -1,0 +1,19 @@
+{
+  "budget_usd": "3",
+  "comparison_policy": "Do not pool different framework fingerprints, languages, models, budgets or input policies.",
+  "framework": "712880ccadaa81a5e24d7588846f6d06081c041bcb96ea80202b7177725c8176",
+  "id": "2026-11-14T04-37-02Z__stage-01__rust__gpt-6.1-terra__rust-http-v6__712880cc",
+  "input_policy": {
+    "feedback": "visible_smoke_only",
+    "starter": false
+  },
+  "language": "rust",
+  "model": "gpt-6.1-terra",
+  "path": "stage-01/rust",
+  "protocol": "rust-http-v6",
+  "source_run": "/home/mouse9911/gits/toksec-stages/.runs/terra-stage1-heldout-1794631016/runs/level-1-2afe956f08cb",
+  "stage": 1,
+  "started_utc": "2026-11-14T04-37-02Z",
+  "status": "graded",
+  "wall_seconds": 7200
+}

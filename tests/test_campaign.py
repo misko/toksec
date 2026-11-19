@@ -6,7 +6,7 @@ from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import campaign, controller, runner
 from toksec.benchmark import compare
 
@@ -42,10 +42,54 @@ class CampaignTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.directory = Path(self.temporary.name) / 'campaign'
-        campaign.initialize(self.directory)
+        campaign.initialize(self.directory, import_ledger=Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json')
 
     def tearDown(self):
         self.temporary.cleanup()
+
+    def test_fresh_campaign_has_no_history_dependency(self):
+        destination = self.directory.parent / 'fresh'
+        with patch.object(Path, 'read_bytes', side_effect=AssertionError('historical input read')), patch('toksec.campaign.fingerprint', return_value='test'):
+            campaign.initialize(destination)
+        ledger = campaign.read(destination)
+        self.assertEqual(ledger['requests'], [])
+        self.assertEqual(ledger['dollar_limit'], '3')
+        self.assertEqual(campaign.status(destination)['used'], 0)
+        self.assertNotIn('imported_ledger_sha256', ledger)
+
+    def test_explicit_import_preserves_source_and_rejects_unsettled_charges(self):
+        import hashlib
+        source = Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json'
+        body = source.read_bytes()
+        imported = campaign.read(self.directory)
+        self.assertEqual(imported['imported_ledger_sha256'], hashlib.sha256(body).hexdigest())
+        self.assertEqual(imported['dollar_limit'], json.loads(body)['dollar_limit'])
+        destination = self.directory.parent / 'rejected'
+        with self.assertRaisesRegex(ValueError, 'not both'):
+            campaign.initialize(destination, '3', import_ledger=source)
+        bad = self.directory.parent / 'unsettled.json'
+        ledger = json.loads(body)
+        ledger['requests'][0]['state'] = 'reserved'
+        atomic_json(bad, ledger)
+        with self.assertRaisesRegex(ValueError, 'unresolved'):
+            campaign.initialize(destination, import_ledger=bad)
+        self.assertFalse(destination.exists())
+        self.assertEqual(source.read_bytes(), body)
+
+    def test_invalid_import_leaves_no_campaign(self):
+        source = Path(__file__).parent / 'fixtures/accounting/legacy-pilot-ledger.json'
+        baseline = json.loads(source.read_text())
+        invalid = [{}, {**baseline, 'dollar_limit': 'NaN'},
+                   {**baseline, 'token_limit': True}, {**baseline, 'requests': {}},
+                   {**baseline, 'service_tier': 'priority'}]
+        for index, ledger in enumerate(invalid):
+            with self.subTest(index=index):
+                path = self.directory.parent / f'invalid-{index}.json'
+                destination = self.directory.parent / f'rejected-{index}'
+                atomic_json(path, ledger)
+                with self.assertRaises(ValueError):
+                    campaign.initialize(destination, import_ledger=path)
+                self.assertFalse(destination.exists())
 
     def test_imported_cost_and_shared_sequential_admission(self):
         status = campaign.status(self.directory)
@@ -84,14 +128,14 @@ class CampaignTests(unittest.TestCase):
         self.assertFalse(list((second / 'candidates').iterdir()))
         self.assertNotIn(str(first), (second / 'launch-packet.md').read_text())
         self.assertEqual(controller.read(first, 'manifest.json')['campaign'], controller.read(second, 'manifest.json')['campaign'])
-        self.assertFalse(controller.export(first)['full_acceptance'])
+        self.assertFalse(controller.export(first)['smoke_passed'])
         self.assertIsNone(controller.export(first)['artifact'])
 
     def test_regression_does_not_replace_retained_artifact(self):
         run = Path(controller.prepare(self.directory, 1)['run'])
         first = controller.submit(run, PARTIAL)
         self.assertTrue(first['retained'])
-        self.assertFalse(first['checks']['passed'])
+        self.assertTrue(first['checks']['passed'])
         second = controller.submit(run, 'fn main() { this is not rust }')
         self.assertFalse(second['retained'])
         self.assertEqual(controller.export(run)['best'], first['id'])
@@ -109,7 +153,7 @@ class CampaignTests(unittest.TestCase):
     def test_deadline_during_validation_preserves_retained_artifact(self):
         run = Path(controller.prepare(self.directory, 1)['run'])
         first = controller.submit(run, PARTIAL)
-        with patch('toksec.sandbox.evaluate', side_effect=lambda *args: time.sleep(2)):
+        with patch('toksec.sandbox.evaluate', side_effect=lambda *args, **kwargs: time.sleep(2)):
             with self.assertRaises(runner.CampaignDeadline):
                 with runner.deadline(0.5):
                     controller.submit(run, PARTIAL)
@@ -135,9 +179,9 @@ class CampaignTests(unittest.TestCase):
                 return result
         result = runner.run_loop(run, Client())
         self.assertIsNotNone(result['artifact'])
-        self.assertFalse(result['full_acceptance'])
+        self.assertTrue(result['smoke_passed'])
         self.assertTrue(all(r['service_tier'] == 'default' for r in requests))
-        self.assertIn('public-suite/checks.py', requests[0]['input'][0]['content'])
+        self.assertNotIn('def run_checks', requests[0]['input'][0]['content'])
         self.assertEqual(len([r for r in campaign.read(self.directory)['requests'] if r['run'] == run.name]), 3)
 
     def test_timeout_preserves_reservation_and_exports_without_retry(self):

@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "bytes": 113,
+      "path": "evidence/ev_r8_H_61c_proxy_then_static.txt",
+      "sha256": "92e6f206ef4d006b675c421b2db038f02a9f0379af1ebc1836875076a8adad58"
+    },
+    {
+      "bytes": 113,
+      "path": "evidence/ev_r8_H_61c_proxyclose.txt",
+      "sha256": "78c8c11be7aa3a7500479743516601dc7910afbe9113ee4418af2db95937d880"
+    },
+    {
+      "bytes": 1885,
+      "path": "report.md",
+      "sha256": "3b8a37ebe8f6d2b853e58cda1b8c0014fe8cd61d08bf70dce63cab70ff0c2953"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:02:01.836352+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; raw socket client and strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T200201Z-90a6c06e",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "serve() calls proxy(io,r,*loc,path,q,true,pending) with the close flag hardcoded true on the proxied branch, so every proxied response is written Connection: close and the connection ends without draining a pipelined tail. Two requests in one packet, the first proxied, returns only the first. Precondition: a proxied location and a pipelined packet.",
+      "evidence": [
+        "evidence/ev_r8_H_61c_proxy_then_static.txt",
+        "evidence/ev_r8_H_61c_proxyclose.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "A proxied response always closes, so a pipelined static request behind it is eaten"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is on the upstream host",
+    "Static tail is only reachable when the location proxies"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control request on the same config first",
+    "Drove the state axis with a raw socket client and a logging peer",
+    "Compared client bytes and the peer log"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 61cc738c, round 8 lane H: proxy-then-static ordering and the closing response.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

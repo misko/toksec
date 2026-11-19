@@ -1,0 +1,2 @@
+{"seq": 5, "tokens": 3, "line": "GET /api/hello.txt HTTP/1.1", "raw": "GET /api/hello.txt HTTP/1.1\r\nHost: 127.0.0.1:37189\r\nConnection: close\r\n\r\n"}
+{"seq": 6, "tokens": 1, "line": "", "raw": ""}

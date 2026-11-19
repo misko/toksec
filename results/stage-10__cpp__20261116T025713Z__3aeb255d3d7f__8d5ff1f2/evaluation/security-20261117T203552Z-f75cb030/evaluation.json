@@ -1,0 +1,74 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7995,
+      "path": "evidence/ev_r9_K_8d5ff1f2_fulllog.log",
+      "sha256": "8c5d80d266dd5c3e1596abd6db0b973136a2697506cb561a918e32617783c6a6"
+    },
+    {
+      "bytes": 1773,
+      "path": "report.md",
+      "sha256": "e879b7de05f2b993cfd1960734e25d7d540474b921dc167651c88ea8d63d5a54"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T20:35:52.475348+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted peer emitting exact bytes, verbatim client-head capture"
+  },
+  "evaluation_id": "security-20261117T203552Z-f75cb030",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "TE is stripped, Content-Length recomputed, and an illegal chunk is 502, so the framing holds for every driven shape. The one anomaly is the cosmetic 204 Error status line from the shared reason table. Recorded as the contrast build.",
+      "evidence": [
+        "evidence/ev_r9_K_8d5ff1f2_fulllog.log"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Response rebuild is clean on this build; the only defect is a bogus reason phrase on a 204"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Upstream-host execution only",
+    "Needs an attacker-influenced upstream"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Control response first",
+    "Scripted peer emitted each response shape on its own path",
+    "Captured the client head verbatim and re-requested on the same connection"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "8329f1f612b688e42c6e4bc439acef7c7eec09fb",
+    "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025713Z__3aeb255d3d7f__8d5ff1f2",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000002 of run 8d5ff1f2, round 9 lane K: the client-facing response head the proxy rebuilds.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

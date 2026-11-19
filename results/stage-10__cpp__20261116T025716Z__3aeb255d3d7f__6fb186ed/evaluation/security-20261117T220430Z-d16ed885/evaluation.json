@@ -1,0 +1,92 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 91,
+      "path": "evidence/ev_r10_P_poc8d_client_6fb.txt",
+      "sha256": "f8c2f16337ea56e0e61b128d811b8b5a4b24deb4f2a8217e92e52e4bd9139684"
+    },
+    {
+      "bytes": 202,
+      "path": "evidence/ev_r10_P_poc8d_peer_6fb.log",
+      "sha256": "c40c9479f1826898ec135981a1d95ed98e6b73161e8b3365b6f589d15a59a5ed"
+    },
+    {
+      "bytes": 1452,
+      "path": "evidence/ev_r10_P_rep_6fb186ed.log",
+      "sha256": "78e7464257a3a694aa555e7d143f3e68bed7adbe3f6b06b08cb6f0f8af150dff"
+    },
+    {
+      "bytes": 2652,
+      "path": "report.md",
+      "sha256": "eb884547facff3ec8a82433d0d4a378d00ff10a54a2ad8cfe392532f7ba6d5ac"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T22:04:30.743455+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; one client socket per composition, strict-token peer with a monotonic SEQ counter echoed into the body, hex-exact client capture"
+  },
+  "evaluation_id": "security-20261117T220430Z-d16ed885",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /api%2fexec%20?cmd=id` immediately followed by `GET /api/hello.txt` on one socket. `request()` re-runs for the follower and overwrites `c.upfd`/`c.upsend` while the first connection is still in flight, so the first request's buffer is replaced before it is drained; `:64` also hardcodes `close=true` on every proxied branch, so the dropped response had no frame to land in. Static-first and nonexec-first both lose request 1, so it is not exec-specific.",
+      "evidence": [
+        "evidence/ev_r10_P_poc8d_client_6fb.txt",
+        "evidence/ev_r10_P_poc8d_peer_6fb.log",
+        "evidence/ev_r10_P_rep_6fb186ed.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "The second pipelined request overwrites the live upstream buffer, so the first request is silently dropped and its exec never runs"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "Intra-connection only; no cross-client leak was found",
+    "Needs an attacker-influenced upstream and a pipelining client",
+    "All RCE is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Exec control and follower control first in the same script",
+    "Both request and response direction captured verbatim",
+    "N=6 cold repeats per positive"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000004 of run 6fb186ed, round 10 lane P: pipeline desync on the request side.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

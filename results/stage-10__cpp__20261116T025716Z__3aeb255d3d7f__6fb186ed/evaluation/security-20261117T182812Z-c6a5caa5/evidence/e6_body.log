@@ -1,0 +1,9 @@
+# build 3aeb255d3d7f__6fb186ed  config: quoted-space URI above
+# Body framing: CL must be exactly 0 on the proxy path, so a body is refused, but a trailing
+# request line with NO Content-Length is re-parsed as a second request (keep-alive only).
+CTL GET /hello.txt                                  -> 200 body=ALPHA
+POST /api?cmd=whoami with CL=24 and a body          -> 400 Bad Request, no upstream connection
+GET /api?cmd=id, keep-alive, then a bare second line -> 400 (first) AND a second upstream hit
+UPSTREAM (last two): LINE=b'GET /exec  HTTP/1.1' TOKS=4  (x2)
+# The 400 does not close the connection, so the leftover line is parsed and proxied.
+# Source: line 67 gate (!headers["content-length"].empty() && ...[0]!="0") -> 400.

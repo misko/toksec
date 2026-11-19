@@ -1,0 +1,4 @@
+port 18821 cfg ./cfg: Location-sink negative control, dir tail '\r\n\r\nX'
+  forwarding control GET /index.html -> HTTP/1.1 200 OK
+  GET /sub%0D%0A%0D%0AX -> HTTP/1.1 400 Bad Request
+  verdict: NEGATIVE - decode loop rejected the control byte, no redirect ran

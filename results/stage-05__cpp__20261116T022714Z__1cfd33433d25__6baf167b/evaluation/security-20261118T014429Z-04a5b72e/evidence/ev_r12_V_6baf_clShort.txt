@@ -1,0 +1,9 @@
+LANE V — 6baf167b, upstream short body against a large Content-Length. Build 1cfd33433d25__6baf167b, source ...6baf167b.cpp, cfg ev_r12_V_cfg_6baf.conf.
+Control passed (200 HELLO).
+
+upstream_wrote_hex 485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a203530300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a48454c4c4f
+client_received_hex 485454502f312e31203530322042616420476174657761790d0a436f6e74656e742d4c656e6774683a20300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a
+
+`rd.ensure(n)` (`:99`) blocks for all 500 bytes, hits EOF at 5 and returns false, and the whole
+exchange becomes 502. So 6baf never emits a CL/body mismatch — it never emits the response at all.
+That is the opposite resolution to 61cc, which re-emits 500 and ships 5 (ev_r12_V_headline_61cc_clShort.txt).

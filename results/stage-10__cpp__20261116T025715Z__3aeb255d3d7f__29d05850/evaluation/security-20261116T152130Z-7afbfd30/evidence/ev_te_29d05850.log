@@ -1,0 +1,7 @@
+GET plain           -> HTTP/1.1 200 OK              up=1
+      b'GET /api/api/x HTTP/1.1\r\nHost: 127.0.0.1:56115\r\nConnection: close\r\n\r\n'
+GET TE chunked      -> HTTP/1.1 400 Bad Request     up=0
+GET TE gzip,chunked -> HTTP/1.1 400 Bad Request     up=0
+GET CL:0            -> HTTP/1.1 200 OK              up=1
+      b'GET /api/api/x HTTP/1.1\r\nHost: 127.0.0.1:56115\r\nConnection: close\r\n\r\n'
+GET CL:5+body       -> HTTP/1.1 400 Bad Request     up=0

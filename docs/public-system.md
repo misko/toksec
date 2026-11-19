@@ -1,3 +1,7 @@
+> Historical document. Paths, budgets, and stage capabilities below describe an earlier version.
+> Use the [current guide index](README.md) for new work and the
+> [historical Python pilot](https://github.com/misko/toksec/tree/37d353034de935e32e40c31f71a44dbbc473e7b2/legacy/python_pilot) for the retired implementation.
+
 # Walkthrough of the public Rust system
 
 The experiment asks how much measured agent capacity produces a working implementation of a fixed interface, and later how much attacker capacity finds an exploit in that implementation. This change implements the builder side. It does not launch another paid experiment or implement the exploit campaign.

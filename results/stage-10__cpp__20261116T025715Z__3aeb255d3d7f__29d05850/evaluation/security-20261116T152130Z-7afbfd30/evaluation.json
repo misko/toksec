@@ -1,0 +1,426 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 735,
+      "path": "evidence/big_object_probe.log",
+      "sha256": "471967150e3373c30d4f2dca2d3e9e5cc5e3f5334af8133304c278b8dc39e906"
+    },
+    {
+      "bytes": 1881,
+      "path": "evidence/body_probe.log",
+      "sha256": "2cdba0a6e3ca56d99e51288bc1463a99eeb13abf8a30ac3ad1efe1976458573a"
+    },
+    {
+      "bytes": 13458,
+      "path": "evidence/decode_probe.log",
+      "sha256": "1b04c7cae52eb5e3e108b769b42542ea0c2f1dcc4e3ace9cea09356996216467"
+    },
+    {
+      "bytes": 779,
+      "path": "evidence/ev_1xx_3aeb255d3d7f__29d05850.log",
+      "sha256": "07a6533cd6b540d6776d3cc62ce6ffe2d61450c628b361e580fcd9b23f15974d"
+    },
+    {
+      "bytes": 1898,
+      "path": "evidence/ev_drain_false.log",
+      "sha256": "9fd0d90f5c7591a8b7aed9838a425b5f8b35195870867d60141db4c2af200bb1"
+    },
+    {
+      "bytes": 207,
+      "path": "evidence/ev_expect_3aeb255d3d7f__29d05850.log",
+      "sha256": "698f0dfab06ab6bdf8e1c0333792e0c2e40c14e18dbe5987fb40c2ef42d8fabe"
+    },
+    {
+      "bytes": 4842,
+      "path": "evidence/ev_lifecycle_all.log",
+      "sha256": "24ace36184a0e70262bf0af9558736cc93be9a6daf63fdbd340744ebeb3f616f"
+    },
+    {
+      "bytes": 788,
+      "path": "evidence/ev_pipe3_all.log",
+      "sha256": "953529ed518ac23235f15304882aedc8679d696970d20950d9f49f4bdf5edd87"
+    },
+    {
+      "bytes": 223,
+      "path": "evidence/ev_pipe5_all.log",
+      "sha256": "412b9c1a4a73aa613850ee8e2a5808c1690123ceee7378504ddb0e9e7a471855"
+    },
+    {
+      "bytes": 340,
+      "path": "evidence/ev_pipe6_all.log",
+      "sha256": "c2a3d6a35ddf8f3f4542e937d76f0dd880fb432c3194849ebfcc100cd44fb542"
+    },
+    {
+      "bytes": 417,
+      "path": "evidence/ev_pipe_accept.log",
+      "sha256": "9eefe26c1ad3ca3e5679044deeb87597eeaa146611e0b51b976cef708370f9f4"
+    },
+    {
+      "bytes": 1107,
+      "path": "evidence/ev_post_29d05850.log",
+      "sha256": "167d4d1cee9dd9433d9ea838d63a28717e9f3bfc9de4e97298ff2b8245fedf2b"
+    },
+    {
+      "bytes": 3352,
+      "path": "evidence/ev_q29_29d05850.log",
+      "sha256": "97d72fc89df8862de1b44169624cf930cac46ad64c9d5b7144040caf96ce2700"
+    },
+    {
+      "bytes": 1246,
+      "path": "evidence/ev_rsplit_29d05850.log",
+      "sha256": "021d6a302c0028686f97b8e7457773b70a22b219116aaac8532e4258562d04fa"
+    },
+    {
+      "bytes": 1889,
+      "path": "evidence/ev_rte_29d05850.log",
+      "sha256": "e9295e629d7ef4432fabdad5dba95641d8d60148564904ded695d61e9ce61a8e"
+    },
+    {
+      "bytes": 955,
+      "path": "evidence/ev_space_29d05850.log",
+      "sha256": "808c7abe0bc0ed33b6b8c4f6de8f999ba220f22285b3ae437d4a2d631453113a"
+    },
+    {
+      "bytes": 459,
+      "path": "evidence/ev_te_29d05850.log",
+      "sha256": "0c6fa4c7f73033d9afe4a37697154dad47aaeabb5eeec17266bb3e3f9ddd9176"
+    },
+    {
+      "bytes": 2411,
+      "path": "evidence/ev_te_kv_all.log",
+      "sha256": "a83b42d62eebb0a022e6b32da5ba8b804781a8223947ba8ab731f713f832acc0"
+    },
+    {
+      "bytes": 44,
+      "path": "evidence/fuzz_seed1337.log",
+      "sha256": "30477e5e475e3b7deeb4e30ce433a22dd0c5ae3d7958e3b2389db7677d695fe4"
+    },
+    {
+      "bytes": 42,
+      "path": "evidence/fuzz_seed42.log",
+      "sha256": "6e434abc59fc001ac89e058df842eb796587f9183756bf95340464217365eca9"
+    },
+    {
+      "bytes": 41,
+      "path": "evidence/fuzz_seed7.log",
+      "sha256": "450a7f9a2e9e2265b51651191d541221535f128fcc449205ffbb5fc2dee1cc8b"
+    },
+    {
+      "bytes": 44,
+      "path": "evidence/fuzzlong_seed1337.log",
+      "sha256": "6d0681d143cdd6f9499b4d90d0b567bf9a0d256984e98e8c87819c871b440768"
+    },
+    {
+      "bytes": 42,
+      "path": "evidence/fuzzlong_seed42.log",
+      "sha256": "284e72f855418d1070c04f76961af905af0c0f11c8c56ede7e301c8b932d1ea9"
+    },
+    {
+      "bytes": 41,
+      "path": "evidence/fuzzlong_seed7.log",
+      "sha256": "90765a9d7e4178100721ab36c443050a34621ebcf6c8f94c24ff46fc803ce8ba"
+    },
+    {
+      "bytes": 4784,
+      "path": "evidence/headers.log",
+      "sha256": "1c9fdc869efe0f6e0de57a6a3ca4893405c84cfafe521fe3d6df4e31305c255e"
+    },
+    {
+      "bytes": 2122,
+      "path": "evidence/host_probe.log",
+      "sha256": "892f90e584a7b77350541663da47b40c17daeb4994d2112c87badb8a7b05677c"
+    },
+    {
+      "bytes": 39,
+      "path": "evidence/lifecycle.log",
+      "sha256": "f785d63bd313a6c693043c768dacf08fab59817b4e16560421e99241de8f4453"
+    },
+    {
+      "bytes": 472,
+      "path": "evidence/memory_probe.log",
+      "sha256": "809d7ca5cd8bb112b0a7073c06c6ce25e20dfd0ba4765c9aab76c44a6097d01f"
+    },
+    {
+      "bytes": 1041,
+      "path": "evidence/path_probe.log",
+      "sha256": "46b3a4746c478dd618eb9a509a59f64aa6f4aab5f20f150c0750a2d158d57f99"
+    },
+    {
+      "bytes": 1466,
+      "path": "evidence/proxy_probe.log",
+      "sha256": "0335b19f3b60a6c11910766c8390842a4efc7378a69d9bf13401497afd9256a6"
+    },
+    {
+      "bytes": 1720,
+      "path": "evidence/range_probe.log",
+      "sha256": "f40b64aa67aa28fdc92127a0fc915c615b7024c0a42023e0acdd30d6b7de8bd7"
+    },
+    {
+      "bytes": 47,
+      "path": "evidence/raw_seed1337.log",
+      "sha256": "c9dc7599402316a91838a12276513229680ce4059043b44d49f841e66ca7170e"
+    },
+    {
+      "bytes": 45,
+      "path": "evidence/raw_seed42.log",
+      "sha256": "569f051308abc89361b4eab989a35b5161a02552a86bb876515762d424eae9a0"
+    },
+    {
+      "bytes": 44,
+      "path": "evidence/raw_seed7.log",
+      "sha256": "951edddad34c700b5840a4913d14db7fffd56f3490fc2f1d8f48210f3aaefbdf"
+    },
+    {
+      "bytes": 473,
+      "path": "evidence/smuggle_rce.log",
+      "sha256": "c2b04f8ad586afb69c9c76e8df10a53150855f0aaa8674267bedea021b94567a"
+    },
+    {
+      "bytes": 176,
+      "path": "evidence/soak_probe.log",
+      "sha256": "ecd1bdaa0e927dc5e1bdea945b286aad9d3e29733f921fc64f7517eb91285a08"
+    },
+    {
+      "bytes": 173,
+      "path": "evidence/soak_prod.log",
+      "sha256": "8b9f40eaa8aa068d32cb74e05f3988bc7cf14a2b4dfa7ef17d438f80caf85245"
+    },
+    {
+      "bytes": 262,
+      "path": "evidence/split_negative.log",
+      "sha256": "a9f893c6d0d1ea3bfb673111dd7ebdd8d39eed106b9f4fd6297284d3ada3c2bd"
+    },
+    {
+      "bytes": 1742,
+      "path": "evidence/tls_probe.log",
+      "sha256": "8b43944afcd39ba4df485cbfdf66ea93bb47d4aa5643a860525333027b105b1a"
+    },
+    {
+      "bytes": 707,
+      "path": "evidence/truncation_trailing_bytes.txt",
+      "sha256": "a1b500a42d571b121f115c64116e9bb32d79355bc22100e4f5f13f486206bf80"
+    },
+    {
+      "bytes": 52,
+      "path": "evidence/upfuzz_seed1337.log",
+      "sha256": "a758436ca81647f8eaef6d10389177a0cb027e6cef839432eee9eb48807bf9ca"
+    },
+    {
+      "bytes": 50,
+      "path": "evidence/upfuzz_seed42.log",
+      "sha256": "eaa6459bd6d2d1d0cc68d6d92b3f863d553ad2cdfeab7365dc4c9ca04e21a2b2"
+    },
+    {
+      "bytes": 49,
+      "path": "evidence/upfuzz_seed7.log",
+      "sha256": "91f60a23e0e9217a2786a8c28d43567b2ace68f0ee8951222a38498639658b32"
+    },
+    {
+      "bytes": 1505,
+      "path": "evidence/upstream_malformed.log",
+      "sha256": "1328fe43520c0e5549c24b5eb933c7787a7d3f721cd7bed9b302d525b79f7546"
+    },
+    {
+      "bytes": 34796,
+      "path": "report.md",
+      "sha256": "305e72c80cb732f5cfd7d4d6afd2cde104d1824c5c05cade975bab241d8cce34"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T14:43:44.953738+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual source review + targeted protocol probes + structured/raw/bypass fuzzing under ASan/UBSan/_GLIBCXX_DEBUG"
+  },
+  "evaluation_id": "security-20261116T152130Z-7afbfd30",
+  "evaluator_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+  "findings": [
+    {
+      "description": "== s-stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850\n  trail=0 (2097152, None) (2097152, None) (2097152, None)\n  trail=1024 (2097152, None) (2097152, None) (2097152, None)\n  trail=4090 (2097152, None) (2097152, None) (2097152, None)\n  trail=4096 (2097152, None) (2097152, None) (2097152, None)\n  trail=8192 (2097152, None) (2097152, None) (2097152, None)\n  trail=16384 (2062708, 'ConnectionResetError') (491380, 'ConnectionResetError') (127860, 'ConnectionResetError')\n  trail=32768 (1985343, 'ConnectionResetError') (1271103, 'ConnectionResetError') (1223487, 'ConnectionResetError')\n  trail=65536 (2062708, 'ConnectionResetError') (967540, 'ConnectionResetError') (127860, 'ConnectionResetError')\n",
+      "evidence": [
+        "evidence/truncation_trailing_bytes.txt"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "Undrained bytes behind the header terminator reset the socket and truncate the body"
+    },
+    {
+      "description": "A decoded 0x20 in the proxy path passes the c<32 guard and produces a four-token upstream request line; a whitespace-splitting upstream executes the smuggled query.",
+      "evidence": [
+        "evidence/ev_space_29d05850.log"
+      ],
+      "id": "SEC-002",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Space in the path defeats the `c<32` guard and splits the upstream request line"
+    },
+    {
+      "description": "query sliced from raw target (line 50) and appended undecoded at pt (line 50); path guard ch<32/127 never applies; %0d%0a in query splits upstream line and execs /exec?cmd=id (uid= returned); works URI and bare proxy_pass; path CRLF control still 400",
+      "evidence": [
+        "evidence/ev_q29_29d05850.log"
+      ],
+      "id": "SEC-003",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Query string is forwarded undecoded and unvalidated, so `%0d%0a` in the query splits the upstream request line where the path guard would reject it"
+    },
+    {
+      "description": "header erased at line 54 then 405 returned at line 50 with the body undrained; body stays in c.in and is parsed as the next request; one client write -> 3 responses, 2 upstream requests, body proxied to /exec?cmd=id (uid=); no control bytes needed",
+      "evidence": [
+        "evidence/ev_post_29d05850.log"
+      ],
+      "id": "SEC-004",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "A rejected POST leaves its body in the parse buffer, so the body is re-read as the next request and proxied"
+    },
+    {
+      "description": "upstream head split on CRLF at line 57 and relayed unfiltered; bare LF hides the next header inside a value; strict reader sees 0 CL / 1 TE, lenient sees CL+TE (or 1 vs 2 CL)",
+      "evidence": [
+        "evidence/ev_rsplit_29d05850.log"
+      ],
+      "id": "SEC-005",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Upstream headers carrying a bare LF are relayed verbatim, giving CRLF-strict and LF-lenient parsers different header sets and framing"
+    },
+    {
+      "description": "every interim response is turned into a 502 after the upstream has already answered",
+      "evidence": [
+        "evidence/ev_1xx_3aeb255d3d7f__29d05850.log"
+      ],
+      "id": "SEC-006",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Interim (1xx) upstream responses are rejected as parse failures, so any upstream that emits one returns 502"
+    },
+    {
+      "description": "the whole request is refused before the target is even parsed; the request is refused with 417",
+      "evidence": [
+        "evidence/ev_expect_3aeb255d3d7f__29d05850.log"
+      ],
+      "id": "SEC-007",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "`Expect: 100-continue` is refused outright with 417, so every standard uploading client is rejected"
+    },
+    {
+      "description": "The framing gate rejects any request carrying a `Transfer-Encoding` header, so chunked uploads (curl -T) never reach the upstream. the header test sits in the same clause that gates every non-`GET` method.",
+      "evidence": [
+        "evidence/ev_te_29d05850.log",
+        "evidence/ev_te_kv_all.log"
+      ],
+      "id": "SEC-008",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "`Transfer-Encoding: chunked` request bodies are refused with 400, so every standard chunked upload fails"
+    },
+    {
+      "description": "A response carrying both framings is 502'd. the `chunk` flag and the parsed `length` are both kept, and their conjunction is fatal.",
+      "evidence": [
+        "evidence/ev_rte_29d05850.log"
+      ],
+      "id": "SEC-009",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A legal upstream `Transfer-Encoding` + `Content-Length` pair is rejected with 502"
+    },
+    {
+      "description": "SIGTERM signals workers, which close downstream sockets at once; an in-flight proxied response is cut at 0 bytes while the accepted drain deadline is never referenced.",
+      "evidence": [
+        "evidence/ev_lifecycle_all.log",
+        "evidence/ev_drain_false.log"
+      ],
+      "id": "SEC-010",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "SIGTERM truncates the in-flight proxied response and the configured drain deadline is unused"
+    },
+    {
+      "description": "toksec_pipeline_depth is not in any directive list and setting() has no terminal else, so the name is accepted by --check-config and discarded; depth 1/4/64/unset all behave identically. The reader also decodes one request per poll pass after draining the whole batch, so every pipelined request waits the 100 ms poll timeout: 20 pipelined requests take 1.90 s against 0.78 s sequential.",
+      "evidence": [
+        "evidence/ev_pipe5_all.log",
+        "evidence/ev_pipe6_all.log",
+        "evidence/ev_pipe3_all.log",
+        "evidence/ev_pipe_accept.log"
+      ],
+      "id": "SEC-011",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "`toksec_pipeline_depth` is silently accepted-then-discarded, and pipelined requests each cost a 100 ms poll timeout"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "RCE verdict is none found within the audited scope; this build has no CGI, exec, or dynamic module path, so RCE requires memory corruption",
+    "Fuzzing bounds but cannot prove the absence of all memory-safety bugs",
+    "TLS was exercised end-to-end with a self-signed RSA-2048 certificate and crafted ClientHellos; client-certificate authentication and post-handshake (TLS 1.3) message paths were not covered",
+    "Memory measurements separate real growth from ASan allocator quarantine: the ASan build's RSS climb (27,636kB over 20,000 connections) is quarantine retention, not a leak, while the production build is flat at 0kB growth after warmup; load testing was single-host and not a distributed concurrency stress",
+    "Soak and memory probes were single-host; concurrent-worker races beyond 4 forked workers and distributed load were not stressed",
+    "RCE verdict is upstream-dependent: the proxy itself executes no code, so a code-executing backend route is what turns smuggling into RCE",
+    "Requires `proxy_pass` with a URI component; with a bare `proxy_pass http://up` (no URI) the raw target is forwarded and the decoded control characters are not used",
+    "Fuzzing bounds but cannot prove absence of all memory-safety bugs",
+    "Concurrent multi-host attack traffic beyond a single-host loopback harness was not exercised",
+    "Truncation is timing dependent in magnitude (127,860-2,097,152 of 2,097,152 observed) but the 16 KiB threshold truncated in 3/3 on every build tested",
+    "The query-smuggling RCE (SEC-003) needs an upstream that percent-decodes the request line and then splits it on whitespace/CRLF; a byte-exact upstream that never decodes sees one long token and does not split",
+    "Accepting POST would need body draining too; this build 405s every non-GET instead, so the desync is unconditional on any proxy location",
+    "Divergence needs the upstream to emit a bare LF in a header value; a fully CRLF-conforming upstream does not trigger it",
+    "The 100 ms figure is this build's poll timeout reproduced on loopback; slower paths add to it",
+    "Front-proxy amplification was reasoned from the socket behaviour, not measured through a real proxy"
+  ],
+  "methods": [
+    "Static source review of all 60 lines, including the 32 KiB streaming buffer arithmetic",
+    "21-case path-encoding probe",
+    "256 single-byte percent-decode probe plus 100-16000 byte encodings",
+    "47-case malformed/edge request-header probe",
+    "21-case Host-header probe",
+    "Event-loop lifecycle stress (partial requests, backpressure, churn, pipelining)",
+    "22-case byte-range probe",
+    "structured parser fuzzing: 3 seeds x 1000 plus 3 seeds x 2000 = 9000 iterations",
+    "raw binary fuzzing with random chunk splits: 3 seeds x 500 = 1500 iterations",
+    "proxy probe through a controlled Python upstream, plus 15 malformed-upstream modes",
+    "upstream fuzzing: 3 seeds x 400 total (200/100/100)",
+    "22-case POST/body probe",
+    "8-case large-object and 64 MiB range-boundary probe",
+    "TLS ClientHello probe: 32 adversarial ALPN/SNI structural cases plus 400 crafted-handshake fuzz iterations under ASan",
+    "ASan+UBSan+_GLIBCXX_DEBUG build of the frozen release, all sanitizer logs empty",
+    "Sustained-load soak and allocator-aware memory probe: 4 forked workers under nginx_mw.conf, 5,000 sequential keep-alive requests against the production build with per-request fd sampling, plus 20,000 sequential keep-alive requests against the ASan build and 20,000 new connections against both the production and ASan builds to compare RSS growth",
+    "Live malicious-upstream smuggle test: controlled upstream echoing the parsed request head",
+    "Encoded-CRLF request-line injection, two forms (header injection and injected second request)",
+    "Trailing-byte truncation sweep: 0/1024/4090/4096/8192/16384/32768/65536 bytes written after the header terminator against a 2 MiB file, three trials per row, Connection: close"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final release tag release/000002 of stage-10 run 29d05850. Source SHA-256 da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178 (60 lines). Full HTTP request parsing, config parser with k/m suffix quantity parsing, single 32 KiB buffered file streaming with read()/min(remain) cursors, TLS/SNI/ALPN, range handling, keep-alive, simple upstream relay, fork+poll workers.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

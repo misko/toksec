@@ -1,0 +1,9 @@
+== s-stage-05__cpp__20261116T022714Z__1cfd33433d25__6baf167b
+  trail=0 (2097152, None) (2097152, None) (2097152, None)
+  trail=1024 (2097152, None) (2097152, None) (2097152, None)
+  trail=4090 (2097152, None) (2097152, None) (2097152, None)
+  trail=4096 (2097152, None) (2097152, None) (2097152, None)
+  trail=8192 (2097152, None) (2097152, None) (2097152, None)
+  trail=16384 (1509183, 'ConnectionResetError') (2097152, 'ConnectionResetError') (1300852, 'ConnectionResetError')
+  trail=32768 (1336586, 'ConnectionResetError') (2097152, 'ConnectionResetError') (1509183, 'ConnectionResetError')
+  trail=65536 (1205620, 'ConnectionResetError') (1794879, 'ConnectionResetError') (1604415, 'ConnectionResetError')

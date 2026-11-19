@@ -1,0 +1,25 @@
+target port 19001 cfg ./nginx.conf, injected directory tail '\r\n\r\nHTTP'
+one request: GET /sub%0D%0A%0D%0AHTTP
+
+control - plain document, head must be complete, no stranded fields
+  GET /
+    status line : HTTP/1.1 200 OK
+    head as a client parses it:
+      | HTTP/1.1 200 OK
+      | ETag: "1794816049-47"
+      | Content-Type: text/html
+      | Content-Length: 47
+      | Connection: keep-alive
+    body         : b'<!DOCTYPE html><html><body>hello</body></html>\n'
+    header fields stranded in body: []
+
+sink under test
+  GET /sub%0D%0A%0D%0AHTTP
+    status line : HTTP/1.1 301 Moved Permanently
+    head as a client parses it:
+      | HTTP/1.1 301 Moved Permanently
+      | Location: /sub
+    body         : b'HTTP/\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+    header fields stranded in body: ['Content-Length: 0', 'Connection: keep-alive']
+
+verdict: SPLIT - the head is torn and the server's own header fields are now body bytes

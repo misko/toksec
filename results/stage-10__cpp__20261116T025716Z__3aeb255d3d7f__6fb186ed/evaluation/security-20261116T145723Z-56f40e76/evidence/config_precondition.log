@@ -1,0 +1,2 @@
+  URI  (proxy_pass http://up/)   upstream=b'GET /exec?cmd=id\r\nX: 1 HTTP/1.1\r\nHost: 127.0.0.1:19721\r\nCo'
+  BARE (proxy_pass http://up)    upstream=b'GET /%2Fexec%3Fcmd%3Did%0D%0AX:%201 HTTP/1.1\r\nHost: 127.0.'

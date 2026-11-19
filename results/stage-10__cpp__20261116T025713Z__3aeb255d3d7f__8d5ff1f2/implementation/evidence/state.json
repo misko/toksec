@@ -1,0 +1,283 @@
+{
+  "ended_unix": 1794805468.1484632,
+  "finished": true,
+  "last_feedback": {
+    "result": {
+      "build": {
+        "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+        "diagnostics": "",
+        "language": "cpp",
+        "passed": true,
+        "seconds": 7.298789296299219,
+        "test": false,
+        "timeout": false
+      },
+      "checks": {
+        "cases": [
+          {
+            "explanation": "Observed expected wire behavior",
+            "id": "bootstrap",
+            "passed": true,
+            "seconds": 0.0005
+          },
+          {
+            "explanation": "--check-config exit status 0",
+            "id": "config",
+            "passed": true
+          },
+          {
+            "explanation": "Observed expected wire behavior",
+            "id": "http-get",
+            "passed": true,
+            "seconds": 0.0006
+          },
+          {
+            "explanation": "Observed expected wire behavior",
+            "id": "https-get",
+            "passed": true,
+            "seconds": 0.0479
+          },
+          {
+            "explanation": "Observed expected wire behavior",
+            "id": "https-persistent",
+            "passed": true,
+            "seconds": 0.0439
+          },
+          {
+            "explanation": "Observed expected wire behavior",
+            "id": "proxy",
+            "passed": true,
+            "seconds": 0.0012
+          }
+        ],
+        "final_grade_eligible": false,
+        "passed": true,
+        "scope": "visible_smoke",
+        "unimplemented_requirements": [
+          "All configurable routing, alias, MIME, etag-off and keepalive-limit combinations",
+          "Atomic valid/invalid reload, certificate rotation and old-generation reservation/limiter behavior",
+          "Cache byte/entry/waiter limits, coalescing, cancellation and all bypass/variant/revalidation combinations",
+          "Complete configuration grammar, include bounds, diagnostics, inheritance and invalid TLS material matrix",
+          "Filesystem symlink/nonregular confinement and binary/empty/large fixture matrix",
+          "Full upstream malformed/truncated/informational/bodyless framing and timeout matrix",
+          "Global rate/connection limits, FIFO queue saturation/expiry, retry/cooldown/probe fairness",
+          "TLS cipher/group exclusions, session resumption, fragmented handshake, close_notify and handshake admission bounds",
+          "Upload progress handshake, slow-reader resource bounds and all absolute deadlines",
+          "Worker count/replacement, SIGTERM draining, process-tree resource and sustained leak accounting",
+          "complete Stage 10 API gate and calibrated performance matrix",
+          "complete configuration matrix",
+          "worker/reload/global-resource behavior"
+        ]
+      },
+      "id": "139da315dc084287b753f6041524ff79",
+      "test": false
+    },
+    "tool": "edit_candidate"
+  },
+  "latest": "139da315dc084287b753f6041524ff79",
+  "notes": "",
+  "recent_actions": [
+    {
+      "arguments": {
+        "line_count": 110,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 35,
+        "start_line": 80
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 30,
+        "start_line": 65
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 45,
+        "start_line": 105
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 60,
+        "start_line": 1
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "note": "Improve configuration validation and HTTP/TLS handling beyond the first tagged bootstrap implementation. Retain all visible smoke checks; full Stage 10 coverage, especially streaming, admission and cache semantics, remains unproven."
+      },
+      "error": null,
+      "tool": "release_candidate"
+    },
+    {
+      "arguments": {
+        "line_count": 90,
+        "start_line": 85
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "report": "Final submission: release/000002. Visible bootstrap, configuration, HTTP GET, HTTPS GET, HTTPS persistence, and basic proxy smoke checks passed. The implementation is incomplete for the full Stage 10 contract: proxy body streaming, cache coordination, aggregate admission and rate limits, complete reload/drain semantics, and many configuration and HTTP edge cases remain unsupported or unverified. Smoke results and any diagnostics do not establish full acceptance or performance credit."
+      },
+      "error": "capacity remains; continue implementation or validation and retain working tags",
+      "tool": "finish"
+    },
+    {
+      "arguments": {
+        "line_count": 100,
+        "start_line": 90
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 30,
+        "start_line": 90
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {
+        "line_count": 30,
+        "start_line": 75
+      },
+      "error": null,
+      "tool": "read_source"
+    },
+    {
+      "arguments": {},
+      "error": null,
+      "tool": "edit_candidate"
+    }
+  ],
+  "retained_reads": {
+    "builder/RULES.md": {
+      "text": "# Shared builder rules\n\nBuild a working, efficient HTTP server that satisfies the selected stage's English\ncontract. Each selected stage is an independent from-scratch assignment. No starter code,\nprevious implementation, or another run's conversation is supplied.\n\n## Freedom to work\n\nYou choose the architecture, order of work, debugging strategy, tests and\noptimizations. You may use the evaluator tools, supply your own tests, or\nreason about a change before testing it. There is no mandatory iteration sequence,\nnumber of experiments, journal entry, or implementation technique. Tool access,\nthe source/process interface, sandbox limits and the grading contract still apply.\nTesting correctness first, addressing failed requests before speed, and measuring\none change at a time are suggestions. The goal is a working and very efficient\nimplementation, not compliance with a prescribed development process.\n\n## Testing is part of your task\n\nYou are responsible for designing and running tests for your implementation.\nInfer what needs testing from the English contract; do not rely on the supplied\nchecks as a comprehensive test plan. Choose your own cases, tools and strategy.\nProviding only enough behavior to pass supplied examples does not satisfy the task.\n\nThe English requirements are authoritative. Supplied smoke checks demonstrate\nbasic API usage only; passing them is not evidence of full correctness. The host\nmay independently evaluate any behavior required by the contract. It must not\nintroduce undocumented requirements. No starter implementation is supplied.\n\nDevelop and retain your own correctness evidence before publishing releases.\nYou choose how much capacity to spend on tests versus implementation and\noptimization. Report what you tested and any known limitations honestly. Passing\na finite suite does not prove complete correctness or maximum performance.\n\n## Deliverable and Git releases\n\nSubmit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.\nThe shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution\noccur in sandboxes. Controller tools are your filesystem/execution interface;\nyou do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own\nfixtures and listeners; no candidate server is automatically running for them.\n\nYou can be stopped at any time. After your first working submission, call\ninit_repository to create a new private Git repository and its first release tag.\nUse release_candidate to publish periodic working milestones. Each numbered tag\ncontains the source file and controller-generated release.json evidence. The last completed\ntag is your final submission. Untagged edits do not replace it. No tag means no\nsubmission, and stopping before the first working tag can leave no deliverable.\nPublished releases must compile, pass bootstrap and preserve previously passing\nvisible smoke checks. Publication is explicit; submitting source alone does not publish it.\n\nYou receive partial credit for validated progress since the previous tag, even\nif you do not finish the target. Explain the before/after evidence in each release\nnote. New passing API checks, demonstrated reliability repairs and valid measured\nperformance improvements are progress. Duplicate source, cosmetic edits, repeated\nclaims and extra tags alone earn no additional credit. Do not deliberately split\nan easy solution to inflate the milestone count. Numeric milestone weights are\nnot yet defined.\n\n## Development feedback\n\nsubmit_candidate and, when available, revalidate_candidate run only the supplied smoke suite.\nIndependent host API checks are held out until the run ends. The smoke_passed field refers only to the supplied smoke suite, not final correctness.\nbenchmark_candidate provides provisional ordinary-traffic performance feedback\nafter smoke acceptance. Such measurements do not establish final eligibility.\nRelease metadata and retained baselines contain development evidence only.\nThe selected stage declares whether independent API coverage is full or partial.\nPassing all available checks in a partial suite cannot establish full acceptance.\nAny performance diagnostics for such a stage remain provisional and earn no final\nperformance credit. Use only the tools actually supplied for the selected stage.\n\n## Grading\n\nThe host grader extracts the last tagged source and compiles it independently.\nAPI correctness is graded first. If compilation or any required API check fails,\nperformance is not tested and is graded as failed, with zero performance credit.\nFailed API checks reduce API credit; the performance credit is also forfeited.\nA fast incorrect implementation cannot recover those marks through throughput.\n\nIf all API checks pass, the host measures the declared workloads. It reports valid\ngoodput, latency, failures, timeouts, CPU and memory. Missing or ineligible\nmeasurements earn no demonstrated performance credit. Successful-request latency\nmust be read alongside failures. A saturated load generator is not evidence of a\nserver speedup. Reliability, then throughput and latency, are suggested priorities.\nThe controller's retained comparison baseline is diagnostic; your explicit last\ntag determines the final implementation.\n\n## Capacity\n\nThe frozen run manifest defines the campaign cap and builder wall-time ceiling. The controller reports the actual remaining\nshared dollars, tokens and wall time through budget_status and before each model\ncall. All model input, output, reasoning and final reporting consume that budget.\nCompilation and evaluation CPU are tracked separately. The strict worst-case\nreservation policy can stop admission before the authorized balance is fully spent.\n\nUse the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the\nfinalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall\nceilings regardless of that decision. Do not assume another call will be available\nfor publication. Record limitations and unmeasured claims honestly in your report."
+    },
+    "fixtures/config/bootstrap.conf": {
+      "text": "events {}\nhttp {\n    server {\n        listen 127.0.0.1:8080;\n        server_name alpha.test;\n        location / {\n            root /www;\n        }\n    }\n}"
+    },
+    "fixtures/config/conf.d/servers.conf": {
+      "text": "server {\n    listen 127.0.0.1:8080 default_server;\n    listen 127.0.0.1:8443 ssl default_server;\n    server_name alpha.test;\n    ssl_certificate /fixtures/tls/alpha-chain.pem;\n    ssl_certificate_key /fixtures/tls/alpha-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n    location = /old {\n        return 302 /hello.txt;\n    }\n}\nserver {\n    listen 127.0.0.1:8080;\n    listen 127.0.0.1:8443 ssl;\n    server_name beta.test;\n    root /www/beta;\n    ssl_certificate /fixtures/tls/beta-chain.pem;\n    ssl_certificate_key /fixtures/tls/beta-key.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    location / {\n        index index.html;\n    }\n    location /proxy/ {\n        proxy_pass http://backend/;\n    }\n}"
+    },
+    "fixtures/config/nginx.conf": {
+      "text": "worker_processes 2;\nevents {\n    worker_connections 8192;\n}\nhttp {\n    root /www;\n    default_type application/octet-stream;\n    types {\n        text/html html;\n        text/plain txt;\n    }\n    client_max_body_size 64m;\n    keepalive_timeout 2s;\n    keepalive_requests 100;\n    toksec_upstream_active 64;\n    toksec_upstream_queue 8192;\n    toksec_cache_bytes 4m;\n    toksec_rate_per_second 0;\n\n    upstream backend {\n        server 127.0.0.1:8081;\n        server 127.0.0.1:8082;\n        keepalive 64;\n    }\n    include conf.d/servers.conf;\n}"
+    }
+  },
+  "stop_reason": "budget reservation capacity exhausted",
+  "tags": [
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "2d0238670bbf4b749296a752d38d3b89",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 3000000000,
+          "remaining_nanodollars": 2836381250,
+          "remaining_usd": 2.83638125,
+          "request_count": 6,
+          "spent_nanodollars": 163618750,
+          "spent_usd_upper_bound": 0.16361875
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": null,
+        "latest": "2d0238670bbf4b749296a752d38d3b89",
+        "seconds_remaining": 7069.621734380722
+      },
+      "note": "First working release",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794805124.7415104,
+      "scope": "visible_smoke_only",
+      "source_sha256": "c7009b35cb411732ee97549bd96a7e3f0063e560abd25fb8e7f939a90107c070",
+      "tag": "release/000001"
+    },
+    {
+      "artifact_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+      "candidate": "eeb705d8152a486fabc2f980f058bf8d",
+      "capacity": {
+        "budget": {
+          "blocked": false,
+          "held_nanodollars": 0,
+          "held_usd": 0.0,
+          "limit_nanodollars": 3000000000,
+          "remaining_nanodollars": 197502500,
+          "remaining_usd": 0.1975025,
+          "request_count": 110,
+          "spent_nanodollars": 2802497500,
+          "spent_usd_upper_bound": 2.8024975
+        },
+        "effective_runtime": {
+          "cpu_count": 1,
+          "file_descriptors_per_process": 4096,
+          "memory_mib_aggregate": 512,
+          "scratch_mib": 64,
+          "tasks_including_supervisor": 4,
+          "workers": 2
+        },
+        "finished": false,
+        "last_tag": {
+          "passed_checks": [
+            "bootstrap",
+            "config",
+            "http-get",
+            "https-get",
+            "https-persistent",
+            "proxy"
+          ],
+          "tag": "release/000001"
+        },
+        "latest": "eeb705d8152a486fabc2f980f058bf8d",
+        "seconds_remaining": 6752.833421945572
+      },
+      "note": "Improve configuration validation and HTTP/TLS handling beyond the first tagged bootstrap implementation. Retain all visible smoke checks; full Stage 10 coverage, especially streaming, admission and cache semantics, remains unproven.",
+      "passed_checks": [
+        "bootstrap",
+        "config",
+        "http-get",
+        "https-get",
+        "https-persistent",
+        "proxy"
+      ],
+      "recorded_unix": 1794805441.5298376,
+      "scope": "visible_smoke_only",
+      "source_sha256": "6acfccc3183c31243e3a5fab52580dd1e3067a9d6d2bb545fd33492fc146ce41",
+      "tag": "release/000002"
+    }
+  ]
+}

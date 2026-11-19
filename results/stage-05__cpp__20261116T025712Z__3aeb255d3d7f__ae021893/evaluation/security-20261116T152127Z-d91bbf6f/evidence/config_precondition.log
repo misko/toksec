@@ -1,0 +1,2 @@
+literal  status=b'200' upstream=b'GET //exec%3Fcmd%3Did%0D%0AX-Pad:%20 HTTP/1.1\r\nHost: 127.0.0' body=b'SAW[GET //exec%3Fcmd%3Did%0D%0AX-Pad:%20 HTTP/1.1<CR><LF>Host: 127.0.0.1:19681<C'
+encoded  status=b'200' upstream=b'GET //exec?cmd=id\r\nX-Pad:  HTTP/1.1\r\nHost: 127.0.0.1:19681\r\n' body=b'SAW[GET //exec?cmd=id<CR><LF>X-Pad:  HTTP/1.1<CR><LF>Host: 127.0.0.1:19681<CR><L'

@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Content-Length: 43
+Connection: keep-alive
+x-peer: 10
+
+PORT:32101
+LINE:GET //mus0 HTTP/1.1
+TOKS:3
+HTTP/1.1 200 OK
+Content-Length: 6
+Connection: close
+x-forged: yes
+
+FORGED

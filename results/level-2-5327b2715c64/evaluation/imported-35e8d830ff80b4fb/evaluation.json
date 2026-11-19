@@ -1,0 +1,30 @@
+{
+  "api": {
+    "passed": 20,
+    "status": "failed",
+    "total": 21
+  },
+  "contract_sha256": null,
+  "coverage": "full",
+  "environment": {
+    "provenance": "Imported historical evidence; no tests rerun during migration"
+  },
+  "evaluator_sha256": "712880ccadaa81a5e24d7588846f6d06081c041bcb96ea80202b7177725c8176",
+  "missing_evidence": [
+    "contract_sha256"
+  ],
+  "performance": {
+    "credit": 0,
+    "metrics": null,
+    "status": "skipped_api_failure"
+  },
+  "provenance_status": "historical_incomplete",
+  "release": {
+    "commit": "cbf69fb59032204d7bf6077d8a230ca7df879505",
+    "source_sha256": "f6946cbd853835d39f016aa64939ea9ed525c236893176ade286b745c753ca2e",
+    "tag": "release/000003"
+  },
+  "run_id": "2026-11-14T05-07-35Z__stage-02__rust__gpt-6.1-terra__rust-http-v6__712880cc",
+  "schema_version": 1,
+  "status": "failed"
+}

@@ -1,0 +1,4 @@
+# 100MB file in web root, one worker, 4 concurrent reads, fresh instance
+# VmHWM sampled from /proc: "body is fully buffered" (line 80 response()) costs one copy per in-flight response
+worker pid baseline: 1484kB
+peak during 4 concurrent 100MB reads: 686452kB (~171x idle; ~686MB for 4x100MB)

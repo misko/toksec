@@ -1,0 +1,33 @@
+alpn good                    ->      7b 15030300020228
+alpn long                    ->      7b 15030300020228
+alpn declared_len overflow   ->      7b 15030300020232
+alpn entry len 255           ->      7b 15030300020228
+alpn entry len 0             ->      7b 15030300020232
+alpn many 1-byte             ->      7b 15030300020228
+alpn zero protos             ->      7b 15030300020232
+alpn truncated body          ->      7b 15030300020232
+alpn ext len lies short      ->      7b 15030300020232
+alpn http/1.1 exact          ->      7b 15030300020228
+alpn http/1.10               ->      7b 15030300020228
+alpn prefix http/1.          ->      7b 15030300020228
+sni localhost                ->      7b 15030300020228
+sni long name                ->      7b 15030300020228
+sni 250 names                ->      7b 15030300020232
+sni declared list overflow   ->      7b 15030300020232
+sni 0 names                  ->      7b 15030300020232
+sni truncated                ->      7b 15030300020232
+sni bad name_type            ->      7b 15030300020232
+sni embedded NUL             ->      7b 15030300020270
+sni UPPER match              ->      7b 15030300020228
+sni dotted                   ->      7b 15030300020228
+both good                    ->      7b 15030300020228
+both wild                    ->      7b 15030300020232
+dup alpn                     ->      7b 1503030002022f
+dup sni                      ->      7b 1503030002022f
+alpn+sni+garbage             ->      7b 15030300020232
+no extensions                ->      7b 15030300020228
+huge ext block               ->      7b 1503030002022f
+ext len wraps                ->      0b <none>
+alpn decl 1 byte             ->      7b 15030300020232
+tls_fuzz_complete 11 400
+--- srvlog: 0 bytes

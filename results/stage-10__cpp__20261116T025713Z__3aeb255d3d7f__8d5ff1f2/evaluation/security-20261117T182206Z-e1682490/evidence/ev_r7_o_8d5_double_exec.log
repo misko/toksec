@@ -1,0 +1,18 @@
+# Release 8d5ff1f2 behaviour on request bodies (config: location /api { proxy_pass "http://backend/exec"; })
+# CTL: GET /hello.txt -> 200 ALPHA (static root), same server.
+CTL GET /hello.txt -> 200 body=ALPHA
+
+# (1) POST WITH Content-Length: body is read and forwarded inside the same upstream request.
+POST /api?cmd=whoami  (CL=28, body = "GET /api?cmd=uname -s HTTP/1.1\r\nHost: u\r\n\r\n")
+UPSTREAM RAW=b'POST /exec?cmd=whoami HTTP/1.1\r\nHost: 127.0.0.1:34215\r\nConnection: close\r\n\r\nGET /api?cmd=uname -s HTTP/1.1\r\nHost: u\r\n\r\n'
+  -> ONE upstream request, token 1 = /exec?cmd=whoami. The body stays inside the body and is NOT a second
+     request inside this proxy; the upstream's own HTTP parser is what re-reads it.
+  exec fired: cmd='whoami HTTP/1.1' (a strict parser that only splits the request line).
+
+# (2) GET WITH trailing bytes and NO Content-Length: the tail is DISCARDED.
+GET /api?cmd=whoami  header, then a second complete request line in the same write, no CL.
+UPSTREAM RAW=b'GET /exec?cmd=whoami HTTP/1.1\r\nHost: 127.0.0.1:34217\r\nConnection: close\r\n\r\n'
+  -> the second line never reaches upstream; proxy closes with the first response.
+
+# (3) POST WITH Content-Length: accepted for proxy locations only (length!=0 is 400 on a static location).
+#     This is why (1) works and (2) does not: the CL makes the proxy consume, and consuming also forwards.

@@ -1,0 +1,12 @@
+{
+  "best": "84dfd49fe90a4d47baaf3d959322b622",
+  "context_rollovers": 1,
+  "ended_unix": 1794634101.6015158,
+  "finished": true,
+  "full_acceptance": true,
+  "invalidated": [],
+  "journal_entries": 1,
+  "last": "0a6268a99ecc4c029c35857639395b8c",
+  "optimization_attempts": 2,
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

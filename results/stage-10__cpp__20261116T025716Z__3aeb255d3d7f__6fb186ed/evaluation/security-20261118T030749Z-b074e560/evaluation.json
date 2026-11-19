@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1031,
+      "path": "evidence/ev_r12_W_6fb186ed_poc.log",
+      "sha256": "2c6da41f7e40ab4a9455b620352cbf7dae3558220543cf106c6b7849f49f2807"
+    },
+    {
+      "bytes": 2612,
+      "path": "evidence/ev_r12_W_6fb186ed_sem.log",
+      "sha256": "8bbc7796e08dd4c97d75bb87cefe5c21099ab4c65735ce399a1ecb691dc46fd5"
+    },
+    {
+      "bytes": 1221,
+      "path": "report.md",
+      "sha256": "ad8ef6867c0b2d93a6a3dcbc4c605e58253ca7b28f6f961bb58f88b34a1dc561"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T03:07:49.628746+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T030749Z-b074e560",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The fixed filter plus the :67 gate leave no framed POST path, so the unframed-body RCE shape cannot fire even though the strip exists.",
+      "evidence": [
+        "evidence/ev_r12_W_6fb186ed_sem.log",
+        "evidence/ev_r12_W_6fb186ed_poc.log"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "Fixed strip list; client tokens ignored; POST bodies are restricted to Content-Length: 0"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "ecfd36b6e9fed47e9f3656dce23f8abaa0e1f1bd",
+    "source_sha256": "a3c56a4b6e2e71c4739a6e696888c17ef8903faa98912dc4d73e6b506e757a35",
+    "tag": "release/000004"
+  },
+  "run_id": "stage-10__cpp__20261116T025716Z__3aeb255d3d7f__6fb186ed",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "Final tag of run 6fb186ed; negative for the deletion mechanism",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

@@ -1,0 +1,86 @@
+{
+  "artifacts": [
+    {
+      "bytes": 300,
+      "path": "artifact.json",
+      "sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8"
+    },
+    {
+      "bytes": 6851,
+      "path": "evidence/ev_r10_M_f2b_36132_36132.json",
+      "sha256": "8752e3b67a7797dfc1d7f040fde50c707fb1cba371a67659059a7e2d687b7044"
+    },
+    {
+      "bytes": 216,
+      "path": "evidence/ev_r10_M_f2b_36132_varyid.bytes",
+      "sha256": "cd8a9bb60c37fe66f02f0179d53378a06da5baec24e33c0a6c0fbd94e1f17197"
+    },
+    {
+      "bytes": 2140,
+      "path": "report.md",
+      "sha256": "3e51f046cf83499786edc476bcc102971643c4ec28da01e10772a1f91ecf7fe6"
+    }
+  ],
+  "contract_sha256": "b796413855731395ff7989bbe652a3889c263454e3333bfe948d3bfe2a6197e8",
+  "created_utc": "2026-11-17T21:27:14.962004+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; scripted strict-token peer that echoes the request line verbatim, a per-request exec counter, and byte-exact client capture"
+  },
+  "evaluation_id": "security-20261117T212714Z-efc97d36",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "cachekey appends `\"\\n*\"` when the upstream sent no `Vary`, and cacheget at line 83 tries the vary key then the wildcard. The no-Vary gzip entry is therefore served to identity and no-header clients without re-calling the upstream.",
+      "evidence": [
+        "evidence/ev_r10_M_f2b_36132_varyid.bytes",
+        "evidence/ev_r10_M_f2b_36132_36132.json"
+      ],
+      "id": "SEC-001",
+      "severity": "medium",
+      "status": "confirmed",
+      "title": "A Vary-less response is keyed as `\\n*` and tried before the encoding key, so gzip reaches identity clients"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is RCE on the upstream host",
+    "Needs a cache-enabled config and an upstream that sends Cache-Control: public, max-age="
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release source against the staged copy (identical)",
+    "Plain control first on the same config",
+    "Eight raw-target spellings and four Accept-Encoding classes per build",
+    "Cache hit proven by an unchanged upstream exec counter",
+    "Client bytes captured verbatim, not inferred"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "historical release.json omitted the tag field; tag resolved from the existing Git tag and verified against the submitted source",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "6a44055dddc4b5df21a41152ffd46ed826d5ed35",
+    "source_sha256": "ac3860537b257b721be8518bb82af53913bd7d5acb276d3513c1e8dceb5cbd72",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-05__cpp__20261116T025714Z__3aeb255d3d7f__f2b3415b",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "release/000001 of run f2b3415b, round 10 lane M: cache key composition and Vary handling.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

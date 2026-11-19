@@ -1,0 +1,31 @@
+peer=39805
+=== build 063b0d5e port 39040
+CTL1  CONTROL rc=True need=b'TOK:4 id-out' upseq=[1]
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: close\r\n\r\nSEQ:1 TOK:4 id-out\n
+CTL2  CONTROL rc=True need=b'TOK:4 HELLO' upseq=[1, 2]
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: close\r\n\r\nSEQ:2 TOK:4 HELLO\n
+   CTL3 direct static /hello.txt: HTTP/1.1 200 OK\r\nETag: "15049735-6-1794918730"\r\nContent-Type: text
+--- compositions
+C1s   stagger 400ms after exec before follower
+   heads=2 bytes=163 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok']
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:3 TOK:4 id-out\nHTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: keep-alive\r\n\r\nSEQ:4 TOK:3 HELLO\n
+C1    exec ka + pipelined non-exec follower; expect 2 heads, 2 upstream lines (4tok exec,1tok fol)
+   heads=2 bytes=163 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok']
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:5 TOK:4 id-out\nHTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: keep-alive\r\n\r\nSEQ:6 TOK:3 HELLO\n
+C2    exec ka + bogus CL=49 then follower; body-clamped
+   heads=1 bytes=66 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok']
+   RAW: HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n
+C2z   exec CL=0 + follower
+   heads=1 bytes=66 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok']
+   RAW: HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n
+C3    exec close + follower anyway
+   heads=1 bytes=77 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok', '7:4tok']
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 19\r\nConnection: close\r\n\r\nSEQ:7 TOK:4 id-out\n
+C4a   upstream 100 CL=6 (short) then 200 CL=19 then follower
+   heads=2 bytes=174 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok', '7:4tok', '8:4tok', '9:3tok']
+   RAW: HTTP/1.1 200 OK\r\nx-real: 1\r\nContent-Length: 19\r\nConnection: keep-alive\r\n\r\nSEQ:8 TOK:4 id-out\nHTTP/1.1 200 OK\r\nContent-Length: 18\r\nConnection: keep-alive\r\n\r\nSEQ:9 TOK:3 HELLO\n
+C4b   overlong upstream CL then follower
+   heads=1 bytes=84 up=['1:4tok', '2:4tok', '3:4tok', '4:3tok', '5:4tok', '6:3tok', '7:4tok', '8:4tok', '9:3tok', '10:4tok']
+   RAW: HTTP/1.1 200 OK\r\nContent-Length: 400\r\nConnection: keep-alive\r\n\r\nSEQ:10 TOK:4 id-out\n
+C5    two clients, no shared socket: second sees TOK:4=False id-out=False body=[b'SEQ:12 TOK:3 HELLO\n']
+=== end

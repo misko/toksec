@@ -1,0 +1,3 @@
+## CONTROL exchange 0 (well-formed)
+## PAYLOAD mode=dupCLlast
+## SAME CONFIG SECOND PAYLOAD

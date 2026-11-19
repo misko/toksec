@@ -1,0 +1,26 @@
+=== RUN 19:18:25 port=32100 ["/tmp/H_fpeek.json", "ev_r8_H_f2b_peek.log"]
+--- SEND 0: b'GET /api/m1 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: keep-alive\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b''
+=== end resp 0
+PROBE-AFTER-0: OPEN 
+--- SEND 1: b'GET /api/m2 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nContent-Length: 41\r\nConnection: keep-alive\r\nx-peer: 2\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET //m2 HTTP/1.1\nTOKS:3\n'
+=== end resp 1
+PROBE-AFTER-1: OPEN 
+--- SEND 2: b'GET /api/m3 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nContent-Length: 41\r\nConnection: keep-alive\r\nx-peer: 2\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32102\nLINE:GET //m3 HTTP/1.1\nTOKS:3\n'
+=== end resp 2
+PROBE-AFTER-2: OPEN 
+--- SEND 3: b'GET /api/m4 HTTP/1.1\r\nHost: alpha.test\r\n\r\n'
+RESP-HEAD: b'HTTP/1.1 200 OK\r\nContent-Length: 41\r\nConnection: keep-alive\r\nx-peer: 2\r\n\r\n'
+RESP-CONNHDR: keep-alive
+RESP-BODY: b'PORT:32101\nLINE:GET //m4 HTTP/1.1\nTOKS:3\n'
+=== end resp 3
+PROBE-AFTER-3: OPEN 
+=== END RUN

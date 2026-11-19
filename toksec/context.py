@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
 
-from controller import atomic_json
+from toksec.storage import atomic_json
 from toksec import controller
+from toksec.languages import source_name
 
 ROLLOVER_INPUT = 48_000
 
@@ -17,7 +18,7 @@ def checkpoint(run, launch_text):
         folder = run / 'candidates' / identity
         report = controller.read(folder, 'report.json')
         candidates.append({'id': identity, 'retained': identity == state['best'],
-                           'source': (folder / 'main.rs').read_text(), 'report': report})
+                           'source': (folder / source_name(controller.read(run, 'manifest.json'))).read_text(), 'report': report})
     journal = [json.loads(p.read_text()) for p in sorted((run / 'iterations').glob('*.json'))[-3:]]
     recent = []
     for path in sorted(run.glob('tool-*.json'), key=lambda p: p.stat().st_mtime)[-3:]:

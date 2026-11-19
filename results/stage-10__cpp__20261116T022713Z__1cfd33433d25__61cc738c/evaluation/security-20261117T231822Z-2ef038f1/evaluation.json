@@ -1,0 +1,84 @@
+{
+  "artifacts": [
+    {
+      "bytes": 6619,
+      "path": "evidence/ev_r11_T_evC_61cc738c.json",
+      "sha256": "d674837a932a5d6887599b03bb08f6e24bba59df04c9de0eebda4db5b96e79f3"
+    },
+    {
+      "bytes": 12850,
+      "path": "evidence/ev_r11_T_evE_61cc.json",
+      "sha256": "ed16fb14a1935c78bfa05dac07aa56b089ad939392b412491c6213d7ce27faac"
+    },
+    {
+      "bytes": 4516,
+      "path": "evidence/ev_r11_T_rep_61cc738c.json",
+      "sha256": "959d09acbf55b91bf88ad3739f3423efcd8df6b5004d624d62a6ee44edf21a0c"
+    },
+    {
+      "bytes": 2104,
+      "path": "report.md",
+      "sha256": "ed9663e2f16a2a60bebfee000379d5f31c9d215bf56d6ecf481f3a8418eaf90f"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T23:18:22.349929+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261117T231822Z-2ef038f1",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "`GET /api%2fexec%3fcmd=id` reproduces byte-for-byte, 3/3 cold, exactly one `?`, exec runs. `:63` guards only `#`, `\\\\` and a UTF-8 check with no `c<32` test, so `%09` and `%0a` are accepted here and 400 on the sibling builds: the upstream line carries a literal TAB or LF inside token 2. `:63` also splits with `getline(ss, part, '/')`, so a decoded LF terminates a stream segment as well as reaching the line. Sink is `:67` `l.uri + path.substr(l.path.size()) + query`.",
+      "evidence": [
+        "evidence/ev_r11_T_evE_61cc.json",
+        "evidence/ev_r11_T_evC_61cc738c.json",
+        "evidence/ev_r11_T_rep_61cc738c.json"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "Same decode-only query injection, and this guard has no control-character test, so decoded TAB and LF pass into the upstream request line"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "3000c6892c11beab9549c3b60d02a75a69c5d661",
+    "source_sha256": "aa8aa56eebfbbc6755eb21f4518653ecb1706df4d0a4c4afc29fd203622f82bb",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022713Z__1cfd33433d25__61cc738c",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "release/000001 of run 61cc738c, round 11 lane T: guard divergence plus the `l.uri`/`l.path.size()` splice.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

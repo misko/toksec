@@ -3,6 +3,10 @@
 import argparse
 import json
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from toksec.stages import number as stage_number
 
 
 def plot(directory):
@@ -20,12 +24,12 @@ def plot(directory):
     ax.set_xlim(0, max(1, end_minutes * 1.05))
     if times and times[0] > 0:
         ax.axvspan(0, times[0], color='#eeeeee', zorder=0)
-        ax.text(times[0] / 2, .5, 'No tagged submission yet', transform=ax.get_xaxis_transform(), ha='center', color='#666666', fontsize=9)
+        ax.text(times[0] / 2, .5, 'No tagged submission yet', transform=ax.get_xaxis_transform(), ha='center', va='center', rotation=90, color='#666666', fontsize=8)
     ax.scatter(times, counts, color='#157a6e')
     for x, y, row in zip(times, counts, rows):
         ax.annotate(row['tag'].split('/')[-1], (x, y), xytext=(4, 7), textcoords='offset points', fontsize=8)
-    ax.set(xlabel='Release publication: minutes since build started', ylabel='Public API checks passed',
-           title=f"Stage {data['level']}: tagged releases, independently re-evaluated", ylim=(-0.5, data['total_checks'] + 1.5))
+    ax.set(xlabel='Release publication: minutes since build started', ylabel='Internal API check groups passed',
+           title=f"Stage {stage_number(data)}: tagged releases, independently re-evaluated", ylim=(-0.5, data['total_checks'] + 1.5))
     ax.set_yticks(range(data['total_checks'] + 1))
     ax.grid(alpha=.2)
     fig.tight_layout()
@@ -40,6 +44,8 @@ def plot(directory):
     for ax, (metric, label) in zip(axes.flat, metrics):
         for index, name in enumerate(names):
             color = f'C{index % 10}'
+            mode, size, clients = name.rsplit('-', 2)
+            workload_label = f'{int(size) // 1024} KiB / {clients} clients ({mode})'
             valid, invalid = [], []
             for row in rows:
                 m = row.get('benchmarks', {}).get(name)
@@ -56,9 +62,9 @@ def plot(directory):
                 point = (row['elapsed_seconds'] / 60, value)
                 (valid if m['eligible'] else invalid).append(point)
             if valid:
-                ax.plot(*zip(*valid), marker='o', color=color, label=name)
+                ax.plot(*zip(*valid), marker='o', color=color, label=workload_label)
             if invalid:
-                ax.scatter(*zip(*invalid), marker='x', color=color, label=name + ' (ineligible)')
+                ax.scatter(*zip(*invalid), marker='x', color=color, label=workload_label + ' (ineligible)')
         ax.set_ylabel(label)
         ax.set_xlim(0, max(1, end_minutes * 1.05))
         ax.grid(alpha=.2)

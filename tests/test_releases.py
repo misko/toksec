@@ -12,11 +12,12 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             campaign_dir=Path(tmp)/'campaign'
             campaign.initialize(campaign_dir,'3')
-            run=Path(controller.prepare(campaign_dir,1,starter=ROOT/'starters/static.rs')['run'])
+            run=Path(controller.prepare(campaign_dir,1)['run'])
+            controller.submit(run, (ROOT/'tests/fixtures/implementations/static.rs').read_text())
             first=releases.initialize(run)
             self.assertEqual(first['tag'],'release/000001')
             self.assertEqual(releases.initialize(run)['commit'],first['commit'])
-            source=(ROOT/'starters/static.rs').read_text()+'\n'
+            source=(ROOT/'tests/fixtures/implementations/static.rs').read_text()+'\n'
             controller.submit(run,source)
             original=releases.git
             def interrupted(run,*args):

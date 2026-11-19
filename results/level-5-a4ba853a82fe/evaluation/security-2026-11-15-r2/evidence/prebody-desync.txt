@@ -1,0 +1,22 @@
+resp1: b'HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive\r\n'
+--- upstream view ---
+HEAD :: POST /p1 HTTP/1.1
+Host: 127.0.0.1:18471
+Content-Length: 1000000
+Connection: keep-alive
+BODYLEN :: 1000000 of 1000000
+TAIL :: 
+resp2: b'HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive\r\n\r\nOK'
+--- upstream view (2) ---
+EXTRA :: GET /p2 HTTP/1.1
+Host: 127.0.0.1:18471
+Connection: keep-alive
+
+
+HEAD :: GET /p2 HTTP/1.1
+Host: 127.0.0.1:18471
+Connection: keep-alive
+BODYLEN :: 0 of 0
+TAIL :: 
+--- server log (0) ---
+

@@ -1,0 +1,120 @@
+{
+  "artifacts": [
+    {
+      "bytes": 301,
+      "path": "artifact.json",
+      "sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4"
+    },
+    {
+      "bytes": 454,
+      "path": "evidence/ev_r8_G_29d_DBL.ev",
+      "sha256": "abc919832664e0e53a265c58e5ea49996a327cb44689cab3c28acc527c7de690"
+    },
+    {
+      "bytes": 1419,
+      "path": "evidence/ev_r8_G_29d_F2_pct20_prefix.ev",
+      "sha256": "9f0b923e8443db7f3fe71f9bff39d8415e9b0b9827b683e75ade8a7c72849d06"
+    },
+    {
+      "bytes": 478,
+      "path": "evidence/ev_r8_G_29d_FOLD.ev",
+      "sha256": "d4226166efc0622241b64f96189e56e105a0eedb6f49763e40edb7ff7fe8e50f"
+    },
+    {
+      "bytes": 448,
+      "path": "evidence/ev_r8_G_29d_HSP.ev",
+      "sha256": "00a4cf975e6fa00d9ae9726a51a4336646af0384046bb9030ec339756da9204e"
+    },
+    {
+      "bytes": 616,
+      "path": "evidence/ev_r8_G_29d_LEAD.ev",
+      "sha256": "07872d779b55e859c1a5950b871995826ac47368f39603c6473580a74f5c188e"
+    },
+    {
+      "bytes": 614,
+      "path": "evidence/ev_r8_G_29d_TAB.ev",
+      "sha256": "a67795da3fb2d3a98c52e05ea28f305e408dbfddf0c6ef5a57d79df8d58e4ed7"
+    },
+    {
+      "bytes": 616,
+      "path": "evidence/ev_r8_G_29d_TRAIL.ev",
+      "sha256": "576bd58f329ba15624543fd9b3715773d56f3e89533c1c51a83e488d4da6695d"
+    },
+    {
+      "bytes": 1409,
+      "path": "evidence/ev_r8_G_29d_ctl_exec.ev",
+      "sha256": "3b9ab8f1b61ac566a1a75156e0cf6a2124eed623d03cd19650c5f5d028586b6a"
+    },
+    {
+      "bytes": 3832,
+      "path": "report.md",
+      "sha256": "d2dbbdc15404402d5978d2f772399a4a126cb9aa7a556708e0649b8843f2efac"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-17T19:34:50.416898+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the tag source + live compiled binary; printf %b raw bytes into a socket, strict upstream peer"
+  },
+  "evaluation_id": "security-20261117T193450Z-3bf3bff0",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "The request line is parsed with istringstream extraction, which collapses space runs and treats TAB as a separator, and the only grammar check is the three-token extraction plus token(method). So GET  /hello.txt, TAB-delimited, leading-space and trailing-space forms are all accepted 200 and re-emitted as a normal single-space line: accepted but identical, negative for smuggling. The delta appears only when proxy_pass carries a URI and the target is rebuilt from the decoded path, where a %20 becomes a raw space and the upstream split() re-cuts the line to four tokens. On the plain form the RCE survives; when the exec route is not the first segment (GET /exec/a%20exec?cmd=whoami to GET /a exec?cmd=whoami) the displaced query lands as token 4 and EXEC comes back empty, so an accepted shape silently kills a working RCE. Precondition: a rewriting proxy_pass.",
+      "evidence": [
+        "evidence/ev_r8_G_29d_ctl_exec.ev",
+        "evidence/ev_r8_G_29d_F2_pct20_prefix.ev",
+        "evidence/ev_r8_G_29d_DBL.ev",
+        "evidence/ev_r8_G_29d_TAB.ev",
+        "evidence/ev_r8_G_29d_HSP.ev",
+        "evidence/ev_r8_G_29d_FOLD.ev",
+        "evidence/ev_r8_G_29d_LEAD.ev",
+        "evidence/ev_r8_G_29d_TRAIL.ev"
+      ],
+      "id": "SEC-001",
+      "severity": "low",
+      "status": "confirmed",
+      "title": "The istringstream parser accepts double space, tab, leading and trailing space but normalises them back to three tokens, so a decoded space in a rewritten proxy_pass target is what actually shifts the downstream token count"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the release source from the tag",
+    "Diffed the release against the staged copy",
+    "Control shape first",
+    "printf %b literal bytes",
+    "Captured status and the verbatim upstream line with token count"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "reconstructed_for_storage",
+    "contract_source": "reconstructed artifact contract",
+    "mode": "historical_import",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "04e02f8752c7e1f89c80499b64de408bd8a20b13",
+    "source_sha256": "da0efcff81f95acfff6bbd5fafe299bf50e674a5052034c330812c43a62b6178",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-10__cpp__20261116T025715Z__3aeb255d3d7f__29d05850",
+  "run_toksec_commit": "3aeb255d3d7f5df4f396e71bf51273f0cc0cf565",
+  "schema_version": 1,
+  "scope": "round 8 lane G ingress framing grammar for run 29d05850",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

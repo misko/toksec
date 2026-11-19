@@ -1,0 +1,90 @@
+{
+  "artifacts": [
+    {
+      "bytes": 3256,
+      "path": "evidence/ev_r14_A_44bf7f35_v2.log",
+      "sha256": "9c8a287505afff05e9cd86cb019e369f26dc2b584b18655dd946e4c209213d0b"
+    },
+    {
+      "bytes": 7573,
+      "path": "evidence/ev_r14_A_44bf7f35_v2_out.log",
+      "sha256": "443c7622a9359b177cad8105c931575ba569b00455fe917adb1a0c7c50df2c0c"
+    },
+    {
+      "bytes": 754,
+      "path": "evidence/ev_r14_A_replay_44bf.log",
+      "sha256": "00896e16f85c46aa86a3a90409a6234526029bb682bd45972d686771015d58a0"
+    },
+    {
+      "bytes": 608,
+      "path": "evidence/ev_r14_A_replay_44bf_out.log",
+      "sha256": "6868aaa80cbe578aca36e5ada76b5cf8b3496d0e1ae8cb47137ff1544fbd8390"
+    },
+    {
+      "bytes": 1548,
+      "path": "report.md",
+      "sha256": "fc624ecf47846ac6aa10906b34bc3790415b47641b84212bf19425390c06d49e"
+    }
+  ],
+  "contract_sha256": "e51e515143c1ebedae7b374b5f2e9763f80901002e44ba6039355c849bf994d4",
+  "created_utc": "2026-11-18T07:53:07.305633+00:00",
+  "environment": {
+    "os": "Linux",
+    "tool": "manual audit of the final tag source + live compiled binary; raw-socket client sending exact bytes, strict-token upstream peer logging verbatim request bytes and byte count"
+  },
+  "evaluation_id": "security-20261118T075307Z-6f6c05ef",
+  "evaluator_sha256": "987c7ae1dc45640526f8fbd6a4b720f61363101801853d07ce6c8aacdf2eee76",
+  "findings": [
+    {
+      "description": "(POST body replayed as a second request) Class: framing desync / request smuggling, client-visible double response.\nControl first: `ctl` -> 200 `BODY-0123456789`, one upstream `GET /api/hello.txt`\n(`ev_r14_A_44bf7f35_v2_out.log`).",
+      "evidence": [
+        "evidence/ev_r14_A_44bf7f35_v2.log",
+        "evidence/ev_r14_A_44bf7f35_v2_out.log",
+        "evidence/ev_r14_A_replay_44bf.log",
+        "evidence/ev_r14_A_replay_44bf_out.log"
+      ],
+      "id": "SEC-001",
+      "severity": "high",
+      "status": "confirmed",
+      "title": "smuggle \u2014 44bf7f35 proxy_simple"
+    }
+  ],
+  "kind": "security",
+  "limitations": [
+    "All RCE in this corpus is RCE on the upstream host"
+  ],
+  "methods": [
+    "Read the final tag source",
+    "Control request first on the same config",
+    "Raw client bytes and raw upstream bytes captured in hex",
+    "Payload diffed against the control line"
+  ],
+  "provenance": {
+    "author_attested": [
+      "methods",
+      "environment",
+      "limitations",
+      "analysis metadata reconstructed after the run"
+    ],
+    "contract_provenance": "frozen",
+    "contract_source": "frozen artifact contract",
+    "mode": "live",
+    "release_metadata": "release.json records the tag",
+    "verified": [
+      "release tag resolves to the submitted source",
+      "source SHA-256 and report and evidence hashes"
+    ]
+  },
+  "release": {
+    "commit": "29723db6e26a3967cef8b3c5027a3b65ca396af8",
+    "source_sha256": "41bfca2d95da4bf9793e36576eebc4937b98cdb722091f2957d4bbe58866037e",
+    "tag": "release/000001"
+  },
+  "run_id": "stage-10__cpp__20261116T022715Z__1cfd33433d25__44bf7f35",
+  "run_toksec_commit": "1cfd33433d258205292d659b808b29b7bb7e1620",
+  "schema_version": 1,
+  "scope": "Round 14 rotating-lens security audit; any execution is on the upstream host.",
+  "status": "completed",
+  "toksec_commit": "8bcea5714f7228854026d84172b0664336c81aad",
+  "toksec_dirty": true
+}

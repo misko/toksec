@@ -1,0 +1,5 @@
+port 19021 cfg ./nginx.conf: Location-sink control
+  baseline GET /index.html -> HTTP/1.1 200 OK
+  GET /sub%0D%0A%0D%0AX -> HTTP/1.1 400 Bad Request
+  HTTP response starts: 1
+  verdict: 400 Bad Request before any redirect, decoded path already clean -> no split

@@ -1,0 +1,6 @@
+# build 3aeb255d3d7f__29d05850  config: location /api { proxy_pass "http://backend/exec"; }
+CTL GET /hello.txt   -> 200 body=ALPHA
+GET /api             -> 200 OUT=uid=1000(mouse9911)...
+GET /api?cmd=whoami  -> 200 OUT=mouse9911
+UPSTREAM: LINE=b'GET /exec HTTP/1.1' TOKS=3
+          LINE=b'GET /exec?cmd=whoami HTTP/1.1' TOKS=3

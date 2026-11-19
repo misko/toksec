@@ -1,0 +1,17 @@
+== Matrix: configured limit 3, up to 8 requests issued
+61cc738c                           limit=3     served=3     close_advert=close       eof=True  CONFORM
+44bf7f35                           limit=3     served=3     close_advert=close       eof=True  CONFORM
+063b0d5e                           limit=3     served=3     close_advert=close       eof=True  CONFORM
+8d5ff1f2                           limit=3     served=3     close_advert=close       eof=True  CONFORM
+29d05850                           limit=3     served=3     close_advert=close       eof=True  CONFORM
+6fb186ed                           limit=3     served=8     close_advert=keep-alive  eof=False VIOLATION (open: under limit, expected)
+
+== 6fb186ed boundary rows (hardcoded 1000 at source line 66)
+6fb186ed                           limit=1     served=5     close_advert=keep-alive  eof=False VIOLATION (open: under limit, expected)
+6fb186ed                           limit=999   served=1000  close_advert=close       eof=True  VIOLATION
+6fb186ed                           limit=1000  served=1000  close_advert=close       eof=True  CONFORM
+6fb186ed                           limit=5000  served=1000  close_advert=close       eof=True  VIOLATION
+
+== Working sibling control at the same boundaries
+29d05850 control                   limit=1     served=1     close_advert=close       eof=True  CONFORM
+29d05850 control                   limit=5000  served=5     close_advert=keep-alive  eof=False VIOLATION (open: under limit, expected)
