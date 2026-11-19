@@ -96,3 +96,11 @@ builder sessions. It refuses existing coordinator state, unknown process IDs,
 partially launched jobs, and attempts to restart already-started jobs. If it
 fails before handoff, it resumes the original supervisors. A failure after handoff
 requires inspection of the saved state and running workers, not a blind restart.
+
+For the gateway campaign, prepare with `--stages 11 12 13 14 15 16 --replicas 3
+--parallel 1 --budget-usd 3`. This allocates eighteen independent caps, runs one
+worker at a time and cycles through all six stages before starting another replica.
+A provider HTTP 429 pauses new admissions after active jobs drain. When capacity
+is available, repeat the run command with `--resume-queue` and, for an archived
+campaign, `--runner-root PATH_TO_FROZEN_CHECKOUT`. Only previously unstarted jobs
+are eligible. Completed attempts and outstanding reservations retain their ledgers.

@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 from stages.common.grading.gateway_checks import revocation
 from stages.common.grading.gateway_load import validate_effects
-from toksec.batch import plan
+from toksec.batch import plan, schedule
 from toksec.specification import configuration, packet, specification
 from toksec.stages import GATEWAY_STAGES
 from toksec.wire import Response
@@ -38,6 +38,17 @@ class GatewayTests(unittest.TestCase):
             for options in [{'skip_auth':True}, {'bypass_cache':True}]:
                 with self.assertRaises(AssertionError):
                     revocation(RevocationFixture(**options))
+
+    def test_provider_pause_preserves_unstarted_jobs(self):
+        jobs = [{'id': str(n), 'status': 'prepared', 'slot': 0} for n in range(3)]
+        class Rejected:
+            pid = 42
+            def poll(self):
+                return 0
+        paused = schedule(jobs, 1, lambda job: Rejected(), lambda: None,
+                          poll_seconds=0, pause_after=lambda job: True)
+        self.assertTrue(paused)
+        self.assertEqual([j['status'] for j in jobs], ['builder_stopped','prepared','prepared'])
 
     def test_effects_gate(self):
         for after,valid in [({'origin':1,'auth':10}, True), ({'origin':10,'auth':10}, False),

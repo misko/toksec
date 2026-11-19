@@ -25,8 +25,8 @@ def command(cpus, *args):
     return ['taskset', '-c', ','.join(map(str, cpus)), sys.executable, '-m', 'toksec', *map(str, args)]
 
 
-def capture(cpus, *args):
-    done = subprocess.run(command(cpus, *args), cwd=ROOT, capture_output=True, text=True)
+def capture(cpus, *args, runner_root=ROOT):
+    done = subprocess.run(command(cpus, *args), cwd=runner_root, capture_output=True, text=True)
     if done.returncode:
         raise ValueError(done.stdout[-3000:] + done.stderr[-1000:])
     return json.loads(done.stdout)
@@ -102,13 +102,14 @@ def lock(directory):
         yield
 
 
-def schedule(jobs, parallel, start, save, poll_seconds=1):
+def schedule(jobs, parallel, start, save, poll_seconds=1, pause_after=None):
     active = {}
+    paused = False
     try:
-        while active or any(j['status'] == 'prepared' for j in jobs):
+        while active or (not paused and any(j['status'] == 'prepared' for j in jobs)):
             busy = {job['slot'] for _, job in active.values()}
             for job in jobs:
-                if len(active) >= parallel:
+                if paused or len(active) >= parallel:
                     break
                 if job['status'] == 'prepared' and job['slot'] not in busy:
                     job.update(status='starting', started_unix=time.time())
@@ -123,9 +124,12 @@ def schedule(jobs, parallel, start, save, poll_seconds=1):
                 if code is not None:
                     job.update(status='builder_stopped', returncode=code, ended_unix=time.time())
                     del active[pid]
+                    if pause_after and pause_after(job):
+                        paused = True
                     save()
             if active:
                 time.sleep(poll_seconds)
+        return paused
     except BaseException:
         for process, job in active.values():
             if process.poll() is None:
@@ -140,7 +144,7 @@ def schedule(jobs, parallel, start, save, poll_seconds=1):
         raise
 
 
-def finalize(directory, batch, results):
+def finalize(directory, batch, results, runner_root=ROOT):
     path = Path(directory) / 'batch.json'
     batch['status'] = 'finalizing'
     atomic_json(path, batch)
@@ -149,19 +153,19 @@ def finalize(directory, batch, results):
             continue
         run = Path(job['run'])
         try:
-            records = capture(job['cpus'], 'releases', '--run', run)['releases']
+            records = capture(job['cpus'], 'releases', '--run', run, runner_root=runner_root)['releases']
             job['tag_count'] = len(records)
             if records:
                 with (run / 'parent-grading.log').open('w') as log:
                     done = subprocess.run(command(job['cpus'], 'grade', '--run', run, '--performance'),
-                                          cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+                                          cwd=runner_root, stdout=log, stderr=subprocess.STDOUT)
                 job['grade_exit_code'] = done.returncode
                 if done.returncode not in (0, 2, 3, 4):
                     raise ValueError('parent grading failed; inspect parent-grading.log')
             with (run / 'publication.log').open('w') as log:
-                done = subprocess.run([sys.executable, str(ROOT / 'scripts/publish_results.py'),
+                done = subprocess.run([sys.executable, str(runner_root / 'scripts/publish_results.py'),
                                        '--run', str(run), '--results', str(results)],
-                                      cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+                                      cwd=runner_root, stdout=log, stderr=subprocess.STDOUT)
             if done.returncode:
                 raise ValueError('publication failed; inspect publication.log')
             job.update(status='complete' if records else 'no_tag', published=str(Path(results) / run.name))
@@ -173,14 +177,23 @@ def finalize(directory, batch, results):
     return batch
 
 
-def launch(directory, key_file, results):
+def launch(directory, key_file, results, resume_queue=False, runner_root=ROOT):
     from toksec.runner import credentials
     directory = Path(directory).resolve()
     with lock(directory):
         batch = read(directory / 'batch.json')
-        if batch['status'] != 'prepared' or any(j['status'] != 'prepared' for j in batch['jobs']):
+        runner_root = Path(runner_root).resolve()
+        if resume_queue:
+            if batch['status'] not in ('paused_provider', 'interrupted'):
+                raise ValueError('only an interrupted or provider-paused queue can continue')
+            for job in batch['jobs']:
+                if job['status'] == 'interrupted' and read(Path(job['run']) / 'state.json')['finished']:
+                    job['status'] = 'builder_stopped'
+                if job['status'] not in ('prepared', 'builder_stopped'):
+                    raise ValueError('ambiguous worker state; inspect before continuing')
+        elif batch['status'] != 'prepared' or any(j['status'] != 'prepared' for j in batch['jobs']):
             raise ValueError('batch already started or not prepared; automatic paid resume is disabled')
-        if checkout(require_clean=True)['toksec_commit'] != batch['toksec_commit']:
+        if checkout(require_clean=True, root=runner_root)['toksec_commit'] != batch['toksec_commit']:
             raise ValueError('use the original batch preparation commit')
         credentials(key_file)
         authorized = sum((Decimal(j['budget_usd']) for j in batch['jobs']), Decimal(0))
@@ -190,27 +203,38 @@ def launch(directory, key_file, results):
             ledger = read(Path(job['campaign']) / 'ledger.json')
             if Decimal(ledger['dollar_limit']) != Decimal(job['budget_usd']):
                 raise ValueError('campaign cap differs from authorized job cap')
-            capture(job['cpus'], 'preflight', '--run', job['run'])
-        batch.update(status='running', started_unix=time.time(), pid=os.getpid())
+            if job['status'] == 'prepared':
+                preflight = capture(job['cpus'], 'preflight', '--run', job['run'], runner_root=runner_root)
+                if not preflight['launch_allowed']:
+                    raise ValueError(str(preflight['reasons']))
+        batch.setdefault('started_unix', time.time())
+        batch.update(status='running', pid=os.getpid())
         def save():
             atomic_json(directory / 'batch.json', batch)
         def start(job):
             with (Path(job['run']) / 'builder-process.log').open('w') as log:
                 return subprocess.Popen(command(job['cpus'], 'run', '--run', job['run'], '--key-file', key_file),
-                                        cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+                                        cwd=runner_root, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         save()
         def stop(signum, frame):
             raise KeyboardInterrupt('batch interrupted')
         previous = signal.signal(signal.SIGTERM, stop)
         try:
-            schedule(batch['jobs'], batch['parallel'], start, save)
+            def provider_rejected(job):
+                state = read(Path(job['run']) / 'state.json')
+                return 'API HTTP 429' in str(state.get('stop_reason', ''))
+            paused = schedule(batch['jobs'], batch['parallel'], start, save, pause_after=provider_rejected)
+            if paused and any(j['status'] == 'prepared' for j in batch['jobs']):
+                batch.update(status='paused_provider', pause_reason='API HTTP 429', paused_unix=time.time())
+                save()
+                return batch
         except BaseException:
             batch['status'] = 'interrupted'
             save()
             raise
         finally:
             signal.signal(signal.SIGTERM, previous)
-        return finalize(directory, batch, Path(results).resolve())
+        return finalize(directory, batch, Path(results).resolve(), runner_root)
 
 
 def main(argv=None):
@@ -233,6 +257,8 @@ def main(argv=None):
             cmd.add_argument('--results', type=Path, default=ROOT / 'results')
         if name == 'run':
             cmd.add_argument('--key-file', type=Path, required=True)
+            cmd.add_argument('--resume-queue', action='store_true', help='Continue unstarted jobs; never replay a started builder')
+            cmd.add_argument('--runner-root', type=Path, default=ROOT, help='Clean checkout of the original preparation commit')
     args = parser.parse_args(argv)
     values = vars(args).copy(); action = values.pop('command')
     try:
