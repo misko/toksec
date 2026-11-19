@@ -14,6 +14,7 @@ paths, and budgets; their examples must not be treated as current launch command
 | [Visible and held-out tests](visible-and-held-out-tests.md) | Minimal builder feedback versus parent grading |
 | [Stage 10 runtime](stage-10-runtime.md) | Experimental runtime and partial coverage |
 | [Stage 10 inputs](../stages/stage-10/README.md) | Active packet and frozen draft/readiness provenance |
+| [General RCE finder prompt](rce-finder-prompt.md) | Reusable prompt and method for hunting RCE in source-available software |
 
 ## Designs and historical records
 
