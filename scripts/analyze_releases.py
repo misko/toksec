@@ -52,8 +52,6 @@ def _analyze(run, output, comparison, calibration, performance):
         raise ValueError('Stage 10 uses the separate partial-coverage grader in evaluate.py')
     environment = releases.grade_environment(run, manifest, comparison=comparison, calibration=calibration)
     records = releases.list_releases(run)
-    if not records:
-        raise ValueError('Builder produced no tagged releases')
     identity = run_identity(run, manifest)
     request = {'run_id': identity, 'run_toksec_commit': manifest.get('toksec_commit'),
                'tagged_commits': {r['tag']: r['commit'] for r in records},
@@ -71,7 +69,6 @@ def _analyze(run, output, comparison, calibration, performance):
         atomic_json(plan_path, plan)
     if (run / 'benchmarks').exists() and not (output / 'in-run-benchmarks').exists():
         shutil.copytree(run / 'benchmarks', output / 'in-run-benchmarks')
-    repository = export_history(run, output, records[-1])
     final = controller.read(run, 'result.json') if (run / 'result.json').is_file() else {}
     timeline = {'run_id': identity, 'stage': stage, 'framework': environment['evaluator_framework'],
                 'builder_framework': manifest['fingerprint'], 'run_toksec_commit': manifest.get('toksec_commit'),
@@ -82,6 +79,11 @@ def _analyze(run, output, comparison, calibration, performance):
                 'total_checks': len(specification(stage, manifest.get('language', 'rust'))['cases']),
                 'method': 'Independent post-run grades at release publication time and recorded cumulative settled cost.',
                 'releases': []}
+    if not records:
+        atomic_json(output / 'timeline.json', timeline)
+        return timeline
+
+    repository = export_history(run, output, records[-1])
     for record in records:
         tag = record['tag']
         source_file = source_name(manifest)

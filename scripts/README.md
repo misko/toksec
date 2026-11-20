@@ -7,6 +7,7 @@ Run from the repository root. Use `--help` for the exact arguments.
 | `run_series.py` | Run prepared campaigns sequentially, then analyze releases | Yes by default; `--grade-only` disables model calls |
 | `analyze_releases.py` | Independently grade each release and create a time and spend timeline. Explicit comparison mode remeasures the frozen contract with the current evaluator. | No |
 | `plot_releases.py` | Plot an existing analysis timeline | No |
+| `compare_release_pair.py` | Rebuild the first API-clean source and the final tag and compare alternating rounds on a preselected, calibrated workload | No |
 | `calibrate_benchmarks.py` | Measure load-generator/calibration behavior with sandboxed fixtures | No |
 | `publish_results.py` | Publish one raw run using the canonical artifact layout | No |
 | `refresh_results.py` | Refresh the current Stage 1–5 inventory from frozen source worktrees | No |

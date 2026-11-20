@@ -22,7 +22,8 @@ def analyze(run, plot_python):
         result = subprocess.run([sys.executable, str(ROOT/'scripts/analyze_releases.py'), '--run', str(run), '--output', str(output)], cwd=ROOT)
         if result.returncode == 0:
             timeline = json.loads((output / 'timeline.json').read_text())
-            figures = run / 'evaluation' / timeline['releases'][-1]['evaluation_id'] / 'figures'
+            figures = (run / 'evaluation' / timeline['releases'][-1]['evaluation_id'] / 'figures'
+                       if timeline['releases'] else output / 'figures')
             subprocess.run([str(plot_python), str(ROOT/'scripts/plot_releases.py'), str(output),
                             '--output', str(figures)], check=True, cwd=ROOT)
             return output
@@ -69,9 +70,8 @@ def main():
             entry.update(status='grading', tagged_releases=len(records), capacity=campaign.status(manifest['campaign'],manifest['model']))
             atomic_json(args.status_file, status)
             print(json.dumps({'event': 'builder_finished', **entry}), flush=True)
-            if records:
-                output = analyze(run, args.plot_python)
-                entry['analysis'] = str(output)
+            output = analyze(run, args.plot_python)
+            entry['analysis'] = str(output)
             entry.update(status='complete', completed_unix=time.time())
             atomic_json(run/'completion.json',entry)
         except Exception as error:

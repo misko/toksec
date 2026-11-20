@@ -162,9 +162,12 @@ def grade_environment(run, manifest, *, comparison=False, calibration=None):
         record = json.loads(raw)
         expected = {w['id']: w for w in current['benchmarks']}
         observed = record.get('workloads', {})
+        cells = record.get('cells', {})
         if (not record.get('calibration_id') or record.get('status') != 'completed' or
                 record.get('stage') != stage or not isinstance(observed, dict) or not observed or
-                set(observed) != set(record.get('cells', {})) or
+                not isinstance(cells, dict) or set(observed) != set(cells) or
+                any(not isinstance(cell, dict) or type(cell.get('qualified')) is not bool
+                    or not isinstance(cell.get('reasons'), list) for cell in cells.values()) or
                 any(expected.get(key) != value for key, value in observed.items()) or
                 record.get('measurement_fingerprint') != measurement_fingerprint(stage) or
                 record.get('environment') != actual_host):

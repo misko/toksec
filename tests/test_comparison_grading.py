@@ -84,6 +84,23 @@ class ComparisonGradingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'another source, evaluator, host or measurement policy'):
                 analyze(run, analysis, comparison=True, performance=True)
 
+    def test_no_tag_series_records_terminal_cost_and_time_without_evaluation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run = self.make_run(root)
+            shutil.rmtree(run / 'repository')
+            capacity = {'spent_usd_upper_bound': '0.01382725', 'reserved_usd': '0.200'}
+            atomic_json(run / 'result.json', {'capacity': capacity})
+            with patch.object(releases, 'grade') as grade:
+                timeline = analyze(run, root / 'series', comparison=True)
+                grade.assert_not_called()
+            self.assertEqual(timeline['releases'], [])
+            self.assertEqual(timeline['ended_unix'] - timeline['started_unix'], 9)
+            self.assertEqual(timeline['terminal_capacity'], capacity)
+            self.assertFalse((run / 'evaluation').exists())
+            self.assertFalse((root / 'series/implementation.bundle').exists())
+            self.assertEqual(timeline, controller.read(root / 'series', 'timeline.json'))
+
     def test_gateway_calibration_matches_host_code_and_selected_cells(self):
         from toksec import gateway_calibration
         with tempfile.TemporaryDirectory() as tmp:
@@ -105,6 +122,26 @@ class ComparisonGradingTests(unittest.TestCase):
             atomic_json(receipt, calibration)
             with self.assertRaisesRegex(ValueError, 'calibration does not match'):
                 releases.grade_environment(run, manifest, comparison=True, calibration=receipt)
+
+    def test_missing_gateway_calibration_retains_rounds_as_unqualified_diagnostics(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run = self.make_run(root)
+            sample = {'eligible': True, 'failures': 0, 'median_rps': 100, 'rounds': [{'p99_ms': 1.2}]}
+            result = {'stage': 14, 'build': {'passed': True}, 'checks': {
+                'passed': True, 'cases': [{'id': 'fixture-api', 'passed': True}]},
+                'benchmarks': {'fixture-load': sample}, 'grading': {}}
+            def measured(_source, output, *_args, **_kwargs):
+                output.mkdir(parents=True)
+                return result
+            with patch.object(releases.evaluate, 'evaluate', side_effect=measured):
+                destination = run / 'evaluation' / 'diagnostic'
+                releases.grade(run, destination, performance=True, comparison=True)
+            performance = controller.read(destination, 'performance.json')
+            self.assertEqual(performance['status'], 'invalid_measurement')
+            self.assertEqual(performance['credit'], 0)
+            self.assertIs(performance['metrics']['fixture-load']['calibration_qualified'], False)
+            self.assertEqual(performance['metrics']['fixture-load']['rounds'], [{'p99_ms': 1.2}])
 
     def test_rejects_changed_contract_and_unknown_tags_before_build(self):
         with tempfile.TemporaryDirectory() as tmp:
