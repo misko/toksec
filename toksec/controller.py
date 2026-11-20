@@ -34,13 +34,30 @@ def validate(run):
     return manifest
 
 
-def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend_target_usd=None, language='rust'):
+def read_launch_packet(run, manifest):
+    data = (Path(run) / 'launch-packet.md').read_bytes()
+    if ('run_id' in manifest or 'launch_packet_sha256' in manifest) and (
+            hashlib.sha256(data).hexdigest() != manifest.get('launch_packet_sha256')):
+        raise ValueError('launch packet differs from the prepared manifest')
+    return data.decode('utf-8')
+
+
+def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend_target_usd=None,
+            language='rust', development_calibration=None):
+    if development_calibration is not None and level not in (14, 16):
+        raise ValueError('development calibration requires Stage 14 or Stage 16')
     if level == 10:
         if starter is not None: raise ValueError('All stages start without starter code')
         from toksec.accounting import run_allocations
         return run_allocations.prepare(directory, language, wall_seconds, model or campaign.TERRA, spend_target_usd)
     model = model or 'gpt-6-luna'
-    specification(level, language)
+    spec = specification(level, language)
+    prompt = packet(level, language)
+    hint = None
+    if development_calibration is not None:
+        from toksec.calibrations import development_hint
+        hint = development_hint(development_calibration, level, spec['benchmarks'])
+        prompt += f"\nFor a development comparison, try benchmark_candidate with workload `{hint['workload']}`.\n"
     if starter is not None:
         raise ValueError("All stages start without starter code")
     if not 120 <= wall_seconds <= 7200:
@@ -55,12 +72,14 @@ def prepare(directory, level, wall_seconds=1800, model=None, starter=None, spend
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, destination)
     write_artifact(run, level, language)
-    (run / 'launch-packet.md').write_text(packet(level, language))
-    atomic_json(run / 'specification.json', specification(level, language))
+    (run / 'launch-packet.md').write_bytes(prompt.encode('utf-8'))
+    atomic_json(run / 'specification.json', spec)
     atomic_json(run / 'manifest.json', {**provenance, 'run_id': run.name, 'stage': level, 'language': language, 'model': model, 'reasoning_effort': 'medium', 'builder_evaluation_scope': 'visible_smoke_only', 'billing_profile': campaign.profile(model, campaign.read(directory).get('request_profile', 'legacy')), 'campaign': str(Path(directory).resolve()),
                 'spend_target_usd': spend_target_usd, 'fingerprint': fingerprint(), 'wall_seconds': wall_seconds, 'started_unix': None,
                 'prepared_unix': time.time(), 'platform': platform.platform(),
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(),
+                'launch_packet_sha256': hashlib.sha256(prompt.encode('utf-8')).hexdigest(),
+                **({'development_calibration': hint} if hint is not None else {}),
                 'input_sha256': {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
                                  for p in (run / 'builder-inputs').rglob('*') if p.is_file()},
                 'toolchain': str(sandbox.toolchain()) if language == 'rust' else '/usr/bin/g++',
@@ -407,7 +426,7 @@ def counted_prepare(run, language='cpp', wall_seconds=7200, budget='2.00', *, ru
         shutil.copyfile(source, destination)
     shutil.copytree(ROOT / 'stages/stage-10/inputs', run / 'builder-inputs/fixtures')
     write_artifact(run, 10, language)
-    (run / 'launch-packet.md').write_text(prompt)
+    (run / 'launch-packet.md').write_bytes(prompt.encode('utf-8'))
     inventory = {str(p.relative_to(run / 'builder-inputs')): hashlib.sha256(p.read_bytes()).hexdigest()
                  for p in (run / 'builder-inputs').rglob('*') if p.is_file()}
     atomic_json(run / 'manifest.json', {**provenance, 'run_id': run_id, 'stage': 10, 'model': 'gpt-6.1-terra', 'language': language,
@@ -416,6 +435,7 @@ def counted_prepare(run, language='cpp', wall_seconds=7200, budget='2.00', *, ru
                 'toolchain': subprocess.check_output(['dpkg-query','-W','g++','libssl-dev','libssl3t64'], text=True).strip(),
                 'openssl_version': subprocess.check_output(['openssl','version'], text=True).strip(),
                 'framework': counted_fingerprint(), 'input_sha256': inventory,
+                'launch_packet_sha256': hashlib.sha256(prompt.encode('utf-8')).hexdigest(),
                 'artifact_sha256': hashlib.sha256((run / 'artifact.json').read_bytes()).hexdigest(), 'starter': False,
                 'scope': 'implementation_experiment_with_partial_independent_validation',
                 'api_coverage': 'partial', 'performance_scope': 'provisional',

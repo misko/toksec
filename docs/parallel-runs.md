@@ -20,6 +20,15 @@ At most three builders run concurrently. Six disjoint logical CPUs are assigned
 to each slot; queued runs reuse a slot only after its process exits. Other host
 activity can still affect benchmark results.
 
+For Stage 14 or 16, both `python3 -m toksec prepare` and batch `prepare` accept
+`--development-calibration FILE`. Use a completed gateway calibration whose
+named diagnostic workload qualified at the full round count. Run preparation and
+launch with the CPU affinity and host environment recorded in that receipt. Each
+batch job's six-CPU slot must match the receipt. The builder gets one extra
+suggestion naming the workload for `benchmark_candidate`. Its launch packet is
+hashed and checked again at launch and resume. The manifest records the calibration
+ID, receipt digest, workload and measurement environment on the host.
+
 Stage 1/5 campaigns explicitly select the `bounded-32k` request profile. It admits
 only plain explicit text history and local tool schemas, using the provider token
 count for the same request fields as generation. It rejects input above 32,000

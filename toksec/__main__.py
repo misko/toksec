@@ -36,6 +36,8 @@ def main(argv=None):
     prepare.add_argument('--starter', type=Path)
     prepare.add_argument('--spend-target-usd', help='Stages 1–5: soft settled-spend target (a call may cross it). Stage 10: hard run allocation, at most $5')
     prepare.add_argument('--wall-seconds', type=int, default=7200)
+    prepare.add_argument('--development-calibration', type=Path, metavar='FILE',
+                         help='Suggest the qualified public diagnostic workload from this Stage 14 or 16 host receipt')
     for name in ('preflight', 'run', 'recover', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--run', type=Path, required=True)
@@ -74,7 +76,9 @@ def main(argv=None):
         elif args.command == 'upgrade':
             result = campaign.upgrade(args.campaign)
         elif args.command == 'prepare':
-            result = controller.prepare(args.campaign, args.stage, args.wall_seconds, args.model, args.starter, args.spend_target_usd, language=args.language)
+            result = controller.prepare(args.campaign, args.stage, args.wall_seconds, args.model, args.starter,
+                                        args.spend_target_usd, language=args.language,
+                                        development_calibration=args.development_calibration)
         elif args.command in ('init-repository', 'release'):
             with operation_lock(args.run):
                 result = releases.initialize(args.run) if args.command == 'init-repository' else releases.publish(args.run, args.note)

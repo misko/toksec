@@ -62,6 +62,17 @@ def preflight(run, *, resumed=False):
         return run_allocations.preflight(run)
     manifest = controller.validate(run)
     reasons = []
+    try:
+        controller.read_launch_packet(run, manifest)
+    except (OSError, ValueError) as error:
+        reasons.append(str(error))
+    hint = manifest.get('development_calibration')
+    if hint is not None:
+        from toksec.calibrations import environment_digest
+        from toksec.gateway_calibration import environment, measurement_fingerprint
+        if (hint.get('environment_sha256') != environment_digest(environment())
+                or hint.get('measurement_fingerprint') != measurement_fingerprint(stage_number(manifest))):
+            reasons.append('Development calibration environment or measurement code changed since preparation.')
     age = (datetime.datetime.now(datetime.timezone.utc).date() - datetime.date.fromisoformat(metering.PRICE_DATE)).days
     if not 0 <= age <= 7:
         reasons.append('Pinned API pricing requires review before launch.')
@@ -257,6 +268,7 @@ def run_loop(run, client, *, resume=False):
         check = preflight(run, resumed=True) if resume else preflight(run)
         if not check['launch_allowed']:
             raise ValueError('; '.join(check['reasons']))
+        text = controller.read_launch_packet(run, manifest)
         pending = None
         entry = None
         if resume:
@@ -284,7 +296,6 @@ def run_loop(run, client, *, resume=False):
             manifest.update(started_unix=time.time(), gateway_journal=1)
             atomic_json(run / 'manifest.json', manifest)
             deadline_unix = _deadline_unix(manifest)
-        text = (run / 'launch-packet.md').read_text()
         if manifest.get('starter_candidate'):
             source = (run / 'starter.rs').read_text()
             import hashlib

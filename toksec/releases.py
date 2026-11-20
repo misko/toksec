@@ -156,25 +156,11 @@ def grade_environment(run, manifest, *, comparison=False, calibration=None):
         'cpu_affinity': sorted(os.sched_getaffinity(0)), 'calibration': None,
     }
     if calibration is not None:
-        from toksec.gateway_calibration import environment as calibration_environment, measurement_fingerprint
-        actual_host = calibration_environment()
-        raw = Path(calibration).read_bytes()
-        record = json.loads(raw)
-        expected = {w['id']: w for w in current['benchmarks']}
-        observed = record.get('workloads', {})
-        cells = record.get('cells', {})
-        if (not record.get('calibration_id') or record.get('status') != 'completed' or
-                record.get('stage') != stage or not isinstance(observed, dict) or not observed or
-                not isinstance(cells, dict) or set(observed) != set(cells) or
-                any(not isinstance(cell, dict) or type(cell.get('qualified')) is not bool
-                    or not isinstance(cell.get('reasons'), list) for cell in cells.values()) or
-                any(expected.get(key) != value for key, value in observed.items()) or
-                record.get('measurement_fingerprint') != measurement_fingerprint(stage) or
-                record.get('environment') != actual_host):
-            raise ValueError('calibration does not match stage, workload definitions or host CPU affinity')
-        environment['calibration_environment'] = actual_host
+        from toksec.calibrations import gateway_receipt
+        record, receipt_sha256 = gateway_receipt(calibration, stage, current['benchmarks'])
+        environment['calibration_environment'] = record['environment']
         environment['calibration'] = {
-            'id': record['calibration_id'], 'sha256': hashlib.sha256(raw).hexdigest(),
+            'id': record['calibration_id'], 'sha256': receipt_sha256,
             'measurement_fingerprint': record['measurement_fingerprint'],
             'cells': {key: {'qualified': value['qualified'], 'reasons': value['reasons']}
                       for key, value in record['cells'].items()},

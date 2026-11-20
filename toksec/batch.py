@@ -63,7 +63,7 @@ def plan(stages, replicas, parallel, budget_usd, wall_seconds, language, cpus, b
             'status': 'preparing', 'jobs': jobs}
 
 
-def prepare(directory, **options):
+def prepare(directory, development_calibration=None, **options):
     cpus = sorted(os.sched_getaffinity(0))
     batch = plan(cpus=cpus, **options)
     batch.update(checkout(require_clean=True))
@@ -78,6 +78,8 @@ def prepare(directory, **options):
             capture(job['cpus'], 'init', '--campaign', campaign, '--budget-usd', job['budget_usd'],
                     '--request-profile', profile)
             allocation = ['--spend-target-usd', job['budget_usd']] if job['stage'] == 10 else []
+            if development_calibration is not None:
+                allocation += ['--development-calibration', Path(development_calibration).resolve()]
             result = capture(job['cpus'], 'prepare', '--campaign', campaign,
                              '--stage', job['stage'], '--language', batch['language'],
                              '--model', batch['model'], '--wall-seconds', batch['wall_seconds'], *allocation)
@@ -292,6 +294,8 @@ def main(argv=None):
     budgets.add_argument('--budgets-usd', nargs='+', help='One independent run per stage, replica, and budget')
     prepare_parser.add_argument('--wall-seconds', type=int, default=7200)
     prepare_parser.add_argument('--language', choices=('cpp', 'rust'), default='cpp')
+    prepare_parser.add_argument('--development-calibration', type=Path, metavar='FILE',
+                                help='Suggest the qualified diagnostic for jobs matching this receipt and CPU allocation')
     for name in ('run', 'status', 'finalize'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--directory', type=Path, required=True)

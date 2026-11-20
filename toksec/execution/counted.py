@@ -41,9 +41,10 @@ def _locked_run_loop(run, client):
     if m['started_unix'] is not None: raise ValueError('automatic resume is disabled')
     if m['framework'] != counted_fingerprint(): raise ValueError('framework changed after preparation')
     read_artifact(run, 10, m['language'], m.get('artifact_sha256'))
+    prompt = controller.read_launch_packet(run, m)
     ledger = BudgetLedger(run / 'budget.sqlite', limit_usd=m['budget_usd'])
     m['started_unix'] = time.time(); atomic_json(run / 'manifest.json', m)
-    prompt = (run / 'launch-packet.md').read_text(); stop = 'wall limit'
+    stop = 'wall limit'
     try:
         with deadline(m['wall_seconds']):
             return _campaign_loop(run, client, m, ledger, prompt)

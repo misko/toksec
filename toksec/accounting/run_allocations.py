@@ -112,6 +112,7 @@ def _validate(run):
         raise ValueError('child budget differs from campaign allocation')
     if manifest['framework'] != controller.counted_fingerprint() or manifest['campaign_fingerprint'] != fingerprint():
         raise ValueError('framework changed since preparation; prepare a fresh run')
+    controller.read_launch_packet(run, manifest)
     read_artifact(run, 10, manifest['language'], manifest.get('artifact_sha256'))
     if not (run / 'budget.sqlite').is_file():
         raise ValueError('Stage 10 child ledger is missing')
