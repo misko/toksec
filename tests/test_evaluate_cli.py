@@ -19,7 +19,7 @@ class EvaluationCliTests(unittest.TestCase):
             ('api',{'checks':{'passed':True}},0),
             ('performance',{'checks':{'passed':True},'benchmarks':{}},3),
             ('performance',{'checks':{'passed':True},'benchmarks':{'a':{'eligible':False,'failures':0}}},3),
-            ('performance',{'checks':{'passed':True},'benchmarks':{'a':{'eligible':True,'failures':0}}},0)]:
+            ('performance',{'checks':{'passed':True},'benchmarks':{'a':{'eligible':True,'failures':0}}},3)]:
             with self.subTest(section=section,result=result),tempfile.TemporaryDirectory() as tmp:
                 with patch.object(cli.evaluate,'evaluate',return_value=result),redirect_stdout(io.StringIO()):
                     self.assertEqual(cli.main(['--section',section,'--level','1','--output',tmp]),expected)

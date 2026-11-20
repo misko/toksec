@@ -21,7 +21,10 @@ def analyze(run, plot_python):
         output = run / 'analysis'
         result = subprocess.run([sys.executable, str(ROOT/'scripts/analyze_releases.py'), '--run', str(run), '--output', str(output)], cwd=ROOT)
         if result.returncode == 0:
-            subprocess.run([str(plot_python), str(ROOT/'scripts/plot_releases.py'), str(output)], check=True, cwd=ROOT)
+            timeline = json.loads((output / 'timeline.json').read_text())
+            figures = run / 'evaluation' / timeline['releases'][-1]['evaluation_id'] / 'figures'
+            subprocess.run([str(plot_python), str(ROOT/'scripts/plot_releases.py'), str(output),
+                            '--output', str(figures)], check=True, cwd=ROOT)
             return output
         print(json.dumps({'event': 'analysis_failed', 'run': str(run), 'attempt': attempt+1}), flush=True)
     raise RuntimeError('Independent analysis failed twice; partial results retained')

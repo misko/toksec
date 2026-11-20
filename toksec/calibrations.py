@@ -22,6 +22,8 @@ def index(root):
         records.append({'calibration_id': meta['calibration_id'], 'path': path.parent.name,
                         'toksec_commit': meta.get('toksec_commit'),
                         'static_generator_ready': record.get('static_generator_ready', False),
+                        **({key: record.get(key) for key in ('stage', 'diagnostic_ready', 'confirmation_ready', 'full_matrix_ready')}
+                           if record.get('stage') in (14, 16) else {}),
                         'applicability': 'Explicit workload and environment match required; never inferred from recency'})
     atomic_json(root / 'index.json', {'calibrations': records})
     (root / 'README.md').write_text('# Benchmark calibrations\n\nThese records assess the measurement machinery, not agent implementations.\n'

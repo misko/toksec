@@ -9,6 +9,7 @@ from toksec.stages import number as stage_number
 from toksec.storage import atomic_json
 from toksec.provenance import checkout
 from toksec import sandbox
+from toksec.benchmark import stage_matrix_valid
 from toksec.specification import workloads, fingerprint
 
 
@@ -34,7 +35,12 @@ def evaluate(source, directory, level, performance=False, language='rust'):
     cases = result.get('checks', {}).get('cases', [])
     result['grading'] = {'api_passed': api_passed, 'api_checks_passed': sum(c['passed'] for c in cases),
                          'api_checks_failed': sum(not c['passed'] for c in cases),
-                         'performance_status': 'measured' if 'benchmarks' in result else ('not_requested' if api_passed else 'failed_api')}
+                         'performance_status': ('not_requested' if api_passed else 'failed_api')}
+    if 'benchmarks' in result:
+        valid = stage_matrix_valid(result['benchmarks'], result)
+        result['grading']['performance_status'] = 'measured' if valid else 'invalid_measurement'
+        if not valid:
+            result['grading']['performance_credit'] = 0
     if not api_passed:
         result['grading']['performance_credit'] = 0
         result['grading']['deduction'] = 'Failed API requirements lose API credit; all performance credit is forfeited.'
@@ -50,9 +56,7 @@ def exit_code(result, performance=False):
         return 1
     if result.get('coverage') == 'partial' or result.get('final_grade_eligible') is False:
         return 4
-    if performance and (not result.get('benchmarks') or not all(
-            value.get('eligible') is True and value.get('failures') == 0
-            for value in result['benchmarks'].values())):
+    if performance and not stage_matrix_valid(result.get('benchmarks'), result):
         return 3
     return 0
 
@@ -73,7 +77,11 @@ def resume(source, directory, level, language='rust'):
             result['benchmarks'].update(sandbox.invoke_driver(directory/'candidate',level,'benchmark',workload=workload.id,rounds=workload.rounds))
             atomic_json(directory/'result.json',result)
     cases = result['checks']['cases']
-    result['grading'] = {'api_passed': True, 'api_checks_passed': len(cases), 'api_checks_failed': 0, 'performance_status': 'measured'}
+    valid = stage_matrix_valid(result['benchmarks'], result)
+    result['grading'] = {'api_passed': True, 'api_checks_passed': len(cases), 'api_checks_failed': 0,
+                         'performance_status': 'measured' if valid else 'invalid_measurement'}
+    if not valid:
+        result['grading']['performance_credit'] = 0
     atomic_json(directory/'result.json',result)
     return result
 

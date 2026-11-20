@@ -51,13 +51,17 @@ you verified and any remaining gaps in your release notes.
 
 Submit a complete source file defined by the supplied `artifact.json` and language interface through submit_candidate.
 The shared artifact instructions define ownership of source, release metadata and parent evaluation files. Compilation and execution
-occur in sandboxes. Controller tools are your filesystem/execution interface;
-you do not have a general host shell. Additional tests run through run_tests. Your test programs must set up their own
-fixtures and listeners; no candidate server is automatically running for them.
+occur in sandboxes. Controller tools are your filesystem and execution interface.
+Use run_tests for standalone tests. When run_candidate_test is supplied, your
+test client can send requests to the selected, running server. Select its
+source_sha256. The driver starts the compiled server with the stage's public
+configuration and files. Your test may provide its own upstream listeners.
 
 You can be stopped at any time. After your first working submission, call
 init_repository to create a new private Git repository and its first release tag.
-Use release_candidate to publish periodic working milestones. Each numbered tag
+If submit_candidate accepts release_note, supplying a note also requests a tag
+for that submission and creates the private Git repository when needed. Use
+release_candidate to publish periodic working milestones. Each numbered tag
 contains the source file and controller-generated release.json evidence. The last completed
 tag is your final submission. Untagged edits do not replace it. No tag means no
 submission, and stopping before the first working tag can leave no deliverable.
@@ -108,7 +112,12 @@ call. All model input, output, reasoning and final reporting consume that budget
 Compilation and evaluation CPU are tracked separately. The strict worst-case
 reservation policy can stop admission before the authorized balance is fully spent.
 
-Use the available capacity to improve your result. You choose which experiments are worth doing. Continue improving until the
+After you have a working tag, choose a remaining correctness risk or a bottleneck
+you can measure. Test a change against the tagged version. Tag demonstrated
+progress and retain your working tag when an experiment fails. Each model turn
+includes capacity feedback. On stages with candidate client tests, it also gives
+your current source hash, last tag and latest benchmark decision.
+You choose which experiments are worth doing. Continue improving until the
 finalization window or admission capacity is exhausted; then use finish. The controller enforces the spending and wall
 ceilings regardless of that decision. Do not assume another call will be available
 for publication. Record limitations and unmeasured claims honestly in your report.

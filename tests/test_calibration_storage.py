@@ -12,7 +12,8 @@ class CalibrationStorageTests(unittest.TestCase):
             self.assertIsNone(record['toksec_commit'])
             for entry in read(p)['files'].values():
                 self.assertEqual(hashlib.sha256((p.parent.parent / entry['path']).read_bytes()).hexdigest(), entry['sha256'])
-        self.assertEqual(len(read(root/'index.json')['calibrations']), 1)
+        published = {entry['path'] for entry in read(root/'index.json')['calibrations']}
+        self.assertEqual(published, {record.parent.name for record in root.glob('*/calibration.json')})
 
     def test_new_ids_are_distinct_and_commit_labeled(self):
         first = identity('a'*40)

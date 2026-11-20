@@ -190,7 +190,11 @@ def invoke_driver(artifact, level, mode='check', configuration_override=None, **
         else:
             values.update(cache_ttl_ms='60000')
         configuration_override = ''.join(f'{k}={v}\n' for k,v in values.items())
-    with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or mode == 'benchmark') as runtime:
+    with running(artifact, level, configuration_override, smoke=options.get('suite') == 'smoke' or mode in ('benchmark', 'client')) as runtime:
+        if mode == 'benchmark' and level in (14, 16):
+            from stages.common.grading.gateway_fixture import binary
+            options['origin_binary'] = str(binary())
+            options['client_binary'] = str(binary('client'))
         command = ['nsenter', '--target', str(runtime['pid']), '--user', '--net', '--preserve-credentials',
                    '--', '/usr/bin/python3', '-I', '-B', str(ROOT / 'toksec/driver.py'),
                    '--stage', str(level), '--fixtures', str(runtime['fixtures']), '--pid', str(server_pid(runtime['pid'], artifact)),
@@ -215,17 +219,24 @@ def invoke_driver(artifact, level, mode='check', configuration_override=None, **
 
 def self_test(artifact):
     command = base() + ['--ro-bind', str(Path(artifact).resolve()), '/candidate', '--', '/candidate/server', '--test-threads=1']
+    return execute_test(command)
+
+
+def execute_test(command):
     process = None
+    timed_out = False
     with tempfile.TemporaryFile() as log:
         try:
             process = subprocess.Popen(command, stdout=log, stderr=log, preexec_fn=limits(512, 30), start_new_session=True)
             code = process.wait(timeout=35)
         except subprocess.TimeoutExpired:
-            code = -1
+            timed_out = True
+            code = None
         finally:
             kill(process)
         log.seek(0)
-        return {'passed': code == 0, 'output': log.read(16000).decode(errors='replace')}
+        return {'passed': code == 0, 'timeout': timed_out, 'exit_code': code,
+                'output': log.read(16000).decode(errors='replace')}
 
 
 def configuration_check(artifact, level):

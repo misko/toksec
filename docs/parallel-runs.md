@@ -104,3 +104,35 @@ A provider HTTP 429 pauses new admissions after active jobs drain. When capacity
 is available, repeat the run command with `--resume-queue` and, for an archived
 campaign, `--runner-root PATH_TO_FROZEN_CHECKOUT`. Only previously unstarted jobs
 are eligible. Completed attempts and outstanding reservations retain their ledgers.
+
+Gateway workers record a durable generation intent and a receipt for each tool
+action. They use a 300-second generation read timeout within the original wall
+deadline. The supervisor records the builder stop reason, settled spend, open
+holds and grade outcome separately. A second consecutive ambiguous generation
+timeout also pauses new admissions. A tested server returning HTTP 429 is an
+ordinary test observation.
+
+After a worker stops, inspect its latest tagged release, request phase, deadline
+and outstanding liability. The following command performs local inspection.
+
+```sh
+python3 -m toksec recover --run RAW_RUN
+```
+
+Use `recover --run RAW_RUN --settle` to reconcile an already saved terminal
+response offline. A request interrupted after dispatch without a response keeps
+its full hold. An action interrupted between dispatch and its durable tool
+receipt requires inspection of the last completed tag. When the inspection
+reports `continuation_possible`, the following explicit continuation keeps the
+same run identity, original deadline, sandbox assignment and ledger. Use the
+original CPU affinity and preparation checkout.
+
+```sh
+taskset -c ORIGINAL_CPU_LIST python3 -m toksec run --run RAW_RUN --resume --key-file ~/.codexapi
+```
+
+After an interrupted batch drains the queue, `paused_recovery` leaves the raw
+run open for inspection. To close and publish the retained releases, use
+`python3 scripts/run_parallel.py finalize --directory BATCH --results results`.
+Finalization seals the builder. A working tag can still be graded when its last
+generation timed out. Financial holds survive finalization.

@@ -153,8 +153,17 @@ def finalize(directory, batch, results, runner_root=ROOT):
             continue
         run = Path(job['run'])
         try:
+            if (run / 'manifest.json').is_file() and read(run / 'manifest.json').get('gateway_journal') == 1:
+                from toksec import campaign
+                with campaign.locked(job['campaign'], owner=True):
+                    if not read(run / 'state.json')['finished']:
+                        raise ValueError('cannot seal a running gateway builder')
+                    closed = run / 'gateway-closed.json'
+                    if not closed.exists():
+                        atomic_json(closed, {'reason': 'batch finalization', 'closed_unix': time.time()})
             records = capture(job['cpus'], 'releases', '--run', run, runner_root=runner_root)['releases']
             job['tag_count'] = len(records)
+            job['graded_tag'] = records[-1]['tag'] if records else None
             if records:
                 with (run / 'parent-grading.log').open('w') as log:
                     done = subprocess.run(command(job['cpus'], 'grade', '--run', run, '--performance'),
@@ -175,6 +184,29 @@ def finalize(directory, batch, results, runner_root=ROOT):
     batch['status'] = 'complete' if all(j['status'] == 'complete' for j in batch['jobs']) else 'completed_with_failures'
     atomic_json(path, batch)
     return batch
+
+
+def observe_builder(job, batch):
+    from toksec import metering
+    run = Path(job['run'])
+    state = read(run / 'state.json')
+    manifest = read(run / 'manifest.json')
+    kind = state.get('stop_kind')
+    if kind is None and state.get('stop_reason') == 'RuntimeError: API HTTP 429; no automatic retry':
+        kind = 'provider_429'  # Older frozen workers emitted only this provider-specific message.
+    job.update(stop_kind=kind, stop_reason=state.get('stop_reason'), stop_phase=state.get('stop_phase'),
+               deadline_unix=(manifest['started_unix'] + manifest['wall_seconds']) if manifest.get('started_unix') else None)
+    balance = metering.totals(read(Path(job['campaign']) / 'ledger.json'))
+    job.update(settled_usd=balance['spent_usd_upper_bound'], held_usd=balance['reserved_usd'],
+               available_usd=balance['remaining_usd'])
+    if kind == 'generation_timeout':
+        batch['consecutive_generation_timeouts'] = batch.get('consecutive_generation_timeouts', 0) + 1
+    else:
+        batch['consecutive_generation_timeouts'] = 0
+    if kind == 'provider_429':
+        return 'API HTTP 429'
+    if batch['consecutive_generation_timeouts'] >= 2:
+        return 'two consecutive generation timeouts'
 
 
 def launch(directory, key_file, results, resume_queue=False, runner_root=ROOT):
@@ -220,12 +252,22 @@ def launch(directory, key_file, results, resume_queue=False, runner_root=ROOT):
             raise KeyboardInterrupt('batch interrupted')
         previous = signal.signal(signal.SIGTERM, stop)
         try:
+            pause_reason = None
             def provider_rejected(job):
-                state = read(Path(job['run']) / 'state.json')
-                return 'API HTTP 429' in str(state.get('stop_reason', ''))
+                nonlocal pause_reason
+                reason = observe_builder(job, batch)
+                pause_reason = pause_reason or reason
+                return bool(reason)
             paused = schedule(batch['jobs'], batch['parallel'], start, save, pause_after=provider_rejected)
             if paused and any(j['status'] == 'prepared' for j in batch['jobs']):
-                batch.update(status='paused_provider', pause_reason='API HTTP 429', paused_unix=time.time())
+                batch.update(status='paused_provider', pause_reason=pause_reason, paused_unix=time.time())
+                save()
+                return batch
+            interrupted = [j for j in batch['jobs'] if j.get('stop_kind') in (
+                'provider_429', 'provider_http_error', 'generation_timeout', 'generation_interrupted',
+                'settlement_interrupted', 'tool_interrupted', 'tool_timeout', 'count_timeout', 'count_interrupted')]
+            if interrupted:
+                batch.update(status='paused_recovery', pause_reason=interrupted[-1]['stop_reason'], paused_unix=time.time())
                 save()
                 return batch
         except BaseException:
@@ -269,7 +311,7 @@ def main(argv=None):
         elif action == 'finalize':
             with lock(args.directory):
                 batch = read(args.directory / 'batch.json')
-                if batch['status'] not in ('finalizing', 'completed_with_failures', 'complete'):
+                if batch['status'] not in ('finalizing', 'completed_with_failures', 'complete', 'paused_recovery'):
                     raise ValueError('finalize requires stopped builders; it never resumes model calls')
                 result = finalize(args.directory, batch, args.results.resolve())
         else:

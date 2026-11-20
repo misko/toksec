@@ -45,7 +45,18 @@ def calibrate(output=None, rounds=1):
 if __name__ == '__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, help='Optional output directory; defaults to calibrations/<calibration-id>')
-    parser.add_argument('--rounds', type=int, choices=range(1,6), default=1)
-    args=parser.parse_args()
-    result=calibrate(args.output,args.rounds)
-    print(json.dumps({k:v for k,v in result.items() if k != 'benchmarks'},indent=2))
+    parser.add_argument('--rounds', type=int, choices=range(1, 6), help='Default 1 for static and 5 for gateway controls')
+    parser.add_argument('--stage', type=int, choices=(2, 14, 16), default=2)
+    parser.add_argument('--reference', type=Path, help='Trusted parent-selected C++ reference source to verify against the stage API')
+    parser.add_argument('--workload', action='append', help='Select one or more declared gateway workloads')
+    args = parser.parse_args()
+    if args.stage == 2:
+        if args.reference or args.workload:
+            parser.error('gateway options require --stage 14 or --stage 16')
+        result = calibrate(args.output, args.rounds or 1)
+    else:
+        if not args.reference:
+            parser.error('gateway calibration requires --reference')
+        from toksec.gateway_calibration import calibrate as gateway_calibrate
+        result = gateway_calibrate(args.stage, args.reference, args.output, args.workload, args.rounds or 5)
+    print(json.dumps({k: v for k, v in result.items() if k not in ('benchmarks', 'cells', 'api', 'build')}, indent=2))

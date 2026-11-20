@@ -18,13 +18,25 @@ def main(argv=None):
     parser.add_argument('--language', choices=('rust', 'cpp'), default='rust')
     parser.add_argument('--stage', '--level', dest='stage', type=int, choices=SUPPORTED_STAGES)
     parser.add_argument('--run', type=Path, help='Grade the latest completed Git release of this run instead of a source file')
+    parser.add_argument('--tag', help='Grade this exact completed release/NNNNNN (defaults to the last tag)')
+    parser.add_argument('--comparison', action='store_true', help='Remeasure a finished run with the current evaluator and verify its frozen stage specification')
+    parser.add_argument('--calibration', type=Path, help='Gateway calibration.json for the current grading environment')
     parser.add_argument('--output', type=Path, help='New directory for sources, diagnostics and JSON results')
     args=parser.parse_args(argv)
+    if (args.tag or args.comparison or args.calibration) and not args.run:
+        parser.error('--tag, --comparison and --calibration require --run')
     output=args.output or ((args.run/'evaluation' if args.run else Path('evaluation-results'))/uuid.uuid4().hex)
     try:
         if args.run:
             with operation_lock(args.run):
-                result=releases.grade(args.run,output,args.section=='performance')
+                options = {}
+                if args.tag is not None:
+                    options['tag'] = args.tag
+                if args.comparison:
+                    options['comparison'] = True
+                if args.calibration is not None:
+                    options['calibration'] = args.calibration
+                result = releases.grade(args.run, output, args.section == 'performance', **options)
         else:
             level=args.stage
             if level is None:

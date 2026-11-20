@@ -155,6 +155,21 @@ def _release(snapshot, record):
     return {'tag': tag, 'commit': commit, 'source_sha256': source_hash}, releases
 
 
+def _final_grade(target, release, fallback):
+    """Find the most recent actual parent grade for the submitted (last) release."""
+    choices = []
+    reported = False
+    for path in (target / 'evaluation').glob('*/evaluation.json'):
+        envelope = read(path)
+        if envelope.get('kind') == 'security' or envelope.get('release') != release:
+            continue
+        tested = envelope.get('api', {}).get('status') in ('passed', 'failed', 'error')
+        reported |= tested
+        choices.append((tested, not path.parent.name.startswith('imported-'),
+                        path.stat().st_mtime_ns, str(path.parent.relative_to(target))))
+    return (max(choices)[-1] if choices else fallback), ('reported' if reported else 'pending')
+
+
 def transform(snapshot, target):
     """Copy a legacy snapshot, preserving every original file byte and its mapping."""
     snapshot, target = Path(snapshot), Path(target)
@@ -220,12 +235,7 @@ def transform(snapshot, target):
                      release=release, contract_sha256=digest(snapshot / 'artifact.json') if (snapshot / 'artifact.json').exists() else None, evaluator_sha256=record.get('framework'),
                      environment={'provenance': 'Imported historical evidence; no tests rerun during migration'},
                      coverage=coverage, result=raw, performance=(raw or {}).get('benchmarks'))
-    canonical = sorted((target / 'evaluation').glob('*/evaluation.json'))
-    canonical = [p for p in canonical if p.parent.name != evaluation_id]
-    latest_evaluation = str(max(canonical, key=lambda p: p.stat().st_mtime_ns).parent.relative_to(target)) if canonical else 'evaluation/' + evaluation_id
-    api_records = [read(path) for path in (target / 'evaluation').glob('*/evaluation.json')]
-    grading_status = ('reported' if any(value.get('api', {}).get('status') in ('passed', 'failed', 'error')
-                                      for value in api_records) else 'pending')
+    latest_evaluation, grading_status = _final_grade(target, release, 'evaluation/' + evaluation_id)
     record = dict(record, layout_version=LAYOUT_VERSION,
                   grading_status=grading_status,
                   paths={'inputs': 'inputs', 'artifact_contract': artifact_path, 'implementation': 'implementation', 'accounting': 'accounting',
@@ -347,6 +357,20 @@ def publish_snapshot(snapshot, results):
                                 raise ValueError('evaluation identity collision')
                         else:
                             shutil.copytree(path, other)
+                # A raw run may lack an older, already published canonical grade.
+                # Recompute the final-release pointer after merging those envelopes.
+                current_release = read(staging / record['paths']['latest_evaluation'] / 'evaluation.json')['release']
+                previous = record['paths']['latest_evaluation']
+                latest, grading = _final_grade(staging, current_release, previous)
+                if latest != previous or grading != record['grading_status']:
+                    overview = (staging / 'README.md').read_text()
+                    overview = overview.replace(f'({previous}/report.md)', f'({latest}/report.md)')
+                    overview = overview.replace(f"Independent grading: **{record['grading_status']}**",
+                                                f"Independent grading: **{grading}**")
+                    (staging / 'README.md').write_text(overview)
+                    record['paths']['latest_evaluation'] = latest
+                    record['grading_status'] = grading
+                    atomic_json(staging / 'run.json', record)
                 (staging / 'sha256.json').unlink()
                 atomic_json(staging / 'sha256.json', files(staging))
             install(staging, dest)
@@ -478,7 +502,10 @@ def snapshot_run(run, snapshot):
         record['budget_usd'] = ledger['dollar_limit']
         if state['finished']:
             atomic_json(snapshot / 'ledger.json', ledger)
-        analyses = [p for p in run.glob('analysis*') if (p / 'timeline.json').is_file()]
+        # New series publish one canonical parent envelope per tag. Only the old
+        # flat analyzer output needs to be transformed into an imported envelope.
+        analyses = [p for p in run.glob('analysis*') if (p / 'timeline.json').is_file()
+                    and not read(p / 'timeline.json').get('per_tag_evaluations')]
         if analyses and state['finished']:
             analysis = max(analyses, key=lambda p: (p / 'timeline.json').stat().st_mtime)
             for path in analysis.iterdir():
@@ -512,7 +539,10 @@ def snapshot_run(run, snapshot):
                         # Git tag is authoritative and is recorded as such.
                         meta['tag'] = tag
                         meta['tag_provenance'] = 'git_tag'
-                    meta['commit'] = git(run, 'rev-parse', tag + '^{commit}').strip()
+                    commit = git(run, 'rev-parse', tag + '^{commit}').strip()
+                    if meta['tag'] != tag or meta.get('commit', commit) != commit:
+                        raise ValueError('release metadata differs from Git tag or commit')
+                    meta['commit'] = commit
                     (snapshot / (tag.replace('/', '-') + Path(source_name).suffix)).write_bytes(source)
                     releases.append(meta)
                     report = run / 'candidates' / meta['candidate'] / 'report.json'

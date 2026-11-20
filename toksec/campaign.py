@@ -92,10 +92,11 @@ def initialize(directory, budget_usd=None, *, import_ledger=None, request_profil
         budget = Decimal(str(budget_usd if budget_usd is not None else '3'))
         if not budget.is_finite() or budget <= 0:
             raise ValueError('budget must be positive and finite')
+        selected = profile(TERRA if request_profile == 'bounded-32k' else metering.MODEL, request_profile)
         ledger = {'requests': [], 'dollar_limit': str(budget),
-                  'model': metering.MODEL, 'token_limit': metering.TOKEN_LIMIT,
-                  'service_tier': 'default', 'rates_usd_per_million': dict(metering.RATES),
-                  'price_source': metering.PRICE_SOURCE, 'price_verified_date': metering.PRICE_DATE,
+                  'model': selected['model'], 'token_limit': metering.TOKEN_LIMIT,
+                  'service_tier': 'default', 'rates_usd_per_million': selected['rates'],
+                  'price_source': selected['price_source'], 'price_verified_date': selected['price_verified_date'],
                   'scope': 'Fresh measured API campaign; excludes framework preparation'}
     if request_profile != 'legacy':
         ledger['request_profile'] = request_profile
@@ -137,7 +138,7 @@ def upgrade(directory):
     return status(directory, TERRA if ledger.get('request_profile') == 'bounded-32k' else metering.MODEL)
 
 
-def reserve(directory, run_id, counted_input, model=metering.MODEL):
+def reserve(directory, run_id, counted_input, model=metering.MODEL, *, intent=None):
     selected = profile(model, read(directory).get('request_profile', 'legacy'))
     if type(counted_input) is not int or not 0 <= counted_input <= min(metering.MAX_INPUT, selected['input_limit']):
         raise ValueError('counted input exceeds the supported request context budget')
@@ -145,12 +146,32 @@ def reserve(directory, run_id, counted_input, model=metering.MODEL):
         if not status(directory, model)['can_start_model_call']:
             raise ValueError('campaign cannot admit another request; inspect status')
         ledger = read(directory)
-        identity = uuid.uuid4().hex
+        identity = intent['id'] if intent is not None else uuid.uuid4().hex
+        if any(r['id'] == identity for r in ledger['requests']):
+            raise ValueError('request was already admitted')
         ledger['requests'].append({'id': identity, 'run': run_id, 'state': 'reserved',
                                    'counted_input': counted_input, 'reserved_tokens': selected['reserved_tokens'],
-                                   'profile': selected, 'reserved_usd': selected['reservation_usd'], 'reserved_unix': time.time()})
+                                   'profile': selected, 'reserved_usd': selected['reservation_usd'], 'reserved_unix': time.time(),
+                                   **({k: intent[k] for k in ('request_sha256', 'deadline_unix', 'max_output_tokens')} if intent else {}),
+                                   **({'send_phase': 'not_sent'} if intent else {})})
         atomic_json(Path(directory) / 'ledger.json', ledger)
         return identity
+
+
+def begin_send(directory, identity, *, cancel=False):
+    """The runner crosses the generation network boundary only after this write."""
+    with locked(directory):
+        ledger = read(directory)
+        entry = next(r for r in ledger['requests'] if r['id'] == identity)
+        if entry['state'] != 'reserved' or entry.get('send_phase') != 'not_sent':
+            raise ValueError('reservation was already dispatched or closed')
+        if cancel:
+            entry.update(state='cancelled_unsent', ended_unix=time.time())
+        else:
+            if ledger['state'] != 'active':
+                raise ValueError('campaign is blocked')
+            entry.update(send_phase='dispatch_started', dispatch_unix=time.time())
+        atomic_json(Path(directory) / 'ledger.json', ledger)
 
 
 def settle(directory, identity, response):
@@ -159,20 +180,29 @@ def settle(directory, identity, response):
         entry = next(r for r in ledger['requests'] if r['id'] == identity)
         try:
             selected = entry.get('profile', profile())
+            if entry.get('send_phase') == 'not_sent':
+                raise ValueError('cannot settle an undispatched reservation')
             usage = metering.usage_record(response['usage'], selected['rates'])
-            if entry['state'] == 'settled':
-                if entry['response_id'] == response['id'] and entry['usage'] == usage:
-                    return usage
-                raise ValueError('conflicting settlement')
             if response['model'] != selected['model'] or response['service_tier'] != 'default':
                 raise ValueError('unexpected model or service tier')
+            if not isinstance(response['id'], str) or not response['id'] or response['status'] not in ('completed', 'incomplete'):
+                raise ValueError('a terminal response with an ID is required')
+            response_digest = hashlib.sha256(json.dumps(response, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            if entry['state'] == 'settled':
+                if (entry['response_id'] == response['id'] and entry['usage'] == usage
+                        and entry.get('response_sha256', response_digest) == response_digest):
+                    return usage
+                raise ValueError('conflicting settlement')
+            if ('request_sha256' in entry and selected['request_profile'] == 'bounded-32k'
+                    and usage['input'] != entry['counted_input']):
+                raise ValueError('provider input usage differs from verified input count')
             if any(r.get('response_id') == response['id'] for r in ledger['requests']):
                 raise ValueError('response already settled')
             if (usage['input'] > selected.get('input_limit', metering.MODEL_CONTEXT_LIMIT) or usage['output'] > selected.get('output_limit', metering.MAX_OUTPUT)
                     or usage['total'] > entry['reserved_tokens']
                     or Decimal(usage['cost_usd_upper_bound']) > Decimal(entry['reserved_usd'])):
                 raise ValueError('usage exceeds reservation')
-            entry.update(state='settled', response_id=response['id'], usage=usage,
+            entry.update(state='settled', response_id=response['id'], response_sha256=response_digest, usage=usage,
                          response_status=response['status'], settled_unix=time.time())
             if response['status'] != 'completed' or usage['input'] > metering.MAX_INPUT:
                 ledger.update(state='stopped', reason='incomplete response or actual input above context budget')

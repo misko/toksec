@@ -10,7 +10,8 @@ MODEL_CONTEXT_LIMIT = 1_050_000
 MAX_OUTPUT = 16_000
 RATES = {"input": "0.10", "cached": "0.01", "write_upper": "0.25", "output": "0.50"}
 PRICE_SOURCE = "https://developers.openai.com/api/docs/models/gpt-6-luna"
-PRICE_DATE = "2026-11-12"
+# Standard, nonregional pricing verified against the provider's model and pricing pages.
+PRICE_DATE = "2026-11-20"
 
 
 def tokens(value):

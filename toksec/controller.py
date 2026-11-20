@@ -79,8 +79,14 @@ def capacity(run):
     result = campaign.status(manifest['campaign'], manifest.get('model', 'gpt-6-luna'))
     started = manifest['started_unix']
     remaining = max(0, manifest['wall_seconds'] - (time.time() - started)) if started else manifest['wall_seconds']
-    result.update(evaluation_scope=manifest['builder_evaluation_scope'], seconds_remaining=remaining, best_candidate=read(run)['best'],
-                  smoke_passed=read(run)['smoke_passed'], optimization_attempts=read(run)['optimization_attempts'])
+    state = read(run)
+    from toksec.releases import latest_identity
+    latest = read(Path(run) / 'candidates' / state['last'], 'report.json') if state['last'] else {}
+    result.update(evaluation_scope=manifest['builder_evaluation_scope'], seconds_remaining=remaining,
+                  best_candidate=state['best'], latest_source_sha256=latest.get('source_sha256'),
+                  last_tag=latest_identity(run), last_benchmark=state.get('last_benchmark'),
+                  last_qualified_benchmark=state.get('last_qualified_benchmark'),
+                  smoke_passed=state['smoke_passed'], optimization_attempts=state['optimization_attempts'])
     target = manifest.get('spend_target_usd')
     if target is not None:
         from decimal import Decimal
@@ -93,8 +99,8 @@ def capacity(run):
     result['can_finish'] = remaining <= 120 or not admitted
     result['work_phase'] = ('stabilize' if remaining <= 120 else
                             'improve' if result['smoke_passed'] else 'conformance')
-    result['context_rollovers'] = read(run).get('context_rollovers', 0)
-    result['can_start_model_call'] &= remaining > 30 and not read(run)['finished']
+    result['context_rollovers'] = state.get('context_rollovers', 0)
+    result['can_start_model_call'] &= remaining > 30 and not state['finished']
     return result
 
 
@@ -102,8 +108,12 @@ def passed(report):
     return {c['id'] for c in report.get('checks', {}).get('cases', []) if c['passed']}
 
 
-def submit(run, source):
+def submit(run, source, release_note=None):
+    if release_note is not None and (not isinstance(release_note, str) or not release_note.strip() or len(release_note) > 2000):
+        raise ValueError('release_note must be null or 1 to 2000 characters')
     if stage_of(run) == 10:
+        if release_note is not None:
+            raise ValueError('Stage 10 uses release_candidate to publish a tag')
         return stage10_tool(run, 'submit_candidate', {'source': source})
     run = Path(run)
     manifest = validate(run)
@@ -116,6 +126,7 @@ def submit(run, source):
     report = {'id': identity, 'build': sandbox.build(source, artifact, stage_number(manifest), language=manifest.get('language', 'rust')),
               'checks': {'passed': False, 'cases': []}, 'capacity_at_submission': capacity(run), 'evaluation_scope': manifest['builder_evaluation_scope']}
     if report['build']['passed']:
+        report['binary_sha256'] = hashlib.sha256((artifact / 'server').read_bytes()).hexdigest()
         try:
             report['checks'] = sandbox.evaluate(artifact, stage_number(manifest), smoke=True)
         except (RuntimeError, OSError, ValueError) as error:
@@ -127,8 +138,19 @@ def submit(run, source):
         state.update(best=identity, smoke_passed=report['checks']['passed'])
     state['last'] = identity
     atomic_json(run / 'state.json', state)
+    response = {**report, 'retained': state['best'] == identity, 'best': state['best']}
+    if release_note is not None:
+        from toksec import releases
+        try:
+            if (run / 'repository/.git').is_dir():
+                release = releases.publish(run, release_note)
+            else:
+                release = releases.initialize(run, release_note)
+            response['release'] = {key: release[key] for key in ('tag', 'commit', 'source_sha256', 'publication')}
+        except ValueError as error:
+            response['release'] = {'publication': 'rejected', 'error': str(error)}
     export(run)
-    return {**report, 'retained': state['best'] == identity, 'best': state['best']}
+    return response
 
 
 def measure(run, workload=None):
@@ -147,7 +169,10 @@ def measure(run, workload=None):
     selected = [w for w in workloads(level) if workload is None or w.id == workload]
     if not selected:
         raise ValueError('unknown workload')
-    incumbent = state['best'] or identity
+    diagnostic_baselines = state.setdefault('diagnostic_baselines', {})
+    incumbent = diagnostic_baselines.get(workload, state['best']) or identity
+    if incumbent in state.get('invalidated', []):
+        incumbent = identity
     pair = incumbent != identity
     estimated = sum(w.rounds * (w.warmup_seconds + w.seconds + w.timeout_seconds + 1) for w in selected) * (2 if pair else 1) + 30
     if capacity(run)['seconds_remaining'] < estimated:
@@ -162,10 +187,20 @@ def measure(run, workload=None):
                 result = sandbox.invoke_driver(run / 'candidates' / candidate, level, 'benchmark', workload=w.id, rounds=1)
                 collected[candidate][w.id].extend(result[w.id]['rounds'])
             atomic_json(run / 'benchmark-progress.json', collected)
-    summaries = {key: {name: benchmark.summarize(rounds) for name, rounds in value.items()} for key, value in collected.items()}
-    decision = benchmark.compare(summaries[incumbent], summaries[identity]) if pair else {'promote': False, 'reason': 'initial accepted baseline'}
+    summaries = {key: {w.id: benchmark.summarize(rows[w.id], w) for w in selected}
+                 for key, rows in collected.items()}
+    qualified = benchmark.matrix_valid(summaries[identity], selected)
+    if pair:
+        decision = benchmark.compare(summaries[incumbent], summaries[identity], selected)
+    else:
+        decision = {'promote': False, 'reason': 'qualified baseline' if qualified else 'candidate has unqualified measurements'}
     if workload is not None:
-        decision = {**decision, 'promote': False, 'reason': 'selected workload diagnostic; full matrix required for baseline promotion'}
+        if decision['promote'] or (not pair and qualified):
+            diagnostic_baselines[workload] = identity
+        elif benchmark.matrix_valid(summaries[incumbent], selected):
+            diagnostic_baselines[workload] = incumbent
+        decision = {**decision, 'promote': False, 'scope': 'selected_workload',
+                    'diagnostic_baseline': diagnostic_baselines.get(workload)}
     result = {'selected_workloads': [w.id for w in selected], 'complete_matrix': workload is None, 'candidate': identity, 'incumbent': incumbent, 'summaries': summaries, 'decision': decision, 'evaluation_scope': 'development_only_not_final_grade'}
     result['recorded_unix'] = time.time()
     result['capacity'] = capacity(run)
@@ -177,21 +212,100 @@ def measure(run, workload=None):
         state['optimization_attempts'] += 1
     if decision['promote']:
         state.update(best=identity, smoke_passed=True)
+    state['last_benchmark'] = {'candidate': identity, 'workloads': [w.id for w in selected],
+                               'qualified': qualified, 'decision': decision,
+                               'invalid_cells': {name: cell['validity_reasons'] for name, cell in summaries[identity].items()
+                                                 if cell['validity_reasons']}}
+    if qualified:
+        state['last_qualified_benchmark'] = {
+            'candidate': identity, 'recorded_unix': result['recorded_unix'],
+            'cells': {name: {'median_rps': cell['median_rps'], 'worst_p99_ms': cell['worst_p99_ms']}
+                      for name, cell in summaries[identity].items()}}
     atomic_json(run / 'state.json', state)
     export(run)
     return result
 
 
-def test_source(run, source):
+def candidate_source(run, digest, *, latest_only=False):
+    run = Path(run)
+    manifest = validate(run)
+    state = read(run)
+    if state['finished']:
+        raise ValueError('run is finished')
+    if not isinstance(digest, str) or len(digest) != 64 or any(c not in '0123456789abcdef' for c in digest):
+        raise ValueError('supply the candidate source_sha256 returned by submit_candidate')
+    candidates = run / 'candidates'
+    if state['last']:
+        if latest_only:
+            folders = [candidates / state['last']]
+        else:
+            folders = [candidates / state['last'], *(p for p in candidates.iterdir() if p.name != state['last'])]
+        for folder in folders:
+            if (folder / 'report.json').is_file():
+                report = read(folder, 'report.json')
+                if report['source_sha256'] == digest:
+                    source = (folder / source_name(manifest)).read_bytes()
+                    if hashlib.sha256(source).hexdigest() != digest:
+                        raise ValueError('stored source differs from submitted digest')
+                    return folder, report, source.decode('utf-8')
+    raise ValueError('source_sha256 does not match the latest submission' if latest_only
+                     else 'no submission in this run has that source_sha256')
+
+
+def read_candidate_source(run, digest, start_line, line_count, start_column=1):
+    if (type(start_line) != int or start_line < 1 or type(start_column) != int or start_column < 1
+            or type(line_count) != int or not 1 <= line_count <= 300):
+        raise ValueError('use positive start_line and start_column and line_count in 1..300')
+    _, _, source = candidate_source(run, digest)
+    lines = source.splitlines(keepends=True)
+    selected = lines[start_line - 1:start_line - 1 + line_count]
+    if selected:
+        selected[0] = selected[0][start_column - 1:]
+    text = ''.join(selected)
+    return {'source_sha256': digest, 'total_lines': len(lines), 'text': text[:24000],
+            'truncated': len(text) > 24000}
+
+
+def edit_candidate(run, digest, old, new, release_note=None):
+    _, _, source = candidate_source(run, digest, latest_only=True)
+    if not isinstance(old, str) or not isinstance(new, str) or not old or max(len(old), len(new)) > 24000:
+        raise ValueError('old and new must be text up to 24000 characters, with nonempty old')
+    if source.count(old) != 1:
+        raise ValueError('old must match exactly one occurrence')
+    return submit(run, source.replace(old, new, 1), release_note)
+
+
+def test_source(run, source, candidate_sha256=None):
     if stage_of(run) == 10:
+        if candidate_sha256 is not None:
+            raise ValueError('candidate client tests are unavailable in Stage 10')
         return stage10_tool(run, 'run_tests', {'source': source})
     manifest = validate(run)
     if read(run)['finished']:
         raise ValueError('run is finished')
+    level = stage_number(manifest)
+    if candidate_sha256 is not None:
+        target, report, _ = candidate_source(run, candidate_sha256)
+        if not report['build']['passed']:
+            raise ValueError('selected candidate did not compile')
+        binary_sha256 = hashlib.sha256((target / 'server').read_bytes()).hexdigest()
+        if report.get('binary_sha256') != binary_sha256:
+            raise ValueError('compiled server does not match the submission record')
     artifact = Path(run) / 'unit-tests' / uuid.uuid4().hex
-    result = sandbox.build(source, artifact, stage_number(manifest), test=True, language=manifest.get('language', 'rust'))
+    result = sandbox.build(source, artifact, level, test=True, language=manifest.get('language', 'rust'))
+    result['test_sha256'] = hashlib.sha256(source.encode()).hexdigest()
+    if candidate_sha256 is not None:
+        result.update(mode='client', candidate=target.name, source_sha256=candidate_sha256,
+                      binary_sha256=binary_sha256, endpoint='127.0.0.1:8080')
     if result['passed']:
-        result['tests'] = sandbox.self_test(artifact)
+        if candidate_sha256 is None:
+            result['tests'] = sandbox.self_test(artifact)
+        else:
+            try:
+                result['tests'] = sandbox.invoke_driver(target, level, mode='client', client=artifact / 'server')
+            except (RuntimeError, OSError, ValueError, subprocess.TimeoutExpired) as error:
+                result['tests'] = {'passed': False, 'ready': False, 'error': str(error)[:2000]}
+    atomic_json(artifact / 'test-result.json', result)
     return result
 
 

@@ -36,7 +36,7 @@ def main(argv=None):
     prepare.add_argument('--starter', type=Path)
     prepare.add_argument('--spend-target-usd', help='Stages 1–5: soft settled-spend target (a call may cross it). Stage 10: hard run allocation, at most $5')
     prepare.add_argument('--wall-seconds', type=int, default=7200)
-    for name in ('preflight', 'run', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
+    for name in ('preflight', 'run', 'recover', 'submit', 'benchmark', 'export', 'test', 'report', 'revalidate', 'init-repository', 'release', 'releases', 'grade'):
         cmd = commands.add_parser(name)
         cmd.add_argument('--run', type=Path, required=True)
         if name == 'benchmark':
@@ -52,6 +52,9 @@ def main(argv=None):
             cmd.add_argument('--source', type=Path, required=True)
         if name == 'run':
             cmd.add_argument('--key-file', type=Path)
+            cmd.add_argument('--resume', action='store_true', help='Continue the open gateway run under its original deadline and allocation')
+        if name == 'recover':
+            cmd.add_argument('--settle', action='store_true', help='Reconcile a saved terminal receipt locally; never sends a model request')
     args = parser.parse_args(argv)
     try:
         if args.command == 'check':
@@ -90,8 +93,10 @@ def main(argv=None):
                 result = controller.revalidate(args.run, args.target)
         elif args.command == 'preflight':
             result = runner.preflight(args.run)
+        elif args.command == 'recover':
+            result = runner.recovery_status(args.run, settle=args.settle)
         elif args.command == 'run':
-            result = runner.run_loop(args.run, runner.Responses(runner.credentials(args.key_file)))
+            result = runner.run_loop(args.run, runner.Responses(runner.credentials(args.key_file)), resume=args.resume)
         elif args.command == 'submit':
             with operation_lock(args.run):
                 result = controller.submit(args.run, args.source.read_text())

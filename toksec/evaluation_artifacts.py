@@ -5,6 +5,7 @@ from pathlib import Path
 
 from toksec.storage import atomic_json
 from toksec.artifacts import validate_evaluation
+from toksec.benchmark import stage_matrix_valid
 
 
 def digest(value):
@@ -60,10 +61,8 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
                              for name, value in measurements.items()})
     elif coverage != 'full':
         perf.update(status='skipped_incomplete_suite', credit=0)
-    elif measurements:
-        valid = (api_status == 'passed' and verified and isinstance(measurements, dict)
-                 and all(isinstance(v, dict) and v.get('eligible') is True
-                         and v.get('failures') == 0 for v in measurements.values()))
+    elif measurements is not None:
+        valid = api_status == 'passed' and verified and stage_matrix_valid(measurements, result)
         perf.update(status='measured' if valid else 'invalid_measurement',
                     credit=None if valid else 0, metrics=measurements)
     elif api_status == 'error':
@@ -110,6 +109,15 @@ def write_evaluation(output, *, run_id, release, contract_sha256,
         text += ['', f"Toksec evaluator commit: `{record['toksec_commit']}`. Working tree dirty: {record.get('toksec_dirty', 'unknown')}."]
     if record.get('run_toksec_commit'):
         text += ['', f"Toksec run preparation commit: `{record['run_toksec_commit']}`."]
+    if environment.get('mode') == 'comparison':
+        text += ['', 'The parent regraded this release against its original stage specification.',
+                 f"Builder framework `{environment['builder_framework']}`.",
+                 f"Comparison evaluator `{environment['evaluator_framework']}`."]
+        calibration = environment.get('calibration')
+        if calibration:
+            text.append(f"Calibration `{calibration['id']}` (SHA-256 `{calibration['sha256']}`).")
+        elif measurements:
+            text.append('No matching calibration was supplied for this comparison.')
     if missing:
         text += ['', 'Historical evidence is missing: ' + ', '.join(missing) + '.']
     if coverage != 'full':

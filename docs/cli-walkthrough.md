@@ -94,11 +94,21 @@ index selects by start time, so publishing an older experiment cannot replace a
 newer entry in the current view. See
 [result storage](result-storage.md) for the exact layout and provenance rules.
 
-`scripts/analyze_releases.py` and `scripts/plot_releases.py` retain the older
-Stage 1–5 all-tags timeline workflow. Stage 10 currently uses the shared last-tag
-grading and publication commands above. Their explicit analysis outputs remain supported by
-the publisher; they are not builder feedback or permission to regrade a frozen run
-with another evaluator. See the [script index](../scripts/README.md).
+Use an exact numbered tag to evaluate an earlier release. The default evaluates the last completed tag with the frozen evaluator. Comparison grading uses the current evaluator and checks that the frozen stage specification still matches. Each evaluation records both fingerprints, the tag commit and source hash, and the host actually used.
+
+```sh
+python3 evaluate.py --run RAW_RUN --tag release/000002 --section api --comparison
+python3 scripts/analyze_releases.py --run RAW_RUN --output SERIES --comparison --calibration CALIBRATION_JSON
+```
+
+Pick a new series directory for each independent measurement. Reusing the same directory resumes that series with the same stage, releases, evaluator, host and calibration. Use `--api-only` for correctness-only grading. The timeline lists the canonical parent evaluation ID for each tag under `RAW_RUN/evaluation/`. Use the last tag's ID for the progress figures, then publish the run.
+
+```sh
+python3 scripts/plot_releases.py SERIES --output RAW_RUN/evaluation/LAST_EVALUATION_ID/figures
+python3 scripts/publish_results.py --run RAW_RUN
+```
+
+The publisher retains older grades and links the run summary to a grade of the final submitted release. Stage 10 uses the shared last-tag grader with partial API and provisional performance coverage. See the [script index](../scripts/README.md).
 
 ## Stage names and provenance
 
