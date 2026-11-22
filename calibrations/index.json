@@ -2,6 +2,28 @@
   "calibrations": [
     {
       "applicability": "Explicit workload and environment match required; never inferred from recency",
+      "calibration_id": "calibration__stage-14__20261120T152615Z__6c35c0f9f68b__a87edff6",
+      "confirmation_ready": false,
+      "diagnostic_ready": true,
+      "full_matrix_ready": false,
+      "path": "calibration__stage-14__20261120T152615Z__6c35c0f9f68b__a87edff6",
+      "stage": 14,
+      "static_generator_ready": false,
+      "toksec_commit": "6c35c0f9f68b8fd2793ff44e946122cd6d504937"
+    },
+    {
+      "applicability": "Explicit workload and environment match required; never inferred from recency",
+      "calibration_id": "calibration__stage-16__20261120T153656Z__6c35c0f9f68b__25df925e",
+      "confirmation_ready": true,
+      "diagnostic_ready": true,
+      "full_matrix_ready": false,
+      "path": "calibration__stage-16__20261120T153656Z__6c35c0f9f68b__25df925e",
+      "stage": 16,
+      "static_generator_ready": false,
+      "toksec_commit": "6c35c0f9f68b8fd2793ff44e946122cd6d504937"
+    },
+    {
+      "applicability": "Explicit workload and environment match required; never inferred from recency",
       "calibration_id": "calibration__static-http__historical__fdbcc51dde72",
       "path": "calibration__static-http__historical__fdbcc51dde72",
       "static_generator_ready": false,

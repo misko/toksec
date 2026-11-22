@@ -1,0 +1,41 @@
+{
+  "api": {
+    "passed": 21,
+    "status": "failed",
+    "total": 23
+  },
+  "contract_sha256": "581b63073feb2bae1de7271be7bd1d39ae1fdd276dc95585be38928e1c553cab",
+  "coverage": "full",
+  "environment": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "toolchain": "/usr/bin/g++"
+  },
+  "evaluator_sha256": "f151113b5119b387061aafdafce6703fa37ac7d3e99df9082f8c964dee117137",
+  "missing_evidence": [],
+  "performance": {
+    "credit": 0,
+    "metrics": null,
+    "status": "skipped_api_failure"
+  },
+  "provenance_status": "verified",
+  "release": {
+    "commit": "f03af5e88662b762278f188b7c6e6141b349f23f",
+    "source_sha256": "feb5f9a5b00fd899f2f41982c59f34a7243b78bfafc2cf6e3b16ba441d2bebfd",
+    "tag": "release/000002"
+  },
+  "run_id": "stage-12__cpp__20261119T050517Z__090c7a3beaf8__50edf196",
+  "run_toksec_commit": "090c7a3beaf8ce7183ac3ab5b3fdf330aaa96027",
+  "schema_version": 1,
+  "status": "failed",
+  "toksec_commit": "090c7a3beaf8ce7183ac3ab5b3fdf330aaa96027",
+  "toksec_dirty": false
+}

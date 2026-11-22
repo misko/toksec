@@ -1,0 +1,35 @@
+{
+  "best": "29dc65e1c61a4489a967d55e897e6b11",
+  "context_rollovers": 22,
+  "diagnostic_baselines": {},
+  "ended_unix": 1795343100.7367496,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "4f42079cf29e4f2e99f77376ebae3fa6",
+  "last_benchmark": {
+    "candidate": "7b9de37027fa437385bf0a10f5b5830c",
+    "decision": {
+      "diagnostic_baseline": null,
+      "promote": false,
+      "reason": "challenger has unqualified measurements",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {
+      "gateway-15-4096-256": [
+        "upstream_saturated"
+      ]
+    },
+    "qualified": false,
+    "workloads": [
+      "gateway-15-4096-256"
+    ]
+  },
+  "optimization_attempts": 1,
+  "smoke_passed": true,
+  "stop_kind": "settlement_stopped",
+  "stop_metadata": {},
+  "stop_phase": "settlement",
+  "stop_reason": "usage or model response stopped the campaign"
+}

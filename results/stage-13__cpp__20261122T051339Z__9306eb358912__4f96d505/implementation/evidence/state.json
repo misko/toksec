@@ -1,0 +1,44 @@
+{
+  "best": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+  "context_rollovers": 69,
+  "diagnostic_baselines": {
+    "gateway-13-4096-256": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+    "gateway-13-4096-4096": "d657e488c979463ea1df1f256e108ae5"
+  },
+  "ended_unix": 1795359493.884047,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "dbeb3bddb3204b7b9760714fc35778e2",
+  "last_benchmark": {
+    "candidate": "a71aabd0841844909d484a4d92bfde69",
+    "decision": {
+      "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+      "promote": false,
+      "reason": "throughput ranges overlap or regression",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {},
+    "qualified": true,
+    "workloads": [
+      "gateway-13-4096-4096"
+    ]
+  },
+  "last_qualified_benchmark": {
+    "candidate": "a71aabd0841844909d484a4d92bfde69",
+    "cells": {
+      "gateway-13-4096-4096": {
+        "median_rps": 12880.666666666666,
+        "worst_p99_ms": 660.0
+      }
+    },
+    "recorded_unix": 1795357224.1393418
+  },
+  "optimization_attempts": 6,
+  "smoke_passed": true,
+  "stop_kind": "admission_denied",
+  "stop_metadata": {},
+  "stop_phase": "tool",
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

@@ -1,0 +1,52 @@
+{
+  "created_unix": 1795064713.8211343,
+  "dollar_limit": "3",
+  "fingerprint": "f151113b5119b387061aafdafce6703fa37ac7d3e99df9082f8c964dee117137",
+  "model": "gpt-6-luna",
+  "price_source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+  "price_verified_date": "2026-11-12",
+  "rates_usd_per_million": {
+    "cached": "0.01",
+    "input": "0.10",
+    "output": "0.50",
+    "write_upper": "0.25"
+  },
+  "reason": null,
+  "request_profile": "bounded-32k",
+  "requests": [
+    {
+      "counted_input": 4531,
+      "id": "f1d7bdedbc6646ec8eaa3f27792a04ad",
+      "profile": {
+        "input_limit": 32000,
+        "model": "gpt-6.1-terra",
+        "output_limit": 16000,
+        "price_source": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "price_verified_date": "2026-11-12",
+        "prompt_cache_options": {
+          "mode": "implicit",
+          "ttl": "30m"
+        },
+        "rates": {
+          "cached": "0.05",
+          "input": "1.00",
+          "output": "5.00",
+          "write_upper": "1.25"
+        },
+        "request_profile": "bounded-32k",
+        "reservation_usd": "0.200",
+        "reserved_tokens": 48000
+      },
+      "reserved_tokens": 48000,
+      "reserved_unix": 1795064758.8621492,
+      "reserved_usd": "0.200",
+      "run": "stage-11__cpp__20261119T050513Z__090c7a3beaf8__615e3db8",
+      "state": "reserved"
+    }
+  ],
+  "schema_version": 2,
+  "scope": "Fresh measured API campaign; excludes framework preparation",
+  "service_tier": "default",
+  "state": "active",
+  "token_limit": 10000000
+}

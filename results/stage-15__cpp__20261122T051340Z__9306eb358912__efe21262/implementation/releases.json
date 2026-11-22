@@ -1,0 +1,412 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": null,
+        "last_qualified_benchmark": null,
+        "last_tag": null,
+        "latest_source_sha256": "78c6ee20ffde8f298156e366cd3635d7bd20304ce3f6ab8ddb74cea143513401",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 0,
+        "reason": null,
+        "remaining": 9985112,
+        "remaining_usd": "2.94328025",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 7084.589870691299,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.05671975",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 14888,
+        "work_phase": "improve"
+      },
+      "commit": "6b7a62f65d483f5d3bedcf6b8c9ecc3c8c6a1ed1",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Initial working release: nonblocking persistent static and mutually authenticated TLS gateway, strict configuration and request validation, and atomic credential reload. Smoke-tested on bootstrap, HEAD and persistence; further independent security tests pending.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795360673.6245022,
+      "smoke_passed": true,
+      "source_sha256": "78c6ee20ffde8f298156e366cd3635d7bd20304ce3f6ab8ddb74cea143513401",
+      "stage": 15,
+      "tag": "release/000001",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "ac23fb9a30c745419494a450b6a7f55c",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 8,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "ac23fb9a30c745419494a450b6a7f55c",
+          "decision": {
+            "diagnostic_baseline": null,
+            "promote": false,
+            "reason": "challenger has unqualified measurements",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {
+            "gateway-15-4096-256": [
+              "upstream_saturated"
+            ]
+          },
+          "qualified": false,
+          "workloads": [
+            "gateway-15-4096-256"
+          ]
+        },
+        "last_qualified_benchmark": null,
+        "last_tag": {
+          "commit": "6b7a62f65d483f5d3bedcf6b8c9ecc3c8c6a1ed1",
+          "source_sha256": "78c6ee20ffde8f298156e366cd3635d7bd20304ce3f6ab8ddb74cea143513401",
+          "tag": "release/000001"
+        },
+        "latest_source_sha256": "a36951a29cd15f6479307c14ce0e0ba7ac341e19d68684869171940238ec95c0",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 2,
+        "reason": null,
+        "remaining": 9072795,
+        "remaining_usd": "2.54039140",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 6421.2043714523315,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.45960860",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 927205,
+        "work_phase": "improve"
+      },
+      "commit": "19d128d2db1a6b3fc14fb5353c0ef9ced346e0dc",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Improve gateway correctness and reuse: track whether any downstream bytes were sent before handling origin failure, and reuse authenticated TLS connections only within the same configuration generation with retry on stale connections. Smoke checks pass; custom malformed-request, pipelining and plaintext-origin refusal tests pass. A gateway benchmark was unqualified because the origin saturated; no performance gain claimed.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795361337.0091958,
+      "smoke_passed": true,
+      "source_sha256": "a36951a29cd15f6479307c14ce0e0ba7ac341e19d68684869171940238ec95c0",
+      "stage": 15,
+      "tag": "release/000002",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "74a9bbffaf3448c68b5d4b43678c9ec0",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 18,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "ac23fb9a30c745419494a450b6a7f55c",
+          "decision": {
+            "diagnostic_baseline": null,
+            "promote": false,
+            "reason": "challenger has unqualified measurements",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {
+            "gateway-15-4096-256": [
+              "upstream_saturated"
+            ]
+          },
+          "qualified": false,
+          "workloads": [
+            "gateway-15-4096-256"
+          ]
+        },
+        "last_qualified_benchmark": null,
+        "last_tag": {
+          "commit": "19d128d2db1a6b3fc14fb5353c0ef9ced346e0dc",
+          "source_sha256": "a36951a29cd15f6479307c14ce0e0ba7ac341e19d68684869171940238ec95c0",
+          "tag": "release/000002"
+        },
+        "latest_source_sha256": "bf017ad42c49a08f3e363ef54d4e1dc412ae0b72ad388e248feeea31884cd739",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 2,
+        "reason": null,
+        "remaining": 8349413,
+        "remaining_usd": "2.17210520",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 6090.774050474167,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.82789480",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 1650587,
+        "work_phase": "improve"
+      },
+      "commit": "6bf851b7e6a2f4746d57b833db99e26a3ff96504",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Fix idle reuse timeout handling and safely initialize request configuration for errors detected before a complete header. Visible smoke checks pass; independent client tests exercised malformed and incomplete requests. Gateway benchmark was unqualified due to upstream saturation; no performance gain claimed.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795361667.4396737,
+      "smoke_passed": true,
+      "source_sha256": "bf017ad42c49a08f3e363ef54d4e1dc412ae0b72ad388e248feeea31884cd739",
+      "stage": 15,
+      "tag": "release/000003",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "0abb111c421e47cc9f07e6dedd829915",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 19,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "0abb111c421e47cc9f07e6dedd829915",
+          "decision": {
+            "diagnostic_baseline": null,
+            "promote": false,
+            "reason": "challenger has unqualified measurements",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {
+            "gateway-15-65536-256": [
+              "generator_saturated",
+              "upstream_saturated"
+            ]
+          },
+          "qualified": false,
+          "workloads": [
+            "gateway-15-65536-256"
+          ]
+        },
+        "last_qualified_benchmark": null,
+        "last_tag": {
+          "commit": "6bf851b7e6a2f4746d57b833db99e26a3ff96504",
+          "source_sha256": "bf017ad42c49a08f3e363ef54d4e1dc412ae0b72ad388e248feeea31884cd739",
+          "tag": "release/000003"
+        },
+        "latest_source_sha256": "af1e45b3eee2658fbd18b5be3c3a834180536e1f1f9032fe40661e665469d5a7",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 3,
+        "reason": null,
+        "remaining": 8187732,
+        "remaining_usd": "2.11053595",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 5944.842786312103,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.88946405",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 1812268,
+        "work_phase": "improve"
+      },
+      "commit": "3f2a0d27e363ca33a6c5878cb23ba8511616b99b",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Bound upstream streaming response memory by discarding bytes already sent before appending more; the previously tagged version could retain an entire long response on a slow client. Visible smoke checks pass; local pipelining, traversal and failed-origin tests pass. A 64 KiB gateway diagnostic delivered exact payloads with no failures, but was ineligible because origin and generator saturated, so it does not demonstrate a qualified performance gain.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795361813.3707685,
+      "smoke_passed": true,
+      "source_sha256": "af1e45b3eee2658fbd18b5be3c3a834180536e1f1f9032fe40661e665469d5a7",
+      "stage": 15,
+      "tag": "release/000004",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "b58b8e127d4c45e58651412b85561fe1",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 20,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "0abb111c421e47cc9f07e6dedd829915",
+          "decision": {
+            "diagnostic_baseline": null,
+            "promote": false,
+            "reason": "challenger has unqualified measurements",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {
+            "gateway-15-65536-256": [
+              "generator_saturated",
+              "upstream_saturated"
+            ]
+          },
+          "qualified": false,
+          "workloads": [
+            "gateway-15-65536-256"
+          ]
+        },
+        "last_qualified_benchmark": null,
+        "last_tag": {
+          "commit": "3f2a0d27e363ca33a6c5878cb23ba8511616b99b",
+          "source_sha256": "af1e45b3eee2658fbd18b5be3c3a834180536e1f1f9032fe40661e665469d5a7",
+          "tag": "release/000004"
+        },
+        "latest_source_sha256": "0f1eb1e6306d6185b66ab2882a861f18a8bf933fb89f6e67f5656db0b4b3f15b",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 3,
+        "reason": null,
+        "remaining": 8073966,
+        "remaining_usd": "2.05950655",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 5857.848485946655,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.94049345",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 1926034,
+        "work_phase": "improve"
+      },
+      "commit": "c6fdb6e0273d7c411ad456009f067589cf59196e",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Accept opaque header field values other than framing prohibitions and valid decoded UTF-8 path bytes instead of rejecting controls beyond the contract. Tested control and non-UTF-8 opaque values, NUL rejection, escaped controls, invalid UTF-8, traversal, single decoding and malformed escapes; visible smoke passes. Prior TLS/throughput evidence remains unchanged; the 64 KiB benchmark was saturated and inconclusive.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795361900.3649523,
+      "smoke_passed": true,
+      "source_sha256": "0f1eb1e6306d6185b66ab2882a861f18a8bf933fb89f6e67f5656db0b4b3f15b",
+      "stage": 15,
+      "tag": "release/000005",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+      "candidate": "111c3596018440eeb246a7ab4a622802",
+      "capacity": {
+        "best_candidate": "9723a4cbb70c4527982e3314dfe44ab0",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 21,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "0abb111c421e47cc9f07e6dedd829915",
+          "decision": {
+            "diagnostic_baseline": null,
+            "promote": false,
+            "reason": "challenger has unqualified measurements",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {
+            "gateway-15-65536-256": [
+              "generator_saturated",
+              "upstream_saturated"
+            ]
+          },
+          "qualified": false,
+          "workloads": [
+            "gateway-15-65536-256"
+          ]
+        },
+        "last_qualified_benchmark": null,
+        "last_tag": {
+          "commit": "c6fdb6e0273d7c411ad456009f067589cf59196e",
+          "source_sha256": "0f1eb1e6306d6185b66ab2882a861f18a8bf933fb89f6e67f5656db0b4b3f15b",
+          "tag": "release/000005"
+        },
+        "latest_source_sha256": "a67482e1ed5234815f398bccfb549acab6f86f35c5cb55237b4dcb3f01c7efa7",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 3,
+        "reason": null,
+        "remaining": 7887121,
+        "remaining_usd": "1.96518645",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 5661.4302768707275,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "1.03481355",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 2112879,
+        "work_phase": "improve"
+      },
+      "commit": "cdb4dc91c2b14822267f2aa71c98f1ba2e5de049",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Fix header deadline for an incomplete pipelined request received behind a slow gateway response: retain its first-byte timestamp and reject it on becoming active if expired. Custom slow TLS-origin test now receives 502 followed by 400; before the fix the second response did not arrive within the short observation window. Visible smoke checks pass. This test exercises a stalled TLS handshake, not a complete authenticated exchange.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795362096.7826827,
+      "smoke_passed": true,
+      "source_sha256": "a67482e1ed5234815f398bccfb549acab6f86f35c5cb55237b4dcb3f01c7efa7",
+      "stage": 15,
+      "tag": "release/000006",
+      "tag_provenance": "git_tag"
+    }
+  ]
+}

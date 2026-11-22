@@ -1,0 +1,106 @@
+{
+  "api": {
+    "passed": 21,
+    "status": "failed",
+    "total": 22
+  },
+  "contract_sha256": "6fcc082bca5872fa209b17a271125a4658951be04bd92f6a752f62d150b0a814",
+  "coverage": "full",
+  "environment": {
+    "builder_framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+    "calibration": null,
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "evaluator_framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+    "hostname": "gauss",
+    "kernel": "7.0.0-31-generic",
+    "mode": "original",
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "specification_sha256": "a9180a7f5274124816f20c3d368da06ce7c2cdc5653248ec807c103d08f6bc01",
+    "toolchain": "/usr/bin/g++",
+    "workloads": [
+      {
+        "clients": 256,
+        "gzip": false,
+        "host": "alpha.test",
+        "id": "gateway-15-4096-256",
+        "path": "/gateway/data/4096",
+        "persistent": true,
+        "rounds": 5,
+        "seconds": 3.0,
+        "size": 4096,
+        "timeout_seconds": 2.0,
+        "tls": false,
+        "warmup_seconds": 1.0
+      },
+      {
+        "clients": 256,
+        "gzip": false,
+        "host": "alpha.test",
+        "id": "gateway-15-65536-256",
+        "path": "/gateway/data/65536",
+        "persistent": true,
+        "rounds": 5,
+        "seconds": 3.0,
+        "size": 65536,
+        "timeout_seconds": 2.0,
+        "tls": false,
+        "warmup_seconds": 1.0
+      },
+      {
+        "clients": 4096,
+        "gzip": false,
+        "host": "alpha.test",
+        "id": "gateway-15-4096-4096",
+        "path": "/gateway/data/4096",
+        "persistent": true,
+        "rounds": 5,
+        "seconds": 3.0,
+        "size": 4096,
+        "timeout_seconds": 2.0,
+        "tls": false,
+        "warmup_seconds": 1.0
+      },
+      {
+        "clients": 4096,
+        "gzip": false,
+        "host": "alpha.test",
+        "id": "gateway-15-65536-4096",
+        "path": "/gateway/data/65536",
+        "persistent": true,
+        "rounds": 5,
+        "seconds": 3.0,
+        "size": 65536,
+        "timeout_seconds": 2.0,
+        "tls": false,
+        "warmup_seconds": 1.0
+      }
+    ]
+  },
+  "evaluator_sha256": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+  "missing_evidence": [],
+  "performance": {
+    "credit": 0,
+    "metrics": null,
+    "status": "skipped_api_failure"
+  },
+  "provenance_status": "verified",
+  "release": {
+    "commit": "cdb4dc91c2b14822267f2aa71c98f1ba2e5de049",
+    "source_sha256": "a67482e1ed5234815f398bccfb549acab6f86f35c5cb55237b4dcb3f01c7efa7",
+    "tag": "release/000006"
+  },
+  "run_id": "stage-15__cpp__20261122T051340Z__9306eb358912__efe21262",
+  "run_toksec_commit": "9306eb358912651af8a77bfee2b295f0213e82bb",
+  "schema_version": 1,
+  "status": "failed",
+  "toksec_commit": "9306eb358912651af8a77bfee2b295f0213e82bb",
+  "toksec_dirty": false
+}

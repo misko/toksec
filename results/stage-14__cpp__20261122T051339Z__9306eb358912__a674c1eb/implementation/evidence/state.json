@@ -1,0 +1,49 @@
+{
+  "best": "d50882761a824a00a35cc57155f1b163",
+  "context_rollovers": 55,
+  "diagnostic_baselines": {
+    "gateway-14-admitted-4096-256": "d50882761a824a00a35cc57155f1b163",
+    "gateway-14-admitted-4096-4096": "d50882761a824a00a35cc57155f1b163",
+    "gateway-14-admitted-65536-256": "d50882761a824a00a35cc57155f1b163",
+    "gateway-14-admitted-65536-4096": "722669f8d9dc431c84b927fe0e273f54",
+    "gateway-14-public-4096-256": "820180c0eb654968a52b835771b9808d",
+    "gateway-14-public-4096-4096": "c1aa93e0b5b346249a530a34f862cf13",
+    "gateway-14-public-65536-4096": "c1aa93e0b5b346249a530a34f862cf13"
+  },
+  "ended_unix": 1795365293.6768694,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "c1aa93e0b5b346249a530a34f862cf13",
+  "last_benchmark": {
+    "candidate": "c1aa93e0b5b346249a530a34f862cf13",
+    "decision": {
+      "diagnostic_baseline": "722669f8d9dc431c84b927fe0e273f54",
+      "promote": false,
+      "reason": "throughput ranges overlap or regression",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {},
+    "qualified": true,
+    "workloads": [
+      "gateway-14-admitted-65536-4096"
+    ]
+  },
+  "last_qualified_benchmark": {
+    "candidate": "c1aa93e0b5b346249a530a34f862cf13",
+    "cells": {
+      "gateway-14-admitted-65536-4096": {
+        "median_rps": 17749.333333333332,
+        "worst_p99_ms": 237.0
+      }
+    },
+    "recorded_unix": 1795365273.1604428
+  },
+  "optimization_attempts": 39,
+  "smoke_passed": true,
+  "stop_kind": "admission_denied",
+  "stop_metadata": {},
+  "stop_phase": "tool",
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

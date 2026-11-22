@@ -1,0 +1,966 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": null,
+        "last_qualified_benchmark": null,
+        "last_tag": null,
+        "latest_source_sha256": "07a39f371e090d7e7ae412c4324fa81f20024486bbb1f229c668b8c5c48e56d1",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 0,
+        "reason": null,
+        "remaining": 9984654,
+        "remaining_usd": "2.9420065",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 7081.4775390625,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.0579935",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 15346,
+        "work_phase": "improve"
+      },
+      "commit": "9f23dbc932fd5aa6f9e1220a11c52931fc168c0e",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Initial implementation: strict configuration, persistent local files, per-request authorization and tenant-isolated cache. Smoke tests requested; additional adversarial coverage remains to be run.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795355834.760352,
+      "smoke_passed": true,
+      "source_sha256": "07a39f371e090d7e7ae412c4324fa81f20024486bbb1f229c668b8c5c48e56d1",
+      "stage": 13,
+      "tag": "release/000001",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "d657e488c979463ea1df1f256e108ae5",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 17,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "47b24cff7c094cb1988ca61dd9cb6428",
+          "decision": {
+            "diagnostic_baseline": "47b24cff7c094cb1988ca61dd9cb6428",
+            "promote": false,
+            "reason": "first qualified comparison baseline",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "47b24cff7c094cb1988ca61dd9cb6428",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12944.666666666666,
+              "worst_p99_ms": 635.7
+            }
+          },
+          "recorded_unix": 1795356856.8029165
+        },
+        "last_tag": {
+          "commit": "9f23dbc932fd5aa6f9e1220a11c52931fc168c0e",
+          "source_sha256": "07a39f371e090d7e7ae412c4324fa81f20024486bbb1f229c668b8c5c48e56d1",
+          "tag": "release/000001"
+        },
+        "latest_source_sha256": "1e7ddf8800f7279b2022a57d7545ea1dce475891ebf4c69fe84867e987d9c819",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 4,
+        "reason": null,
+        "remaining": 8842468,
+        "remaining_usd": "2.22335340",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 5953.719108581543,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.77664660",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 1157532,
+        "work_phase": "improve"
+      },
+      "commit": "795ee0040f8b9f7c022b7f8f8a81a5853768bbcd",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Correctness milestone: retain tested changes to cache expiry/revalidation and 304 metadata merging, including HEAD reuse; limit concurrent authorization upstream connections to protect service under load. Visible smoke checks and an independent client test covering authorized hits, denial isolation, variants and revalidation passed. Performance impact of this combined change is not yet established.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795356962.5178173,
+      "smoke_passed": true,
+      "source_sha256": "1e7ddf8800f7279b2022a57d7545ea1dce475891ebf4c69fe84867e987d9c819",
+      "stage": 13,
+      "tag": "release/000002",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "bdc398f3d0e140a3a0ef89abdad9f9f8",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 18,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "d657e488c979463ea1df1f256e108ae5",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "first qualified comparison baseline",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "d657e488c979463ea1df1f256e108ae5",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12856.666666666666,
+              "worst_p99_ms": 625.8
+            }
+          },
+          "recorded_unix": 1795357025.8019874
+        },
+        "last_tag": {
+          "commit": "795ee0040f8b9f7c022b7f8f8a81a5853768bbcd",
+          "source_sha256": "1e7ddf8800f7279b2022a57d7545ea1dce475891ebf4c69fe84867e987d9c819",
+          "tag": "release/000002"
+        },
+        "latest_source_sha256": "190c7353af0033cdb0f36bddeab5f8094174696e0467dc4ae6b61e8a16d7a8c1",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 5,
+        "reason": null,
+        "remaining": 8732722,
+        "remaining_usd": "2.16322110",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 5809.962499856949,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.83677890",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 1267278,
+        "work_phase": "improve"
+      },
+      "commit": "5b3fc26091558ca8c7d45310299e2d0744db369d",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Fix 304 revalidation response metadata when the new metadata renders the entry private or otherwise uncacheable: return the merged headers on this delivery while evicting it. Smoke checks pass; custom origin/auth test verified 304 body reuse, new private and Set-Cookie headers, eviction, fresh authorization on cache hits, denial without origin contact and no credential leak.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795357106.2745597,
+      "smoke_passed": true,
+      "source_sha256": "190c7353af0033cdb0f36bddeab5f8094174696e0467dc4ae6b61e8a16d7a8c1",
+      "stage": 13,
+      "tag": "release/000003",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "15c86571185f40a7a54fcc8d8c0474f2",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 55,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "5b3fc26091558ca8c7d45310299e2d0744db369d",
+          "source_sha256": "190c7353af0033cdb0f36bddeab5f8094174696e0467dc4ae6b61e8a16d7a8c1",
+          "tag": "release/000003"
+        },
+        "latest_source_sha256": "64c89e6dd0be83b6a5b18df6ebf2b745b6c3eea08c8e3e0fa4aab86466473797",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6926306,
+        "remaining_usd": "0.91898405",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 4510.91791677475,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.08101595",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3073694,
+        "work_phase": "improve"
+      },
+      "commit": "35b9aaac1e726d12b1676df5674076b82ada5157",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Compared with release/000003, enforce the authorization deadline while queued, include Content-Length: 0 in upstream requests, require origin response lengths on HEAD, and reduce scan overhead while retaining periodic timeout checks. Visible smoke checks and a custom protected-cache test passed: authorization on cache hits, refusal without origin contact, host/language/query isolation, private/no-store/cookie/Vary exclusions and ETag revalidation. Performance comparison of an earlier scan experiment did not demonstrate a win; no full-matrix claim.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358405.3181381,
+      "smoke_passed": true,
+      "source_sha256": "64c89e6dd0be83b6a5b18df6ebf2b745b6c3eea08c8e3e0fa4aab86466473797",
+      "stage": 13,
+      "tag": "release/000004",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "e0b1af838b454467932d46f36ee83f98",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 56,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "35b9aaac1e726d12b1676df5674076b82ada5157",
+          "source_sha256": "64c89e6dd0be83b6a5b18df6ebf2b745b6c3eea08c8e3e0fa4aab86466473797",
+          "tag": "release/000004"
+        },
+        "latest_source_sha256": "bc0df8a84e1603594ab7fc926ea10d2f9e262cef8ac4208ba74403e1441a59d9",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6816439,
+        "remaining_usd": "0.86530785",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 4432.635291814804,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.13469215",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3183561,
+        "work_phase": "improve"
+      },
+      "commit": "bbdb7a01bb0973cd13f6e15fce2d7b97480e4dad",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Security repair: previously a truncated 2xx authorization response allowed origin access; now require the complete framed reply. Custom paired test confirms truncated reply returns 503 without origin contact, 403 prevents origin/cache delivery, and complete 200 permits delivery. Smoke checks pass. Cache isolation, refusals, HEAD, no-store/private/cookie/Vary and ETag revalidation were exercised on the previous candidate; this change is limited to upstream reply completion.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358483.6010578,
+      "smoke_passed": true,
+      "source_sha256": "bc0df8a84e1603594ab7fc926ea10d2f9e262cef8ac4208ba74403e1441a59d9",
+      "stage": 13,
+      "tag": "release/000005",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "83031048d8d043b5b41ab2ac7c6cf5bf",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 58,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "bbdb7a01bb0973cd13f6e15fce2d7b97480e4dad",
+          "source_sha256": "bc0df8a84e1603594ab7fc926ea10d2f9e262cef8ac4208ba74403e1441a59d9",
+          "tag": "release/000005"
+        },
+        "latest_source_sha256": "47da39b5e974702fe78e4d42480d1a308fac86a442c21f405414fb35aca35f43",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6635044,
+        "remaining_usd": "0.76514415",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 4285.555730342865,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.23485585",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3364956,
+        "work_phase": "improve"
+      },
+      "commit": "2570c12c163460795e9b35762a89e073731821d3",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Harden origin and authorization response parsing: reject malformed upstream HTTP versions and status lines instead of relaying them. Compared with release/000005, a custom paired test verifies the malformed origin reply yields 502 while a valid reply succeeds; supplied bootstrap, HEAD and persistent smoke checks pass. Other independent coverage remains unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358630.6802702,
+      "smoke_passed": true,
+      "source_sha256": "47da39b5e974702fe78e4d42480d1a308fac86a442c21f405414fb35aca35f43",
+      "stage": 13,
+      "tag": "release/000006",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "a04525aef7194ae89b4d84ebb7d71a68",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 59,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "2570c12c163460795e9b35762a89e073731821d3",
+          "source_sha256": "47da39b5e974702fe78e4d42480d1a308fac86a442c21f405414fb35aca35f43",
+          "tag": "release/000006"
+        },
+        "latest_source_sha256": "7ded0a6d68c263e3901221605be54945a0b54c8eb8627fa732342ee01a67207b",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6504758,
+        "remaining_usd": "0.68948105",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 4151.830667972565,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.31051895",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3495242,
+        "work_phase": "improve"
+      },
+      "commit": "a95e7b53dcb8d1ea9f9ab758a14e101433340d3a",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Reject decoded parent components before gateway forwarding, extending the existing local traversal protection. Before: a gateway traversal reached the origin and returned 200. After: paired benign gateway request succeeds; traversal returns 403 and never reaches auth or origin. Visible smoke tests pass; cache isolation, revalidation, and per-delivery authorization were separately exercised on the preceding release.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358764.4057415,
+      "smoke_passed": true,
+      "source_sha256": "7ded0a6d68c263e3901221605be54945a0b54c8eb8627fa732342ee01a67207b",
+      "stage": 13,
+      "tag": "release/000007",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "e93b0c2587d740a7b2a53e430ca25c68",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 60,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "a95e7b53dcb8d1ea9f9ab758a14e101433340d3a",
+          "source_sha256": "7ded0a6d68c263e3901221605be54945a0b54c8eb8627fa732342ee01a67207b",
+          "tag": "release/000007"
+        },
+        "latest_source_sha256": "ec950e1267eb5b1895852d1fcaa09eb9497dd5fef2f8a3e72ed17959f8bf89c7",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6370008,
+        "remaining_usd": "0.61182385",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 4017.966481924057,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.38817615",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3629992,
+        "work_phase": "improve"
+      },
+      "commit": "0bef6d2a5bd776abaa1010bfba448b2e036a69d5",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Compared with release/000007, retain ETag-bearing no-cache responses only as immediately stale, enabling mandatory conditional revalidation without fresh reuse. Client test verified repeated 304 revalidations return the exact body, authorize each delivery, and do not contact origin on denial; visible smoke checks pass. Separate release/000007 test verified tenant/language/query isolation, cache restrictions and authorization on hits. Full independent coverage remains unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358898.2691336,
+      "smoke_passed": true,
+      "source_sha256": "ec950e1267eb5b1895852d1fcaa09eb9497dd5fef2f8a3e72ed17959f8bf89c7",
+      "stage": 13,
+      "tag": "release/000008",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "aae6b67f96b04606a278a41b21518c3e",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 61,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "0bef6d2a5bd776abaa1010bfba448b2e036a69d5",
+          "source_sha256": "ec950e1267eb5b1895852d1fcaa09eb9497dd5fef2f8a3e72ed17959f8bf89c7",
+          "tag": "release/000008"
+        },
+        "latest_source_sha256": "53744aced20ae1dc3c4978ed0cfebcd31fba656e8bd9e4806328b86e3f014ef3",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6260739,
+        "remaining_usd": "0.55224955",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 3921.627133369446,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.44775045",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3739261,
+        "work_phase": "improve"
+      },
+      "commit": "e518d2e23880599ff16c75a5ee618e55a8a36a3c",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Fix routing of percent-encoded gateway prefixes: decode once for route selection while removing the matching encoded prefix and preserving the original remaining URI. Custom upstream test verified authorization received the original URI, origin received the correct escaped path/query, and a repeat authorized cache hit did not contact origin. Visible bootstrap, HEAD and persistent checks pass. Separately verified authorization for fresh and stale deliveries, 304 refresh, and no bearer leakage.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795358994.6088963,
+      "smoke_passed": true,
+      "source_sha256": "53744aced20ae1dc3c4978ed0cfebcd31fba656e8bd9e4806328b86e3f014ef3",
+      "stage": 13,
+      "tag": "release/000009",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "5e5ae211c44d4f67b781268f84d57030",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 62,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "e518d2e23880599ff16c75a5ee618e55a8a36a3c",
+          "source_sha256": "53744aced20ae1dc3c4978ed0cfebcd31fba656e8bd9e4806328b86e3f014ef3",
+          "tag": "release/000009"
+        },
+        "latest_source_sha256": "61076969ec13b91c3d590b19b43c21e5687ce28ee5b137b38c29ae9acbc16358",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 6151394,
+        "remaining_usd": "0.48739595",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 3815.1772108078003,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.51260405",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 3848606,
+        "work_phase": "improve"
+      },
+      "commit": "5f6f129ca83195d3e31c5fe1a8bf973369a08f84",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Forward Authorization even when the client supplied an empty field, preserving auth-service input rather than silently omitting it. Verified with a custom auth and origin pair: empty field observed, 401/403 refusals and auth timeout never contacted origin, and a permitted request succeeded. Previous tagged build also passed checks for per-delivery authorization, tenant/query/language isolation, private responses and ETag revalidation. Visible smoke passes; independent API coverage remains unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795359101.0588257,
+      "smoke_passed": true,
+      "source_sha256": "61076969ec13b91c3d590b19b43c21e5687ce28ee5b137b38c29ae9acbc16358",
+      "stage": 13,
+      "tag": "release/000010",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "4f7b3b5d2dab4b29af44c38a91dd4116",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 65,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "5f6f129ca83195d3e31c5fe1a8bf973369a08f84",
+          "source_sha256": "61076969ec13b91c3d590b19b43c21e5687ce28ee5b137b38c29ae9acbc16358",
+          "tag": "release/000010"
+        },
+        "latest_source_sha256": "6e571fbb257599f797e806293e5a8112c2076f19bb9d1ff112f77006b01b59fe",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 5920775,
+        "remaining_usd": "0.36742385",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 3675.2204899787903,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.63257615",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 4079225,
+        "work_phase": "improve"
+      },
+      "commit": "a56405663044cd91c6a0a8f21793cc1c92c412ce",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Preserve the absolute authorization deadline while waiting for an upstream slot, rather than restarting it on connection. Verified smoke checks and independent authorization forwarding, denial/timeout isolation from origin, repeated authorization on cache hits, and HEAD hit behavior; high-concurrency timeout and full workload impact remain unmeasured.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795359241.0153568,
+      "smoke_passed": true,
+      "source_sha256": "6e571fbb257599f797e806293e5a8112c2076f19bb9d1ff112f77006b01b59fe",
+      "stage": 13,
+      "tag": "release/000011",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "81dd9f6971fd44eb839924ce0bfac2f8",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 66,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "a56405663044cd91c6a0a8f21793cc1c92c412ce",
+          "source_sha256": "6e571fbb257599f797e806293e5a8112c2076f19bb9d1ff112f77006b01b59fe",
+          "tag": "release/000011"
+        },
+        "latest_source_sha256": "655c16a1197791330c6322efd156a173bcfe8099e7d9f14429fdac1a0ac953fc",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 5810528,
+        "remaining_usd": "0.31045280",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 3585.5863070487976,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.68954720",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 4189472,
+        "work_phase": "improve"
+      },
+      "commit": "b85682e633361858a02230eb932fa410cd76ace4",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Suppress Accept-Language when named by client Connection and isolate the resulting cache variant; custom upstream test confirms hop-by-hop suppression and no variant collision, with normal Accept-Language still forwarded. Additional tagged-base tests passed for tenant/query/language isolation, auth on every hit and revalidation, private responses, 304 refresh, HEAD, denied/timeout no origin, and credentials not forwarded. Visible smoke passes; independent API and full matrix remain unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795359330.6492844,
+      "smoke_passed": true,
+      "source_sha256": "655c16a1197791330c6322efd156a173bcfe8099e7d9f14429fdac1a0ac953fc",
+      "stage": 13,
+      "tag": "release/000012",
+      "tag_provenance": "git_tag"
+    },
+    {
+      "artifact_sha256": "b2e52712d4bfbcc55747d348bbea40fe3705a0ef206475e7763209cfa17a755c",
+      "candidate": "57ce9a41994b4ac9b5efb573b5e4c40e",
+      "capacity": {
+        "best_candidate": "81d5cb7b4cd7407fbe6464b4e988e4c6",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 68,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "last_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "decision": {
+            "diagnostic_baseline": "d657e488c979463ea1df1f256e108ae5",
+            "promote": false,
+            "reason": "throughput ranges overlap or regression",
+            "scope": "selected_workload"
+          },
+          "invalid_cells": {},
+          "qualified": true,
+          "workloads": [
+            "gateway-13-4096-4096"
+          ]
+        },
+        "last_qualified_benchmark": {
+          "candidate": "a71aabd0841844909d484a4d92bfde69",
+          "cells": {
+            "gateway-13-4096-4096": {
+              "median_rps": 12880.666666666666,
+              "worst_p99_ms": 660.0
+            }
+          },
+          "recorded_unix": 1795357224.1393418
+        },
+        "last_tag": {
+          "commit": "b85682e633361858a02230eb932fa410cd76ace4",
+          "source_sha256": "655c16a1197791330c6322efd156a173bcfe8099e7d9f14429fdac1a0ac953fc",
+          "tag": "release/000012"
+        },
+        "latest_source_sha256": "48c49b5a0a766905817af063b799d774914bfda1c854c8ad01eb82b3cd3fad57",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 6,
+        "reason": null,
+        "remaining": 5628742,
+        "remaining_usd": "0.22031025",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 3460.1187925338745,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "2.77968975",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 4371258,
+        "work_phase": "improve"
+      },
+      "commit": "bac232df38d3d86392415318913778371d81645a",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+      "language": "cpp",
+      "note": "Publish fixes tested against the prior tag: forward an explicitly empty Authorization to the authorization service, and correctly combine repeated Accept-Language fields. Client test confirmed empty credentials reach auth, 401/403 and timeout do not contact origin, and each cached delivery is reauthorized. Visible bootstrap, HEAD and persistence checks pass. Full independent API and performance coverage remains unverified.",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795359456.1166337,
+      "smoke_passed": true,
+      "source_sha256": "48c49b5a0a766905817af063b799d774914bfda1c854c8ad01eb82b3cd3fad57",
+      "stage": 13,
+      "tag": "release/000013",
+      "tag_provenance": "git_tag"
+    }
+  ]
+}

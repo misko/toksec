@@ -1,0 +1,12 @@
+{
+  "best": null,
+  "context_rollovers": 0,
+  "ended_unix": 1795064751.5896866,
+  "finished": true,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": null,
+  "optimization_attempts": 0,
+  "smoke_passed": false,
+  "stop_reason": "RuntimeError: API HTTP 429; no automatic retry"
+}

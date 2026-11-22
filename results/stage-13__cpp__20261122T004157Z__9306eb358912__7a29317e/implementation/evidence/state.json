@@ -1,0 +1,50 @@
+{
+  "best": "6dffe4eb5cd74cb3b53c44f114d4b6c8",
+  "context_rollovers": 81,
+  "diagnostic_baselines": {
+    "gateway-13-4096-256": "99c55839e4304c8d82c3c95c985fe680"
+  },
+  "ended_unix": 1795316004.130943,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "96f1adf121ce46f49fee407e11727972",
+  "last_benchmark": {
+    "candidate": "994b7a2c0da24c60aabf71612415482e",
+    "decision": {
+      "diagnostic_baseline": null,
+      "promote": false,
+      "reason": "challenger has unqualified measurements",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {
+      "gateway-13-4096-4096": [
+        "effects_unverified",
+        "generator_saturated",
+        "request_failures",
+        "upstream_saturated"
+      ]
+    },
+    "qualified": false,
+    "workloads": [
+      "gateway-13-4096-4096"
+    ]
+  },
+  "last_qualified_benchmark": {
+    "candidate": "99c55839e4304c8d82c3c95c985fe680",
+    "cells": {
+      "gateway-13-4096-256": {
+        "median_rps": 5766.333333333333,
+        "worst_p99_ms": 63.5
+      }
+    },
+    "recorded_unix": 1795314728.7832282
+  },
+  "optimization_attempts": 5,
+  "smoke_passed": true,
+  "stop_kind": "admission_denied",
+  "stop_metadata": {},
+  "stop_phase": "tool",
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

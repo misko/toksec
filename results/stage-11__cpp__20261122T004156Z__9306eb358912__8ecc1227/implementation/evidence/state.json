@@ -1,0 +1,35 @@
+{
+  "best": "29003c0750b94a9fa0ce646888172e5d",
+  "context_rollovers": 63,
+  "diagnostic_baselines": {},
+  "ended_unix": 1795312621.8077753,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 1,
+  "last": "4b81a5ae4ba54c0b8ddcac4a11e263ef",
+  "last_benchmark": {
+    "candidate": "4b81a5ae4ba54c0b8ddcac4a11e263ef",
+    "decision": {
+      "diagnostic_baseline": null,
+      "promote": false,
+      "reason": "challenger has unqualified measurements",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {
+      "gateway-11-65536-256": [
+        "generator_saturated"
+      ]
+    },
+    "qualified": false,
+    "workloads": [
+      "gateway-11-65536-256"
+    ]
+  },
+  "optimization_attempts": 15,
+  "smoke_passed": true,
+  "stop_kind": "admission_denied",
+  "stop_metadata": {},
+  "stop_phase": "tool",
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

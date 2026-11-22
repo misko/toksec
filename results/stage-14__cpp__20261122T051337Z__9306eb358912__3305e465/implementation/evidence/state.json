@@ -1,0 +1,47 @@
+{
+  "best": "6cf79838faef478a8f89250b6ec9a9b1",
+  "context_rollovers": 58,
+  "diagnostic_baselines": {
+    "gateway-14-admitted-4096-256": "9af5b24c0c0e4511b45720ad530cb469",
+    "gateway-14-admitted-65536-4096": "6cf79838faef478a8f89250b6ec9a9b1",
+    "gateway-14-public-4096-256": "7f521f7b575d4cb6abd6140eff4d0c54",
+    "gateway-14-public-4096-4096": "cc1fc3e76feb438f918a4472d060a7c1"
+  },
+  "ended_unix": 1795341339.942251,
+  "finished": true,
+  "interrupted": false,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "de92cd37608141f7ba01da647fbdafc4",
+  "last_benchmark": {
+    "candidate": "cc1fc3e76feb438f918a4472d060a7c1",
+    "decision": {
+      "diagnostic_baseline": "cc1fc3e76feb438f918a4472d060a7c1",
+      "geometric_gain": 1.4937931427648425,
+      "promote": false,
+      "reason": "paired public workload comparison",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {},
+    "qualified": true,
+    "workloads": [
+      "gateway-14-public-4096-4096"
+    ]
+  },
+  "last_qualified_benchmark": {
+    "candidate": "cc1fc3e76feb438f918a4472d060a7c1",
+    "cells": {
+      "gateway-14-public-4096-4096": {
+        "median_rps": 104811.0,
+        "worst_p99_ms": 62.8
+      }
+    },
+    "recorded_unix": 1795341301.603888
+  },
+  "optimization_attempts": 7,
+  "smoke_passed": true,
+  "stop_kind": "admission_denied",
+  "stop_metadata": {},
+  "stop_phase": "tool",
+  "stop_reason": "capacity exhausted or campaign blocked"
+}

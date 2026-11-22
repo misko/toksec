@@ -1,0 +1,174 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "581b63073feb2bae1de7271be7bd1d39ae1fdd276dc95585be38928e1c553cab"
+    },
+    "builder-inputs/RULES.md": {
+      "path": "inputs/builder-inputs/RULES.md",
+      "sha256": "b3e6400bf012cc634dc9bf33860335b3c9dbc7d06a32264c957b1c2fefa19272"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "581b63073feb2bae1de7271be7bd1d39ae1fdd276dc95585be38928e1c553cab"
+    },
+    "builder-inputs/stages/capabilities/gateway.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/gateway.md",
+      "sha256": "d17e8e7d9d2a6a2c765d8107905a00db96a5313dccfdcd56112688370844465c"
+    },
+    "builder-inputs/stages/capabilities/persistence.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/persistence.md",
+      "sha256": "b486243711d574f37986de19ab593a3685078b8f57e3e0b194378f3c23ac05bd"
+    },
+    "builder-inputs/stages/capabilities/tenant-cache.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/tenant-cache.md",
+      "sha256": "cd4c550e4e017eba917d00ceb400191f2519670fb023ddc74a1430ac2dedcde7"
+    },
+    "builder-inputs/stages/common/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/stages/common/ARTIFACTS.md",
+      "sha256": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629"
+    },
+    "builder-inputs/stages/common/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/stages/common/BENCHMARK.md",
+      "sha256": "0e1065c0bfb23c1f36b6a5f81b4bdf30a6f516c4ad5706318d1b4ba7c3bb8afd"
+    },
+    "builder-inputs/stages/common/HTTP.md": {
+      "path": "inputs/builder-inputs/stages/common/HTTP.md",
+      "sha256": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492"
+    },
+    "builder-inputs/stages/common/INTERFACE.md": {
+      "path": "inputs/builder-inputs/stages/common/INTERFACE.md",
+      "sha256": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f"
+    },
+    "builder-inputs/stages/languages/cpp.md": {
+      "path": "inputs/builder-inputs/stages/languages/cpp.md",
+      "sha256": "b5c60c21a2be86662f80ff700d7f212f94891738a983d053aa2b7a9c745f9a3d"
+    },
+    "builder-inputs/stages/stage-12/SPEC.md": {
+      "path": "inputs/builder-inputs/stages/stage-12/SPEC.md",
+      "sha256": "230146e96fb0ccd8cd29591c6c88e670acfc82a6b191031ea7c9a3ccd13d6fab"
+    },
+    "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/api.json": {
+      "path": "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/api.json",
+      "sha256": "2ee12978f87f7bbc29785968b384bc5bffad3d3260c8655e7fdbacdd300590bc"
+    },
+    "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/evaluation.json": {
+      "path": "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/evaluation.json",
+      "sha256": "c3effb5d9bb2721959d3d6521eebef6142375fc1bc9a199e7ee9f578e3bcd536"
+    },
+    "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/performance.json": {
+      "path": "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/performance.json",
+      "sha256": "0ba74a2653100c8782d391a2fdc591de29659207ab2dce4c878bdbc5e5b5494d"
+    },
+    "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/report.md": {
+      "path": "evaluation/7c1e9cdb776a408eb48e9757a3aaeb08/report.md",
+      "sha256": "ec2d39087bee699e6e221a72189829a71f0afda59fd5c887a20372897627ad4a"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/api.json": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/api.json",
+      "sha256": "d7bffc5ae47dc8ad8e9e9a9858ec54c3fd06680c8c098de953aa07b86061e933"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/evaluation.json": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/evaluation.json",
+      "sha256": "f9b7f70beb9c89d27b9c1a06705baaa1f5da9a6b8131b9e76e31283991590d83"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/correctness.png": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/correctness.png",
+      "sha256": "9a5fb82098d4c1d265c62ab5b5bc2ded978d082f84407af143389e972b7802c5"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/correctness.svg": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/correctness.svg",
+      "sha256": "1a9135bfabb9652695298eceee56bd95858b2471b6f9cca3373b7433d79af606"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/metrics.csv": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/metrics.csv",
+      "sha256": "925a5d08026f46824a0fd95a59b67749516ddf264a9d6b1a5f12172199b742c5"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/performance.png": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/performance.png",
+      "sha256": "78dd46c1d9fefe22830f0c90eb31a5602f32e77e82c1dba451d98b3c318ec5a8"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/performance.svg": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/performance.svg",
+      "sha256": "f36869c9c74d9646d6a70300c079612363116373e6a4a0118745607bafb6bcfd"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/figures/timeline.json": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/figures/timeline.json",
+      "sha256": "aef279c1119852b9bfbd6bab1298d2974dde19f05068e6367f612c1a7c3caa29"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/performance.json": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/performance.json",
+      "sha256": "0ba74a2653100c8782d391a2fdc591de29659207ab2dce4c878bdbc5e5b5494d"
+    },
+    "evaluation/bd0650281fa3466cbcb83dd044669173/report.md": {
+      "path": "evaluation/bd0650281fa3466cbcb83dd044669173/report.md",
+      "sha256": "300924038a2fae13a395a5ec03bc77652155474bf1764fe2479eb1f738df57df"
+    },
+    "evaluation/c2c7d7c383754f529905afed7ea81d87/api.json": {
+      "path": "evaluation/c2c7d7c383754f529905afed7ea81d87/api.json",
+      "sha256": "1241cec964500fe8b826667f7ceb5a46ae7d83cee40a1fb1804782b8e7baa6df"
+    },
+    "evaluation/c2c7d7c383754f529905afed7ea81d87/evaluation.json": {
+      "path": "evaluation/c2c7d7c383754f529905afed7ea81d87/evaluation.json",
+      "sha256": "536a8e2fcd82c83bb1ecffadea942c4d4c0970398a83dc74de62a5e41f6887f1"
+    },
+    "evaluation/c2c7d7c383754f529905afed7ea81d87/performance.json": {
+      "path": "evaluation/c2c7d7c383754f529905afed7ea81d87/performance.json",
+      "sha256": "0511c6c1afce9179ab009a04ab7ed15fbf1e29cb2e95be86bcd90cdab12b41c3"
+    },
+    "evaluation/c2c7d7c383754f529905afed7ea81d87/report.md": {
+      "path": "evaluation/c2c7d7c383754f529905afed7ea81d87/report.md",
+      "sha256": "2709af159b7f5712e6f5666806d36408dfa4eec9cdd1458d5588620a93ff679a"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "dc512f46af56f686984f254df79349e7930cb9b0593d99777614d2a00faf02de"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "fad79a2c6284b9e77b190017ddab16f7da1447e5da977c7bad2c8708f4451919"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "9da35d66cc741ca0ae795d8456c6bb05b763883ae5d017c83197fd27c5404176"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "8a9de395e558c38d58e613ed2348119029a3ec45126925dd974613931325557e"
+    },
+    "release-000001-smoke.json": {
+      "path": "implementation/evidence/release-000001-smoke.json",
+      "sha256": "55cce34a044b9b4b3c76c3e873e9b7dac95e274ce57f1a347f8d36a04c2f114d"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "3fcde13a7219bdab454d3fc2d8f1a1b5744531a62b7f879012e13dc5b3ade2a3"
+    },
+    "release-000002-smoke.json": {
+      "path": "implementation/evidence/release-000002-smoke.json",
+      "sha256": "18812dde5a8c1676df3d47d87ffe3af2c0fcc7fea6c8d54378291e461cc3cda5"
+    },
+    "release-000002.cpp": {
+      "path": "implementation/releases/release-000002.cpp",
+      "sha256": "feb5f9a5b00fd899f2f41982c59f34a7243b78bfafc2cf6e3b16ba441d2bebfd"
+    },
+    "releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "a6967533ace2feb24ff4ecf4bb522d71dc9aff266d05ccf6ab0f1f7dbd96d760"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "ecf0639d3c81c8053151800755e2c336525019ea66fbe639ade5537ffbea0616"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "fa565ebb8d79a8ec8c0955566fdf74aceec55219562c0306418ebfb57c419d16"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "b36243e016e8c1a854c0ea0039d8fe8dcdd2d2183dac714a7e1c53967ea8a903"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "a1dce9cb4f2c052da298e9333c82b172ff8823a0305b04f8f49b15618e2f926a"
+}

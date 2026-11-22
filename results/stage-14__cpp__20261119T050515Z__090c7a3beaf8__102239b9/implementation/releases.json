@@ -1,0 +1,50 @@
+{
+  "releases": [
+    {
+      "artifact_sha256": "ae504dcb2aee6a515082d14fcb68c37aa77210b3b7a3694b69356f5c971b0fe4",
+      "candidate": "f572cfbe2bcb4011a3962395a63eeb57",
+      "capacity": {
+        "best_candidate": "f572cfbe2bcb4011a3962395a63eeb57",
+        "can_finish": false,
+        "can_start_model_call": true,
+        "context_rollovers": 0,
+        "dollar_limit": "3",
+        "evaluation_scope": "visible_smoke_only",
+        "model": "gpt-6.1-terra",
+        "next_call_reservation_tokens": 48000,
+        "next_call_reservation_usd": "0.200",
+        "optimization_attempts": 0,
+        "reason": null,
+        "remaining": 9949177,
+        "remaining_usd": "2.90637105",
+        "reserved": 0,
+        "reserved_usd": "0",
+        "scope": "Fresh measured API campaign; excludes framework preparation",
+        "seconds_remaining": 6985.0130796432495,
+        "service_tier": "default",
+        "smoke_passed": true,
+        "spent_usd_upper_bound": "0.09362895",
+        "state": "active",
+        "token_limit": 10000000,
+        "used": 50823,
+        "work_phase": "improve"
+      },
+      "commit": "b563c5ccded55904aec2e7bab389c7af63c74570",
+      "evaluation_scope": "visible_smoke_only",
+      "framework": "f151113b5119b387061aafdafce6703fa37ac7d3e99df9082f8c964dee117137",
+      "language": "cpp",
+      "note": "Initial working snapshot",
+      "passed_checks": [
+        "bootstrap",
+        "smoke-head",
+        "smoke-persistent"
+      ],
+      "recorded_unix": 1795100394.3013327,
+      "smoke_passed": true,
+      "source_sha256": "95aa32ca0e465dab1e7e05a3896cb2d3e6a8ed8a5b60d3d3f3799a78a30a4396",
+      "stage": 14,
+      "tag": "release/000001",
+      "tag_provenance": "git_tag"
+    }
+  ]
+}

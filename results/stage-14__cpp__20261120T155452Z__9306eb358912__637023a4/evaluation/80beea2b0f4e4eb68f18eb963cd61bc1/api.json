@@ -1,0 +1,129 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 4.197322573512793,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0024631889536976814
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.005243005231022835
+    },
+    {
+      "id": "query-and-decoding",
+      "passed": true,
+      "seconds": 0.0006236685439944267
+    },
+    {
+      "id": "confinement",
+      "passed": true,
+      "seconds": 0.00036955904215574265
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.000542529858648777
+    },
+    {
+      "id": "syntax",
+      "passed": true,
+      "seconds": 0.00040429364889860153
+    },
+    {
+      "id": "request-framing",
+      "passed": true,
+      "seconds": 0.0002925032749772072
+    },
+    {
+      "id": "header-limit",
+      "passed": true,
+      "seconds": 0.00018462538719177246
+    },
+    {
+      "id": "absolute-header-deadline",
+      "passed": true,
+      "seconds": 1.2040225071832538
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0003831852227449417
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 7.698405534029007e-05
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.0001757824793457985
+    },
+    {
+      "id": "persistent-pipeline",
+      "passed": true,
+      "seconds": 0.00030382629483938217
+    },
+    {
+      "id": "connection-semantics",
+      "passed": true,
+      "seconds": 0.00014588795602321625
+    },
+    {
+      "id": "connection-limits",
+      "passed": true,
+      "seconds": 2.0140482308343053
+    },
+    {
+      "id": "slow-client-fairness",
+      "passed": true,
+      "seconds": 0.0014646891504526138
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 8.753873407840729e-05
+    },
+    {
+      "id": "admission",
+      "passed": true,
+      "seconds": 3.5623254235833883
+    },
+    {
+      "id": "connection-capacity",
+      "passed": true,
+      "seconds": 0.30385885667055845
+    },
+    {
+      "id": "write-deadline",
+      "passed": true,
+      "seconds": 1.1038416614755988
+    },
+    {
+      "id": "pipeline-backpressure",
+      "passed": true,
+      "seconds": 0.13153040129691362
+    },
+    {
+      "id": "configuration",
+      "passed": true,
+      "seconds": 0.3957088738679886
+    }
+  ],
+  "summary": {
+    "passed": 22,
+    "status": "passed",
+    "total": 22
+  },
+  "unimplemented_requirements": []
+}

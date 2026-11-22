@@ -1,0 +1,78 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "eaf8c4af510af43a06ba8f5692eafea013f9aa6030e037737be623096a0b3132"
+    },
+    "builder-inputs/RULES.md": {
+      "path": "inputs/builder-inputs/RULES.md",
+      "sha256": "b3e6400bf012cc634dc9bf33860335b3c9dbc7d06a32264c957b1c2fefa19272"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "eaf8c4af510af43a06ba8f5692eafea013f9aa6030e037737be623096a0b3132"
+    },
+    "builder-inputs/stages/capabilities/authorization.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/authorization.md",
+      "sha256": "a188f0df30437e87c7f7aad6bb0f7c843b5c1b45f3d8eafbcbac024eeaea3fee"
+    },
+    "builder-inputs/stages/capabilities/gateway.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/gateway.md",
+      "sha256": "d17e8e7d9d2a6a2c765d8107905a00db96a5313dccfdcd56112688370844465c"
+    },
+    "builder-inputs/stages/capabilities/persistence.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/persistence.md",
+      "sha256": "b486243711d574f37986de19ab593a3685078b8f57e3e0b194378f3c23ac05bd"
+    },
+    "builder-inputs/stages/common/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/stages/common/ARTIFACTS.md",
+      "sha256": "1c0fc7bcec24cd3fc458d088c4575312c3cbc4e149740fe3bc5529a5ed49a629"
+    },
+    "builder-inputs/stages/common/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/stages/common/BENCHMARK.md",
+      "sha256": "0e1065c0bfb23c1f36b6a5f81b4bdf30a6f516c4ad5706318d1b4ba7c3bb8afd"
+    },
+    "builder-inputs/stages/common/HTTP.md": {
+      "path": "inputs/builder-inputs/stages/common/HTTP.md",
+      "sha256": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492"
+    },
+    "builder-inputs/stages/common/INTERFACE.md": {
+      "path": "inputs/builder-inputs/stages/common/INTERFACE.md",
+      "sha256": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f"
+    },
+    "builder-inputs/stages/languages/cpp.md": {
+      "path": "inputs/builder-inputs/stages/languages/cpp.md",
+      "sha256": "b5c60c21a2be86662f80ff700d7f212f94891738a983d053aa2b7a9c745f9a3d"
+    },
+    "builder-inputs/stages/stage-11/SPEC.md": {
+      "path": "inputs/builder-inputs/stages/stage-11/SPEC.md",
+      "sha256": "d1ad4c179d4a1bb856f06163ca5a2adbd54d317732b47d897c61bb88baa0e05f"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "e9811acb671ae5b806d84c3ccb76e7fb96198c2ebe66e8ef98321a1936c71da6"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "92d5690e4008fccfc15fe7c91cada3614d83e7c1736667a24378fba03c809fca"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "0a08038ed56af91de6de38537ff553b312b83a59f13614eecd51518333382d71"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "2fe7f6292d84fe3b4b0089836985d4fc403d597e6578f78887564dcaa37186ba"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "bb4b177938618eca5d3d9968a2ca2803cb5571998bbfcf8dfee54cebe9173b26"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "9b33e5c4051e8e017281ab37986d588e2de773ce15bdafe787f459d37abed281"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "7beeaaa1982b5dfaa3e1f147d5296f322da9027fed8efa2e1c1b4fbe68d96173"
+}

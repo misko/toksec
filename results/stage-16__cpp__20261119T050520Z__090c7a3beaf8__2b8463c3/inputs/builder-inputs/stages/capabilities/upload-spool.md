@@ -1,0 +1,3 @@
+# Upload Spool
+
+POST /gateway/upload requires exactly one decimal Content-Length, responds 411 when absent, 400 on malformed framing, and 413 when greater than upload_bytes. Before reading the body reserve its declared size against tenant_bytes (keyed by Host) and spool_bytes globally. If either would overflow return 429 and reserve nothing. Buffer in a private temporary file under spool_dir, then forward once and only after receiving the complete body. On cancellation, upload_timeout_ms absolute body deadline, upstream failure or success release file and reservations. Partial uploads never reach the origin. GET /health returns ok plus newline while uploads are active. POST success relays the origin's response bytes. Do not retry POST.

@@ -1,0 +1,48 @@
+{
+  "best": "cd932410623f4c14b4f77bea48612012",
+  "context_rollovers": 30,
+  "diagnostic_baselines": {
+    "gateway-14-admitted-4096-256": "cd932410623f4c14b4f77bea48612012",
+    "gateway-14-public-4096-256": "3dc0b5b87f7b46dbbd2fc0e96904f87c",
+    "gateway-14-public-4096-4096": "1146dfb9a3db46288c56bfdd0f24c2f1"
+  },
+  "ended_unix": 1795193534.9861019,
+  "finished": true,
+  "interrupted": true,
+  "invalidated": [],
+  "journal_entries": 0,
+  "last": "48da0c0cd77546e6abfc0fbec6cfa6c0",
+  "last_benchmark": {
+    "candidate": "3cd732b960bf4a919e0ba475945d38a6",
+    "decision": {
+      "diagnostic_baseline": "cd932410623f4c14b4f77bea48612012",
+      "promote": false,
+      "reason": "tail-latency regression",
+      "scope": "selected_workload"
+    },
+    "invalid_cells": {},
+    "qualified": true,
+    "workloads": [
+      "gateway-14-admitted-4096-256"
+    ]
+  },
+  "last_qualified_benchmark": {
+    "candidate": "3cd732b960bf4a919e0ba475945d38a6",
+    "cells": {
+      "gateway-14-admitted-4096-256": {
+        "median_rps": 14159.0,
+        "worst_p99_ms": 331.6
+      }
+    },
+    "recorded_unix": 1795192869.6368465
+  },
+  "optimization_attempts": 6,
+  "smoke_passed": true,
+  "stop_kind": "generation_timeout",
+  "stop_metadata": {
+    "local_request_id": "66196a23f2ac433b98ac07bdb09aeb2b",
+    "provider_request_id": "req_bc81bb99d039413fb308301d7991f7fb"
+  },
+  "stop_phase": "generation",
+  "stop_reason": "TimeoutError: The read operation timed out"
+}

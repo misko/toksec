@@ -1,0 +1,174 @@
+{
+  "files": {
+    "artifact.json": {
+      "path": "inputs/artifact.json",
+      "sha256": "581b63073feb2bae1de7271be7bd1d39ae1fdd276dc95585be38928e1c553cab"
+    },
+    "builder-inputs/RULES.md": {
+      "path": "inputs/builder-inputs/RULES.md",
+      "sha256": "fa589caeb1c8a4a141206b7305040bac70c33d55fa514921903bdf2d052c5b53"
+    },
+    "builder-inputs/artifact.json": {
+      "path": "inputs/builder-inputs/artifact.json",
+      "sha256": "581b63073feb2bae1de7271be7bd1d39ae1fdd276dc95585be38928e1c553cab"
+    },
+    "builder-inputs/stages/capabilities/gateway.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/gateway.md",
+      "sha256": "d17e8e7d9d2a6a2c765d8107905a00db96a5313dccfdcd56112688370844465c"
+    },
+    "builder-inputs/stages/capabilities/persistence.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/persistence.md",
+      "sha256": "b486243711d574f37986de19ab593a3685078b8f57e3e0b194378f3c23ac05bd"
+    },
+    "builder-inputs/stages/capabilities/tenant-cache.md": {
+      "path": "inputs/builder-inputs/stages/capabilities/tenant-cache.md",
+      "sha256": "cd4c550e4e017eba917d00ceb400191f2519670fb023ddc74a1430ac2dedcde7"
+    },
+    "builder-inputs/stages/common/ARTIFACTS.md": {
+      "path": "inputs/builder-inputs/stages/common/ARTIFACTS.md",
+      "sha256": "5b9c42fdc6582dfae42045c8fc237ec8e4328b74478b450c1d392a63f3cc07bd"
+    },
+    "builder-inputs/stages/common/BENCHMARK.md": {
+      "path": "inputs/builder-inputs/stages/common/BENCHMARK.md",
+      "sha256": "0e1065c0bfb23c1f36b6a5f81b4bdf30a6f516c4ad5706318d1b4ba7c3bb8afd"
+    },
+    "builder-inputs/stages/common/HTTP.md": {
+      "path": "inputs/builder-inputs/stages/common/HTTP.md",
+      "sha256": "40f6173bc36ff2c5aeb716a933123296e6382e5779dbd91d5802dfa7860c2492"
+    },
+    "builder-inputs/stages/common/INTERFACE.md": {
+      "path": "inputs/builder-inputs/stages/common/INTERFACE.md",
+      "sha256": "a68bfdb58c2db3eeb43239009c925074dffe4158ed7a2a7588a06c39cfb6623f"
+    },
+    "builder-inputs/stages/languages/cpp.md": {
+      "path": "inputs/builder-inputs/stages/languages/cpp.md",
+      "sha256": "937a8275284bbffa7f84173698cdb5fcf431b660560da4ffee218659c017d109"
+    },
+    "builder-inputs/stages/stage-12/SPEC.md": {
+      "path": "inputs/builder-inputs/stages/stage-12/SPEC.md",
+      "sha256": "230146e96fb0ccd8cd29591c6c88e670acfc82a6b191031ea7c9a3ccd13d6fab"
+    },
+    "evaluation/77ebaa5c310d42569642e69d8717f57c/api.json": {
+      "path": "evaluation/77ebaa5c310d42569642e69d8717f57c/api.json",
+      "sha256": "626618f3bb3f30b0391ab12550d92d7a90cce2924843c95e054adf233ef6b093"
+    },
+    "evaluation/77ebaa5c310d42569642e69d8717f57c/evaluation.json": {
+      "path": "evaluation/77ebaa5c310d42569642e69d8717f57c/evaluation.json",
+      "sha256": "e75410421c41376834b48d7deebfed8d73d98b26c88cca59d0d1a6719757e286"
+    },
+    "evaluation/77ebaa5c310d42569642e69d8717f57c/performance.json": {
+      "path": "evaluation/77ebaa5c310d42569642e69d8717f57c/performance.json",
+      "sha256": "0ba74a2653100c8782d391a2fdc591de29659207ab2dce4c878bdbc5e5b5494d"
+    },
+    "evaluation/77ebaa5c310d42569642e69d8717f57c/report.md": {
+      "path": "evaluation/77ebaa5c310d42569642e69d8717f57c/report.md",
+      "sha256": "9ecd9827311f74e678a61d592b8b953fbf6b15a280f1aac94d5e04026e5d5dea"
+    },
+    "implementation.bundle": {
+      "path": "implementation/implementation.bundle",
+      "sha256": "0c72cd926a49c97ab6cf96e0c3130bbb5496c1de5ada095987369f9a7d06e55b"
+    },
+    "launch-packet.md": {
+      "path": "inputs/launch-packet.md",
+      "sha256": "36a76bf12266b1069479900ea6f533825c91b0347d4cb8325ff35879be7217e4"
+    },
+    "ledger.json": {
+      "path": "accounting/ledger.json",
+      "sha256": "8e2807a88e4bb4c4dcaf54203091ed02f4c3385500d81b5d8a9018cda79955c2"
+    },
+    "manifest.json": {
+      "path": "inputs/manifest.json",
+      "sha256": "3212401419a535c0ab8b5d9432ed46034713d7d4e90cf74a10452c47488b2de2"
+    },
+    "release-000001-smoke.json": {
+      "path": "implementation/evidence/release-000001-smoke.json",
+      "sha256": "5d925ca738116414ea997b7527f50e7aefea8518d6191206ada4d0efd34f3151"
+    },
+    "release-000001.cpp": {
+      "path": "implementation/releases/release-000001.cpp",
+      "sha256": "ca0114cc31d287e6c6ecd50d18b20cd659aa1232d18abc9324278f451f85282c"
+    },
+    "release-000002-smoke.json": {
+      "path": "implementation/evidence/release-000002-smoke.json",
+      "sha256": "277cc6e2ff1f59d3f288a889bc4ad0ad7644003ddf6845a2b753658860650e36"
+    },
+    "release-000002.cpp": {
+      "path": "implementation/releases/release-000002.cpp",
+      "sha256": "597fd67a0aa8474d990be2a634f42709fdb631711ba89cccbc2c56c6dd594a5a"
+    },
+    "release-000003-smoke.json": {
+      "path": "implementation/evidence/release-000003-smoke.json",
+      "sha256": "ddfe6d4cc73b59bca68f82bed783ce0b55ac51ce1485bb70cb6f93af013d528e"
+    },
+    "release-000003.cpp": {
+      "path": "implementation/releases/release-000003.cpp",
+      "sha256": "55ba9a31e8b1c320acfbc995a560a97e6a46d9c99278a736d752654216cb5492"
+    },
+    "release-000004-smoke.json": {
+      "path": "implementation/evidence/release-000004-smoke.json",
+      "sha256": "5aba62bce54d2978706f5362d947d9b8e2053cdcc753c3ebf45834b1a0cb8ce8"
+    },
+    "release-000004.cpp": {
+      "path": "implementation/releases/release-000004.cpp",
+      "sha256": "090d21ef1b92bc74d0005cf55bcbea5fc57d7f9a977dd2ea4493ca36750b0bc1"
+    },
+    "release-000005-smoke.json": {
+      "path": "implementation/evidence/release-000005-smoke.json",
+      "sha256": "2c77598377baa8808577bfacf9bd9c40dbbf07e7cd229d7567c746a74b5b6359"
+    },
+    "release-000005.cpp": {
+      "path": "implementation/releases/release-000005.cpp",
+      "sha256": "2aa24c6422485dedf8444b27a8120227d9c68bcb6c6c69a8d973c6aabbce642c"
+    },
+    "release-000006-smoke.json": {
+      "path": "implementation/evidence/release-000006-smoke.json",
+      "sha256": "e6d6593d7d2e10f6137d82de573c54282701cad5e8669420260adfe6d4188c6d"
+    },
+    "release-000006.cpp": {
+      "path": "implementation/releases/release-000006.cpp",
+      "sha256": "96184fa928bb9ea17af71eaa2d8d3a693f0fa2917086946f3924b791028e52cc"
+    },
+    "release-000007-smoke.json": {
+      "path": "implementation/evidence/release-000007-smoke.json",
+      "sha256": "723a58deef3990c0fe1bb398c1c4fbcacbff0a4b736120154f23a062bc15c8df"
+    },
+    "release-000007.cpp": {
+      "path": "implementation/releases/release-000007.cpp",
+      "sha256": "4ad6b01fe0cbdb2f2e2e5cedd00c4d2b0302d96cffe81d48555396842121e7b7"
+    },
+    "release-000008-smoke.json": {
+      "path": "implementation/evidence/release-000008-smoke.json",
+      "sha256": "1fc6eadcd08d2b2fb7d9f58cd86cf8535111e0da2ce7bd275d44224875106816"
+    },
+    "release-000008.cpp": {
+      "path": "implementation/releases/release-000008.cpp",
+      "sha256": "6d2d0f46f963c8e82cc7923b5aec207f17d7e5295429c6ef5f8d67e8099c2bc6"
+    },
+    "release-000009-smoke.json": {
+      "path": "implementation/evidence/release-000009-smoke.json",
+      "sha256": "47883decc66e1b6ee9d7b4a9b336de115de3e31e4e904dc52650afec51ed7f3f"
+    },
+    "release-000009.cpp": {
+      "path": "implementation/releases/release-000009.cpp",
+      "sha256": "1c036cc7cb219f0db7ee52b34964bf4f40886a8a64046e1f78bca02da9ceee0d"
+    },
+    "releases.json": {
+      "path": "implementation/releases.json",
+      "sha256": "53af7f405afcf99f8559816f7464557b0e435e3023dc86122b9e66b3029c118d"
+    },
+    "run.json": {
+      "path": "provenance/legacy/run.json",
+      "sha256": "737d6aa79ae85620b693b9ed17246abc1d773c6292a705625b6ef5e57b1dc41b"
+    },
+    "specification.json": {
+      "path": "inputs/specification.json",
+      "sha256": "fa565ebb8d79a8ec8c0955566fdf74aceec55219562c0306418ebfb57c419d16"
+    },
+    "state.json": {
+      "path": "implementation/evidence/state.json",
+      "sha256": "4e334320c59483c458af01ef15c8b1753022548d07256709c2b5d9d281dd94dd"
+    }
+  },
+  "layout_version": 1,
+  "source_snapshot_sha256": "25c4edffde6c8302c76e856551152da7e53ec13b9505f9216feed7d27ad1494a"
+}

@@ -1,0 +1,8 @@
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <cstdio>
+#include <string>
+#include <cstring>
+#include <cstdlib>
+int main(int argc,char**argv){ if(argc!=3)return 1; FILE*f=fopen(argv[2],"r"); if(!f)return 1; char b[4096];int port=0;std::string root;while(fgets(b,sizeof b,f)){if(!strncmp(b,"listen=",7)){char*p=strrchr(b,':');if(p)port=atoi(p+1);}if(!strncmp(b,"root=",5)){root=b+5;while(!root.empty()&&(root.back()=='\n'||root.back()=='\r'))root.pop_back();}}fclose(f);if(!port)return 1;int s=socket(AF_INET,SOCK_STREAM,0);int v=1;setsockopt(s,SOL_SOCKET,SO_REUSEADDR,&v,sizeof v);sockaddr_in a{};a.sin_family=AF_INET;a.sin_port=htons(port);a.sin_addr.s_addr=htonl(INADDR_LOOPBACK);if(bind(s,(sockaddr*)&a,sizeof a)||listen(s,128))return 1;while(1){int c=accept(s,0,0);if(c<0)continue;std::string q;for(;;){char t[4096];int n=recv(c,t,sizeof t,0);if(n<=0)break;q.append(t,n);auto e=q.find("\r\n\r\n");if(e==std::string::npos)continue;auto sp=q.find(' '),sp2=q.find(' ',sp+1);auto path=q.substr(sp+1,sp2-sp-1);auto end=path.find('?');if(end!=std::string::npos)path.resize(end);FILE*file=fopen((root+path).c_str(),"rb");std::string body;if(file){while((n=fread(t,1,sizeof t,file))>0)body.append(t,n);fclose(file);}bool close=q.find("Connection: close")!=std::string::npos;std::string h=std::string("HTTP/1.1 ")+(file?"200 OK":"404 Not Found")+"\r\nContent-Length: "+std::to_string(body.size())+"\r\nConnection: "+(close?"close":"keep-alive")+"\r\n\r\n";send(c,h.data(),h.size(),MSG_NOSIGNAL);if(q.compare(0,4,"HEAD"))send(c,body.data(),body.size(),MSG_NOSIGNAL);q.erase(0,e+4);if(close)break;}close(c);} }

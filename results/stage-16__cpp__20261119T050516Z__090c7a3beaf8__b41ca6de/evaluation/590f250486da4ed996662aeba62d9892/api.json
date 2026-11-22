@@ -1,0 +1,150 @@
+{
+  "build": {
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "diagnostics": "",
+    "language": "cpp",
+    "passed": true,
+    "seconds": 0.4625500747933984,
+    "test": false,
+    "timeout": false
+  },
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.0004284447059035301
+    },
+    {
+      "id": "files",
+      "passed": true,
+      "seconds": 0.0039384979754686356
+    },
+    {
+      "error": "AssertionError: /space%20name.txt: expected 200, got 404",
+      "id": "query-and-decoding",
+      "passed": false,
+      "seconds": 0.00013393163681030273
+    },
+    {
+      "error": "AssertionError: /../secret: expected 403, got 404",
+      "id": "confinement",
+      "passed": false,
+      "seconds": 5.906634032726288e-05
+    },
+    {
+      "id": "fragmentation",
+      "passed": true,
+      "seconds": 0.0004316279664635658
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "syntax",
+      "passed": false,
+      "seconds": 6.425473839044571e-05
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "request-framing",
+      "passed": false,
+      "seconds": 6.255228072404861e-05
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "header-limit",
+      "passed": false,
+      "seconds": 0.00013105664402246475
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "absolute-header-deadline",
+      "passed": false,
+      "seconds": 1.6509274151176214
+    },
+    {
+      "id": "disconnect-recovery",
+      "passed": true,
+      "seconds": 0.0006459727883338928
+    },
+    {
+      "id": "headerless-request",
+      "passed": true,
+      "seconds": 0.0003161085769534111
+    },
+    {
+      "id": "head",
+      "passed": true,
+      "seconds": 0.0007708193734288216
+    },
+    {
+      "error": "AssertionError: invalid status line",
+      "id": "persistent-pipeline",
+      "passed": false,
+      "seconds": 0.0002184426411986351
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "connection-semantics",
+      "passed": false,
+      "seconds": 0.00017410237342119217
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "connection-limits",
+      "passed": false,
+      "seconds": 0.004336496815085411
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "slow-client-fairness",
+      "passed": false,
+      "seconds": 3.0036969976499677
+    },
+    {
+      "id": "byte-header-values",
+      "passed": true,
+      "seconds": 0.004784330725669861
+    },
+    {
+      "error": "AssertionError: ",
+      "id": "upload",
+      "passed": false,
+      "seconds": 0.0014074454084038734
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "upload-limits",
+      "passed": false,
+      "seconds": 3.053986099548638
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "connection-capacity",
+      "passed": false,
+      "seconds": 1.201200201176107
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "write-deadline",
+      "passed": false,
+      "seconds": 4.10412138979882
+    },
+    {
+      "error": "TimeoutError: timed out",
+      "id": "pipeline-backpressure",
+      "passed": false,
+      "seconds": 3.1041375175118446
+    },
+    {
+      "error": "invalid configuration did not exit within two seconds",
+      "id": "configuration",
+      "passed": false,
+      "seconds": 2.014560333453119
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "status": "failed",
+    "total": 23
+  },
+  "unimplemented_requirements": []
+}

@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {
+      "id": "bootstrap",
+      "passed": true,
+      "seconds": 0.00019179098308086395
+    },
+    {
+      "id": "smoke-head",
+      "passed": true,
+      "seconds": 0.00010377168655395508
+    },
+    {
+      "id": "smoke-persistent",
+      "passed": true,
+      "seconds": 9.545963257551193e-05
+    }
+  ],
+  "evaluation_scope": "visible_smoke_only",
+  "passed": true,
+  "server_diagnostics": "",
+  "server_exit_code": null
+}

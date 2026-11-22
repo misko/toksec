@@ -1,0 +1,21 @@
+{
+  "calibration_id": "calibration__stage-14__20261120T152615Z__6c35c0f9f68b__a87edff6",
+  "evaluator_sha256": "b13849ebbf59ac66c4cda21854a5a5468abab060cacaf0a7c3af937fa7ad37c3",
+  "final_release": {
+    "commit": "26b5172dc0f4c9eaf13aeac78bd3ac7c37c3d615",
+    "source_sha256": "1815fff727911737fdded9cdab63ab0286443f4ec3675a14489b144f6dcfd4d4",
+    "tag": "release/000013"
+  },
+  "first_release": {
+    "commit": "ce62e07c0eed054b56de5c8a8d61ab25a3fba940",
+    "source_sha256": "cc2f4e247f0f00e3395e2a6503b29ec8125cd0c7234d7ee676fc5ab7f9fb90bf",
+    "tag": "release/000001"
+  },
+  "issues": [
+    "reference_repeat_variation"
+  ],
+  "reason": "confirmation cell did not qualify",
+  "run_id": "stage-14__cpp__20261120T155452Z__9306eb358912__637023a4",
+  "status": "unavailable",
+  "workload": "gateway-14-admitted-4096-4096"
+}
