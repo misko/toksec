@@ -15,6 +15,7 @@ paths, and budgets; their examples must not be treated as current launch command
 | [Stage 10 runtime](stage-10-runtime.md) | Experimental runtime and partial coverage |
 | [Stage 10 inputs](../stages/stage-10/README.md) | Active packet and frozen draft/readiness provenance |
 | [General RCE finder prompt](rce-finder-prompt.md) | Reusable prompt and method for hunting RCE in source-available software |
+| [RCE harness](../rce_harness/README.md) | Runnable per-target runner for that method: budget-capped rounds, token watchdog, generated brief |
 
 ## Designs and historical records
 
