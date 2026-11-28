@@ -354,7 +354,7 @@ def run_watched(cmd, job, env, allow_tokens, args):
                 sid = found.group(1) if found else None
             if sid:
                 used = session_tokens(args.codex_home, sid) or 0
-                if used >= allow_tokens:
+                if used - baseline >= allow_tokens:
                     over = True
                     break
         time.sleep(1.5)
@@ -670,6 +670,14 @@ def run_round(job, target, state, args, round_no):
         '-C', str(target.resolve()),
         '-m', args.model,
     ]
+    # Resuming the target's own session keeps the next round from paying to
+    # re-read what the last round already read. The id comes from state, or
+    # from --session for a hunt that pre-dates recording one. Token billing
+    # and the kill threshold then work on the delta against the session total.
+    sid_source = state.get('session_id') or args.session
+    resume = bool(args.reuse_session and sid_source)
+    if resume:
+        cmd += ['resume', sid_source]
     env = {**os.environ, 'CODEX_HOME': str(args.codex_home)}
     if args.provider:
         cmd += ['-c', f'model_provider={args.provider}']
@@ -694,6 +702,7 @@ def run_round(job, target, state, args, round_no):
     # Keep a slice of the allowance back for the wrap-up turn, so a kill lands
     # after the model has had a chance to bank its last diary line.
     allow_tokens = int(ceiling * 0.85) if ceiling else None
+    baseline = (session_tokens(args.codex_home, sid_source) or 0) if resume else 0
     round_room = min(remaining, Decimal(str(args.round_usd))) if args.round_usd else remaining
     # Measured before the seed so `diary_written` still means "the model moved".
     diary_before = (job / 'DIARY.md').stat().st_size if (job / 'DIARY.md').exists() else 0
@@ -731,7 +740,7 @@ def run_round(job, target, state, args, round_no):
     tokens = session_tokens(args.codex_home, sid.group(1)) if sid else None
     if tokens is None:
         tokens = read_tokens_used(output)
-    spent = cost_usd(tokens)
+    spent = cost_usd(tokens - baseline if tokens is not None else None)
     # The prompt and the brief both quote the marker text, so a plain substring
     # search fires on echoes. Only an anchored, near-final marker line counts.
     parts = re.split(r'^codex\s*$', output, flags=re.MULTILINE)
@@ -758,6 +767,8 @@ def run_round(job, target, state, args, round_no):
     })
     (job / 'rounds.jsonl').open('a').write(json.dumps(state['rounds'][-1]) + '\n')
     (job / 'last_round_output.txt').write_text(output[-8000:])
+    if sid:
+        state['session_id'] = sid.group(1)
     return state['rounds'][-1]
 
 
@@ -788,6 +799,11 @@ def hunt_one(target, args):
             state['stopped'] = f'budget: projected {fmt_usd(projected)} exceeds cap {fmt_usd(budget)}'
             break
         result = run_round(job, target, state, args, round_no)
+        # Persist after every round: the session id must survive a kill, or
+        # the next --reuse-session launch loses the thread it should resume.
+        state['used_usd'] = str(state['used_usd'])
+        state_path.write_text(json.dumps(state, indent=2, default=str))
+        state['used_usd'] = Decimal(state['used_usd'])
         if result.get('killed') and state['used_usd'] + reserve > budget:
             state['stopped'] = (f'budget: killed at {fmt_usd(state["used_usd"])}, '
                                 f'cap {fmt_usd(budget)}')
@@ -858,6 +874,12 @@ def main():
                         help='retries when the content classifier rejects the prompt')
     parser.add_argument('--stop-on-negative', action='store_true',
                         help='end the target hunt at the first NO RCE FOUND round')
+    parser.add_argument('--reuse-session', action='store_true',
+                        help='continue the target session across rounds instead '
+                             'of starting a fresh conversation each round')
+    parser.add_argument('--session', default=None,
+                        help='seed the session id to resume (a hunt that never '
+                             'recorded one, e.g. before this flag existed)')
     parser.add_argument('--resume', action='store_true',
                         help='skip targets that already reached a terminal state')
     parser.add_argument('--dry-run', action='store_true')
