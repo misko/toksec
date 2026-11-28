@@ -317,7 +317,7 @@ def session_tokens(codex_home, session_id):
     return total or None
 
 
-def run_watched(cmd, job, env, allow_tokens, args):
+def run_watched(cmd, job, env, allow_tokens, args, baseline=0):
     """Run one round, killing it once it costs more than `allow_tokens`.
 
     `features.rollout_budget` is not enforced in the CLI build we run, so the
@@ -726,7 +726,8 @@ def run_round(job, target, state, args, round_no):
         attempt += 1
         variants = prompt_variants(source_name(target))
         prompt = variants[(attempt - 1) % len(variants)]
-        rc, output = run_watched(cmd + [prompt], job, env, allow_tokens, args)
+        rc, output = run_watched(cmd + [prompt], job, env, allow_tokens, args,
+                                 baseline)
         done = types.SimpleNamespace(returncode=rc)
         flaky = 'flagged for possible cybersecurity risk' in output
         killed = rc == 124 and allow_tokens
