@@ -219,10 +219,23 @@ RUNNER_FILES = {'DIARY.md', 'FINDINGS.md', 'HUNT_BRIEF.md', 'ROUND.md',
 
 def source_name(target):
     """A short label for the target's primary source, for the prompt only."""
-    for entry in sorted(target.iterdir()):
-        if entry.is_file() and entry.name not in RUNNER_FILES:
-            return entry.name
-    return 'the source'
+    entries = [e for e in target.iterdir()
+               if e.is_file() and e.suffix in SOURCE_EXTS
+               and e.name not in RUNNER_FILES]
+    if not entries:
+        return 'the source'
+    # Same preference as bootstrap_build: skip scratch drivers that only
+    # include the real translation unit, and take the longest of the rest.
+    texts = {}
+    for e in entries:
+        try:
+            texts[e.name] = e.read_text(errors='replace')
+        except OSError:
+            texts[e.name] = ''
+    pulls = {f.name for f in entries
+             for t in texts.values() if f'"{f.name}"' in t and t}
+    entries.sort(key=lambda e: (e.name not in pulls, -len(texts[e.name])))
+    return entries[0].name
 
 
 def prompt_variants(name):
@@ -466,37 +479,74 @@ CONFIG_KEYS = {'listen', 'port', 'addr', 'address', 'root', 'docroot',
                'timeout', 'depth', 'peer', 'origin', 'host', 'www', 'dir'}
 
 
-def epoch_ports():
-    """A port pair unlikely to collide across targets in one sweep."""
-    port = PORT_BASE + os.getpid() % 400
-    return f'listen=127.0.0.1:{port}, peer={port + 200}'
+KEY_LIST = re.compile(r'(?:^|[^\w])(\w*key\w*)\s*(?:\[\s*\])?\s*=\s*\{([^{}]*)\}', re.I)
 
 
-def synthesize_config(job, text):
-    """Write `bootstrap.conf` and `start.sh` from the binary's own key strings.
+def declared_config_keys(text):
+    """The config key list the parser itself declares, in declaration order.
 
-    The key names are parsed out of the source rather than guessed here, so the
-    bootstrap stays generic across targets. Values are deliberately small and
-    loopback-only.
+    A target that validates `m.size()!=keys.size()` rejects any extra key, so
+    scraping raw string literals over-emits: one stray `"host"` literal in the
+    source is enough to make the whole conf invalid. The declared list is the
+    only authority, so prefer it and fall back to scrubbing only when absent.
     """
+    for match in KEY_LIST.finditer(text):
+        keys = re.findall(r'"([A-Za-z][A-Za-z0-9_]{1,30})"', match.group(2))
+        if len(keys) >= 2:
+            seen, ordered = set(), []
+            for key in keys:
+                if key not in seen:
+                    seen.add(key)
+                    ordered.append(key)
+            return ordered
+    return []
+
+
+def scrape_config_keys(text):
+    """Fallback when the source has no declared key list."""
     keys = sorted(set(re.findall(r'"([a-z][a-z0-9_]{2,30})"', text)))
     # Keep strings that read as a config key rather than prose or a format.
     keys = [k for k in keys
             if '_' in k or k in CONFIG_KEYS
             or any(h in k for h in ('listen', 'port', 'addr', 'root',
                                     'timeout', 'dir', 'depth'))]
+    return keys
+
+
+def key_role(key):
+    """Which of the three loopback addresses a key wants, if any."""
+    # `auth_timeout_ms` carries an address word too, so timeouts go first.
+    if key.endswith('_ms') or 'timeout' in key:
+        return None
+    if 'listen' in key or key.endswith('_port') or key.endswith('port'):
+        return 'listen'
+    if 'origin' in key or 'backend' in key or 'upstream' in key:
+        return 'origin'
+    if 'auth' in key:
+        return 'auth'
+    if 'address' in key or key.endswith('addr') or 'peer' in key:
+        return 'origin'
+    return None
+
+
+def synthesize_config(job, text):
+    """Write `bootstrap.conf` and `start.sh` from the binary's own key strings.
+
+    Keys come from the key list the parser declares, so the conf matches the
+    exact set it validates; values are deliberately small and loopback-only.
+    """
+    keys = declared_config_keys(text) or scrape_config_keys(text)
     if not keys:
         return False
     port = PORT_BASE + (os.getpid() % 400)
-    peer = port + 200
+    addrs = {'listen': port, 'origin': port + 200, 'auth': port + 201}
     (job / 'www').mkdir(exist_ok=True)
     (job / 'www' / 'index.html').write_text('hello\n')
     values = {}
     for key in keys:
-        if 'listen' in key or key.endswith('_port'):
-            values[key] = f'127.0.0.1:{port}'
-        elif 'address' in key or 'origin' in key or 'auth_addr' in key:
-            values[key] = f'127.0.0.1:{peer}'
+        role = key_role(key)
+        if role:
+            values[key] = f'127.0.0.1:{addrs[role]}'
         elif 'root' in key or 'dir' in key:
             values[key] = str(job / 'www')
         elif 'timeout' in key or key.endswith('_ms'):
@@ -526,6 +576,20 @@ def bootstrap_build(job):
     sources = sorted(f for f in job.iterdir()
                      if f.is_file() and f.suffix in SOURCE_EXTS
                      and f.name not in RUNNER_FILES)
+    # A scratch file that includes another source (`.test.cpp` doing
+    # `#include "main.cpp"`) is a driver, not the program: compiling it alone
+    # leaves the real translation unit out. Prefer sources nothing else pulls
+    # in, and prefer the longest, which is the program rather than a variant.
+    pulls = set()
+    for g in sources:
+        try:
+            text = g.read_text(errors='replace')
+        except OSError:
+            continue
+        for f in sources:
+            if f is not g and f'"{f.name}"' in text:
+                pulls.add(f.name)
+    sources.sort(key=lambda f: (f.name not in pulls, -f.stat().st_size))
     lines = ['# Bootstrap (written by the runner, one line per step)', '']
     if not sources:
         return

@@ -45,6 +45,41 @@ eq('a blank trailing line still parses', out.blank_tail, 'NO RCE FOUND');
 eq('a trailing tool artifact still parses', out.tool_tail, 'RCE CONFIRMED');
 eq('no marker yields null', out.none, null);
 
+console.log('\n==== bootstrap synthesizer tests ====\n');
+
+// A target that validates the exact key count must not receive scraped extras:
+// one stray "host" literal in the source was enough to reject the whole conf.
+// A `.test.cpp` that includes the real unit must not be chosen as the program.
+const boot = `
+import importlib.util, json, pathlib, sys, tempfile
+spec = importlib.util.spec_from_file_location('rf', 'rce_harness/rce_fanout.py')
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+src = '''
+int port_of(const char*p){return atoi(p);} const char*host="0.0.0.0";
+const char*extra="host_header"; const char*tag="x-forwarded_for";
+bool config(const char*path){const vector<string> keys={"listen","root",
+ "origin_address","auth_address","auth_timeout_ms"};if(m.size()!=keys.size())return false;}
+int main(int c,char**v){return 0;}
+'''
+with tempfile.TemporaryDirectory() as d:
+    job = pathlib.Path(d)
+    (job / 'main.cpp').write_text(src)
+    (job / 'main.test.cpp').write_text('#include "main.cpp"\\nint t(){return 1;}\\n')
+    ok = m.synthesize_config(job, src)
+    conf = (job / 'bootstrap.conf').read_text().splitlines()
+    print(json.dumps({
+        'ok': ok,
+        'keys': sorted(l.split('=', 1)[0] for l in conf if l),
+        'addrs': sorted(v for l in conf for v in [l.split('=',1)[1]] if v.startswith('127.')),
+        'source': m.source_name(job),
+    }))
+`;
+const bootOut = JSON.parse(execFileSync('python3', ['-c', boot], { cwd: REPO, encoding: 'utf8' }));
+eq('declared key list is reproduced exactly, no scraped extras', bootOut.keys.join(','),
+  'auth_address,auth_timeout_ms,listen,origin_address,root');
+eq('listen/origin/auth get three distinct ports', bootOut.addrs.length, 3);
+eq('a scratch include driver is not chosen as the program', bootOut.source, 'main.cpp');
+
 try {
   execFileSync('python3', ['rce_harness/gen_hunt_brief.py', '--check'], { cwd: REPO, stdio: 'pipe' });
   pass++; console.log('  ok   brief matches the canonical document');
