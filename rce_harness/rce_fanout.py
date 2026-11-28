@@ -681,6 +681,11 @@ def run_round(job, target, state, args, round_no):
     env = {**os.environ, 'CODEX_HOME': str(args.codex_home)}
     if args.provider:
         cmd += ['-c', f'model_provider={args.provider}']
+    # The workspace sandbox denies socket(), so a network target could never
+    # boot its own server and probe it — round 1 of the gateway hunt lost its
+    # end-to-end work to this. Loopback-only bind/connect is the capability a
+    # source-audit round needs, and workspace-write keeps the file sandbox.
+    cmd += ['-c', 'sandbox_workspace_write.network_access=true']
     # Rollout budget is advisory and overshoots; a hard in-round token cap is
     # what actually keeps a round inside the remaining money. Only reserve the
     # last round's full allowance so a tier can never overrun its cap.
